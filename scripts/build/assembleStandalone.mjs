@@ -48,7 +48,6 @@
 import fs from "node:fs/promises";
 import fsSync from "node:fs";
 import path from "node:path";
-import { colocateLlmlinguaOptionals, SEED_PACKAGES } from "./colocateOptionals.mjs";
 
 /**
  * Check whether a path exists (async).
@@ -85,19 +84,6 @@ export const NATIVE_ASSET_ENTRIES = [
     label: "better-sqlite3 prebuilt native binaries",
     src: ["node_modules", "better-sqlite3", "prebuilds"],
     dest: ["node_modules", "better-sqlite3", "prebuilds"],
-  },
-  {
-    // onnxruntime-node's dist/binding.js dlopen()s a platform-specific
-    // libonnxruntime.so.1 shipped under bin/napi-v3/<platform>/<arch>/ — a
-    // *dynamic* native load Next.js's standalone file trace can't see (same
-    // blind spot class as the LLMLingua closure below, just for a .so instead
-    // of a JS import). Without this the standalone bundle boots with
-    // "Error: libonnxruntime.so.1: cannot open shared object file: No such
-    // file or directory" the first time transformers/llmlingua actually try
-    // to run ONNX inference.
-    label: "onnxruntime-node native binaries (libonnxruntime .so + .node addon)",
-    src: ["node_modules", "onnxruntime-node", "bin"],
-    dest: ["node_modules", "onnxruntime-node", "bin"],
   },
   {
     // TPROXY IP_TRANSPARENT addon (Fase 3 / Epic A). Built by build-tproxy-native
@@ -917,17 +903,6 @@ export function assembleStandalone({
       }
     }
 
-    // #9166: dynamically imported LLMLingua packages are not reliably traced
-    // into the standalone bundle. Copy their complete dependency closure from
-    // the installed root tree without overwriting packages already traced by
-    // Next.js. Include transformers here so its ONNX runtime closure is also
-    // guaranteed in Docker/standalone builds.
-    colocateLlmlinguaOptionals({
-      rootDir: projectRoot,
-      targetNodeModulesDir: path.join(resolvedOutDir, "node_modules"),
-      seeds: [...SEED_PACKAGES, "@huggingface/transformers"],
-      log: (message) => console.log(`[assembleStandalone] ${message.trim()}`),
-    });
   }
 
   // 7. Optionally dereference Turbopack hashed-module symlinks so the bundle is

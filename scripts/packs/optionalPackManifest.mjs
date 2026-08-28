@@ -41,15 +41,12 @@ export const OPTIONAL_PACKS = [
     name: "ml-runtime",
     packVersion: 1,
     description:
-      "Local ML inference closure: LLMLingua-2 SLM prompt compression and transformers.js memory embeddings",
+      "js-tiktoken tokenization closure (shared token counting for prompt compression)",
     packages: [
       // NOTE: exact versions are resolved at packaging time from the staged
       // tree and recorded in optional-packs.index.json — the manifest defines
       // MEMBERSHIP only, so member bumps don't need a manifest edit unless the
       // set of packages changes.
-      { name: "@huggingface/transformers" },
-      { name: "onnxruntime-node" },
-      { name: "@atjsh/llmlingua-2" },
       { name: "js-tiktoken" },
     ],
   },
