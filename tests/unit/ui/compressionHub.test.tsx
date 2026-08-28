@@ -54,7 +54,6 @@ const ENGINES = [
   { id: "session-dedup", name: "Session Dedup", stackPriority: 3, stable: true },
   { id: "rtk", name: "RTK", stackPriority: 10, stable: true },
   { id: "caveman", name: "Caveman", stackPriority: 20, stable: true },
-  { id: "llmlingua", name: "LLMLingua-2", stackPriority: 35, stable: false },
 ];
 
 function enginePayload() {

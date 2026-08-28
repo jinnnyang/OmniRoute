@@ -52,10 +52,6 @@ function EngineOptions({
           {engine}
         </label>
       ))}
-      <label className="flex items-center gap-2 text-sm opacity-50">
-        <input type="checkbox" disabled /> llmlingua{" "}
-        <span className="text-[10px]">({t("requiresOnnx")})</span>
-      </label>
     </div>
   );
 }

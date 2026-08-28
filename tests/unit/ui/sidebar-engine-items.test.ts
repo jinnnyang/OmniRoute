@@ -7,14 +7,9 @@ import {
   COMPRESSION_CONTEXT_GROUP,
 } from "../../../src/shared/constants/sidebarVisibility";
 
-const ENGINE_IDS = [
-  "context-headroom",
-  "context-session-dedup",
-  "context-ccr",
-  "context-llmlingua",
-] as const;
+const ENGINE_IDS = ["context-headroom", "context-session-dedup", "context-ccr"] as const;
 
-describe("HIDEABLE_SIDEBAR_ITEM_IDS includes all 4 engine items", () => {
+describe("HIDEABLE_SIDEBAR_ITEM_IDS includes all 3 engine items", () => {
   for (const id of ENGINE_IDS) {
     it(`includes "${id}"`, () => {
       assert.ok(
@@ -25,7 +20,7 @@ describe("HIDEABLE_SIDEBAR_ITEM_IDS includes all 4 engine items", () => {
   }
 });
 
-describe("COMPRESSION_CONTEXT_GROUP contains all 4 engine items", () => {
+describe("COMPRESSION_CONTEXT_GROUP contains all 3 engine items", () => {
   const itemIds = COMPRESSION_CONTEXT_GROUP.items.map((item) => item.id);
   const itemMap = new Map(COMPRESSION_CONTEXT_GROUP.items.map((item) => [item.id, item]));
 
@@ -56,14 +51,7 @@ describe("COMPRESSION_CONTEXT_GROUP contains all 4 engine items", () => {
     assert.equal(item.labelFallback, "CCR");
   });
 
-  it('llmlingua has href "/dashboard/context/llmlingua" and labelFallback "LLMLingua"', () => {
-    const item = itemMap.get("context-llmlingua");
-    assert.ok(item, "context-llmlingua item not found");
-    assert.equal(item.href, "/dashboard/context/llmlingua");
-    assert.equal(item.labelFallback, "LLMLingua");
-  });
-
-  it("4 engine items appear after context-rtk and before compression-studio", () => {
+  it("3 engine items appear after context-rtk and before compression-studio", () => {
     // Unified-panel order: Settings → Combos → per-engine pages → Studio.
     const ids = itemIds as string[];
     const rtkIdx = ids.indexOf("context-rtk");
@@ -82,11 +70,7 @@ describe("COMPRESSION_CONTEXT_GROUP contains all 4 engine items", () => {
     const ids = itemIds as string[];
     assert.equal(ids[0], "context-settings", "Settings must be first");
     assert.equal(ids[1], "context-combos", "Combos must be second");
-    assert.equal(
-      ids[ids.length - 1],
-      "compression-exclusions",
-      "Exclusions must be last"
-    );
+    assert.equal(ids[ids.length - 1], "compression-exclusions", "Exclusions must be last");
     assert.equal(
       ids[ids.length - 2],
       "compression-studio",

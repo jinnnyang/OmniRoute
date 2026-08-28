@@ -68,7 +68,7 @@ describe("compression worker eligibility", () => {
     for (const mode of ["off", "lite", "aggressive", "ultra", "omniglyph"] as const) {
       assert.equal(isCompressionWorkerEligible(body, mode, { config }), false);
     }
-    for (const engine of ["llmlingua", "omniglyph", "ccr", "session-dedup", "ultra"]) {
+    for (const engine of ["omniglyph", "ccr", "session-dedup", "ultra"]) {
       assert.equal(
         isCompressionWorkerEligible(body, "stacked", {
           config: { ...config, stackedPipeline: [{ engine }] } as CompressionConfig,

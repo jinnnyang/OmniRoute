@@ -153,26 +153,6 @@ describe("CcrPage", () => {
   });
 });
 
-describe("LlmlinguaPage", () => {
-  it("mounts without throwing and renders the engine name", async () => {
-    setupFetchMock([{ id: "llmlingua", name: "LLMLingua" }]);
-    const { default: LlmlinguaPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/llmlingua/page");
-
-    let container!: HTMLElement;
-    await act(async () => {
-      container = mountInContainer(<LlmlinguaPage />);
-    });
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-
-    expect(container).toBeTruthy();
-    expect(container.textContent).toContain("LLMLingua");
-  });
-});
-
 describe("LitePage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "lite", name: "Lite" }]);

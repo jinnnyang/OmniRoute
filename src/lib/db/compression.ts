@@ -41,7 +41,6 @@ import {
   isPreserveSystemPromptMode,
   normalizePreserveSystemPromptMode,
 } from "@omniroute/open-sse/services/compression/preserveSystemPromptMode.ts";
-import { maybePrewarmUltraSlmOnConfig } from "@omniroute/open-sse/services/compression/ultra.ts";
 import { applyDetailConfigUpdate, buildDetailConfigDefaults } from "./compressionDetailNormalizers";
 
 const NAMESPACE = "compression";
@@ -64,12 +63,6 @@ let compressionSettingsCache: {
   expiresAt: number;
   dbRef: WeakRef<object>;
 } | null = null;
-
-// Phase 4 (B): one cold-start SLM pre-warm attempt per process. The save path fires
-// on every enable transition; this guard keeps the read path from re-warming on every
-// cache miss (the read path runs at most once per 5s, but a cold start should warm once,
-// not repeatedly). Best-effort either way (`maybePrewarmUltraSlmOnConfig` never throws).
-let _ultraSlmColdPrewarmAttempted = false;
 
 function toRecord(value: unknown): JsonRecord {
   return value && typeof value === "object" ? (value as JsonRecord) : {};
@@ -342,7 +335,6 @@ const STACKED_PIPELINE_ENGINE_IDS = new Set([
   "headroom",
   "session-dedup",
   "ccr",
-  "llmlingua",
   "relevance",
   "omniglyph",
 ]);
@@ -459,8 +451,6 @@ function normalizeHeadroomConfig(value: unknown): HeadroomConfig {
 
 function normalizeUltraConfig(value: unknown): UltraConfig {
   const record = toRecord(value);
-  const modelPath = typeof record.modelPath === "string" ? record.modelPath.trim() : "";
-
   return {
     ...DEFAULT_ULTRA_CONFIG,
     enabled: typeof record.enabled === "boolean" ? record.enabled : DEFAULT_ULTRA_CONFIG.enabled,
@@ -476,11 +466,6 @@ function normalizeUltraConfig(value: unknown): UltraConfig {
       0,
       1
     ),
-    slmFallbackToAggressive:
-      typeof record.slmFallbackToAggressive === "boolean"
-        ? record.slmFallbackToAggressive
-        : DEFAULT_ULTRA_CONFIG.slmFallbackToAggressive,
-    ...(modelPath ? { modelPath } : {}),
     maxTokensPerMessage: boundedInt(
       record.maxTokensPerMessage,
       DEFAULT_ULTRA_CONFIG.maxTokensPerMessage,
@@ -772,14 +757,6 @@ export async function getCompressionSettings(): Promise<CompressionConfig> {
       case "activeComboId":
         config.activeComboId = typeof parsed === "string" && parsed.trim() ? parsed.trim() : null;
         break;
-      case "ultraEngine":
-        // Phase 4 (B): SLM tier selector. Only the two known values; anything else
-        // falls back to the heuristic default so a malformed row can never enable SLM.
-        config.ultraEngine = parsed === "slm" ? "slm" : "heuristic";
-        break;
-      case "ultraSlmPrewarm":
-        config.ultraSlmPrewarm = parsed === true;
-        break;
       case "exclusions":
         config.exclusions = normalizeCompressionExclusions(parsed);
         break;
@@ -819,17 +796,6 @@ export async function getCompressionSettings(): Promise<CompressionConfig> {
     dbRef: new WeakRef(db),
   };
 
-  // Phase 4 (B): cold-restart pre-warm — when the stored config already selects the SLM
-  // tier with pre-warm on, warm the model once (best-effort, fire-and-forget, guarded so
-  // a frequently-hit read path warms at most once per process). Cache hits return above.
-  if (!_ultraSlmColdPrewarmAttempted) {
-    _ultraSlmColdPrewarmAttempted = true;
-    void maybePrewarmUltraSlmOnConfig({
-      ultraEngine: config.ultraEngine,
-      ultraSlmPrewarm: config.ultraSlmPrewarm,
-    });
-  }
-
   return config;
 }
 
@@ -859,12 +825,6 @@ export async function updateCompressionSettings(
   compressionSettingsCache = null;
   invalidateDbCache();
   const next = await getCompressionSettings();
-  // Phase 4 (B): the SAVE path covers the enable transition — if this write turns the
-  // SLM tier + pre-warm on, warm the model once (best-effort, fire-and-forget).
-  void maybePrewarmUltraSlmOnConfig({
-    ultraEngine: next.ultraEngine,
-    ultraSlmPrewarm: next.ultraSlmPrewarm,
-  });
   return next;
 }
 

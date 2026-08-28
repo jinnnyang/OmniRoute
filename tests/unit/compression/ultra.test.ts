@@ -6,7 +6,7 @@ import {
   STOPWORDS,
   FORCE_PRESERVE_RE,
 } from "../../../open-sse/services/compression/ultraHeuristic.ts";
-import { ultraCompress } from "../../../open-sse/services/compression/ultra.ts";
+import { ultraCompressHeuristic } from "../../../open-sse/services/compression/ultra.ts";
 import type { UltraConfig } from "../../../open-sse/services/compression/types.ts";
 
 describe("scoreToken", () => {
@@ -125,90 +125,89 @@ describe("pruneByScore", () => {
   });
 });
 
-describe("ultraCompress", () => {
+describe("ultraCompressHeuristic", () => {
   const baseConfig: UltraConfig = {
     enabled: true,
     compressionRate: 0.5,
     minScoreThreshold: 0.3,
-    slmFallbackToAggressive: false,
     maxTokensPerMessage: 0,
   };
 
-  it("should return object with compressed and stats", async () => {
+  it("should return object with compressed and stats", () => {
     const messages = [{ role: "user", content: "the quick brown fox" }];
-    const result = await ultraCompress(messages, baseConfig);
+    const result = ultraCompressHeuristic(messages, baseConfig);
     assert(result.messages);
     assert(result.stats);
     assert(result.stats.originalTokens !== undefined);
     assert(result.stats.compressedTokens !== undefined);
   });
 
-  it("should return empty compressed for empty string", async () => {
+  it("should return empty compressed for empty string", () => {
     const messages = [{ role: "user", content: "" }];
-    const result = await ultraCompress(messages, baseConfig);
+    const result = ultraCompressHeuristic(messages, baseConfig);
     assert.strictEqual(result.messages[0].content, "");
   });
 
-  it("should handle recursion guard for already-compressed strings", async () => {
+  it("should handle recursion guard for already-compressed strings", () => {
     const messages = [{ role: "user", content: "[COMPRESSED: already compressed" }];
-    const result = await ultraCompress(messages, baseConfig);
+    const result = ultraCompressHeuristic(messages, baseConfig);
     assert.strictEqual(result.messages[0].content, "[COMPRESSED: already compressed");
   });
 
-  it("should keep all tokens when compressionRate=1.0", async () => {
+  it("should keep all tokens when compressionRate=1.0", () => {
     const config = { ...baseConfig, compressionRate: 1.0 };
     const messages = [{ role: "user", content: "the quick brown fox jumps" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert.strictEqual(result.stats.originalTokens, result.stats.compressedTokens);
   });
 
-  it("should remove tokens when compressionRate=0.5", async () => {
+  it("should remove tokens when compressionRate=0.5", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "the quick brown fox jumps over lazy dog" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(result.stats.compressedTokens < result.stats.originalTokens);
   });
 
-  it("should keep only force-preserved tokens when compressionRate=0.0", async () => {
+  it("should keep only force-preserved tokens when compressionRate=0.0", () => {
     const config = { ...baseConfig, compressionRate: 0.0 };
     const messages = [{ role: "user", content: "check https://example.com here" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(result.stats.compressedTokens <= result.stats.originalTokens);
   });
 
-  it("should ensure compressedTokens <= originalTokens", async () => {
+  it("should ensure compressedTokens <= originalTokens", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "the quick brown fox jumps over the lazy dog" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(result.stats.compressedTokens <= result.stats.originalTokens);
   });
 
-  it("should add [COMPRESSED: prefix to output", async () => {
+  it("should add [COMPRESSED: prefix to output", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "the quick brown fox" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(result.stats.techniquesUsed.includes("ultra-heuristic-pruning"));
   });
 
-  it("should handle multiple messages", async () => {
+  it("should handle multiple messages", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [
       { role: "user", content: "the quick brown fox" },
       { role: "assistant", content: "the lazy dog jumped" },
     ];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert.strictEqual(result.messages.length, 2);
   });
 
-  it("should preserve message role and other fields", async () => {
+  it("should preserve message role and other fields", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "hello world", id: "msg1" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert.strictEqual(result.messages[0].role, "user");
     assert.strictEqual(result.messages[0].id, "msg1");
   });
 
-  it("should handle multimodal content (text blocks)", async () => {
+  it("should handle multimodal content (text blocks)", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [
       {
@@ -219,35 +218,35 @@ describe("ultraCompress", () => {
         ],
       },
     ];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(Array.isArray(result.messages[0].content));
   });
 
-  it("should include stats with timestamp", async () => {
+  it("should include stats with timestamp", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "the quick brown fox" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(result.stats.timestamp > 0);
   });
 
-  it("should include stats with durationMs", async () => {
+  it("should include stats with durationMs", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "the quick brown fox" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert(result.stats.durationMs !== undefined && result.stats.durationMs >= 0);
   });
 
-  it("should mark mode as 'ultra' in stats", async () => {
+  it("should mark mode as 'ultra' in stats", () => {
     const config = { ...baseConfig, compressionRate: 0.5 };
     const messages = [{ role: "user", content: "the quick brown fox" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert.strictEqual(result.stats.mode, "ultra");
   });
 
-  it("should calculate savingsPercent correctly", async () => {
+  it("should calculate savingsPercent correctly", () => {
     const config = { ...baseConfig, compressionRate: 1.0 };
     const messages = [{ role: "user", content: "the quick brown fox" }];
-    const result = await ultraCompress(messages, config);
+    const result = ultraCompressHeuristic(messages, config);
     assert.strictEqual(result.stats.savingsPercent, 0);
   });
 });

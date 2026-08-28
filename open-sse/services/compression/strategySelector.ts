@@ -16,7 +16,7 @@ import type {
 import { applyLiteCompression } from "./lite.ts";
 import { cavemanCompress } from "./caveman.ts";
 import { compressAggressive } from "./aggressive.ts";
-import { ultraCompress, ultraCompressHeuristic } from "./ultra.ts";
+import { ultraCompressHeuristic } from "./ultra.ts";
 import { createCompressionStats } from "./stats.ts";
 import { applyStackedInflationGuard } from "./pipelineGuards.ts";
 import {
@@ -586,117 +586,7 @@ async function runCompressionAsync(
     );
     return adapter.adapted ? { ...result, body: adapter.restore(result.body) } : result;
   }
-  // Ultra's optional SLM (model) tier is async — route it here when a model is configured.
-  if (mode === "ultra") {
-    return applyUltraAsync(body, options);
-  }
   return applyCompression(body, mode, options);
-}
-
-/**
- * Ultra mode with the optional local SLM (model) tier.
- *
- * When `config.ultra.modelPath` is set, the prose is routed through the llmlingua engine
- * (the real local-model compressor). The llmlingua backend fail-opens when the model is
- * absent (e.g. the ONNX model is not provisioned), so this degrades gracefully:
- *  - model present and it compresses  → return the SLM result (tagged "ultra-slm");
- *  - model absent / no gain / failure → fall back to `aggressive` when
- *    `slmFallbackToAggressive` is set, otherwise the heuristic ultra (`pruneByScore`).
- *
- * Without `modelPath` the behavior is byte-identical to the synchronous heuristic ultra.
- */
-async function applyUltraAsync(
-  body: Record<string, unknown>,
-  options?: {
-    model?: string;
-    supportsVision?: boolean | null;
-    config?: CompressionConfig;
-    principalId?: string;
-    onEngineStep?: (step: StackedCompressionStep) => void;
-  }
-): Promise<CompressionResult> {
-  const ultraConfig = options?.config?.ultra;
-  const modelPath = typeof ultraConfig?.modelPath === "string" ? ultraConfig.modelPath.trim() : "";
-
-  // No explicit modelPath → run the two-tier ultra resolver (heuristic, or SLM when
-  // config.ultraEngine === "slm" and the worker backend is available). This is the
-  // Phase-4 (B) path; it fail-opens to the heuristic and records the resolved tier.
-  if (!modelPath) {
-    const adapter = adaptBodyForCompression(
-      body,
-      options?.config?.codexResponsesConfig?.preserveToolNames
-    );
-    const messages = (adapter.body.messages ?? []) as Array<{
-      role: string;
-      content?: string | unknown[];
-      [key: string]: unknown;
-    }>;
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return { body, compressed: false, stats: null };
-    }
-    const ultraConfig = {
-      ...(options?.config?.ultra ?? {}),
-      preserveSystemPrompt: options?.config?.preserveSystemPrompt !== false,
-      ultraEngine: options?.config?.ultraEngine,
-    };
-    const result = await ultraCompress(messages, ultraConfig);
-    const compressedBody = { ...adapter.body, messages: result.messages };
-    return {
-      body: adapter.restore(compressedBody),
-      compressed: result.stats.savingsPercent > 0,
-      stats: {
-        ...createCompressionStats(
-          adapter.body,
-          compressedBody,
-          "ultra",
-          result.stats.techniquesUsed,
-          result.stats.rulesApplied,
-          result.stats.durationMs
-        ),
-        ultraTier: result.stats.ultraTier,
-      },
-    };
-  }
-
-  registerBuiltinCompressionEngines();
-  const slmEngine = getCompressionEngine("llmlingua");
-  if (slmEngine?.applyAsync) {
-    const engineOptions: CompressionEngineApplyOptions = {
-      model: options?.model,
-      supportsVision: options?.supportsVision,
-      config: options?.config,
-      principalId: options?.principalId,
-      stepConfig: {
-        modelPath,
-        ...(typeof ultraConfig?.compressionRate === "number"
-          ? { compressionRate: ultraConfig.compressionRate }
-          : {}),
-      },
-    };
-    try {
-      const slm = await slmEngine.applyAsync(body, engineOptions);
-      if (slm.compressed && slm.stats) {
-        // Attribute the result to ultra (the selected mode) while marking the SLM tier.
-        return {
-          ...slm,
-          stats: {
-            ...slm.stats,
-            mode: "ultra",
-            techniquesUsed: Array.from(new Set([...(slm.stats.techniquesUsed ?? []), "ultra-slm"])),
-          },
-        };
-      }
-    } catch {
-      // llmlingua fail-opens internally, but guard anyway and use the configured fallback.
-    }
-  }
-
-  // SLM tier unavailable or produced no gain → fall back per slmFallbackToAggressive.
-  return applyCompression(
-    body,
-    ultraConfig?.slmFallbackToAggressive ? "aggressive" : "ultra",
-    options
-  );
 }
 
 function normalizePipelineStep(step: CompressionPipelineStep | string): CompressionPipelineStep {

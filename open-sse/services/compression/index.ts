@@ -155,14 +155,8 @@ export { compressAggressive } from "./aggressive.ts";
 export { STOPWORDS, FORCE_PRESERVE_RE, scoreToken, pruneByScore } from "./ultraHeuristic.ts";
 
 export type { UltraCompressResult } from "./ultra.ts";
-export { ultraCompress } from "./ultra.ts";
 export { ultraCompressHeuristic } from "./ultra.ts";
 export type { UltraTier } from "./ultra.ts";
-export {
-  slmAvailable,
-  runLlmlinguaUltra,
-  prewarmLlmlinguaUltra,
-} from "./engines/llmlingua/ultraEntry.ts";
 
 export type { UltraConfig } from "./types.ts";
 export { DEFAULT_ULTRA_CONFIG } from "./types.ts";

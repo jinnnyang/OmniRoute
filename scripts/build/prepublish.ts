@@ -365,54 +365,6 @@ runBuildTool(
   { cwd: ROOT, stdio: "inherit" }
 );
 
-// ── Step 8.6a: Bundle LLMLingua ONNX worker ───────────────────────────
-// The worker is spawned via worker_threads at a path the Next.js bundler cannot
-// statically trace, so it must ship as a standalone .js (mirrors the MCP-server
-// bundling above). Heavy deps (@atjsh/llmlingua-2 / @huggingface/transformers /
-// js-tiktoken) stay EXTERNAL — they are optionalDependencies,
-// dynamically imported at runtime, and the worker fail-opens if any is absent.
-const llmWorkerSrc = join(
-  ROOT,
-  "open-sse",
-  "services",
-  "compression",
-  "engines",
-  "llmlingua",
-  "onnxWorker.ts"
-);
-const llmWorkerDestDir = join(
-  DIST_DIR,
-  "open-sse",
-  "services",
-  "compression",
-  "engines",
-  "llmlingua"
-);
-if (existsSync(llmWorkerSrc)) {
-  console.log("  🔨 Bundling LLMLingua ONNX worker (TypeScript → JavaScript)...");
-  mkdirSync(llmWorkerDestDir, { recursive: true });
-  try {
-    runBuildTool(
-      "esbuild",
-      "esbuild",
-      [
-        "open-sse/services/compression/engines/llmlingua/onnxWorker.ts",
-        "--bundle",
-        "--platform=node",
-        "--packages=external",
-        "--format=esm",
-        "--outfile=dist/open-sse/services/compression/engines/llmlingua/onnxWorker.js",
-      ],
-      { cwd: ROOT, stdio: "inherit" }
-    );
-    console.log(
-      "  ✅ LLMLingua worker bundled to dist/open-sse/services/compression/engines/llmlingua/onnxWorker.js"
-    );
-  } catch (err: any) {
-    console.warn("  ⚠️  LLMLingua worker bundle error:", err.message);
-  }
-}
-
 // ── Step 8.6b: Bundle synchronous compression worker ──────────────────
 const compressionWorkerSrc = join(
   ROOT,

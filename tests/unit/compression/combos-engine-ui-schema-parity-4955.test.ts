@@ -47,7 +47,7 @@ describe("Engine Combos UI ↔ stackedPipelineStepSchema parity (#4955 / #6747)"
   });
 
   it("accepts structural catalog engines that #4955 had temporarily dropped from the UI (#6747)", () => {
-    for (const engine of ["headroom", "session-dedup", "ccr", "llmlingua", "relevance"]) {
+    for (const engine of ["headroom", "session-dedup", "ccr", "relevance"]) {
       assert.equal(
         stackedPipelineStepSchema.safeParse({ engine }).success,
         true,
@@ -71,7 +71,6 @@ describe("Engine Combos UI ↔ stackedPipelineStepSchema parity (#4955 / #6747)"
         { engine: "relevance" },
         { engine: "caveman", intensity: "full" },
         { engine: "aggressive", intensity: "ultra" },
-        { engine: "llmlingua" },
         { engine: "ultra", intensity: "ultra" },
       ],
     });

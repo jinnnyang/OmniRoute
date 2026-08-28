@@ -19,7 +19,6 @@ const ENGINE_LAYER_MAP: Record<string, string[]> = {
   rtk: ["L3", "L4"],
   caveman: ["L1"],
   headroom: ["L3"],
-  llmlingua: ["L9"],
   lite: ["L1"],
   sigmap: ["L1", "L3"],
   gcf: ["L4"],

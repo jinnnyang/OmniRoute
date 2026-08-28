@@ -20,7 +20,11 @@ test("every engine in the catalog has a complete guidance entry", () => {
   for (const id of ENGINE_IDS) {
     const meta = engineMeta(id);
     assert.ok(meta.guidance, `${id} is missing a guidance entry`);
-    assert.equal(typeof meta.guidance.tradeoffs, "string", `${id} guidance.tradeoffs must be a string`);
+    assert.equal(
+      typeof meta.guidance.tradeoffs,
+      "string",
+      `${id} guidance.tradeoffs must be a string`
+    );
     assert.ok(
       meta.guidance.tradeoffs.length >= 20,
       `${id} guidance.tradeoffs reads as a placeholder (too short): "${meta.guidance.tradeoffs}"`
@@ -47,7 +51,7 @@ test("lossless structural engines are flagged as safe defaults", () => {
 });
 
 test("lossy semantic-condensation engines are NOT flagged as safe defaults", () => {
-  for (const id of ["rtk", "relevance", "caveman", "aggressive", "llmlingua", "ultra", "omniglyph"]) {
+  for (const id of ["rtk", "relevance", "caveman", "aggressive", "ultra", "omniglyph"]) {
     assert.equal(isSafeDefault(id), false, `${id} should NOT be a safe default (lossy)`);
     assert.equal(engineMeta(id).guidance.lossy, true, `${id} should be marked lossy`);
   }

@@ -118,7 +118,7 @@ describe("WaterfallInspector", () => {
       ...SAMPLE_RUN,
       steps: [
         {
-          engine: "llmlingua",
+          engine: "session-dedup",
           originalTokens: 5500,
           compressedTokens: 5500, // no change — skipped
           savingsPercent: 0,

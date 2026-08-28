@@ -148,25 +148,13 @@ export const ENGINE_CATALOG: Record<string, EngineMeta> = {
       cacheImpact: "high",
     },
   },
-  llmlingua: {
-    id: "llmlingua",
-    label: "LLMLingua (SLM)",
-    stackPriority: 35,
-    isSingleMode: false,
-    description: "Semantic pruning (ONNX).",
-    guidance: {
-      tradeoffs:
-        "Semantic token pruning via a small ONNX classifier — removes individual tokens judged low-information. Fail-opens (returns the original text) on any error, so the worst case is no savings, never corruption.",
-      lossy: true,
-      cacheImpact: "high",
-    },
-  },
+
   ultra: {
     id: "ultra",
     label: "Ultra",
     stackPriority: 40,
     isSingleMode: true,
-    description: "Heuristic token pruning (+ optional SLM).",
+    description: "Heuristic token pruning.",
     guidance: {
       tradeoffs:
         "Maximum-compression mode (~75% savings): heuristic pruning, code-block thinning, and binary-search truncation. Highest risk of losing context a later turn depended on — best reserved for hitting context limits.",

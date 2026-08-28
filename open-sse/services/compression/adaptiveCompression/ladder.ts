@@ -46,7 +46,6 @@ const AGGRESSIVENESS: Record<string, number> = {
   standard: 50, // mode-name alias for caveman
   stacked: 50, // a derived/stacked base plan sits at the prose tier; floor escalates past it
   aggressive: 60,
-  llmlingua: 65, // stackPriority 35 — semantic pruning (ONNX), after aggressive, before ultra/llm
   llm: 68, // stackPriority 38 — full LLM-tier compressor, opt-in default-off
   ultra: 70,
   omniglyph: 80, // stackPriority 90 — context-as-image (lossy render), runs after every text engine
@@ -74,7 +73,6 @@ const REDUCTION_FACTOR: Record<string, number> = {
   caveman: 0.7,
   standard: 0.7,
   aggressive: 0.55,
-  llmlingua: 0.5, // semantic pruning (ONNX)
   llm: 0.45, // full LLM-tier compressor, stronger than llmlingua
   ultra: 0.4,
   omniglyph: 0.35, // measured 0.23-0.33 on converted blocks (254->84 tokens); 0.35 stays conservative

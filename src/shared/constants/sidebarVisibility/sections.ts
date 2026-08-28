@@ -144,15 +144,6 @@ export const COMPRESSION_CONTEXT_GROUP: SidebarItemGroup = {
       icon: "archive",
     },
     {
-      id: "context-llmlingua",
-      href: "/dashboard/context/llmlingua",
-      i18nKey: "contextLlmlingua",
-      labelFallback: "LLMLingua",
-      subtitleKey: "contextLlmlinguaSubtitle",
-      subtitleFallback: "Semantic pruning",
-      icon: "psychology",
-    },
-    {
       id: "context-lite",
       href: "/dashboard/context/lite",
       i18nKey: "contextLite",

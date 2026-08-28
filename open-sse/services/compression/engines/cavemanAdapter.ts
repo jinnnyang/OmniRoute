@@ -92,18 +92,6 @@ const ULTRA_SCHEMA: EngineConfigField[] = [
     max: 1,
   },
   {
-    key: "slmFallbackToAggressive",
-    type: "boolean",
-    label: "Fallback to aggressive",
-    defaultValue: DEFAULT_ULTRA_CONFIG.slmFallbackToAggressive,
-  },
-  {
-    key: "modelPath",
-    type: "string",
-    label: "Model path",
-    defaultValue: "",
-  },
-  {
     key: "maxTokensPerMessage",
     type: "number",
     label: "Max tokens per message",
@@ -200,14 +188,10 @@ function validateAggressiveConfig(config: Record<string, unknown>): EngineValida
 function validateUltraConfig(config: Record<string, unknown>): EngineValidationResult {
   const errors: string[] = [];
   validateBoolean(config, "enabled", errors);
-  validateBoolean(config, "slmFallbackToAggressive", errors);
   validateBoolean(config, "preserveSystemPrompt", errors);
   validateNumberRange(config, "compressionRate", 0, 1, errors);
   validateNumberRange(config, "minScoreThreshold", 0, 1, errors);
   validateNumberRange(config, "maxTokensPerMessage", 0, 32768, errors);
-  if (config.modelPath !== undefined && typeof config.modelPath !== "string") {
-    errors.push("modelPath must be a string");
-  }
   return { valid: errors.length === 0, errors };
 }
 
@@ -427,7 +411,7 @@ export const ultraEngine: CompressionEngine = {
   metadata: {
     id: "ultra",
     name: "Ultra",
-    description: "Heuristic token pruning with optional local SLM fallback.",
+    description: "Heuristic token pruning.",
     inputScope: "messages",
     targetLatencyMs: 5,
     supportsPreview: true,

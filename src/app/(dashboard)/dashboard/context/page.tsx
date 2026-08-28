@@ -13,7 +13,6 @@ const CONTEXT_TAB_ROUTES: Record<string, string> = {
   "session-dedup": "/dashboard/context/session-dedup",
   sessionDedup: "/dashboard/context/session-dedup",
   ccr: "/dashboard/context/ccr",
-  llmlingua: "/dashboard/context/llmlingua",
   lite: "/dashboard/context/lite",
   aggressive: "/dashboard/context/aggressive",
   ultra: "/dashboard/context/ultra",

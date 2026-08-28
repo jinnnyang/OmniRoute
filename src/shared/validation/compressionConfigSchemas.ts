@@ -148,8 +148,6 @@ export const ultraConfigSchema = z
     enabled: z.boolean().optional(),
     compressionRate: z.number().min(0).max(1).optional(),
     minScoreThreshold: z.number().min(0).max(1).optional(),
-    slmFallbackToAggressive: z.boolean().optional(),
-    modelPath: z.string().trim().min(1).optional(),
     maxTokensPerMessage: z.number().int().min(0).max(32768).optional(),
     preserveSystemPrompt: z.boolean().optional(),
   })
@@ -270,13 +268,6 @@ export const stackedPipelineStepSchema = z.discriminatedUnion("engine", [
     .strict(),
   z
     .object({
-      engine: z.literal("llmlingua"),
-      intensity: z.string().optional(),
-      config: structuralStepConfigSchema,
-    })
-    .strict(),
-  z
-    .object({
       engine: z.literal("omniglyph"),
       intensity: z.string().optional(),
       config: structuralStepConfigSchema,
@@ -306,7 +297,6 @@ export const STACKED_PIPELINE_ENGINE_INTENSITIES: Record<string, readonly string
   relevance: [],
   caveman: ["lite", "full", "ultra"],
   aggressive: ["standard", "ultra"],
-  llmlingua: [],
   omniglyph: [],
   ultra: ["ultra"],
 };
@@ -393,8 +383,7 @@ export const compressionSettingsUpdateSchema = z
     engines: z.record(z.string(), engineToggleSchema).optional(),
     enginesExplicit: z.boolean().optional(),
     activeComboId: z.string().nullable().optional(),
-    ultraEngine: z.enum(["heuristic", "slm"]).optional(),
-    ultraSlmPrewarm: z.boolean().optional(),
+    ultraEngine: z.literal("heuristic").optional(),
     // #8034 — per-model/endpoint compression exclusion patterns. Bounded length/size so a
     // pathological PUT body can't blow up the per-request matcher; normalizeCompressionExclusions
     // (open-sse/services/compression/exclusions.ts) is the authoritative post-read normalizer.

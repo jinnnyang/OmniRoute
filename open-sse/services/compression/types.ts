@@ -47,7 +47,6 @@ export type CompressionEngineId =
   | "session-dedup"
   | "headroom"
   | "ccr"
-  | "llmlingua"
   | "relevance"
   | "omniglyph"
   | "codex-responses";
@@ -289,18 +288,7 @@ export interface CompressionConfig {
    * When both targetTokens and targetRatio are set, targetTokens wins.
    */
   targetRatio?: number;
-  /**
-   * Phase 4 (B): which tier the `ultra` mode uses.
-   * "heuristic" = Tier-A token pruner (`pruneByScore`, default, byte-identical to pre-B).
-   * "slm" = Tier-B LLMLingua-2 ONNX worker when available, else fail-open to Tier-A.
-   */
-  ultraEngine?: "heuristic" | "slm";
-  /**
-   * Phase 4 (B): best-effort pre-warm of the SLM model on the enable transition
-   * and on a cold restart when `ultraEngine: "slm"` is already set. Failures are
-   * swallowed; the lazy first-call path still applies. Default false.
-   */
-  ultraSlmPrewarm?: boolean;
+  ultraEngine?: "heuristic";
   /** Opt-in result memoization for deterministic engines only (default off). */
   memoizeCompressionResults?: boolean;
   /**
@@ -432,7 +420,6 @@ export const DEFAULT_COMPRESSION_CONFIG: CompressionConfig = {
   engines: Object.fromEntries(ENGINE_IDS.map((id) => [id, { enabled: false }])),
   activeComboId: null,
   ultraEngine: "heuristic",
-  ultraSlmPrewarm: false,
   liveZone: { enabled: false },
   lite: { compressToolResults: true },
   codexResponsesConfig: { ...DEFAULT_CODEX_RESPONSES_CONFIG },
@@ -576,16 +563,6 @@ export interface UltraConfig {
    */
   minScoreThreshold: number;
   /**
-   * When true, fall back to aggressive mode if SLM tier is requested but
-   * no modelPath is configured.
-   */
-  slmFallbackToAggressive: boolean;
-  /**
-   * Optional path to a local SLM ONNX model file.
-   * When absent, only the heuristic (Tier A) is used.
-   */
-  modelPath?: string;
-  /**
    * Maximum tokens per message before ultra compression is applied.
    * 0 = always apply when mode is "ultra".
    */
@@ -597,7 +574,6 @@ export const DEFAULT_ULTRA_CONFIG: UltraConfig = {
   enabled: false,
   compressionRate: 0.5,
   minScoreThreshold: 0.3,
-  slmFallbackToAggressive: true,
   maxTokensPerMessage: 0,
 };
 
