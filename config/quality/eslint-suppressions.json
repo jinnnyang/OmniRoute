@@ -4514,16 +4514,6 @@
       "count": 1
     }
   },
-  "tests/unit/compression/llmlingua-failopen.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "tests/unit/compression/llmlingua-worker-resolution.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "tests/unit/compression/omniglyph-registries.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1

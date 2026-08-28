@@ -16,13 +16,13 @@ import {
 const TABLE: EngineIntensities = {
   rtk: ["standard", "aggressive"],
   caveman: ["lite", "full", "ultra"],
-  llmlingua: ["standard"],
+  aggressive: ["standard"],
 };
 
 const BASE: PipelineStep[] = [
   { engine: "rtk", intensity: "standard" },
   { engine: "caveman", intensity: "full" },
-  { engine: "llmlingua", intensity: "standard" },
+  { engine: "aggressive", intensity: "standard" },
 ];
 
 describe("compressionPipelineModel — normalize", () => {
@@ -51,7 +51,7 @@ describe("compressionPipelineModel — moveLayer", () => {
     const moved = moveLayer(BASE, 0, 2);
     assert.deepEqual(
       moved.map((s) => s.engine),
-      ["caveman", "llmlingua", "rtk"]
+      ["caveman", "aggressive", "rtk"]
     );
     assert.equal(moved.length, BASE.length);
   });
@@ -80,7 +80,7 @@ describe("compressionPipelineModel — add/remove", () => {
     const next = removeLayer(BASE, 1);
     assert.deepEqual(
       next.map((s) => s.engine),
-      ["rtk", "llmlingua"]
+      ["rtk", "aggressive"]
     );
     const single: PipelineStep[] = [{ engine: "rtk", intensity: "standard" }];
     assert.deepEqual(removeLayer(single, 0), single, "must not remove the last step");

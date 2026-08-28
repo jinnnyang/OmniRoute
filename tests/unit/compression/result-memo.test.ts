@@ -163,14 +163,6 @@ describe("isDeterministicMode", () => {
     assert.equal(isDeterministicMode("stacked", cfg), false);
   });
 
-  it("stacked with llmlingua engine is NOT deterministic", () => {
-    const cfg = {
-      ...DEFAULT_COMPRESSION_CONFIG,
-      stackedPipeline: [{ engine: "llmlingua" as const }],
-    };
-    assert.equal(isDeterministicMode("stacked", cfg), false);
-  });
-
   // Stateful engines write to the cross-request CCR store (storeBlock): caching their
   // output would skip the side-effect on a HIT, leaving CCR markers pointing at blocks
   // that were never stored → broken `retrieve`. These MUST stay excluded from the memo.
@@ -355,7 +347,8 @@ describe("resultMemo — core review hardening", () => {
 
   it("#8137: caveman mode produces SAME key across different models", () => {
     // caveman is deterministic and model-independent (no image/vision logic)
-    const k = (model?: string) => makeMemoKey(baseBody, "caveman" as never, memoConfig, "p1", model);
+    const k = (model?: string) =>
+      makeMemoKey(baseBody, "caveman" as never, memoConfig, "p1", model);
     assert.equal(k("gpt-4"), k("claude-3"), "caveman key must be model-independent");
   });
 

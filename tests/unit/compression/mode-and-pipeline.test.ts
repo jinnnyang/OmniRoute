@@ -28,7 +28,12 @@ test("standard mode compresses even when cavemanConfig.enabled is false (B-MODE-
   };
   const res = applyCompression(body, "standard", {
     config: {
-      cavemanConfig: { enabled: false, compressRoles: ["user"], intensity: "full", minMessageLength: 0 },
+      cavemanConfig: {
+        enabled: false,
+        compressRoles: ["user"],
+        intensity: "full",
+        minMessageLength: 0,
+      },
     },
   } as Record<string, unknown>);
   assert.ok(res.compressed, "standard mode must run caveman regardless of cavemanConfig.enabled");
@@ -45,17 +50,16 @@ test("rtk mode compresses even when rtkConfig.enabled is false (B-MODE-ENGINE-DE
   assert.ok(res.compressed, "rtk mode must run regardless of rtkConfig.enabled");
 });
 
-test("normalizeStackedPipeline keeps headroom/ccr/session-dedup/llmlingua (B-PIPELINE-DIVERGENCE)", () => {
+test("normalizeStackedPipeline keeps headroom/ccr/session-dedup (B-PIPELINE-DIVERGENCE)", () => {
   const pipe = normalizeStackedPipeline([
     { engine: "session-dedup" },
     { engine: "ccr" },
     { engine: "headroom" },
-    { engine: "llmlingua" },
     { engine: "rtk", intensity: "standard" },
     { engine: "bogus-engine" }, // unknown ids still dropped
   ]);
   const engines = pipe.map((s) => s.engine);
-  for (const e of ["session-dedup", "ccr", "headroom", "llmlingua", "rtk"]) {
+  for (const e of ["session-dedup", "ccr", "headroom", "rtk"]) {
     assert.ok(engines.includes(e), `${e} must survive normalize`);
   }
   assert.ok(!engines.includes("bogus-engine"), "unknown engine ids are still dropped");

@@ -15,7 +15,6 @@ test("#5298: resolveContextRoute defaults the bare parent to the canonical sub-r
 test("#5298: resolveContextRoute maps a known tab to its sub-route", () => {
   assert.equal(resolveContextRoute("ultra"), "/dashboard/context/ultra");
   assert.equal(resolveContextRoute("session-dedup"), "/dashboard/context/session-dedup");
-  assert.equal(resolveContextRoute("llmlingua"), "/dashboard/context/llmlingua");
 });
 
 test("#5298: resolveContextRoute falls back to the default for an unknown tab", () => {

@@ -58,29 +58,23 @@ test("packMemberInstalled probes installed pack trees with optional node_modules
   const dataDir = tmpDataDir();
   const memberPkg = path.join(
     packNodeModulesDir("ml-runtime", dataDir),
-    "@atjsh",
-    "llmlingua-2",
+    "@example",
+    "pkg",
     "package.json"
   );
   fs.mkdirSync(path.dirname(memberPkg), { recursive: true });
   fs.writeFileSync(memberPkg, "{}");
 
-  assert.equal(packMemberInstalled("@atjsh/llmlingua-2/package.json", dataDir), true);
+  assert.equal(packMemberInstalled("@example/pkg/package.json", dataDir), true);
+  assert.equal(packMemberInstalled(path.join("@example", "pkg", "package.json"), dataDir), true);
+  assert.equal(packMemberInstalled("node_modules/@example/pkg/package.json", dataDir), true);
   assert.equal(
-    packMemberInstalled(path.join("@atjsh", "llmlingua-2", "package.json"), dataDir),
-    true
-  );
-  assert.equal(packMemberInstalled("node_modules/@atjsh/llmlingua-2/package.json", dataDir), true);
-  assert.equal(
-    packMemberInstalled(
-      path.join("node_modules", "@atjsh", "llmlingua-2", "package.json"),
-      dataDir
-    ),
+    packMemberInstalled(path.join("node_modules", "@example", "pkg", "package.json"), dataDir),
     true
   );
   assert.equal(packMemberInstalled("@huggingface/transformers/package.json", dataDir), false);
   assert.equal(
-    packMemberInstalled("@atjsh/llmlingua-2/package.json", path.join(dataDir, "absent")),
+    packMemberInstalled("@example/pkg/package.json", path.join(dataDir, "absent")),
     false
   );
   fs.rmSync(dataDir, { recursive: true, force: true });
@@ -112,16 +106,5 @@ test("wiring: electron main prepends installed pack node_modules to the server N
   assert.ok(
     extraIdx !== -1 && extraIdx < unpackedIdx,
     "pack dirs take precedence over bundle-resident copies"
-  );
-});
-
-test("wiring: the LLMLingua gate also probes installed packs", () => {
-  const worker = readFileSync(
-    path.join(process.cwd(), "open-sse/services/compression/engines/llmlingua/worker.ts"),
-    "utf8"
-  );
-  assert.ok(
-    worker.includes("packMemberInstalled(GATE_DEP_REL)"),
-    "depsAvailable must OR the pack probe with the ancestor walk"
   );
 });

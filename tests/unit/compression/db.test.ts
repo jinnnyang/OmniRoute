@@ -59,7 +59,6 @@ describe("getCompressionSettings", () => {
     assert.equal(settings.ultra?.enabled, false);
     assert.equal(settings.ultra?.compressionRate, 0.5);
     assert.equal(settings.ultra?.minScoreThreshold, 0.3);
-    assert.equal(settings.ultra?.slmFallbackToAggressive, true);
     assert.equal(settings.ultra?.maxTokensPerMessage, 0);
   });
 });
@@ -165,8 +164,6 @@ describe("updateCompressionSettings", () => {
         enabled: true,
         compressionRate: 0.25,
         minScoreThreshold: 0.4,
-        slmFallbackToAggressive: false,
-        modelPath: "  /tmp/model.onnx  ",
         maxTokensPerMessage: 512,
       },
     } as any);
@@ -176,23 +173,16 @@ describe("updateCompressionSettings", () => {
     assert.equal(settings.ultra?.enabled, true);
     assert.equal(settings.ultra?.compressionRate, 0.25);
     assert.equal(settings.ultra?.minScoreThreshold, 0.4);
-    assert.equal(settings.ultra?.slmFallbackToAggressive, false);
-    assert.equal(settings.ultra?.modelPath, "/tmp/model.onnx");
     assert.equal(settings.ultra?.maxTokensPerMessage, 512);
   });
 
-  it("round-trips ultraEngine + ultraSlmPrewarm (Phase 4 B), defaulting off", async () => {
+  it("round-trips ultraEngine (defaults to heuristic)", async () => {
     const before = await getCompressionSettings();
     assert.equal(before.ultraEngine, "heuristic");
-    assert.equal(before.ultraSlmPrewarm, false);
 
-    await updateCompressionSettings({
-      ultraEngine: "slm",
-      ultraSlmPrewarm: true,
-    } as any);
+    await updateCompressionSettings({ ultraEngine: "heuristic" } as any);
 
     const after = await getCompressionSettings();
-    assert.equal(after.ultraEngine, "slm");
-    assert.equal(after.ultraSlmPrewarm, true);
+    assert.equal(after.ultraEngine, "heuristic");
   });
 });
