@@ -1101,7 +1101,6 @@
     "contextHeadroom": "هامش السعة",
     "contextSessionDedup": "إزالة تكرار الجلسات",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "استوديو المجموعات",
     "combosLiveSubtitle": "تتالي التوجيه المباشر",
     "compressionStudio": "استوديو الضغط",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "الضغط الجدولي",
     "contextSessionDedupSubtitle": "إزالة التكرار عبر الأدوار",
     "contextCcrSubtitle": "استرداد العلامات",
-    "contextLlmlinguaSubtitle": "التقليم الدلالي",
     "contextLiteSubtitle": "تنظيف سريع للمسافات البيضاء",
     "contextAggressiveSubtitle": "التلخيص والتقادم",
     "contextUltraSubtitle": "التقليم الاستكشافي",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "الهامش المتاح",
     "lite": "خفيف",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "إلغاء تكرار الجلسة",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ضبط التقليم الإرشادي، والاحتياطي SLM، والعتبات لكل رسالة",
     "compressionUltraRate": "الحفاظ على المعدل",
     "compressionUltraMinScore": "عتبة الحد الأدنى للنتيجة",
-    "compressionUltraSlmFallback": "العودة إلى العدوانية",
     "compressionUltraModelPath": "مسار نموذج SLM",
     "compressionUltraEngine": "فئة Ultra",
     "compressionUltraEngineHeuristic": "الاستدلالي (Tier-A، الافتراضي)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2، اختياري)",
-    "compressionUltraSlmHint": "يقوم SLM بتنزيل نموذج ONNX صغير عند أول استخدام (بدء التشغيل البارد) ويعود بسلاسة إلى النهج الاستدلالي عند انتهاء المهلة أو إذا لم يكن متاحًا.",
-    "compressionUltraSlmPrewarm": "التهيئة المسبقة لنموذج SLM عند التمكين",
     "compressionSummarizerEnabled": "تمكين الملخص",
     "compressionMaxTokensPerMessage": "الحد الأقصى من الرموز لكل رسالة",
     "compressionMinSavings": "الحد الأدنى لعتبة الادخار",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "شديد",
         "description": "تلخيص الأدوار القديمة وتعتيقها."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "التقليم الدلالي (ONNX)."
       },
       "ultra": {
         "label": "فائق",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "علامات استرداد معنونة بالمحتوى لكتل السياق المتكررة."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (التقليم الدلالي)",
-        "description": "تصنيف الرموز الدلالية المستند إلى ONNX. يضغط النصوص النثرية فقط؛ كتل البرمجة البرمجية والبنى المحفوظة محمية. يفشل مفتوحًا عند حدوث أخطاء في النموذج أو العامل."
-      },
       "lite": {
         "name": "خفيف",
         "description": "تقليل سريع للمسافات البيضاء، ونتائج الأدوات، وعناوين URL للصور."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "معدل الضغط"
       },
-      "modelPath": {
-        "label": "مسار النموذج"
-      },
       "minRows": {
         "label": "الحد الأدنى للصفوف لضغطها",
         "description": "الحد الأدنى للصفوف في مصفوفة JSON متجانسة المطلوبة لتشغيل الضغط الجدولي. الافتراضي: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "الحد الأدنى لعتبة الدرجة"
       },
-      "slmFallbackToAggressive": {
-        "label": "الرجوع إلى Aggressive"
-      },
       "intensity": {
         "label": "الشدة"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "قم بقطع نتائج الأدوات الطويلة بشكل استباقي",
         "description": "يقطع نتائج الأداة التي تتجاوز 2000 حرف أثناء ضغط Lite. قد تقوم حماية الفائض الطارئة بتقليص المحتوى عندما يتجاوز السياق ميزانية النموذج."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "معدل الضغط (نسبة الاحتفاظ)"
-        },
-        "modelPath": {
-          "label": "مسار النموذج (تجاوز غير متصل بالإنترنت)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "عرض منقسم (قريبًا)",
     "inputPlaceholder": "الصق مطالبة، أو مخرجات أداة، أو سياقًا...",
     "activeCombined": "نشط في التدفق المشترك",
-    "requiresOnnx": "يتطلب نموذج ONNX",
     "verifyFidelity": "التحقق من الدقة (رفض أي طبقة تفسد المحتوى)",
     "fuzzyDedup": "إزالة التكرار التقريبي (شبه مكرر ← CCR)",
     "protectSensitive": "حماية المحتوى الحساس (بوابة المخاطر)",

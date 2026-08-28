@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Каскада на маршрутизиране в реално време",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Таблично уплътняване",
     "contextSessionDedupSubtitle": "Дедупликация между ходовете",
     "contextCcrSubtitle": "Извличане на маркери",
-    "contextLlmlinguaSubtitle": "Семантично подрязване",
     "contextLiteSubtitle": "Бързо изчистване на интервалите",
     "contextAggressiveSubtitle": "Обобщение и остаряване",
     "contextUltraSubtitle": "Евристично подрязване",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Резерв",
     "lite": "Лайт",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Дедупликация на сесии",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Фина настройка на евристично съкращаване, резервен SLM и прагове за всяко съобщение",
     "compressionUltraRate": "Запазете курса",
     "compressionUltraMinScore": "Минимален праг на резултата",
-    "compressionUltraSlmFallback": "Обратно към агресивно",
     "compressionUltraModelPath": "SLM модел път",
     "compressionUltraEngine": "Ниво Ultra",
     "compressionUltraEngineHeuristic": "Евристичен (Ниво-А, по подразбиране)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, по избор)",
-    "compressionUltraSlmHint": "SLM изтегля малък ONNX модел при първо използване (студен старт) и незабележимо преминава към евристичния метод при изтичане на времето или ако не е наличен.",
-    "compressionUltraSlmPrewarm": "Предварително загряване на SLM модела при активиране",
     "compressionSummarizerEnabled": "Активирайте Summarizer",
     "compressionMaxTokensPerMessage": "Макс. токени на съобщение",
     "compressionMinSavings": "Минимален праг на спестявания",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Агресивен",
         "description": "Обобщаване и остаряване на стари ходове."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Семантично подрязване (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Маркери за извличане с адресиране по съдържание за повтарящи се контекстни блокове."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Семантично съкращаване)",
-        "description": "Семантична класификация на токени, базирана на ONNX. Компресира само проза; кодовите блокове и запазените конструкции са защитени. Преминава в отворен режим при грешки в модела или работния процес."
-      },
       "lite": {
         "name": "Лек",
         "description": "Бързо намаляване на празните пространства, резултатите от инструменти и URL адресите на изображения."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Степен на компресия"
       },
-      "modelPath": {
-        "label": "Път до модела"
-      },
       "minRows": {
         "label": "Минимален брой редове за компактизиране",
         "description": "Минимален брой редове в хомогенен JSON масив, необходими за задействане на таблично компактизиране. По подразбиране: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Праг за минимален резултат"
       },
-      "slmFallbackToAggressive": {
-        "label": "Преминаване към Агресивен"
-      },
       "intensity": {
         "label": "Интензивност"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Проактивно съкратете дългите резултати от инструменти",
         "description": "Обрязва резултатите от инструмента над 2,000 знака по време на Lite компресия. Защитата от извънреден преливник все още може да отреже съдържание, когато контекстът надвишава бюджета на модела."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Степен на компресия (коефициент на запазване)"
-        },
-        "modelPath": {
-          "label": "Път до модела (офлайн замяна)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Разделен изглед (очаквайте скоро)",
     "inputPlaceholder": "Поставете промпт, изходен резултат от инструмент или контекст…",
     "activeCombined": "Активен в комбинирания поток",
-    "requiresOnnx": "изисква ONNX модел",
     "verifyFidelity": "Проверка на точността (отхвърляне на всеки слой, който поврежда съдържанието)",
     "fuzzyDedup": "Неточна дедупликация (почти дублиращи се → CCR)",
     "protectSensitive": "Защита на чувствително съдържание (филтър за риск)",

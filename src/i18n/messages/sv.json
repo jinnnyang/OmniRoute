@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live-dirigeringskaskad",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabellkomprimering",
     "contextSessionDedupSubtitle": "Deduplicering mellan turer",
     "contextCcrSubtitle": "Hämta markörer",
-    "contextLlmlinguaSubtitle": "Semantisk beskärning",
     "contextLiteSubtitle": "Snabb rensning av blanksteg",
     "contextAggressiveSubtitle": "Sammanfattning och åldrande",
     "contextUltraSubtitle": "Heuristisk beskärning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Takhöjd",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Sessionsdeduplicering",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Finjustera heuristisk beskärning, SLM reserv och trösklar per meddelande",
     "compressionUltraRate": "Behåll kursen",
     "compressionUltraMinScore": "Minsta poängtröskel",
-    "compressionUltraSlmFallback": "Fallback till aggressiv",
     "compressionUltraModelPath": "SLM modellväg",
     "compressionUltraEngine": "Ultra-nivå",
     "compressionUltraEngineHeuristic": "Heuristik (Tier-A, standard)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, tillval)",
-    "compressionUltraSlmHint": "SLM laddar ned en liten ONNX-modell vid första användningen (kallstart) och faller sömlöst tillbaka på heuristiken vid timeout eller om den inte är tillgänglig.",
-    "compressionUltraSlmPrewarm": "Förvärm SLM-modell vid aktivering",
     "compressionSummarizerEnabled": "Aktivera Summarizer",
     "compressionMaxTokensPerMessage": "Max tokens per meddelande",
     "compressionMinSavings": "Minsta spartröskel",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Aggressiv",
         "description": "Sammanfatta och åldra gamla replikskiften."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Semantisk beskärning (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Innehållsadresserade hämtningsmarkörer för upprepade kontextblock."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Semantisk beskärning)",
-        "description": "ONNX-baserad semantisk tokenklassificering. Komprimerar endast prosa; kodblock och bevarade konstruktioner skyddas. Misslyckas öppet vid modell- eller worker-fel."
-      },
       "lite": {
         "name": "Lite",
         "description": "Snabb reducering av blanksteg, verktygsresultat och bild-URL:er."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Komprimeringsgrad"
       },
-      "modelPath": {
-        "label": "Modellsökväg"
-      },
       "minRows": {
         "label": "Minsta antal rader att komprimera",
         "description": "Minsta antal rader i en homogen JSON-array som krävs för att utlösa tabellkomprimering. Standard: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minsta poängtröskel"
       },
-      "slmFallbackToAggressive": {
-        "label": "Falla tillbaka på Aggressiv"
-      },
       "intensity": {
         "label": "Intensitet"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proaktivt trunkera långa verktygsresultat",
         "description": "Avskär resultat från verktyget över 2 000 tecken under Lite-komprimering. Nödfallsöversvämningsskydd kan fortfarande trimma innehåll när kontexten överskrider modellens budget."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Komprimeringsgrad (behållningskvot)"
-        },
-        "modelPath": {
-          "label": "Modellsökväg (offline-åsidosättning)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Delad vy (kommer snart)",
     "inputPlaceholder": "Klistra in en prompt, verktygsutdata eller kontext…",
     "activeCombined": "Aktiv i det kombinerade flödet",
-    "requiresOnnx": "kräver en ONNX-modell",
     "verifyFidelity": "Verifiera återgivning (avvisa alla lager som korrumperar innehåll)",
     "fuzzyDedup": "Fuzzy-deduplicering (nästan-dubblett → CCR)",
     "protectSensitive": "Skydda känsligt innehåll (riskspärr)",

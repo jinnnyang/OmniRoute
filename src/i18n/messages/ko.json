@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "실시간 라우팅 캐스케이드",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "표 형식 압축",
     "contextSessionDedupSubtitle": "턴 간 중복 제거",
     "contextCcrSubtitle": "마커 가져오기",
-    "contextLlmlinguaSubtitle": "시맨틱 프루닝",
     "contextLiteSubtitle": "빠른 공백 정리",
     "contextAggressiveSubtitle": "요약 및 에이징",
     "contextUltraSubtitle": "휴리스틱 프루닝",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "헤드룸",
     "lite": "라이트",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "세션 중복 제거",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "경험적 정리, SLM 대체 및 메시지별 임계값을 미세 조정합니다.",
     "compressionUltraRate": "유지 비율",
     "compressionUltraMinScore": "최소 점수 기준",
-    "compressionUltraSlmFallback": "Aggressive로 폴백",
     "compressionUltraModelPath": "SLM 모델 경로",
     "compressionUltraEngine": "울트라 티어",
     "compressionUltraEngineHeuristic": "휴리스틱 (Tier-A, 기본값)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, 선택 적용)",
-    "compressionUltraSlmHint": "SLM은 첫 사용 시(콜드 스타트) 소형 ONNX 모델을 다운로드하며, 시간 초과가 발생하거나 사용할 수 없는 경우 휴리스틱으로 투명하게 전환됩니다.",
-    "compressionUltraSlmPrewarm": "활성화 시 SLM 모델 사전 준비",
     "compressionSummarizerEnabled": "요약기 활성화",
     "compressionMaxTokensPerMessage": "메시지당 최대 토큰",
     "compressionMinSavings": "최소 절감 임계값",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "공격적",
         "description": "오래된 대화를 요약하고 노후화합니다."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "의미론적 가지치기 (ONNX)."
       },
       "ultra": {
         "label": "울트라",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "반복되는 컨텍스트 블록을 위한 콘텐츠 주소 지정 검색 마커."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (시맨틱 프루닝)",
-        "description": "ONNX 기반 시맨틱 토큰 분류. 일반 텍스트만 압축하며; 코드 블록 및 보존된 구문은 보호됩니다. 모델 또는 워커 오류 발생 시 페일 오픈(fail-open)됩니다."
-      },
       "lite": {
         "name": "라이트",
         "description": "빠른 공백, 도구 결과 및 이미지 URL 축소."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "압축률"
       },
-      "modelPath": {
-        "label": "모델 경로"
-      },
       "minRows": {
         "label": "압축할 최소 행 수",
         "description": "테이블 형식 압축을 트리거하는 데 필요한 동질적 JSON 배열의 최소 행 수입니다. 기본값: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "최소 점수 임계값"
       },
-      "slmFallbackToAggressive": {
-        "label": "Aggressive로 폴백"
-      },
       "intensity": {
         "label": "강도"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "긴 도구 결과를 사전적으로 잘라내기",
         "description": "Lite 압축 중 2,000자를 초과하는 도구 결과를 잘라냅니다. 모델 예산을 초과하는 경우 긴급 오버플로우 보호가 여전히 콘텐츠를 잘라낼 수 있습니다."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "압축률 (유지 비율)"
-        },
-        "modelPath": {
-          "label": "모델 경로 (오프라인 재정의)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Split view (coming soon)",
     "inputPlaceholder": "프롬프트, 도구 출력 또는 컨텍스트를 붙여넣으세요…",
     "activeCombined": "결합된 흐름에서 활성화됨",
-    "requiresOnnx": "ONNX 모델 필요",
     "verifyFidelity": "충실도 검증 (콘텐츠를 손상시키는 레이어 거부)",
     "fuzzyDedup": "퍼지 중복 제거 (유사 중복 → CCR)",
     "protectSensitive": "민감한 콘텐츠 보호 (리스크 게이트)",

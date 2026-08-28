@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live routing cascade",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabular compaction",
     "contextSessionDedupSubtitle": "Cross-turn deduplication",
     "contextCcrSubtitle": "Retrieve markers",
-    "contextLlmlinguaSubtitle": "Semantic pruning",
     "contextLiteSubtitle": "Fast whitespace cleanup",
     "contextAggressiveSubtitle": "Summary and aging",
     "contextUltraSubtitle": "Heuristic pruning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "حاشیه ظرفیت",
     "lite": "سبک",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "حذف تکرار نشست",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "هرس اکتشافی، بازگشتی SLM، و آستانه هر پیام را دقیق تنظیم کنید",
     "compressionUltraRate": "نرخ را نگه دارید",
     "compressionUltraMinScore": "حداقل آستانه امتیاز",
-    "compressionUltraSlmFallback": "بازگشت به تهاجمی",
     "compressionUltraModelPath": "مسیر مدل SLM",
     "compressionUltraEngine": "سطح Ultra",
     "compressionUltraEngineHeuristic": "هیوریستیک (Tier-A، پیش‌فرض)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2، اختیاری)",
-    "compressionUltraSlmHint": "SLM در اولین استفاده (cold-start) یک مدل کوچک ONNX را دانلود می‌کند و در صورت اتمام مهلت زمانی یا عدم دسترسی، به طور شفاف به روش هیوریستیک بازمی‌گردد.",
-    "compressionUltraSlmPrewarm": "پیش‌گرم کردن مدل SLM هنگام فعال‌سازی",
     "compressionSummarizerEnabled": "Summarizer را فعال کنید",
     "compressionMaxTokensPerMessage": "حداکثر توکن در هر پیام",
     "compressionMinSavings": "حداقل آستانه پس انداز",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "تهاجمی",
         "description": "خلاصه‌سازی و قدیمی کردن نوبت‌های گذشته."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "هرس معنایی (ONNX)."
       },
       "ultra": {
         "label": "اولترا",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "نشانگرهای بازیابی آدرس‌دهی‌شده با محتوا برای بلوک‌های زمینه تکراری."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (هرس معنایی)",
-        "description": "طبقه‌بندی معنایی توکن‌ها مبتنی بر ONNX. فقط متن ساده را فشرده می‌کند؛ بلوک‌های کد و ساختارهای حفظ‌شده محافظت می‌شوند. در صورت بروز خطای مدل یا worker بدون مسدودسازی عمل می‌کند."
-      },
       "lite": {
         "name": "سبک",
         "description": "کاهش سریع فاصله‌های خالی، نتایج ابزار و URLهای تصویر."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "نرخ فشرده‌سازی"
       },
-      "modelPath": {
-        "label": "مسیر مدل"
-      },
       "minRows": {
         "label": "حداقل ردیف‌ها برای فشرده‌سازی",
         "description": "حداقل ردیف‌ها در یک آرایه همگن JSON که برای فعال‌سازی فشرده‌سازی جدولی لازم است. پیش‌فرض: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "حداقل آستانه امتیاز"
       },
-      "slmFallbackToAggressive": {
-        "label": "بازگشت به حالت تهاجمی"
-      },
       "intensity": {
         "label": "شدت"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "به‌طور پیش‌گیرانه نتایج طولانی ابزار را کوتاه کنید",
         "description": "نتایج ابزار را در طول فشرده‌سازی Lite بیش از ۲,۰۰۰ کاراکتر کوتاه می‌کند. حفاظت از سرریز اضطراری ممکن است هنوز محتوا را زمانی که زمینه از بودجه مدل فراتر رود، کوتاه کند."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "نرخ فشرده‌سازی (نسبت نگه‌داری)"
-        },
-        "modelPath": {
-          "label": "مسیر مدل (جایگزینی آفلاین)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "نمای تفکیک‌شده (به‌زودی)",
     "inputPlaceholder": "یک پرامپت، خروجی ابزار یا زمینه را جای‌گذاری کنید…",
     "activeCombined": "فعال در جریان ترکیبی",
-    "requiresOnnx": "به یک مدل ONNX نیاز دارد",
     "verifyFidelity": "تأیید وفاداری (رد هر لایه‌ای که محتوا را مخدوش می‌کند)",
     "fuzzyDedup": "حذف موارد تکراری فازی (تقریباً تکراری → CCR)",
     "protectSensitive": "محافظت از محتوای حساس (دروازه ریسک)",

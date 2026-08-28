@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Reaaliaikainen reitityskaskadi",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Taulukkomuotoinen tiivistys",
     "contextSessionDedupSubtitle": "Vuorojen välinen duplikaattien poisto",
     "contextCcrSubtitle": "Hae merkit",
-    "contextLlmlinguaSubtitle": "Semanttinen karsinta",
     "contextLiteSubtitle": "Nopea tyhjämerkkien siivous",
     "contextAggressiveSubtitle": "Yhteenveto ja vanhentaminen",
     "contextUltraSubtitle": "Heuristinen karsinta",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Pelivara",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Istuntojen deduplikointi",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Hienosäädä heuristista karsimista, SLM-varaa ja viestikohtaisia kynnysarvoja",
     "compressionUltraRate": "Pidä korko",
     "compressionUltraMinScore": "Pisteiden vähimmäiskynnys",
-    "compressionUltraSlmFallback": "Takaisin aggressiiviseen",
     "compressionUltraModelPath": "SLM-mallin polku",
     "compressionUltraEngine": "Ultra-taso",
     "compressionUltraEngineHeuristic": "Heuristinen (A-taso, oletus)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, valinnainen)",
-    "compressionUltraSlmHint": "SLM lataa pienen ONNX-mallin ensimmäisellä käyttökerralla (kylmäkäynnistys) ja siirtyy huomaamattomasti käyttämään heuristiikkaa aikakatkaisun sattuessa tai jos malli ei ole saatavilla.",
-    "compressionUltraSlmPrewarm": "Esilämmitä SLM-malli otettaessa käyttöön",
     "compressionSummarizerEnabled": "Ota Summarizer käyttöön",
     "compressionMaxTokensPerMessage": "Max Tokens per viesti",
     "compressionMinSavings": "Minimi säästökynnys",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Aggressiivinen",
         "description": "Tiivistä ja vanhenna vanhat vuorot."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Semanttinen karsinta (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Sisältöosoitetut hakumerkit toistuville kontekstilohkoille."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Semanttinen karsinta)",
-        "description": "ONNX-pohjainen semanttinen token-luokittelu. Pakkaa vain proosaa; koodilohkot ja säilytettävät rakenteet on suojattu. Sallii pääsyn vikatilanteessa malli- tai worker-virheissä."
-      },
       "lite": {
         "name": "Lite",
         "description": "Nopea tyhjämerkkien, työkalutulosten ja kuva-URL-osoitteiden vähentäminen."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Pakkaussuhde"
       },
-      "modelPath": {
-        "label": "Mallin polku"
-      },
       "minRows": {
         "label": "Tiivistettävien rivien vähimmäismäärä",
         "description": "Homogeenisen JSON-taulukon rivien vähimmäismäärä taulukkomaisen tiivistämisen käynnistämiseksi. Oletus: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Pisteiden vähimmäiskynnys"
       },
-      "slmFallbackToAggressive": {
-        "label": "Käytä vararatkaisuna Aggressiivista"
-      },
       "intensity": {
         "label": "Intensiteetti"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proaktiivisesti lyhennä pitkiä työkalutuloksia",
         "description": "Lyhentää työkalun tuloksia yli 2 000 merkkiä Lite-puristuksen aikana. Hätätilanteen ylivuotosuojaus voi silti leikata sisältöä, kun konteksti ylittää mallin budjetin."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Pakkaussuhde (säilytyssuhde)"
-        },
-        "modelPath": {
-          "label": "Mallin polku (offline-ohitus)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Jaettu näkymä (tulossa pian)",
     "inputPlaceholder": "Liitä kehote, työkalun tuloste tai konteksti…",
     "activeCombined": "Aktiivinen yhdistetyssä vuossa",
-    "requiresOnnx": "vaatii ONNX-mallin",
     "verifyFidelity": "Varmista tarkkuus (hylkää kaikki kerrokset, jotka turmelevat sisällön)",
     "fuzzyDedup": "Sumea kaksoiskappaleiden poisto (lähes identtinen → CCR)",
     "protectSensitive": "Suojaa arkaluonteinen sisältö (riskisuodatin)",

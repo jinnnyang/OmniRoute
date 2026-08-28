@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Canlı yönlendirme kaskadı",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tablosal sıkıştırma",
     "contextSessionDedupSubtitle": "Dönüşler arası tekilleştirme",
     "contextCcrSubtitle": "İşaretçileri al",
-    "contextLlmlinguaSubtitle": "Anlamsal budama",
     "contextLiteSubtitle": "Hızlı boşluk temizleme",
     "contextAggressiveSubtitle": "Özet ve yaşlandırma",
     "contextUltraSubtitle": "Sezgisel budama",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Kapasite Payı",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Oturum Tekilleştirme",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Buluşsal budama, SLM geri dönüşü ve mesaj başına eşiklerde ince ayar yapın",
     "compressionUltraRate": "Oranı Koru",
     "compressionUltraMinScore": "Minimum Puan Eşiği",
-    "compressionUltraSlmFallback": "Agresifliğe Dönüş",
     "compressionUltraModelPath": "SLM Modeli Yolu",
     "compressionUltraEngine": "Ultra katmanı",
     "compressionUltraEngineHeuristic": "Sezgisel (Tier-A, varsayılan)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, isteğe bağlı)",
-    "compressionUltraSlmHint": "SLM, ilk kullanımda (soğuk başlatma) küçük bir ONNX modeli indirir ve zaman aşımı durumunda veya kullanılamadığında şeffaf bir şekilde sezgisel yönteme geri döner.",
-    "compressionUltraSlmPrewarm": "Etkinleştirildiğinde SLM modelini önceden ısıt",
     "compressionSummarizerEnabled": "Özetleyiciyi Etkinleştir",
     "compressionMaxTokensPerMessage": "Mesaj Başına Maksimum Jeton",
     "compressionMinSavings": "Minimum Tasarruf Eşiği",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresif",
         "description": "Eski turları özetle ve eskit."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Anlamsal budama (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Yinelenen bağlam blokları için içerik adresli erişim işaretçileri."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Anlamsal Budama)",
-        "description": "ONNX tabanlı anlamsal belirteç sınıflandırması. Yalnızca düz metni sıkıştırır; kod blokları ve korunan yapılar korunur. Model veya çalışan hatalarında açık duruma geçer."
-      },
       "lite": {
         "name": "Lite",
         "description": "Hızlı boşluk, araç sonucu ve görsel URL'si azaltma."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Sıkıştırma oranı"
       },
-      "modelPath": {
-        "label": "Model yolu"
-      },
       "minRows": {
         "label": "Sıkıştırılacak minimum satır sayısı",
         "description": "Tablosal sıkıştırmayı tetiklemek için homojen bir JSON dizisinde gereken minimum satır sayısı. Varsayılan: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimum skor eşiği"
       },
-      "slmFallbackToAggressive": {
-        "label": "Agresif moduna geri dön"
-      },
       "intensity": {
         "label": "Yoğunluk"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Uzun araç sonuçlarını proaktif olarak kısaltın",
         "description": "Lite sıkıştırma sırasında 2.000 karakterin üzerindeki araç sonuçlarını keser. Acil taşma koruması, bağlam model bütçesini aştığında içeriği hala kesebilir."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Sıkıştırma oranı (koruma oranı)"
-        },
-        "modelPath": {
-          "label": "Model yolu (çevrimdışı geçersiz kılma)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Bölünmüş görünüm (yakında)",
     "inputPlaceholder": "Bir istem, araç çıktısı veya bağlam yapıştırın…",
     "activeCombined": "Birleşik akışta etkin",
-    "requiresOnnx": "bir ONNX modeli gerektirir",
     "verifyFidelity": "Aslına uygunluğu doğrula (içeriği bozan tüm katmanları reddet)",
     "fuzzyDedup": "Bulanık tekilleştirme (neredeyse kopya → CCR)",
     "protectSensitive": "Hassas içeriği koru (risk geçidi)",

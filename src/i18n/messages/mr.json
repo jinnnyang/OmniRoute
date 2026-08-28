@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live routing cascade",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabular compaction",
     "contextSessionDedupSubtitle": "Cross-turn deduplication",
     "contextCcrSubtitle": "Retrieve markers",
-    "contextLlmlinguaSubtitle": "Semantic pruning",
     "contextLiteSubtitle": "Fast whitespace cleanup",
     "contextAggressiveSubtitle": "Summary and aging",
     "contextUltraSubtitle": "Heuristic pruning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "हेडरूम",
     "lite": "लाइट",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "सेशन डीडप",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "फाइन-ट्यून ह्युरिस्टिक छाटणी, एसएलएम फॉलबॅक आणि प्रति-संदेश थ्रेशोल्ड",
     "compressionUltraRate": "दर ठेवा",
     "compressionUltraMinScore": "किमान स्कोअर थ्रेशोल्ड",
-    "compressionUltraSlmFallback": "आक्रमक कडे फॉलबॅक",
     "compressionUltraModelPath": "SLM मॉडेल पथ",
     "compressionUltraEngine": "अल्ट्रा टियर",
     "compressionUltraEngineHeuristic": "ह्यूरिस्टिक (Tier-A, डीफॉल्ट)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, ऑप्ट-इन)",
-    "compressionUltraSlmHint": "SLM पहिल्या वापरावर (cold-start) एक लहान ONNX मॉडेल डाउनलोड करते आणि टाइमआउट झाल्यास किंवा अनुपलब्ध असल्यास पारदर्शकपणे ह्यूरिस्टिकवर फॉलबॅक करते.",
-    "compressionUltraSlmPrewarm": "सक्षम केल्यावर SLM मॉडेल प्री-वॉर्म करा",
     "compressionSummarizerEnabled": "सारांश सक्षम करा",
     "compressionMaxTokensPerMessage": "प्रति संदेश कमाल टोकन",
     "compressionMinSavings": "किमान बचत थ्रेशोल्ड",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "आक्रमक",
         "description": "जुन्या टर्न्सचा सारांश काढा आणि ते जुने करा."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "सिमँटिक प्रूनिंग (ONNX)."
       },
       "ultra": {
         "label": "अल्ट्रा",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "पुनरावृत्ती झालेल्या संदर्भ ब्लॉक्ससाठी कंटेंट-ॲड्रेस केलेले रिट्रीव्हल मार्कर्स."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (सिमँटिक प्रूनिंग)",
-        "description": "ONNX-आधारित सिमँटिक टोकन वर्गीकरण. केवळ गद्य कॉम्प्रैस करते; कोड ब्लॉक्स आणि जतन केलेल्या रचना सुरक्षित आहेत. मॉडेल किंवा वर्कर त्रुटींवर फेल्स ओपन होते."
-      },
       "lite": {
         "name": "लाईट",
         "description": "जलद व्हाईटस्पेस, टूल-रिझल्ट आणि इमेज URL कपात."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "कॉम्प्रेशन दर"
       },
-      "modelPath": {
-        "label": "मॉडेल पाथ"
-      },
       "minRows": {
         "label": "कॉम्पॅक्ट करण्यासाठी किमान ओळी",
         "description": "टॅब्युलर कॉम्पॅक्शन ट्रिगर करण्यासाठी एकसमान JSON ॲरेमध्ये आवश्यक असलेल्या किमान ओळी. डीफॉल्ट: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "किमान स्कोअर मर्यादा"
       },
-      "slmFallbackToAggressive": {
-        "label": "अॅग्रेसिव्हवर फॉलबॅक करा"
-      },
       "intensity": {
         "label": "तीव्रता"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "सक्रियपणे लांब साधन परिणाम कमी करा",
         "description": "Lite संकुचनादरम्यान 2,000 वर्णांपेक्षा जास्त टूल परिणाम कमी करतो. आपत्कालीन ओव्हरफ्लो संरक्षणाने मॉडेल बजेट ओलांडल्यास सामग्री कमी केली जाऊ शकते."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "कॉम्प्रेशन दर (कीप रेशो)"
-        },
-        "modelPath": {
-          "label": "मॉडेल पाथ (ऑफलाइन ओव्हरराइड)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "स्प्लिट व्ह्यू (लवकरच येत आहे)",
     "inputPlaceholder": "प्रॉम्प्ट, टूल आउटपुट किंवा संदर्भ पेस्ट करा…",
     "activeCombined": "एकत्रित फ्लोमध्ये सक्रिय",
-    "requiresOnnx": "ONNX मॉडेल आवश्यक आहे",
     "verifyFidelity": "फिडेलिटी पडताळा (सामग्री खराब करणारा कोणताही लेयर नाकारा)",
     "fuzzyDedup": "फझी डीड्युप्लिकेशन (जवळजवळ डुप्लिकेट → CCR)",
     "protectSensitive": "संवेदनशील सामग्री सुरक्षित करा (रिस्क गेट)",

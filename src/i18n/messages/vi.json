@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Chuỗi định tuyến trực tiếp",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Nén dạng bảng",
     "contextSessionDedupSubtitle": "Khử trùng lặp giữa các lượt",
     "contextCcrSubtitle": "Dấu mốc truy xuất",
-    "contextLlmlinguaSubtitle": "Lược bỏ theo ngữ nghĩa",
     "contextLiteSubtitle": "Dọn khoảng trắng nhanh",
     "contextAggressiveSubtitle": "Tóm tắt và làm cũ",
     "contextUltraSubtitle": "Lược bỏ theo kinh nghiệm",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Session Dedup",
@@ -7447,13 +7444,9 @@
     "compressionUltraConfigDesc": "Tinh chỉnh việc cắt tỉa theo quy tắc kinh nghiệm, dự phòng SLM và ngưỡng cho từng tin nhắn",
     "compressionUltraRate": "Tỷ lệ giữ lại",
     "compressionUltraMinScore": "Ngưỡng điểm tối thiểu",
-    "compressionUltraSlmFallback": "Dự phòng sang Mạnh",
     "compressionUltraModelPath": "Đường dẫn mô hình SLM",
     "compressionUltraEngine": "Cấp độ siêu mạnh",
     "compressionUltraEngineHeuristic": "Theo quy tắc kinh nghiệm (Cấp A, mặc định)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, cần bật thủ công)",
-    "compressionUltraSlmHint": "SLM sẽ tải xuống một mô hình ONNX nhỏ trong lần đầu sử dụng (khởi động nguội) và tự động chuyển sang phương pháp theo quy tắc kinh nghiệm khi hết thời gian chờ hoặc không khả dụng.",
-    "compressionUltraSlmPrewarm": "Làm nóng trước mô hình SLM khi kích hoạt",
     "compressionSummarizerEnabled": "Bật trình tóm tắt",
     "compressionMaxTokensPerMessage": "Token tối đa cho mỗi tin nhắn",
     "compressionMinSavings": "Ngưỡng tiết kiệm tối thiểu",
@@ -7821,10 +7814,6 @@
       "aggressive": {
         "label": "Mạnh",
         "description": "Tóm tắt và làm gọn các lượt trò chuyện cũ."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Cắt tỉa theo ngữ nghĩa (ONNX)."
       },
       "ultra": {
         "label": "Tối đa",
@@ -8425,10 +8414,6 @@
         "name": "CCR",
         "description": "Dùng dấu mốc truy xuất theo địa chỉ nội dung cho các khối ngữ cảnh lặp lại."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Lược bỏ theo ngữ nghĩa)",
-        "description": "Phân loại token theo ngữ nghĩa bằng ONNX. Chỉ nén văn xuôi; khối mã và các cấu trúc cần giữ nguyên được bảo vệ. Khi mô hình hoặc worker lỗi, dữ liệu vẫn được chuyển tiếp nguyên vẹn."
-      },
       "lite": {
         "name": "Lite",
         "description": "Giảm nhanh khoảng trắng, kết quả công cụ và URL hình ảnh."
@@ -8468,9 +8453,6 @@
       "compressionRate": {
         "label": "Tỷ lệ nén"
       },
-      "modelPath": {
-        "label": "Đường dẫn mô hình"
-      },
       "minRows": {
         "label": "Số hàng tối thiểu để nén",
         "description": "Số hàng tối thiểu trong một mảng JSON đồng nhất để kích hoạt nén dạng bảng. Mặc định: 8."
@@ -8490,9 +8472,6 @@
       "minScoreThreshold": {
         "label": "Ngưỡng điểm tối thiểu"
       },
-      "slmFallbackToAggressive": {
-        "label": "Dự phòng bằng Aggressive"
-      },
       "intensity": {
         "label": "Cường độ"
       },
@@ -8502,16 +8481,6 @@
       "compressToolResults": {
         "label": "Chủ động rút gọn kết quả công cụ dài",
         "description": "Rút gọn các kết quả công cụ dài hơn 2.000 ký tự trong quá trình nén Lite. Cơ chế bảo vệ tràn khẩn cấp vẫn có thể cắt bớt nội dung khi ngữ cảnh vượt quá ngân sách của mô hình."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Tỷ lệ nén (tỷ lệ giữ lại)"
-        },
-        "modelPath": {
-          "label": "Đường dẫn mô hình (ghi đè ngoại tuyến)"
-        }
       }
     },
     "options": {
@@ -8612,7 +8581,6 @@
     "splitComingSoon": "Chế độ xem chia đôi (sắp ra mắt)",
     "inputPlaceholder": "Dán prompt, đầu ra công cụ hoặc ngữ cảnh…",
     "activeCombined": "Đang hoạt động trong luồng kết hợp",
-    "requiresOnnx": "cần mô hình ONNX",
     "verifyFidelity": "Kiểm tra độ trung thực (từ chối lớp làm sai lệch nội dung)",
     "fuzzyDedup": "Khử trùng lặp gần đúng (gần trùng lặp → CCR)",
     "protectSensitive": "Bảo vệ nội dung nhạy cảm (cổng rủi ro)",

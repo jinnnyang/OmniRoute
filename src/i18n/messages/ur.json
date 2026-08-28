@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live routing cascade",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabular compaction",
     "contextSessionDedupSubtitle": "Cross-turn deduplication",
     "contextCcrSubtitle": "Retrieve markers",
-    "contextLlmlinguaSubtitle": "Semantic pruning",
     "contextLiteSubtitle": "Fast whitespace cleanup",
     "contextAggressiveSubtitle": "Summary and aging",
     "contextUltraSubtitle": "Heuristic pruning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "ہیڈ روم",
     "lite": "لائٹ",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "سیشن ڈی ڈوپ",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "فائن ٹیون ہیورسٹک پرننگ، ایس ایل ایم فال بیک، اور فی میسج تھریشولڈز",
     "compressionUltraRate": "ریٹ رکھیں",
     "compressionUltraMinScore": "کم از کم سکور کی حد",
-    "compressionUltraSlmFallback": "جارحانہ کی طرف فال بیک",
     "compressionUltraModelPath": "SLM ماڈل پاتھ",
     "compressionUltraEngine": "الٹرا ٹیئر",
     "compressionUltraEngineHeuristic": "ہیورسٹک (Tier-A، ڈیفالٹ)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2، آپٹ ان)",
-    "compressionUltraSlmHint": "SLM پہلے استعمال (cold-start) پر ایک چھوٹا ONNX ماڈل ڈاؤن لوڈ کرتا ہے اور ٹائم آؤٹ ہونے پر یا دستیاب نہ ہونے کی صورت میں شفاف طریقے سے ہیورسٹک پر واپس آ جاتا ہے۔",
-    "compressionUltraSlmPrewarm": "فعال کرنے پر SLM ماڈل کو پری وارم کریں",
     "compressionSummarizerEnabled": "سمریزر کو فعال کریں۔",
     "compressionMaxTokensPerMessage": "زیادہ سے زیادہ ٹوکن فی پیغام",
     "compressionMinSavings": "کم سے کم بچت کی حد",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "جارحانہ",
         "description": "پرانی باریوں کا خلاصہ کریں اور انہیں پرانا کریں۔"
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "معنوی کٹائی (ONNX)۔"
       },
       "ultra": {
         "label": "الٹرا",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "بار بار آنے والے سیاق و سباق کے بلاکس کے لیے مواد سے ایڈریس شدہ بازیافت کے مارکرز۔"
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (سیمنٹک پروننگ)",
-        "description": "ONNX پر مبنی سیمنٹک ٹوکن کی درجہ بندی۔ صرف نثر کو کمپریس کرتا ہے؛ کوڈ بلاکس اور محفوظ کردہ ڈھانچے محفوظ رہتے ہیں۔ ماڈل یا ورکر کی غلطیوں پر فیل اوپن ہوتا ہے۔"
-      },
       "lite": {
         "name": "لائٹ",
         "description": "تیز رفتار وائٹ اسپیس، ٹول رزلٹ اور امیج URL کی کمی۔"
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "کمپریشن کی شرح"
       },
-      "modelPath": {
-        "label": "ماڈل کا پاتھ"
-      },
       "minRows": {
         "label": "کمپیکٹ کرنے کے لیے کم از کم قطاریں",
         "description": "ٹیبلر کمپیکشن کو متحرک کرنے کے لیے ایک یکساں JSON اری میں مطلوبہ کم از کم قطاریں۔ ڈیفالٹ: 8۔"
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "کم از کم اسکور کی حد"
       },
-      "slmFallbackToAggressive": {
-        "label": "جارحانہ (Aggressive) پر واپس جائیں"
-      },
       "intensity": {
         "label": "شدت"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "پیشگی طور پر طویل ٹول کے نتائج کو کاٹ دیں",
         "description": "Lite کمپریشن کے دوران 2,000 کرداروں سے زیادہ کے ٹول کے نتائج کو کاٹ دیتا ہے۔ ایمرجنسی اوورفلو پروٹیکشن اب بھی مواد کو کم کر سکتا ہے جب سیاق و سباق ماڈل کے بجٹ سے تجاوز کر جائے۔"
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "کمپریشن کی شرح (برقرار رکھنے کا تناسب)"
-        },
-        "modelPath": {
-          "label": "ماڈل کا پاتھ (آف لائن اوور رائیڈ)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "اسپلٹ ویو (جلد آرہا ہے)",
     "inputPlaceholder": "پرامپٹ، ٹول آؤٹ پٹ، یا سیاق و سباق چسپاں کریں…",
     "activeCombined": "مشترکہ بہاؤ میں فعال",
-    "requiresOnnx": "ایک ONNX ماڈل درکار ہے",
     "verifyFidelity": "وفاداری کی تصدیق کریں (مواد کو خراب کرنے والی کسی بھی تہہ کو مسترد کریں)",
     "fuzzyDedup": "فزی ڈی ڈپلیکیشن (قریبی ڈپلیکیٹ → CCR)",
     "protectSensitive": "حساس مواد کی حفاظت کریں (رسک گیٹ)",

@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Cascade การกำหนดเส้นทางแบบสด",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "การบีบอัดข้อมูลแบบตาราง",
     "contextSessionDedupSubtitle": "การลบข้อมูลซ้ำข้ามเทิร์น",
     "contextCcrSubtitle": "ดึงข้อมูลมาร์กเกอร์",
-    "contextLlmlinguaSubtitle": "การตัดแต่งเชิงความหมาย",
     "contextLiteSubtitle": "การล้างช่องว่างอย่างรวดเร็ว",
     "contextAggressiveSubtitle": "การสรุปและการกำหนดอายุ",
     "contextUltraSubtitle": "การตัดแต่งแบบฮิวริสติก",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Session Dedup",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ปรับแต่งการตัดแต่งฮิวริสติก, ทางเลือก SLM และเกณฑ์ต่อข้อความ",
     "compressionUltraRate": "เก็บอัตรา",
     "compressionUltraMinScore": "เกณฑ์คะแนนขั้นต่ำ",
-    "compressionUltraSlmFallback": "ถอยกลับไปก้าวร้าว",
     "compressionUltraModelPath": "เส้นทางโมเดล SLM",
     "compressionUltraEngine": "ระดับ Ultra",
     "compressionUltraEngineHeuristic": "ฮิวริสติก (ระดับ A, ค่าเริ่มต้น)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, เลือกเข้าร่วม)",
-    "compressionUltraSlmHint": "SLM จะดาวน์โหลดโมเดล ONNX ขนาดเล็กในการใช้งานครั้งแรก (cold-start) และจะสลับกลับไปใช้ฮิวริสติกโดยอัตโนมัติเมื่อหมดเวลาหรือไม่พร้อมใช้งาน",
-    "compressionUltraSlmPrewarm": "เตรียมพร้อมโมเดล SLM ล่วงหน้าเมื่อเปิดใช้งาน",
     "compressionSummarizerEnabled": "เปิดใช้งานตัวสรุป",
     "compressionMaxTokensPerMessage": "โทเค็นสูงสุดต่อข้อความ",
     "compressionMinSavings": "เกณฑ์การออมขั้นต่ำ",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "แบบดุดัน",
         "description": "สรุปและลดความสำคัญของเทิร์นเก่าตามเวลา"
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "การตัดแต่งเชิงความหมาย (ONNX)"
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "มาร์กเกอร์การดึงข้อมูลตามเนื้อหาสำหรับบล็อกบริบทที่ซ้ำกัน"
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (การตัดแต่งเชิงความหมาย)",
-        "description": "การจำแนกโทเค็นเชิงความหมายบนพื้นฐาน ONNX บีบอัดเฉพาะข้อความทั่วไป บล็อกโค้ดและโครงสร้างที่สงวนไว้จะได้รับการปกป้อง ทำงานต่อแบบเปิดเมื่อเกิดข้อผิดพลาดของโมเดลหรือ worker"
-      },
       "lite": {
         "name": "Lite",
         "description": "การลดช่องว่าง ผลลัพธ์ของเครื่องมือ และ URL รูปภาพอย่างรวดเร็ว"
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "อัตราการบีบอัด"
       },
-      "modelPath": {
-        "label": "พาธของโมเดล"
-      },
       "minRows": {
         "label": "จำนวนแถวขั้นต่ำที่จะกระชับข้อมูล",
         "description": "จำนวนแถวขั้นต่ำในอาร์เรย์ JSON ที่เป็นเนื้อเดียวกันซึ่งจำเป็นต่อการทริกเกอร์การกระชับข้อมูลแบบตาราง ค่าเริ่มต้น: 8"
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "เกณฑ์คะแนนขั้นต่ำ"
       },
-      "slmFallbackToAggressive": {
-        "label": "ย้อนกลับไปใช้ Aggressive"
-      },
       "intensity": {
         "label": "ความเข้มข้น"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "ตัดผลลัพธ์เครื่องมือที่ยาวเกินไปอย่างมีประสิทธิภาพ",
         "description": "ตัดผลลัพธ์ของเครื่องมือที่มีความยาวเกิน 2,000 ตัวอักษรในระหว่างการบีบอัดแบบ Lite การป้องกันการล débordement ฉุกเฉินอาจยังคงตัดเนื้อหาเมื่อบริบทเกินงบประมาณของโมเดล"
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "อัตราการบีบอัด (อัตราส่วนที่คงไว้)"
-        },
-        "modelPath": {
-          "label": "พาธของโมเดล (แทนที่แบบออฟไลน์)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "มุมมองแยก (เร็ว ๆ นี้)",
     "inputPlaceholder": "วางพรอมต์ ผลลัพธ์เครื่องมือ หรือบริบท…",
     "activeCombined": "เปิดใช้งานในโฟลว์รวม",
-    "requiresOnnx": "ต้องใช้โมเดล ONNX",
     "verifyFidelity": "ตรวจสอบความถูกต้อง (ปฏิเสธเลเยอร์ใดก็ตามที่ทำให้เนื้อหาเสียหาย)",
     "fuzzyDedup": "การขจัดข้อมูลซ้ำแบบคลุมเครือ (ใกล้เคียงกัน → CCR)",
     "protectSensitive": "ปกป้องเนื้อหาที่ละเอียดอ่อน (เกตความเสี่ยง)",

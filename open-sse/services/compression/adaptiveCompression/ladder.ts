@@ -2,9 +2,8 @@ import type { LadderStage } from "./types.ts";
 
 /**
  * Default escalation ladder (design D-C2): cheapest/most-lossless → most aggressive.
- * Ordered by the engine catalog's stackPriority. `ccr` and `llmlingua` are intentionally
- * excluded from the AUTOMATIC ladder (ccr = retrieval markers, llmlingua = optional ONNX
- * SLM tier wired through `ultra`); an operator can still add them via ladderOverride.
+ * Ordered by the engine catalog's stackPriority. `ccr` is intentionally excluded
+ * from the AUTOMATIC ladder (retrieval markers); an operator can still add it via ladderOverride.
  */
 export const DEFAULT_LADDER: LadderStage[] = [
   { engine: "session-dedup" }, // lossless cross-turn dedup (catalog pri 3)
@@ -13,7 +12,7 @@ export const DEFAULT_LADDER: LadderStage[] = [
   { engine: "lite" }, // whitespace/format cleanup (pri 5, but cheap prose pass)
   { engine: "caveman", intensity: "full" }, // rule-based prose (pri 20)
   { engine: "aggressive" }, // summarize + age old turns (pri 30)
-  { engine: "ultra" }, // heuristic token pruning + optional SLM (pri 40)
+  { engine: "ultra" }, // heuristic token pruning (pri 40)
 ];
 
 /**
@@ -23,9 +22,9 @@ export const DEFAULT_LADDER: LadderStage[] = [
  *
  * Rescaled ×10 vs the original 7-entry scale (#6533) to make room for the novel catalog
  * engines that ship in `open-sse/services/compression/engines/index.ts` but are not part
- * of DEFAULT_LADDER: `ccr` and `llmlingua` are intentionally excluded from the AUTOMATIC
+ * of DEFAULT_LADDER: `ccr` is intentionally excluded from the AUTOMATIC
  * ladder (see DEFAULT_LADDER doc comment) yet must still rank correctly when an operator
- * adds them via `ladderOverride` — same for `ionizer`, `relevance`, `llm`, `read-lifecycle`,
+ * adds it via `ladderOverride` — same for `ionizer`, `relevance`, `llm`, `read-lifecycle`,
  * and `codex-responses`. Placement follows each engine's documented `stackPriority` in
  * `engineCatalog.ts` / its own module header, interpolated onto the existing 7-tier scale
  * (the `lite` exception — ranked after `headroom` despite a lower stackPriority — is a
@@ -73,7 +72,7 @@ const REDUCTION_FACTOR: Record<string, number> = {
   caveman: 0.7,
   standard: 0.7,
   aggressive: 0.55,
-  llm: 0.45, // full LLM-tier compressor, stronger than llmlingua
+  llm: 0.45, // full LLM-tier compressor (strongest prose tier)
   ultra: 0.4,
   omniglyph: 0.35, // measured 0.23-0.33 on converted blocks (254->84 tokens); 0.35 stays conservative
 };

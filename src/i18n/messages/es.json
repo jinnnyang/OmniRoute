@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live routing cascade",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabular compaction",
     "contextSessionDedupSubtitle": "Cross-turn deduplication",
     "contextCcrSubtitle": "Retrieve markers",
-    "contextLlmlinguaSubtitle": "Semantic pruning",
     "contextLiteSubtitle": "Fast whitespace cleanup",
     "contextAggressiveSubtitle": "Summary and aging",
     "contextUltraSubtitle": "Heuristic pruning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Session Dedup",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Ajuste la poda heurística, el respaldo de SLM y los umbrales por mensaje",
     "compressionUltraRate": "Mantener tasa",
     "compressionUltraMinScore": "Umbral de puntuación mínima",
-    "compressionUltraSlmFallback": "Regreso a lo agresivo",
     "compressionUltraModelPath": "Ruta del modelo SLM",
     "compressionUltraEngine": "Ultra tier",
     "compressionUltraEngineHeuristic": "Heuristic (Tier-A, default)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opt-in)",
-    "compressionUltraSlmHint": "SLM downloads a small ONNX model on first use (cold-start) and transparently falls back to the heuristic on timeout or if unavailable.",
-    "compressionUltraSlmPrewarm": "Pre-warm SLM model on enable",
     "compressionSummarizerEnabled": "Habilitar resumen",
     "compressionMaxTokensPerMessage": "Tokens máximos por mensaje",
     "compressionMinSavings": "Umbral mínimo de ahorro",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Aggressive",
         "description": "Summarize and age old turns."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Semantic pruning (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Content-addressed retrieval markers for repeated context blocks."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Semantic Pruning)",
-        "description": "ONNX-based semantic token classification. Compresses prose only; code blocks and preserved constructs are protected. Fails open on model or worker errors."
-      },
       "lite": {
         "name": "Lite",
         "description": "Fast whitespace, tool-result and image URL reduction."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Compression rate"
       },
-      "modelPath": {
-        "label": "Model path"
-      },
       "minRows": {
         "label": "Minimum rows to compact",
         "description": "Minimum rows in a homogeneous JSON array required to trigger tabular compaction. Default: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimum score threshold"
       },
-      "slmFallbackToAggressive": {
-        "label": "Fall back to Aggressive"
-      },
       "intensity": {
         "label": "Intensity"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Truncar proactivamente los resultados largos de la herramienta",
         "description": "Trunca los resultados de la herramienta a más de 2,000 caracteres durante la compresión Lite. La protección de desbordamiento de emergencia aún puede recortar contenido cuando el contexto excede el presupuesto del modelo."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Compression rate (keep ratio)"
-        },
-        "modelPath": {
-          "label": "Model path (offline override)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Split view (coming soon)",
     "inputPlaceholder": "Paste a prompt, tool output, or context…",
     "activeCombined": "Active in the combined flow",
-    "requiresOnnx": "requires an ONNX model",
     "verifyFidelity": "Verify fidelity (reject any layer that corrupts content)",
     "fuzzyDedup": "Fuzzy deduplication (near-duplicate → CCR)",
     "protectSensitive": "Protect sensitive content (risk gate)",

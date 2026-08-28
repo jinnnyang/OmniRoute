@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "લાઇવ રૂટીંગ કાસ્કેડ",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "કોષ્ટક સંકોચન",
     "contextSessionDedupSubtitle": "ક્રોસ-ટર્ન ડુપ્લિકેશન દૂર કરવું",
     "contextCcrSubtitle": "માર્કર્સ પુનઃપ્રાપ્ત કરો",
-    "contextLlmlinguaSubtitle": "સિમેન્ટીક કાપણી",
     "contextLiteSubtitle": "ઝડપી વ્હાઇટસ્પેસ સફાઈ",
     "contextAggressiveSubtitle": "સારાંશ અને એજિંગ",
     "contextUltraSubtitle": "હ્યુરિસ્ટિક કાપણી",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "હેડરૂમ",
     "lite": "લાઇટ",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "સેશન ડીડપ",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ફાઇન-ટ્યુન હ્યુરિસ્ટિક કાપણી, SLM ફોલબેક અને પ્રતિ-સંદેશ થ્રેશોલ્ડ",
     "compressionUltraRate": "દર રાખો",
     "compressionUltraMinScore": "ન્યૂનતમ સ્કોર થ્રેશોલ્ડ",
-    "compressionUltraSlmFallback": "આક્રમક પર ફોલબેક",
     "compressionUltraModelPath": "SLM મોડલ પાથ",
     "compressionUltraEngine": "અલ્ટ્રા ટાયર",
     "compressionUltraEngineHeuristic": "હ્યુરિસ્ટિક (Tier-A, ડિફૉલ્ટ)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, ઑપ્ટ-ઇન)",
-    "compressionUltraSlmHint": "SLM પ્રથમ ઉપયોગ (cold-start) પર એક નાનું ONNX મોડેલ ડાઉનલોડ કરે છે અને સમયસમાપ્તિ પર અથવા અનુપલબ્ધ હોય તો પારદર્શક રીતે હ્યુરિસ્ટિક પર પાછું ફરે છે.",
-    "compressionUltraSlmPrewarm": "સક્ષમ કરવા પર SLM મોડેલ પ્રી-વોર્મ કરો",
     "compressionSummarizerEnabled": "સારાંશને સક્ષમ કરો",
     "compressionMaxTokensPerMessage": "સંદેશ દીઠ મહત્તમ ટોકન્સ",
     "compressionMinSavings": "ન્યૂનતમ બચત થ્રેશોલ્ડ",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "એગ્રેસિવ",
         "description": "જૂના ટર્ન્સનો સારાંશ બનાવો અને તેને જૂના કરો."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "સિમેન્ટીક પ્રુનિંગ (ONNX)."
       },
       "ultra": {
         "label": "અલ્ટ્રા",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "પુનરાવર્તિત સંદર્ભ બ્લોક્સ માટે કન્ટેન્ટ-એડ્રેસ્ડ રીટ્રીવલ માર્કર્સ."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (સિમેન્ટીક પ્રુનિંગ)",
-        "description": "ONNX-આધારિત સિમેન્ટીક ટોકન વર્ગીકરણ. ફક્ત ગદ્યને સંકુચિત કરે છે; કોડ બ્લોક્સ અને સુરક્ષિત રચનાઓ સુરક્ષિત છે. મોડેલ અથવા વર્કર ભૂલો પર ફેલ-ઓપન થાય છે."
-      },
       "lite": {
         "name": "લાઇટ",
         "description": "ઝડપી વ્હાઇટસ્પેસ, ટૂલ-રિઝલ્ટ અને ઇમેજ URL ઘટાડો."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "સંકોચન દર"
       },
-      "modelPath": {
-        "label": "મોડેલ પાથ"
-      },
       "minRows": {
         "label": "કમ્પેક્ટ કરવા માટે ન્યૂનતમ પંક્તિઓ",
         "description": "ટેબ્યુલર કમ્પેક્શન ટ્રિગર કરવા માટે સજાતીય JSON એરેમાં જરૂરી ન્યૂનતમ પંક્તિઓ. ડિફોલ્ટ: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "ન્યૂનતમ સ્કોર થ્રેશોલ્ડ"
       },
-      "slmFallbackToAggressive": {
-        "label": "એગ્રેસિવ પર પાછા ફરો"
-      },
       "intensity": {
         "label": "તીવ્રતા"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "પ્રતિસાદી રીતે લાંબા ટૂલ પરિણામોને ટૂંકા કરો",
         "description": "લાઇટ સંકોચન દરમિયાન 2,000 અક્ષરોની ઉપર ટૂલ પરિણામોને કાપે છે. તાત્કાલિક ઓવરફ્લો સુરક્ષા ત્યારે પણ સામગ્રીને કાપી શકે છે જ્યારે સંદર્ભ મોડેલ બજેટને પાર કરે છે."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "સંકોચન દર (રાખવાનો ગુણોત્તર)"
-        },
-        "modelPath": {
-          "label": "મોડેલ પાથ (ઓફલાઇન ઓવરરાઇડ)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "સ્પ્લિટ વ્યૂ (ટૂંક સમયમાં આવી રહ્યું છે)",
     "inputPlaceholder": "પ્રોમ્પ્ટ, ટૂલ આઉટપુટ અથવા સંદર્ભ પેસ્ટ કરો…",
     "activeCombined": "સંયુક્ત પ્રવાહમાં સક્રિય",
-    "requiresOnnx": "ONNX મૉડલની જરૂર છે",
     "verifyFidelity": "ચોકસાઈ ચકાસો (સામગ્રીને બગાડતા કોઈપણ સ્તરને નકારો)",
     "fuzzyDedup": "ફઝી ડીડુપ્લિકેશન (લગભગ-ડુપ્લિકેટ → CCR)",
     "protectSensitive": "સંવેદનશીલ સામગ્રીને સુરક્ષિત કરો (જોખમ ગેટ)",

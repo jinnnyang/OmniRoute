@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live routeringscascade",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabulaire compactie",
     "contextSessionDedupSubtitle": "Cross-turn deduplicatie",
     "contextCcrSubtitle": "Markers ophalen",
-    "contextLlmlinguaSubtitle": "Semantische pruning",
     "contextLiteSubtitle": "Snelle witruimte-opschoning",
     "contextAggressiveSubtitle": "Samenvatting en veroudering",
     "contextUltraSubtitle": "Heuristische pruning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Sessie-dedup",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Verfijn heuristisch snoeien, SLM-fallback en drempelwaarden per bericht",
     "compressionUltraRate": "Houd koers",
     "compressionUltraMinScore": "Minimale scoredrempel",
-    "compressionUltraSlmFallback": "Terugval naar agressief",
     "compressionUltraModelPath": "SLM-modelpad",
     "compressionUltraEngine": "Ultra-tier",
     "compressionUltraEngineHeuristic": "Heuristisch (Tier-A, standaard)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opt-in)",
-    "compressionUltraSlmHint": "SLM downloadt een klein ONNX-model bij het eerste gebruik (koude start) en valt transparant terug op de heuristiek bij een time-out of als deze niet beschikbaar is.",
-    "compressionUltraSlmPrewarm": "SLM-model voorverwarmen bij inschakelen",
     "compressionSummarizerEnabled": "Schakel Samenvattend in",
     "compressionMaxTokensPerMessage": "Max. aantal tokens per bericht",
     "compressionMinSavings": "Minimale besparingsdrempel",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agressief",
         "description": "Oude beurten samenvatten en verouderen."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Semantische pruning (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Inhoudsgeadresseerde ophaalmarkeringen voor herhaalde contextblokken."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (semantische pruning)",
-        "description": "Op ONNX gebaseerde semantische tokenclassificatie. Comprimeert alleen proza; codeblokken en behouden constructies worden beschermd. Faalt open bij model- of workerfouten."
-      },
       "lite": {
         "name": "Lite",
         "description": "Snelle reductie van witruimte, toolresultaten en afbeeldings-URL's."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Compressieratio"
       },
-      "modelPath": {
-        "label": "Modelpad"
-      },
       "minRows": {
         "label": "Minimum aantal rijen om te compacteren",
         "description": "Minimum aantal rijen in een homogene JSON-array dat vereist is om tabulaire compactie te activeren. Standaard: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimale scoredrempel"
       },
-      "slmFallbackToAggressive": {
-        "label": "Terugvallen op Agressief"
-      },
       "intensity": {
         "label": "Intensiteit"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proactief lange toolresultaten inkorten",
         "description": "Truncateert toolresultaten boven de 2.000 tekens tijdens Lite-compressie. Noodoverloopbescherming kan nog steeds inhoud inkorten wanneer de context het modelbudget overschrijdt."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Compressieratio (behoudratio)"
-        },
-        "modelPath": {
-          "label": "Modelpad (offline overschrijving)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Gesplitste weergave (binnenkort beschikbaar)",
     "inputPlaceholder": "Plak een prompt, tooluitvoer of context…",
     "activeCombined": "Actief in de gecombineerde flow",
-    "requiresOnnx": "vereist een ONNX-model",
     "verifyFidelity": "Fidelity verifiëren (elke laag afwijzen die inhoud beschadigt)",
     "fuzzyDedup": "Fuzzy deduplicatie (bijna-duplicaat → CCR)",
     "protectSensitive": "Gevoelige inhoud beveiligen (risk gate)",

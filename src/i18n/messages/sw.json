@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Msururu wa uelekezaji wa moja kwa moja",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Ushindiliaji wa jedwali",
     "contextSessionDedupSubtitle": "Uondoaji wa marudio ya zamu mbalimbali",
     "contextCcrSubtitle": "Rejesha alama",
-    "contextLlmlinguaSubtitle": "Upogoleaji wa kisemantiki",
     "contextLiteSubtitle": "Usafishaji wa haraka wa nafasi wazi",
     "contextAggressiveSubtitle": "Muhtasari na kuzeeka",
     "contextUltraSubtitle": "Upogoleaji wa kiheuristiki",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Nafasi ya Ziada",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Uondoaji wa Nakala za Kipindi",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Fine-tune heuristic kupogoa, kurudi nyuma kwa SLM, na vizingiti kwa kila ujumbe",
     "compressionUltraRate": "Weka Kiwango",
     "compressionUltraMinScore": "Kiwango cha chini cha Alama",
-    "compressionUltraSlmFallback": "Rudi kwa Aggressive",
     "compressionUltraModelPath": "Njia ya Mfano ya SLM",
     "compressionUltraEngine": "Kiwango cha Ultra",
     "compressionUltraEngineHeuristic": "Heuristic (Kiwango-A, chaguomsingi)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, ya kuchagua)",
-    "compressionUltraSlmHint": "SLM hupakua modeli ndogo ya ONNX inapotumiwa mara ya kwanza (cold-start) na inarudi kwenye heuristic kwa uwazi wakati muda unapoisha au ikiwa haipatikani.",
-    "compressionUltraSlmPrewarm": "Tayarisha mapema modeli ya SLM wakati wa kuwezesha",
     "compressionSummarizerEnabled": "Washa Muhtasari",
     "compressionMaxTokensPerMessage": "Tokeni za Kiwango cha Juu kwa Kila Ujumbe",
     "compressionMinSavings": "Kiwango cha chini cha Akiba",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Kali",
         "description": "Fanya muhtasari na uzeeze zamu za zamani."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Upunguzaji wa kisemantiki (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Viashiria vya urejeshaji vinavyolengwa na maudhui kwa ajili ya vizuizi vya muktadha vinavyojirudia."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Upogoleaji wa Kisemantiki)",
-        "description": "Uainishaji wa tokeni za kisemantiki unaotegemea ONNX. Hukandamiza nathari pekee; vizuizi vya msimbo na miundo iliyohifadhiwa inalindwa. Hufeli kwa kufungua kukiwa na hitilafu za modeli au mfanyakazi."
-      },
       "lite": {
         "name": "Lite",
         "description": "Upunguzaji wa haraka wa nafasi wazi, matokeo ya zana na URL za picha."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Kiwango cha ukandamizaji"
       },
-      "modelPath": {
-        "label": "Njia ya modeli"
-      },
       "minRows": {
         "label": "Kiwango cha chini cha safu mlalo za kubana",
         "description": "Kiwango cha chini cha safu mlalo katika safu ya JSON inayofanana inayohitajika ili kuanzisha ubana wa jedwali. Chaguo-msingi: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Kiwango cha chini cha alama"
       },
-      "slmFallbackToAggressive": {
-        "label": "Rejea kwenye Kali"
-      },
       "intensity": {
         "label": "Ukali"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Kukata matokeo marefu ya zana kwa njia ya kujiandaa",
         "description": "Hupunguza matokeo ya zana zaidi ya herufi 2,000 wakati wa kufinya Lite. Ulinzi wa dharura wa kupita kiasi bado unaweza kukata maudhui wakati muktadha unazidi bajeti ya mfano."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Kiwango cha ukandamizaji (uwiano wa kubakiza)"
-        },
-        "modelPath": {
-          "label": "Njia ya modeli (upuuza wa nje ya mtandao)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Mwonekano uliogawanyika (inakuja hivi karibuni)",
     "inputPlaceholder": "Bandika kidokezo, matokeo ya zana, au muktadha…",
     "activeCombined": "Inafanya kazi katika mtiririko uliounganishwa",
-    "requiresOnnx": "inahitaji modeli ya ONNX",
     "verifyFidelity": "Thibitisha uaminifu (kataa safu yoyote inayoharibu maudhui)",
     "fuzzyDedup": "Uondoaji wa nakala zisizo dhahiri (karibu-nakala → CCR)",
     "protectSensitive": "Linda maudhui nyeti (lango la hatari)",

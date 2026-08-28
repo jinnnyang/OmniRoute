@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "लाइव रूटिंग कैस्केड",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "टैबुलर कॉम्पेक्शन",
     "contextSessionDedupSubtitle": "क्रॉस-टर्न डिडुप्लिकेशन",
     "contextCcrSubtitle": "मार्कर्स पुनर्प्राप्त करें",
-    "contextLlmlinguaSubtitle": "सिमेंटिक प्रूनिंग",
     "contextLiteSubtitle": "तेज़ व्हाइटस्पेस सफ़ाई",
     "contextAggressiveSubtitle": "सारांश और एजिंग",
     "contextUltraSubtitle": "ह्यूरिस्टिक प्रूनिंग",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "हेडरूम",
     "lite": "लाइट",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "सेशन डीडुप",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "फाइन-ट्यून ह्यूरिस्टिक प्रूनिंग, एसएलएम फ़ॉलबैक और प्रति-संदेश सीमाएँ",
     "compressionUltraRate": "दर रखें",
     "compressionUltraMinScore": "न्यूनतम स्कोर सीमा",
-    "compressionUltraSlmFallback": "आक्रामक की ओर वापसी",
     "compressionUltraModelPath": "एसएलएम मॉडल पथ",
     "compressionUltraEngine": "Ultra टियर",
     "compressionUltraEngineHeuristic": "ह्यूरिस्टिक (Tier-A, डिफ़ॉल्ट)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, ऑप्ट-इन)",
-    "compressionUltraSlmHint": "SLM पहली बार उपयोग (कोल्ड-स्टार्ट) पर एक छोटा ONNX मॉडल डाउनलोड करता है और टाइमआउट होने पर या अनुपलब्ध होने पर पारदर्शी रूप से ह्यूरिस्टिक पर फ़ॉलबैक करता है।",
-    "compressionUltraSlmPrewarm": "SLM मॉडल को सक्षम करने पर प्री-वार्म करें",
     "compressionSummarizerEnabled": "सारांश सक्षम करें",
     "compressionMaxTokensPerMessage": "प्रति संदेश अधिकतम टोकन",
     "compressionMinSavings": "न्यूनतम बचत सीमा",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "आक्रामक",
         "description": "पुराने टर्न्स को सारांशित और पुराना करें।"
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "सिमेंटिक प्रूनिंग (ONNX)।"
       },
       "ultra": {
         "label": "अल्ट्रा",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "दोहराए गए संदर्भ ब्लॉकों के लिए सामग्री-संबोधित पुनर्प्राप्ति मार्कर।"
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (सिमेंटिक प्रूनिंग)",
-        "description": "ONNX-आधारित सिमेंटिक टोकन वर्गीकरण। केवल गद्य को कंप्रेस करता है; कोड ब्लॉक और संरक्षित संरचनाएं सुरक्षित रहती हैं। मॉडल या वर्कर त्रुटियों पर फ़ेल-ओपन होता है।"
-      },
       "lite": {
         "name": "लाइट",
         "description": "तेज़ व्हाइटस्पेस, टूल-परिणाम और छवि URL में कमी।"
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "कंप्रेशन दर"
       },
-      "modelPath": {
-        "label": "मॉडल पाथ"
-      },
       "minRows": {
         "label": "कॉम्पैक्ट करने के लिए न्यूनतम पंक्तियाँ",
         "description": "सारणीबद्ध कॉम्पैक्शन को ट्रिगर करने के लिए सजातीय JSON ऐरे में आवश्यक न्यूनतम पंक्तियाँ। डिफ़ॉल्ट: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "न्यूनतम स्कोर सीमा"
       },
-      "slmFallbackToAggressive": {
-        "label": "आक्रामक पर फ़ॉलबैक करें"
-      },
       "intensity": {
         "label": "तीव्रता"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "सक्रिय रूप से लंबे टूल परिणामों को संक्षिप्त करें",
         "description": "Lite संकुचन के दौरान 2,000 वर्णों से अधिक के उपकरण परिणामों को काटता है। आपातकालीन ओवरफ्लो सुरक्षा तब भी सामग्री को काट सकती है जब संदर्भ मॉडल बजट से अधिक हो जाता है।"
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "कंप्रेशन दर (कीप रेशियो)"
-        },
-        "modelPath": {
-          "label": "मॉडल पाथ (ऑफ़लाइन ओवरराइड)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "स्प्लिट दृश्य (जल्द आ रहा है)",
     "inputPlaceholder": "कोई प्रॉम्प्ट, टूल आउटपुट या संदर्भ पेस्ट करें…",
     "activeCombined": "संयुक्त प्रवाह में सक्रिय",
-    "requiresOnnx": "ONNX मॉडल की आवश्यकता है",
     "verifyFidelity": "सटीकता सत्यापित करें (सामग्री को दूषित करने वाली किसी भी परत को अस्वीकार करें)",
     "fuzzyDedup": "फ़ज़ी डिडुप्लीकेशन (लगभग-डुप्लिकेट → CCR)",
     "protectSensitive": "संवेदनशील सामग्री को सुरक्षित रखें (जोखिम गेट)",

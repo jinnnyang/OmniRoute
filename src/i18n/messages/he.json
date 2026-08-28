@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "מפל ניתוב בזמן אמת",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "דחיסה טבלאית",
     "contextSessionDedupSubtitle": "הסרת כפילויות בין תורות",
     "contextCcrSubtitle": "אחזור סמנים",
-    "contextLlmlinguaSubtitle": "גיזום סמנטי",
     "contextLiteSubtitle": "ניקוי מהיר של רווחים",
     "contextAggressiveSubtitle": "סיכום והתיישנות",
     "contextUltraSubtitle": "גיזום יוריסטי",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "מרווח ביטחון",
     "lite": "לייט",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "מניעת כפילויות סשן",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "כוונן עדין גיזום היוריסטי, SLM fallback וספים לכל הודעה",
     "compressionUltraRate": "שמור על שיעור",
     "compressionUltraMinScore": "סף ציון מינימלי",
-    "compressionUltraSlmFallback": "נסיגה לאגרסיבית",
     "compressionUltraModelPath": "נתיב דגם SLM",
     "compressionUltraEngine": "רמת אולטרה",
     "compressionUltraEngineHeuristic": "יוריסטי (Tier-A, ברירת מחדל)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, בחירה ידנית)",
-    "compressionUltraSlmHint": "SLM מוריד מודל ONNX קטן בשימוש הראשון (הפעלה קרה) ומבצע מעבר שקוף ליוריסטיקה במקרה של פסק זמן או אם אינו זמין.",
-    "compressionUltraSlmPrewarm": "חימום מראש של מודל SLM בעת הפעלה",
     "compressionSummarizerEnabled": "הפעל את Summarizer",
     "compressionMaxTokensPerMessage": "מקסימום אסימונים לכל הודעה",
     "compressionMinSavings": "סף חיסכון מינימלי",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "אגרסיבי",
         "description": "סיכום ויישון של תורות ישנים."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "גיזום סמנטי (ONNX)."
       },
       "ultra": {
         "label": "אולטרה",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "סמני אחזור מבוססי-תוכן עבור בלוקי הקשר חוזרים."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (גיזום סמנטי)",
-        "description": "סיווג אסימונים סמנטי מבוסס ONNX. דוחס פרוזה בלבד; בלוקי קוד ומבנים שמורים מוגנים. נכשל במצב פתוח במקרה של שגיאות מודל או וורקר."
-      },
       "lite": {
         "name": "לייט",
         "description": "צמצום מהיר של רווחים לבנים, תוצאות כלים וכתובות URL של תמונות."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "קצב דחיסה"
       },
-      "modelPath": {
-        "label": "נתיב המודל"
-      },
       "minRows": {
         "label": "מינימום שורות לכיווץ",
         "description": "מספר השורות המינימלי במערך JSON הומוגני הנדרש להפעלת כיווץ טבלאי. ברירת מחדל: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "סף ציון מינימלי"
       },
-      "slmFallbackToAggressive": {
-        "label": "חזרה לאגרסיבי"
-      },
       "intensity": {
         "label": "עוצמה"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "בצורה פרואקטיבית לקצר תוצאות כלי ארוכות",
         "description": "מקטין את תוצאות הכלים מעל 2,000 תווים במהלך דחיסת Lite. הגנה על עודף חירום עשויה עדיין לקצץ תוכן כאשר ההקשר חורג מתקציב המודל."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "קצב דחיסה (יחס שמירה)"
-        },
-        "modelPath": {
-          "label": "נתיב המודל (עקיפה לא מקוונת)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "תצוגה מפוצלת (בקרוב)",
     "inputPlaceholder": "הדבק הנחיה, פלט כלי או הקשר…",
     "activeCombined": "פעיל בזרימה המשולבת",
-    "requiresOnnx": "דורש מודל ONNX",
     "verifyFidelity": "אמת נאמנות (דחה כל שכבה שמשחיתה תוכן)",
     "fuzzyDedup": "מניעת כפילויות עמומה (כמעט-כפול ← CCR)",
     "protectSensitive": "הגן על תוכן רגיש (שער סיכונים)",

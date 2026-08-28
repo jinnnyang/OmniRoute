@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "ライブルーティングカスケード",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "表形式の圧縮",
     "contextSessionDedupSubtitle": "クロスターン重複排除",
     "contextCcrSubtitle": "マーカーの取得",
-    "contextLlmlinguaSubtitle": "セマンティックプルーニング",
     "contextLiteSubtitle": "高速空白クリーンアップ",
     "contextAggressiveSubtitle": "要約とエイジング",
     "contextUltraSubtitle": "ヒューリスティックプルーニング",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "ヘッドルーム",
     "lite": "ライト",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "セッション重複排除",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ヒューリスティックプルーニング、SLMフォールバック、メッセージごとのしきい値を微調整する",
     "compressionUltraRate": "キープレート",
     "compressionUltraMinScore": "最小スコアしきい値",
-    "compressionUltraSlmFallback": "アグレッシブへのフォールバック",
     "compressionUltraModelPath": "SLM モデルのパス",
     "compressionUltraEngine": "Ultraティア",
     "compressionUltraEngineHeuristic": "ヒューリスティック (Tier-A、デフォルト)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2、オプトイン)",
-    "compressionUltraSlmHint": "SLMは初回使用時 (コールドスタート) に小さなONNXモデルをダウンロードし、タイムアウト時や利用できない場合は透過的にヒューリスティックにフォールバックします。",
-    "compressionUltraSlmPrewarm": "有効化時にSLMモデルを事前ウォームアップ",
     "compressionSummarizerEnabled": "サマライザーを有効にする",
     "compressionMaxTokensPerMessage": "メッセージあたりの最大トークン数",
     "compressionMinSavings": "最小貯蓄額のしきい値",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "アグレッシブ",
         "description": "古いターンを要約し、エージングします。"
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "セマンティックプルーニング (ONNX)。"
       },
       "ultra": {
         "label": "ウルトラ",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "繰り返されるコンテキストブロック用のコンテンツアドレス指定された検索マーカー。"
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (セマンティックプルーニング)",
-        "description": "ONNXベースのセマンティックトークン分類。散文のみを圧縮し、コードブロックと保護された構造は保護されます。モデルまたはワーカーのエラー時はフェイルオープンになります。"
-      },
       "lite": {
         "name": "ライト",
         "description": "空白、ツール結果、および画像URLの高速な削減。"
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "圧縮率"
       },
-      "modelPath": {
-        "label": "モデルパス"
-      },
       "minRows": {
         "label": "圧縮する最小行数",
         "description": "表形式の圧縮をトリガーするために必要な、同質なJSON配列の最小行数。デフォルト: 8。"
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "最小スコアしきい値"
       },
-      "slmFallbackToAggressive": {
-        "label": "「アグレッシブ」にフォールバック"
-      },
       "intensity": {
         "label": "強度"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "長いツールの結果を積極的に切り詰める",
         "description": "Lite圧縮中に2,000文字を超えるツール結果を切り捨てます。コンテキストがモデルの予算を超えると、緊急オーバーフロープロテクションがコンテンツをトリムする場合があります。"
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "圧縮率 (保持比率)"
-        },
-        "modelPath": {
-          "label": "モデルパス (オフラインオーバーライド)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "分割表示 (近日公開)",
     "inputPlaceholder": "プロンプト、ツールの出力、またはコンテキストを貼り付け…",
     "activeCombined": "結合フローでアクティブ",
-    "requiresOnnx": "ONNXモデルが必要です",
     "verifyFidelity": "再現性を検証 (コンテンツを破損するレイヤーを拒否)",
     "fuzzyDedup": "あいまい重複排除 (ほぼ重複 → CCR)",
     "protectSensitive": "機密コンテンツの保護 (リスクゲート)",

@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Cascata de roteamento em tempo real",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Compactação tabular",
     "contextSessionDedupSubtitle": "Deduplicação entre turnos",
     "contextCcrSubtitle": "Recuperar marcadores",
-    "contextLlmlinguaSubtitle": "Poda semântica",
     "contextLiteSubtitle": "Limpeza rápida de espaços em branco",
     "contextAggressiveSubtitle": "Resumo e envelhecimento",
     "contextUltraSubtitle": "Poda heurística",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Session Dedup",
@@ -7447,13 +7444,9 @@
     "compressionUltraConfigDesc": "Fine-tune heuristic pruning, SLM fallback, and per-message thresholds",
     "compressionUltraRate": "Keep Rate",
     "compressionUltraMinScore": "Minimum Score Threshold",
-    "compressionUltraSlmFallback": "Fallback to Aggressive",
     "compressionUltraModelPath": "SLM Model Path",
     "compressionUltraEngine": "Ultra nível",
     "compressionUltraEngineHeuristic": "Heurística (Tier-A, padrão)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opt-in)",
-    "compressionUltraSlmHint": "O SLM baixa um pequeno modelo ONNX na primeira utilização (cold-start) e recorre de forma transparente à heurística em caso de timeout ou se estiver indisponível.",
-    "compressionUltraSlmPrewarm": "Pré-aquecer o modelo SLM ao habilitar",
     "compressionSummarizerEnabled": "Enable Summarizer",
     "compressionMaxTokensPerMessage": "Max Tokens Per Message",
     "compressionMinSavings": "Min Savings Threshold",
@@ -7678,7 +7671,8 @@
     "backupCleanupSuccess": "Excluído(s) {backups} conjunto(s) de backup e {files} arquivo(s).",
     "backupCleanupFailed": "Falha ao limpar backups do banco de dados",
     "purgeQuotaSnapshotsSuccess": "{count} snapshots de cota removidos",
-    "purgeQuotaSnapshotsFailed": "Falha ao remover snapshots de cota",    "purgeCallLogsSuccess": "{count} logs de chamadas removidos",
+    "purgeQuotaSnapshotsFailed": "Falha ao remover snapshots de cota",
+    "purgeCallLogsSuccess": "{count} logs de chamadas removidos",
     "purgeCallLogsFailed": "Falha ao remover logs de chamadas",
     "purgeDetailedLogsSuccess": "{count} logs detalhados removidos",
     "purgeDetailedLogsFailed": "Falha ao remover logs detalhados",
@@ -7688,7 +7682,8 @@
     "invalidJsonFileType": "Tipo de arquivo inválido. Apenas arquivos .json são permitidos.",
     "legacyJsonImportSuccess": "JSON legado importado com sucesso!",
     "jsonImportFailed": "Falha ao importar JSON",
-    "jsonImportError": "Erro durante a importação de JSON",    "storagePurgeData": "Limpar dados",
+    "jsonImportError": "Erro durante a importação de JSON",
+    "storagePurgeData": "Limpar dados",
     "storagePurgeDataDesc": "Excluir imediatamente todos os registros sem aplicar verificações de retenção. Use com cautela.",
     "storageRetentionCleanup": "Configurações de Retenção",
     "storageRetentionCleanupDesc": "Configure a retenção de registros operacionais e a limpeza de backup do banco de dados.",
@@ -7819,10 +7814,6 @@
       "aggressive": {
         "label": "Aggressive",
         "description": "Resume e envelhece turnos antigos."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Poda semântica (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8414,6 @@
         "name": "CCR",
         "description": "Marcadores de recuperação endereçados por conteúdo para blocos de contexto repetidos."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Poda Semântica)",
-        "description": "Classificação semântica de tokens baseada em ONNX. Comprime apenas prosa; blocos de código e construções preservadas são protegidos. Falha aberta em caso de erros de modelo ou worker."
-      },
       "lite": {
         "name": "Lite",
         "description": "Redução rápida de espaços em branco, resultados de ferramentas e URLs de imagem."
@@ -8466,9 +8453,6 @@
       "compressionRate": {
         "label": "Taxa de compressão"
       },
-      "modelPath": {
-        "label": "Caminho do modelo"
-      },
       "minRows": {
         "label": "Linhas mínimas para compactar",
         "description": "Número mínimo de linhas em um array JSON homogêneo necessário para acionar a compactação tabular. Padrão: 8."
@@ -8488,9 +8472,6 @@
       "minScoreThreshold": {
         "label": "Limite mínimo de pontuação"
       },
-      "slmFallbackToAggressive": {
-        "label": "Recorrer ao modo Aggressive"
-      },
       "intensity": {
         "label": "Intensidade"
       },
@@ -8500,16 +8481,6 @@
       "compressToolResults": {
         "label": "Truncar proativamente resultados longos de ferramentas",
         "description": "Trunca os resultados da ferramenta com mais de 2.000 caracteres durante a compressão Lite. A proteção de transbordo de emergência ainda pode cortar o conteúdo quando o contexto excede o orçamento do modelo."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Taxa de compressão (proporção de retenção)"
-        },
-        "modelPath": {
-          "label": "Caminho do modelo (substituição offline)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8581,6 @@
     "splitComingSoon": "Visão dividida (em breve)",
     "inputPlaceholder": "Cole um prompt, saída de ferramenta ou contexto…",
     "activeCombined": "Ativo no fluxo combinado",
-    "requiresOnnx": "requer um modelo ONNX",
     "verifyFidelity": "Verificar fidelidade (rejeitar qualquer camada que corrompa o conteúdo)",
     "fuzzyDedup": "Deduplicação difusa (quase-duplicata → CCR)",
     "protectSensitive": "Proteger conteúdo sensível (gate de risco)",

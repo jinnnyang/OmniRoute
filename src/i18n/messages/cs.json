@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Živá kaskáda směrování",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabulková komprimace",
     "contextSessionDedupSubtitle": "Deduplikace mezi tahy",
     "contextCcrSubtitle": "Získat značky",
-    "contextLlmlinguaSubtitle": "Sémantické prořezávání",
     "contextLiteSubtitle": "Rychlé čištění prázdných znaků",
     "contextAggressiveSubtitle": "Shrnutí a stárnutí",
     "contextUltraSubtitle": "Heuristické prořezávání",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Rezerva",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Deduplikace relací",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Dolaďte heuristické ořezávání, záložní SLM a prahové hodnoty pro jednotlivé zprávy",
     "compressionUltraRate": "Ponechat sazbu",
     "compressionUltraMinScore": "Práh minimálního skóre",
-    "compressionUltraSlmFallback": "Návrat k Aggressive",
     "compressionUltraModelPath": "Cesta modelu SLM",
     "compressionUltraEngine": "Úroveň Ultra",
     "compressionUltraEngineHeuristic": "Heuristická (Tier-A, výchozí)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, volitelné)",
-    "compressionUltraSlmHint": "SLM při prvním použití stáhne malý model ONNX (studený start) a v případě vypršení časového limitu nebo nedostupnosti transparentně přejde zpět na heuristiku.",
-    "compressionUltraSlmPrewarm": "Předehřát model SLM při aktivaci",
     "compressionSummarizerEnabled": "Povolit Summarizer",
     "compressionMaxTokensPerMessage": "Maximální počet tokenů na zprávu",
     "compressionMinSavings": "Minimální práh úspor",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresivní",
         "description": "Shrnout a nechat zestárnout staré tahy."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Sémantické prořezávání (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Značky pro vyhledávání adresované obsahem pro opakované bloky kontextu."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (sémantické prořezávání)",
-        "description": "Sémantická klasifikace tokenů na bázi ONNX. Komprimuje pouze prózu; bloky kódu a zachované konstrukty jsou chráněny. Při chybě modelu nebo workeru se chová jako otevřené."
-      },
       "lite": {
         "name": "Lite",
         "description": "Rychlá redukce prázdných znaků, výsledků nástrojů a URL obrázků."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Míra komprese"
       },
-      "modelPath": {
-        "label": "Cesta k modelu"
-      },
       "minRows": {
         "label": "Minimální počet řádků ke komprimaci",
         "description": "Minimální počet řádků v homogenním poli JSON vyžadovaný ke spuštění tabulkové komprimace. Výchozí: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimální prahová hodnota skóre"
       },
-      "slmFallbackToAggressive": {
-        "label": "Přepnout zpět na Agresivní"
-      },
       "intensity": {
         "label": "Intenzita"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proaktivně zkracujte dlouhé výsledky nástrojů",
         "description": "Zkracuje výsledky nástroje na více než 2 000 znaků během Lite komprese. Ochrana proti přetečení v nouzi může stále oříznout obsah, když kontext překročí rozpočet modelu."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Míra komprese (poměr zachování)"
-        },
-        "modelPath": {
-          "label": "Cesta k modelu (offline přepsání)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Rozdělené zobrazení (již brzy)",
     "inputPlaceholder": "Vložte prompt, výstup nástroje nebo kontext…",
     "activeCombined": "Aktivní v kombinovaném toku",
-    "requiresOnnx": "vyžaduje model ONNX",
     "verifyFidelity": "Ověřit věrnost (odmítnout jakoukoli vrstvu, která poškodí obsah)",
     "fuzzyDedup": "Fuzzy deduplikace (téměř duplicitní → CCR)",
     "protectSensitive": "Chránit citlivý obsah (bezpečnostní brána)",

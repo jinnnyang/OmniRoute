@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Cascade de routage en direct",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Compactage tabulaire",
     "contextSessionDedupSubtitle": "Déduplication inter-tours",
     "contextCcrSubtitle": "Récupérer les marqueurs",
-    "contextLlmlinguaSubtitle": "Élagage sémantique",
     "contextLiteSubtitle": "Nettoyage rapide des espaces",
     "contextAggressiveSubtitle": "Résumé et vieillissement",
     "contextUltraSubtitle": "Élagage heuristique",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Marge de sécurité",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Déduplication de session",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Affinez l’élagage heuristique, le repli SLM et les seuils par message",
     "compressionUltraRate": "Conserver le taux",
     "compressionUltraMinScore": "Seuil de score minimum",
-    "compressionUltraSlmFallback": "Repli vers l'agressivité",
     "compressionUltraModelPath": "Chemin du modèle SLM",
     "compressionUltraEngine": "Niveau Ultra",
     "compressionUltraEngineHeuristic": "Heuristique (Tier-A, par défaut)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, sur activation)",
-    "compressionUltraSlmHint": "Le SLM télécharge un petit modèle ONNX lors de la première utilisation (démarrage à froid) et bascule de manière transparente vers l'heuristique en cas de dépassement de délai ou s'il est indisponible.",
-    "compressionUltraSlmPrewarm": "Préchauffer le modèle SLM lors de l'activation",
     "compressionSummarizerEnabled": "Activer le résumé",
     "compressionMaxTokensPerMessage": "Nombre maximum de jetons par message",
     "compressionMinSavings": "Seuil d'économies minimum",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agressif",
         "description": "Résumer et vieillir les anciens tours."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Élagage sémantique (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Marqueurs de récupération adressés par le contenu pour les blocs de contexte répétés."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Élagage sémantique)",
-        "description": "Classification sémantique des tokens basée sur ONNX. Compresse uniquement la prose ; les blocs de code et les structures préservées sont protégés. Échoue en mode ouvert en cas d'erreur de modèle ou de worker."
-      },
       "lite": {
         "name": "Léger",
         "description": "Réduction rapide des espaces blancs, des résultats d'outils et des URL d'images."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Taux de compression"
       },
-      "modelPath": {
-        "label": "Chemin du modèle"
-      },
       "minRows": {
         "label": "Lignes minimales à compacter",
         "description": "Nombre minimum de lignes dans un tableau JSON homogène requis pour déclencher le compactage tabulaire. Par défaut : 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Seuil de score minimum"
       },
-      "slmFallbackToAggressive": {
-        "label": "Repli vers Agressif"
-      },
       "intensity": {
         "label": "Intensité"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Tronquer proactivement les longs résultats d'outils",
         "description": "Tronque les résultats des outils à plus de 2 000 caractères lors de la compression Lite. La protection d'urgence contre les débordements peut toujours réduire le contenu lorsque le contexte dépasse le budget du modèle."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Taux de compression (ratio de conservation)"
-        },
-        "modelPath": {
-          "label": "Chemin du modèle (remplacement hors ligne)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Vue partagée (bientôt disponible)",
     "inputPlaceholder": "Collez un prompt, une sortie d'outil ou un contexte…",
     "activeCombined": "Actif dans le flux combiné",
-    "requiresOnnx": "requiert un modèle ONNX",
     "verifyFidelity": "Vérifier la fidélité (rejeter toute couche qui corrompt le contenu)",
     "fuzzyDedup": "Déduplication floue (quasi-doublon → CCR)",
     "protectSensitive": "Protéger le contenu sensible (barrière de risque)",

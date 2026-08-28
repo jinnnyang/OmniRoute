@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Cascadă de rutare live",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Compactare tabulară",
     "contextSessionDedupSubtitle": "Deduplicare între runde",
     "contextCcrSubtitle": "Preluare markeri",
-    "contextLlmlinguaSubtitle": "Pruning semantic",
     "contextLiteSubtitle": "Curățare rapidă a spațiilor libere",
     "contextAggressiveSubtitle": "Rezumat și îmbătrânire",
     "contextUltraSubtitle": "Pruning euristic",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Deduplicare sesiune",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Ajustați tăierea euristică, retragerea SLM și pragurile per mesaj",
     "compressionUltraRate": "Păstrați rata",
     "compressionUltraMinScore": "Pragul minim de scor",
-    "compressionUltraSlmFallback": "Revenire la Agresiv",
     "compressionUltraModelPath": "Calea modelului SLM",
     "compressionUltraEngine": "Nivelul Ultra",
     "compressionUltraEngineHeuristic": "Euristică (Nivel-A, implicit)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opțional)",
-    "compressionUltraSlmHint": "SLM descarcă un model ONNX mic la prima utilizare (pornire la rece) și revine în mod transparent la euristică în caz de expirare a timpului sau dacă este indisponibil.",
-    "compressionUltraSlmPrewarm": "Preîncălzește modelul SLM la activare",
     "compressionSummarizerEnabled": "Activați Summarizer",
     "compressionMaxTokensPerMessage": "Numărul maxim de jetoane per mesaj",
     "compressionMinSavings": "Pragul minim de economii",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresiv",
         "description": "Rezumatul și învechirea replicilor vechi."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Prunare semantică (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Marcatori de regăsire adresați prin conținut pentru blocuri de context repetate."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Trunchiere semantică)",
-        "description": "Clasificare semantică a tokenurilor bazată pe ONNX. Comprimă doar proza; blocurile de cod și construcțiile păstrate sunt protejate. Eșuează în mod deschis la erori ale modelului sau ale worker-ului."
-      },
       "lite": {
         "name": "Lite",
         "description": "Reducere rapidă a spațiilor albe, a rezultatelor instrumentelor și a adreselor URL ale imaginilor."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Rată de compresie"
       },
-      "modelPath": {
-        "label": "Cale model"
-      },
       "minRows": {
         "label": "Număr minim de rânduri de compactat",
         "description": "Numărul minim de rânduri dintr-un tablou JSON omogen necesar pentru a declanșa compactarea tabulară. Implicit: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Prag minim de scor"
       },
-      "slmFallbackToAggressive": {
-        "label": "Revino la Agresiv"
-      },
       "intensity": {
         "label": "Intensitate"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Trunchiați proactiv rezultatele lungi ale instrumentului",
         "description": "Trunchiază rezultatele instrumentului peste 2.000 de caractere în timpul compresiei Lite. Protecția de suprasarcină de urgență poate tăia în continuare conținutul atunci când contextul depășește bugetul modelului."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Rată de compresie (raport de păstrare)"
-        },
-        "modelPath": {
-          "label": "Cale model (suprascriere offline)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Vizualizare divizată (în curând)",
     "inputPlaceholder": "Lipește un prompt, rezultatul unui instrument sau contextul…",
     "activeCombined": "Activ în fluxul combinat",
-    "requiresOnnx": "necesită un model ONNX",
     "verifyFidelity": "Verifică fidelitatea (respinge orice strat care corupe conținutul)",
     "fuzzyDedup": "Deduplicare fuzzy (aproape-duplicat → CCR)",
     "protectSensitive": "Protejează conținutul sensibil (filtru de risc)",

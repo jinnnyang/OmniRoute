@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "లైవ్ రూటింగ్ క్యాస్కేడ్",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "ట్యాబులర్ కంపాక్షన్",
     "contextSessionDedupSubtitle": "క్రాస్-టర్న్ డీడ్యూప్లికేషన్",
     "contextCcrSubtitle": "మార్కర్లను తిరిగి పొందండి",
-    "contextLlmlinguaSubtitle": "సెమాంటిక్ ప్రూనింగ్",
     "contextLiteSubtitle": "వేగవంతమైన వైట్‌స్పేస్ క్లీనప్",
     "contextAggressiveSubtitle": "సారాంశం మరియు ఏజింగ్",
     "contextUltraSubtitle": "హ్యూరిస్టిక్ ప్రూనింగ్",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "హెడ్‌రూమ్",
     "lite": "లైట్",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "సెషన్ డీడూప్",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ఫైన్-ట్యూన్ హ్యూరిస్టిక్ కత్తిరింపు, SLM ఫాల్‌బ్యాక్ మరియు పర్-మెసేజ్ థ్రెషోల్డ్‌లు",
     "compressionUltraRate": "రేట్ ఉంచండి",
     "compressionUltraMinScore": "కనిష్ట స్కోరు థ్రెషోల్డ్",
-    "compressionUltraSlmFallback": "దూకుడుకు ఫాల్‌బ్యాక్",
     "compressionUltraModelPath": "SLM మోడల్ మార్గం",
     "compressionUltraEngine": "అల్ట్రా టైర్",
     "compressionUltraEngineHeuristic": "హ్యూరిస్టిక్ (Tier-A, డిఫాల్ట్)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, ఆప్ట్-ఇన్)",
-    "compressionUltraSlmHint": "SLM మొదటి ఉపయోగంలో (కోల్డ్-స్టార్ట్) చిన్న ONNX మోడల్‌ను డౌన్‌లోడ్ చేస్తుంది మరియు సమయం ముగిసినప్పుడు లేదా అందుబాటులో లేనప్పుడు పారదర్శకంగా హ్యూరిస్టిక్‌కు మారుతుంది.",
-    "compressionUltraSlmPrewarm": "ఎనేబుల్ చేసినప్పుడు SLM మోడల్‌ను ప్రీ-వార్మ్ చేయండి",
     "compressionSummarizerEnabled": "సారాంశాన్ని ప్రారంభించండి",
     "compressionMaxTokensPerMessage": "ప్రతి సందేశానికి గరిష్ట టోకెన్లు",
     "compressionMinSavings": "కనిష్ట పొదుపు థ్రెషోల్డ్",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "అగ్రెసివ్",
         "description": "పాత టర్న్‌లను సంగ్రహించడం మరియు పాతబడేలా చేయడం."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "సెమాంటిక్ ప్రూనింగ్ (ONNX)."
       },
       "ultra": {
         "label": "అల్ట్రా",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "పునరావృతమయ్యే కాంటెక్స్ట్ బ్లాక్‌ల కోసం కంటెంట్-అడ్రస్డ్ రిట్రీవల్ మార్కర్లు."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (సెమాంటిక్ ప్రూనింగ్)",
-        "description": "ONNX-ఆధారిత సెమాంటిక్ టోకెన్ వర్గీకరణ. వచనాన్ని మాత్రమే కంప్రెస్ చేస్తుంది; కోడ్ బ్లాక్‌లు మరియు భద్రపరచబడిన నిర్మాణాలు రక్షించబడతాయి. మోడల్ లేదా వర్కర్ లోపాలపై ఫెయిల్ ఓపెన్ అవుతుంది."
-      },
       "lite": {
         "name": "లైట్",
         "description": "వేగవంతమైన వైట్‌స్పేస్, టూల్-రిజల్ట్ మరియు ఇమేజ్ URL తగ్గింపు."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "కంప్రెషన్ రేటు"
       },
-      "modelPath": {
-        "label": "మోడల్ పాత్"
-      },
       "minRows": {
         "label": "కంపాక్ట్ చేయడానికి కనీస అడ్డు వరుసలు",
         "description": "టేబులర్ కంపాక్షన్‌ను ట్రిగ్గర్ చేయడానికి సజాతీయ JSON అరేలో అవసరమైన కనీస అడ్డు వరుసలు. డిఫాల్ట్: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "కనీస స్కోర్ పరిమితి"
       },
-      "slmFallbackToAggressive": {
-        "label": "అగ్రెసివ్‌కు ఫాల్ బ్యాక్ అవ్వండి"
-      },
       "intensity": {
         "label": "తీవ్రత"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "సక్రియంగా పొడవైన సాధన ఫలితాలను కత్తిరించండి",
         "description": "Lite కంప్రెషన్ సమయంలో 2,000 అక్షరాల కంటే ఎక్కువ టూల్ ఫలితాలను కత్తిరిస్తుంది. సందర్భం మోడల్ బడ్జెట్‌ను మించితే అత్యవసర ఓవర్‌ఫ్లో రక్షణ ఇంకా కంటెంట్‌ను కత్తిరించవచ్చు."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "కంప్రెషన్ రేటు (కీప్ రేషియో)"
-        },
-        "modelPath": {
-          "label": "మోడల్ పాత్ (ఆఫ్‌లైన్ ఓవర్‌రైడ్)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "స్ప్లిట్ వీక్షణ (త్వరలో వస్తుంది)",
     "inputPlaceholder": "ప్రాంప్ట్, టూల్ అవుట్‌పుట్ లేదా కాంటెక్స్ట్‌ను పేస్ట్ చేయండి…",
     "activeCombined": "కంబైన్డ్ ఫ్లోలో యాక్టివ్‌గా ఉంది",
-    "requiresOnnx": "ONNX మోడల్ అవసరం",
     "verifyFidelity": "విశ్వసనీయతను ధృవీకరించండి (కంటెంట్‌ను పాడుచేసే ఏ లేయర్‌నైనా తిరస్కరించండి)",
     "fuzzyDedup": "ఫజ్జీ డీడూప్లికేషన్ (దాదాపు-డూప్లికేట్ → CCR)",
     "protectSensitive": "సున్నితమైన కంటెంట్‌ను రక్షించండి (రిస్క్ గేట్)",

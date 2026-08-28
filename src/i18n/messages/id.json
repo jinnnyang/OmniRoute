@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Kaskade perutean langsung",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Pemadatan tabular",
     "contextSessionDedupSubtitle": "Deduplikasi lintas-giliran",
     "contextCcrSubtitle": "Ambil penanda",
-    "contextLlmlinguaSubtitle": "Pemangkasan semantik",
     "contextLiteSubtitle": "Pembersihan spasi cepat",
     "contextAggressiveSubtitle": "Ringkasan dan penuaan",
     "contextUltraSubtitle": "Pemangkasan heuristik",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Dedup Sesi",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Sempurnakan pemangkasan heuristik, penggantian SLM, dan ambang batas per pesan",
     "compressionUltraRate": "Pertahankan Nilai",
     "compressionUltraMinScore": "Ambang Batas Skor Minimum",
-    "compressionUltraSlmFallback": "Mundur ke Agresif",
     "compressionUltraModelPath": "Jalur Model SLM",
     "compressionUltraEngine": "Tingkat Ultra",
     "compressionUltraEngineHeuristic": "Heuristik (Tingkat-A, default)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opt-in)",
-    "compressionUltraSlmHint": "SLM mengunduh model ONNX kecil pada penggunaan pertama (cold-start) dan secara transparan beralih kembali ke heuristik saat waktu habis atau jika tidak tersedia.",
-    "compressionUltraSlmPrewarm": "Pra-hangatkan model SLM saat diaktifkan",
     "compressionSummarizerEnabled": "Aktifkan Peringkas",
     "compressionMaxTokensPerMessage": "Token Maksimum Per Pesan",
     "compressionMinSavings": "Ambang Batas Penghematan Min",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresif",
         "description": "Ringkas dan usangkan giliran lama."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Pemangkasan semantik (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Penanda pengambilan beralamat konten untuk blok konteks berulang."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Pemangkasan Semantik)",
-        "description": "Klasifikasi token semantik berbasis ONNX. Hanya mengompresi prosa; blok kode dan konstruksi yang dipertahankan dilindungi. Fails open jika terjadi kesalahan model atau worker."
-      },
       "lite": {
         "name": "Lite",
         "description": "Pengurangan cepat spasi kosong, tool-result, dan URL gambar."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Tingkat kompresi"
       },
-      "modelPath": {
-        "label": "Jalur model"
-      },
       "minRows": {
         "label": "Baris minimum untuk dipadatkan",
         "description": "Jumlah baris minimum dalam array JSON homogen yang diperlukan untuk memicu pemadatan tabular. Default: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Ambang batas skor minimum"
       },
-      "slmFallbackToAggressive": {
-        "label": "Fallback ke Agresif"
-      },
       "intensity": {
         "label": "Intensitas"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Secara proaktif memotong hasil alat yang panjang",
         "description": "Memotong hasil alat lebih dari 2.000 karakter selama kompresi Lite. Perlindungan overflow darurat mungkin masih memangkas konten ketika konteks melebihi anggaran model."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Tingkat kompresi (keep ratio)"
-        },
-        "modelPath": {
-          "label": "Jalur model (override offline)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Tampilan terpisah (segera hadir)",
     "inputPlaceholder": "Tempelkan prompt, output alat, atau konteks…",
     "activeCombined": "Aktif dalam alur gabungan",
-    "requiresOnnx": "memerlukan model ONNX",
     "verifyFidelity": "Verifikasi fidelitas (tolak lapisan apa pun yang merusak konten)",
     "fuzzyDedup": "Deduplikasi fuzzy (hampir duplikat → CCR)",
     "protectSensitive": "Lindungi konten sensitif (gerbang risiko)",

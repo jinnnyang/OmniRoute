@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Deduplikacja sesji",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Kaskada routingu na żywo",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Kompaktowanie tabelaryczne",
     "contextSessionDedupSubtitle": "Deduplikacja między turami",
     "contextCcrSubtitle": "Pobierz znaczniki",
-    "contextLlmlinguaSubtitle": "Przycinanie semantyczne",
     "contextLiteSubtitle": "Szybkie oczyszczanie białych znaków",
     "contextAggressiveSubtitle": "Podsumowanie i starzenie",
     "contextUltraSubtitle": "Przycinanie heurystyczne",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Deduplikacja sesji",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Dostrajanie heurystycznego przycinania, SLM fallback oraz progów na wiadomość",
     "compressionUltraRate": "Wskaźnik zachowania",
     "compressionUltraMinScore": "Minimalny próg oceny",
-    "compressionUltraSlmFallback": "Fallback do trybu agresywnego",
     "compressionUltraModelPath": "Ścieżka do model SLM",
     "compressionUltraEngine": "Poziom Ultra",
     "compressionUltraEngineHeuristic": "Heurystyczny (Poziom A, domyślny)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opcjonalny)",
-    "compressionUltraSlmHint": "SLM pobiera mały model ONNX przy pierwszym użyciu (zimny start) i płynnie stosuje fallback do heurystyki w przypadku przekroczenia limitu czasu lub braku dostępności.",
-    "compressionUltraSlmPrewarm": "Wstępne ładowanie model SLM przy włączeniu",
     "compressionSummarizerEnabled": "Włącz podsumowywanie",
     "compressionMaxTokensPerMessage": "Maksymalna liczba tokens na wiadomość",
     "compressionMinSavings": "Minimalny próg oszczędności",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresywny",
         "description": "Podsumowuj i postarzaj stare tury."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Przycinanie semantyczne (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Znaczniki pobierania adresowane zawartością dla powtarzających się bloków kontekstu."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Semantyczne przycinanie)",
-        "description": "Klasyfikacja semantyczna tokenów oparta na ONNX. Kompresuje wyłącznie prozę; bloki kodu i zachowane konstrukcje są chronione. W przypadku błędów modelu lub procesu roboczego nie blokuje działania (fails open)."
-      },
       "lite": {
         "name": "Lite",
         "description": "Szybka redukcja białych znaków, wyników narzędzi i adresów URL obrazów."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Współczynnik kompresji"
       },
-      "modelPath": {
-        "label": "Ścieżka modelu"
-      },
       "minRows": {
         "label": "Minimalna liczba wierszy do kompaktowania",
         "description": "Minimalna liczba wierszy w jednorodnej tablicy JSON wymagana do uruchomienia kompaktowania tabelarycznego. Domyślnie: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimalny próg wyniku"
       },
-      "slmFallbackToAggressive": {
-        "label": "Przełącz awaryjnie na tryb agresywny"
-      },
       "intensity": {
         "label": "Intensywność"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proaktywnie skracaj długie wyniki narzędzi",
         "description": "Obcina wyniki narzędzia powyżej 2 000 znaków podczas kompresji Lite. Ochrona przed przepełnieniem w trybie awaryjnym może nadal przycinać treść, gdy kontekst przekracza budżet modelu."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Współczynnik kompresji (współczynnik zachowania)"
-        },
-        "modelPath": {
-          "label": "Ścieżka modelu (nadpisanie offline)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Widok podzielony (wkrótce)",
     "inputPlaceholder": "Wklej prompt, wynik działania narzędzia lub kontekst…",
     "activeCombined": "Aktywny w połączonym przepływie",
-    "requiresOnnx": "wymaga modelu ONNX",
     "verifyFidelity": "Weryfikuj wierność (odrzuć każdą warstwę, która uszkadza zawartość)",
     "fuzzyDedup": "Rozmyta deduplikacja (bliskie duplikaty → CCR)",
     "protectSensitive": "Chroń wrażliwe treści (bramka ryzyka)",

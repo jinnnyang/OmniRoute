@@ -1101,7 +1101,6 @@
     "contextHeadroom": "预留空间",
     "contextSessionDedup": "会话去重",
     "contextCcr": "内容寻址检索",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "组合工作室",
     "combosLiveSubtitle": "实时路由级联",
     "compressionStudio": "压缩工作室",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "表格压缩",
     "contextSessionDedupSubtitle": "跨轮次去重",
     "contextCcrSubtitle": "检索标记",
-    "contextLlmlinguaSubtitle": "语义剪枝",
     "contextLiteSubtitle": "快速空白字符清理",
     "contextAggressiveSubtitle": "摘要与老化",
     "contextUltraSubtitle": "启发式剪枝",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "余量",
     "lite": "轻量",
-    "llmlingua": "LLMLingua",
     "omniglyph": "全象形",
     "rtk": "RTK",
     "sessionDedup": "会话去重",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "微调启发式剪枝、SLM 后备和每条消息阈值",
     "compressionUltraRate": "保留比例",
     "compressionUltraMinScore": "最低分数阈值",
-    "compressionUltraSlmFallback": "回退到 Aggressive",
     "compressionUltraModelPath": "SLM 模型路径",
     "compressionUltraEngine": "极致级别",
     "compressionUltraEngineHeuristic": "启发式 (Tier-A，默认)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2，选择性加入)",
-    "compressionUltraSlmHint": "SLM 在首次使用时会下载一个小型 ONNX 模型（冷启动），并在超时或不可用时无缝回退到启发式算法。",
-    "compressionUltraSlmPrewarm": "启用时预热 SLM 模型",
     "compressionSummarizerEnabled": "启用摘要器",
     "compressionMaxTokensPerMessage": "每条消息最大 Token 数",
     "compressionMinSavings": "最低节省阈值",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "激进",
         "description": "总结并老化旧轮次。"
-      },
-      "llmlingua": {
-        "label": "LLMLingua",
-        "description": "语义剪枝 (ONNX)。"
       },
       "ultra": {
         "label": "极致",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "针对重复上下文块的内容寻址检索标记。"
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (语义剪枝)",
-        "description": "基于 ONNX 的语义 Token 分类。仅压缩自然语言文本；代码块和保留结构受保护。模型或 Worker 发生错误时自动放行。"
-      },
       "lite": {
         "name": "轻量",
         "description": "快速缩减空白字符、工具结果和图片 URL。"
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "压缩率"
       },
-      "modelPath": {
-        "label": "模型路径"
-      },
       "minRows": {
         "label": "压缩所需的最小行数",
         "description": "触发表格压缩所需的同构 JSON 数组的最小行数。默认值: 8。"
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "最低分数阈值"
       },
-      "slmFallbackToAggressive": {
-        "label": "回退到激进模式"
-      },
       "intensity": {
         "label": "强度"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "主动截断过长的工具结果",
         "description": "在 Lite 压缩期间截断超过 2,000 个字符的工具结果。当上下文超出模型预算时，紧急溢出保护仍可能裁剪内容。"
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "压缩率 (保留比例)"
-        },
-        "modelPath": {
-          "label": "模型路径 (离线覆盖)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "分屏视图 (即将推出)",
     "inputPlaceholder": "粘贴提示词、工具输出或上下文…",
     "activeCombined": "在组合流程中处于活动状态",
-    "requiresOnnx": "需要 ONNX 模型",
     "verifyFidelity": "验证保真度 (拒绝任何损坏内容的层)",
     "fuzzyDedup": "模糊去重 (近似重复 → CCR)",
     "protectSensitive": "保护敏感内容 (风险门控)",

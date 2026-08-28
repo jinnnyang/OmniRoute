@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Каскад маршрутизації в реальному часі",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Табличне ущільнення",
     "contextSessionDedupSubtitle": "Міжреплікова дедуплікація",
     "contextCcrSubtitle": "Отримання маркерів",
-    "contextLlmlinguaSubtitle": "Семантичне скорочення",
     "contextLiteSubtitle": "Швидке очищення пробілів",
     "contextAggressiveSubtitle": "Підсумовування та старіння",
     "contextUltraSubtitle": "Евристичне скорочення",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Запас",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Дедуплікація сесій",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Точне налаштування евристичної скорочення, резервної версії SLM і порогових значень для кожного повідомлення",
     "compressionUltraRate": "Зберегти ставку",
     "compressionUltraMinScore": "Мінімальний поріг балів",
-    "compressionUltraSlmFallback": "Повернення до агресивності",
     "compressionUltraModelPath": "Шлях моделі SLM",
     "compressionUltraEngine": "Рівень Ultra",
     "compressionUltraEngineHeuristic": "Евристичний (Tier-A, за замовчуванням)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, опціонально)",
-    "compressionUltraSlmHint": "SLM завантажує невелику модель ONNX під час першого використання (холодний старт) і непомітно повертається до евристики у разі тайм-ауту або недоступності.",
-    "compressionUltraSlmPrewarm": "Попередньо прогрівати модель SLM під час увімкнення",
     "compressionSummarizerEnabled": "Увімкнути підсумовувач",
     "compressionMaxTokensPerMessage": "Максимальна кількість токенів на повідомлення",
     "compressionMinSavings": "Мінімальний поріг заощаджень",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Aggressive",
         "description": "Підсумовування та старіння старих реплік."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Семантичне відсікання (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Маркери пошуку з адресацією за вмістом для повторюваних блоків контексту."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (семантичне скорочення)",
-        "description": "ONNX-based semantic token classification. Compresses prose only; code blocks and preserved constructs are protected. Продовжує роботу без стиснення у разі помилок моделі або воркера."
-      },
       "lite": {
         "name": "Lite",
         "description": "Швидке скорочення пробілів, результатів інструментів та URL-адрес зображень."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Ступінь стиснення"
       },
-      "modelPath": {
-        "label": "Шлях до моделі"
-      },
       "minRows": {
         "label": "Мінімальна кількість рядків для компактності",
         "description": "Мінімальна кількість рядків в однорідному масиві JSON, необхідна для запуску табличного ущільнення. За замовчуванням: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Мінімальний поріг оцінки"
       },
-      "slmFallbackToAggressive": {
-        "label": "Повернутися до Aggressive"
-      },
       "intensity": {
         "label": "Інтенсивність"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Проактивно обрізати довгі результати інструментів",
         "description": "Обрізає результати інструменту понад 2,000 символів під час Lite стиснення. Захист від надмірного переповнення може все ще обрізати вміст, коли контекст перевищує бюджет моделі."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Коефіцієнт стиснення (частка збереження)"
-        },
-        "modelPath": {
-          "label": "Шлях до моделі (перевизначення офлайн)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Split view (coming soon)",
     "inputPlaceholder": "Paste a prompt, tool output, or context…",
     "activeCombined": "Active in the combined flow",
-    "requiresOnnx": "потребує моделі ONNX",
     "verifyFidelity": "Перевірити точність (відхилити будь-який шар, що пошкоджує вміст)",
     "fuzzyDedup": "Неточне дедуплікування (майже дублікат → CCR)",
     "protectSensitive": "Захистити конфіденційний вміст (шлюз ризиків)",

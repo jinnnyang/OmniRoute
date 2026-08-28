@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "লাইভ রাউটিং ক্যাসকেড",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "ট্যাবুলার কম্প্যাকশন",
     "contextSessionDedupSubtitle": "ক্রস-টার্ন ডিডুপ্লিকেশন",
     "contextCcrSubtitle": "মার্কার পুনরুদ্ধার",
-    "contextLlmlinguaSubtitle": "সিম্যান্টিক প্রুনিং",
     "contextLiteSubtitle": "দ্রুত হোয়াইটস্পেস ক্লিনআপ",
     "contextAggressiveSubtitle": "সারাংশ এবং এজিং",
     "contextUltraSubtitle": "হিউরিস্টিক প্রুনিং",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "হেডরুম",
     "lite": "লাইট",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "সেশন ডিডুপ",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ফাইন-টিউন হিউরিস্টিক প্রুনিং, SLM ফলব্যাক এবং প্রতি-বার্তা থ্রেশহোল্ড",
     "compressionUltraRate": "রেট রাখুন",
     "compressionUltraMinScore": "ন্যূনতম স্কোর থ্রেশহোল্ড",
-    "compressionUltraSlmFallback": "আক্রমনাত্মক পতন",
     "compressionUltraModelPath": "এসএলএম মডেল পাথ",
     "compressionUltraEngine": "আল্ট্রা টিয়ার",
     "compressionUltraEngineHeuristic": "হিউরিস্টিক (টিয়ার-এ, ডিফল্ট)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, অপ্ট-ইন)",
-    "compressionUltraSlmHint": "SLM প্রথম ব্যবহারের সময় (কোল্ড-স্টার্ট) একটি ছোট ONNX মডেল ডাউনলোড করে এবং টাইমআউট হলে বা অনুপলব্ধ থাকলে স্বচ্ছভাবে হিউরিস্টিক পদ্ধতিতে ফিরে যায়।",
-    "compressionUltraSlmPrewarm": "সক্ষম করার সময় SLM মডেল প্রি-ওয়ার্ম করুন",
     "compressionSummarizerEnabled": "সামারাইজার সক্ষম করুন",
     "compressionMaxTokensPerMessage": "বার্তা প্রতি সর্বোচ্চ টোকেন",
     "compressionMinSavings": "ন্যূনতম সঞ্চয় থ্রেশহোল্ড",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "অ্যাগ্রেসিভ",
         "description": "পুরানো টার্নগুলোর সারসংক্ষেপ এবং এজ করা।"
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "সিম্যান্টিক প্রুনিং (ONNX)।"
       },
       "ultra": {
         "label": "আল্ট্রা",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "পুনরাবৃত্ত কনটেক্সট ব্লকের জন্য কন্টেন্ট-অ্যাড্রেসড রিট্রিভাল মার্কার।"
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (সিম্যান্টিক প্রুনিং)",
-        "description": "ONNX-ভিত্তিক সিম্যান্টিক টোকেন ক্লাসিফিকেশন। শুধুমাত্র গদ্য সংকুচিত করে; কোড ব্লক এবং সংরক্ষিত গঠনগুলি সুরক্ষিত থাকে। মডেল বা ওয়ার্কার ত্রুটিতে ফেইল-ওপেন হয়।"
-      },
       "lite": {
         "name": "লাইট",
         "description": "দ্রুত হোয়াইটস্পেস, টুল-রেজাল্ট এবং ইমেজ URL হ্রাসকরণ।"
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "কম্প্রেশন রেট"
       },
-      "modelPath": {
-        "label": "মডেল পাথ"
-      },
       "minRows": {
         "label": "কম্প্যাক্ট করার জন্য ন্যূনতম সারি",
         "description": "ট্যাবুলার কম্প্যাকশন ট্রিগার করার জন্য একটি সমজাতীয় JSON অ্যারেতে প্রয়োজনীয় ন্যূনতম সারি। ডিফল্ট: 8।"
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "ন্যূনতম স্কোর থ্রেশহোল্ড"
       },
-      "slmFallbackToAggressive": {
-        "label": "অ্যাগ্রেসিভ-এ ফলব্যাক করুন"
-      },
       "intensity": {
         "label": "তীব্রতা"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "সক্রিয়ভাবে দীর্ঘ টুলের ফলাফল কেটে ফেলুন",
         "description": "লাইট সংকোচনের সময় ২,০০০ অক্ষরের বেশি টুলের ফলাফল কেটে ফেলা হয়। জরুরি ওভারফ্লো সুরক্ষা এখনও কনটেন্ট কেটে ফেলতে পারে যখন প্রসঙ্গ মডেল বাজেট অতিক্রম করে।"
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "কম্প্রেশন রেট (কিপ রেশিও)"
-        },
-        "modelPath": {
-          "label": "মডেল পাথ (অফলাইন ওভাররাইড)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "স্প্লিট ভিউ (শীঘ্রই আসছে)",
     "inputPlaceholder": "একটি প্রম্পট, টুল আউটপুট বা কনটেক্সট পেস্ট করুন…",
     "activeCombined": "সম্মিলিত ফ্লো-তে সক্রিয়",
-    "requiresOnnx": "একটি ONNX মডেল প্রয়োজন",
     "verifyFidelity": "ফিডেলিটি যাচাই করুন (কন্টেন্ট নষ্ট করে এমন যেকোনো লেয়ার বাতিল করুন)",
     "fuzzyDedup": "ফাজি ডিডুপ্লিকেশন (কাছাকাছি ডুপ্লিকেট → CCR)",
     "protectSensitive": "সংবেদনশীল কন্টেন্ট সুরক্ষিত করুন (রিস্ক গেট)",

@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Canlı marşrutlaşdırma kaskadı",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Cədvəl sıxlaşdırması",
     "contextSessionDedupSubtitle": "Dönüşlərarası təkrarların təmizlənməsi",
     "contextCcrSubtitle": "Markerlərin əldə edilməsi",
-    "contextLlmlinguaSubtitle": "Semantik budama",
     "contextLiteSubtitle": "Sürətli boşluq təmizlənməsi",
     "contextAggressiveSubtitle": "Xülasə və köhnəlmə",
     "contextUltraSubtitle": "Evristik budama",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Sessiya təkrarlarının silinməsi",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "Fine-tune heuristic pruning, SLM fallback, and per-message thresholds",
     "compressionUltraRate": "Keep Rate",
     "compressionUltraMinScore": "Minimum Score Threshold",
-    "compressionUltraSlmFallback": "Fallback to Aggressive",
     "compressionUltraModelPath": "SLM Model Path",
     "compressionUltraEngine": "Ultra səviyyəsi",
     "compressionUltraEngineHeuristic": "Evristik (Tier-A, standart)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, istəyə bağlı)",
-    "compressionUltraSlmHint": "SLM ilk istifadədə (soyuq işəsalma) kiçik bir ONNX modelini endirir və vaxt bitdikdə və ya əlçatmaz olduqda şəffaf şəkildə evristik üsula qayıdır.",
-    "compressionUltraSlmPrewarm": "Aktivləşdirdikdə SLM modelini öncədən qızdır",
     "compressionSummarizerEnabled": "Enable Summarizer",
     "compressionMaxTokensPerMessage": "Max Tokens Per Message",
     "compressionMinSavings": "Min Savings Threshold",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Aqressiv",
         "description": "Köhnə növbələri xülasələşdirin və köhnəldin."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Semantik budama (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Təkrarlanan kontekst blokları üçün məzmun ünvanlı axtarış markerləri."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Semantik budama)",
-        "description": "ONNX əsaslı semantik token təsnifatı. Yalnız nəsri sıxır; kod blokları və qorunan konstruksiyalar mühafizə olunur. Model və ya worker xətaları zamanı açıq rejimdə davam edir."
-      },
       "lite": {
         "name": "Lite",
         "description": "Boşluqların, alət nəticələrinin və şəkil URL-lərinin sürətli azaldılması."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Sıxılma dərəcəsi"
       },
-      "modelPath": {
-        "label": "Model yolu"
-      },
       "minRows": {
         "label": "Kompaktlaşdırmaq üçün minimum sətir sayı",
         "description": "Cədvəl kompaktlaşdırmasını işə salmaq üçün tələb olunan bircins JSON massivindəki minimum sətir sayı. Standart: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimum xal həddi"
       },
-      "slmFallbackToAggressive": {
-        "label": "Aqressiv rejiminə keç"
-      },
       "intensity": {
         "label": "İntensivlik"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Uzun alət nəticələrini proaktiv şəkildə qısaldın",
         "description": "Lite sıxma zamanı 2,000 simvoldan çox olan alət nəticələrini qısaldır. Fövqəladə daşma qorunması kontekst model büdcəsini aşdıqda hələ də məzmunu qısalda bilər."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Sıxılma dərəcəsi (saxlama nisbəti)"
-        },
-        "modelPath": {
-          "label": "Model yolu (oflayn əvəzetmə)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Bölünmüş görünüş (tezliklə)",
     "inputPlaceholder": "Sorğu, alət çıxışı və ya kontekst yapışdırın…",
     "activeCombined": "Kombinə edilmiş axında aktivdir",
-    "requiresOnnx": "ONNX modeli tələb olunur",
     "verifyFidelity": "Dəqiqliyi yoxlayın (məzmunu korlayan istənilən qatı rədd edin)",
     "fuzzyDedup": "Qeyri-səlis deduplikasiya (yaxın dublikat → CCR)",
     "protectSensitive": "Həssas məzmunu qoruyun (risk qapısı)",

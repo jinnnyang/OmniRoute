@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "நேரலை ரூட்டிங் அடுக்கு",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "அட்டவணை சுருக்கம்",
     "contextSessionDedupSubtitle": "Cross-turn நகல் நீக்கம்",
     "contextCcrSubtitle": "குறிப்பான்களை மீட்டெடுத்தல்",
-    "contextLlmlinguaSubtitle": "சொற்பொருள் கத்தரிப்பு",
     "contextLiteSubtitle": "வேகமான இடைவெளி சுத்தம் செய்தல்",
     "contextAggressiveSubtitle": "சுருக்கம் மற்றும் காலாவதியாதல்",
     "contextUltraSubtitle": "ஹியூரிஸ்டிக் கத்தரிப்பு",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "ஹெட்ரூம்",
     "lite": "லைட்",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "அமர்வு நகல் நீக்கம்",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "ஃபைன்-டியூன் ஹூரிஸ்டிக் ப்ரூனிங், SLM ஃபால்பேக் மற்றும் ஒரு-மெசேஜ் வரம்புகள்",
     "compressionUltraRate": "விகிதத்தை வைத்திருங்கள்",
     "compressionUltraMinScore": "குறைந்தபட்ச மதிப்பெண் வரம்பு",
-    "compressionUltraSlmFallback": "ஆக்கிரமிப்புக்கு வீழ்ச்சி",
     "compressionUltraModelPath": "SLM மாதிரி பாதை",
     "compressionUltraEngine": "அல்ட்ரா அடுக்கு",
     "compressionUltraEngineHeuristic": "ஹியூரிஸ்டிக் (அடுக்கு-A, இயல்புநிலை)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, விருப்பத்தேர்வு)",
-    "compressionUltraSlmHint": "SLM முதல் பயன்பாட்டில் (கோல்ட்-ஸ்டார்ட்) ஒரு சிறிய ONNX மாடலைப் பதிவிறக்குகிறது, மேலும் காலாவதி அல்லது கிடைக்காதபோது ஹியூரிஸ்டிக் முறைக்குத் தானாகவே மாறுகிறது.",
-    "compressionUltraSlmPrewarm": "செயல்படுத்தும்போது SLM மாதிரியை முன்கூட்டியே தயார்செய்",
     "compressionSummarizerEnabled": "சுருக்கத்தை இயக்கு",
     "compressionMaxTokensPerMessage": "ஒரு செய்திக்கு அதிகபட்ச டோக்கன்கள்",
     "compressionMinSavings": "குறைந்தபட்ச சேமிப்பு வரம்பு",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "தீவிரமான",
         "description": "பழைய உரையாடல் திருப்பங்களைச் சுருக்கிப் பழமையாக்குங்கள்."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "சொற்பொருள் கத்தரிப்பு (ONNX)."
       },
       "ultra": {
         "label": "அல்ட்ரா",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "மீண்டும் மீண்டும் வரும் சூழல் பிளாக்குகளுக்கான உள்ளடக்க-முகவரியிடப்பட்ட மீட்டெடுப்பு குறிப்பான்கள்."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (சொற்பொருள் கத்தரிப்பு)",
-        "description": "ONNX அடிப்படையிலான சொற்பொருள் டோக்கன் வகைப்பாடு. உரைநடைகளை மட்டுமே சுருக்குகிறது; குறியீட்டு பிளாக்குகள் மற்றும் பாதுகாக்கப்பட்ட கட்டமைப்புகள் பாதுகாக்கப்படுகின்றன. மாதிரி அல்லது ஒர்க்கர் பிழைகள் ஏற்பட்டால் தடையின்றி செயல்படும்."
-      },
       "lite": {
         "name": "லைட்",
         "description": "வேகமான இடைவெளி, கருவி-முடிவு மற்றும் பட URL குறைப்பு."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "சுருக்க விகிதம்"
       },
-      "modelPath": {
-        "label": "மாதிரி பாதை"
-      },
       "minRows": {
         "label": "சுருக்குவதற்கான குறைந்தபட்ச வரிசைகள்",
         "description": "அட்டவணை சுருக்கத்தைத் தூண்டுவதற்கு ஒரே மாதிரியான JSON வரிசையில் தேவைப்படும் குறைந்தபட்ச வரிசைகள். இயல்புநிலை: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "குறைந்தபட்ச மதிப்பெண் வரம்பு"
       },
-      "slmFallbackToAggressive": {
-        "label": "தீவிரமானது நிலைக்கு மாறவும்"
-      },
       "intensity": {
         "label": "தீவிரம்"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "முன்னெச்சரிக்கையாக நீண்ட கருவி முடிவுகளை குறைக்கவும்",
         "description": "Lite சுருக்கத்தின் போது 2,000 எழுத்துக்களை மீறிய கருவி முடிவுகளை குறுக்குகிறது. சூடான overflow பாதுகாப்பு, மாடல் பட்ஜெட்டை மீறும் போது உள்ளடக்கத்தை இன்னும் குறைக்கலாம்."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "சுருக்க விகிதம் (வைத்திருப்பு விகிதம்)"
-        },
-        "modelPath": {
-          "label": "மாதிரி பாதை (ஆஃப்லைன் மேலெழுதல்)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "பிளவுபட்ட காட்சி (விரைவில்)",
     "inputPlaceholder": "ஒரு தூண்டல், கருவி வெளியீடு அல்லது சூழலை ஒட்டவும்…",
     "activeCombined": "ஒருங்கிணைந்த ஓட்டத்தில் செயலில் உள்ளது",
-    "requiresOnnx": "ஒரு ONNX மாதிரி தேவைப்படுகிறது",
     "verifyFidelity": "நம்பகத்தன்மையைச் சரிபார்க்கவும் (உள்ளடக்கத்தைச் சிதைக்கும் எந்தவொரு அடுக்கையும் நிராகரிக்கவும்)",
     "fuzzyDedup": "தெளிவற்ற நகல் நீக்கம் (நெருங்கிய நகல் → CCR)",
     "protectSensitive": "முக்கியமான உள்ளடக்கத்தைப் பாதுகாக்கவும் (அபாய வாயில்)",

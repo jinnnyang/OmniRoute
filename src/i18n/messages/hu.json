@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Élő útválasztási kaszkád",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Táblázatos tömörítés",
     "contextSessionDedupSubtitle": "Körök közötti deduplikáció",
     "contextCcrSubtitle": "Jelölők lekérése",
-    "contextLlmlinguaSubtitle": "Szemantikus ritkítás",
     "contextLiteSubtitle": "Gyors szóköz-tisztítás",
     "contextAggressiveSubtitle": "Összegzés és elévülés",
     "contextUltraSubtitle": "Heurisztikus ritkítás",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Tartalék",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Munkamenet-deduplikáció",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "A heurisztikus metszés, az SLM tartalék és az üzenetenkénti küszöbértékek finomhangolása",
     "compressionUltraRate": "Rate megtartása",
     "compressionUltraMinScore": "Minimális pontszám küszöb",
-    "compressionUltraSlmFallback": "Visszatérés az Agresszívre",
     "compressionUltraModelPath": "SLM modell útvonal",
     "compressionUltraEngine": "Ultra szint",
     "compressionUltraEngineHeuristic": "Heurisztikus (Tier-A, alapértelmezett)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, választható)",
-    "compressionUltraSlmHint": "Az SLM letölt egy kis méretű ONNX modellt az első használatkor (hidegindítás), és időtúllépés vagy elérhetetlenség esetén észrevétlenül visszalép a heurisztikus módszerre.",
-    "compressionUltraSlmPrewarm": "SLM-modell előmelegítése bekapcsoláskor",
     "compressionSummarizerEnabled": "Összefoglaló engedélyezése",
     "compressionMaxTokensPerMessage": "Maximum token üzenetenként",
     "compressionMinSavings": "Minimális megtakarítási küszöb",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresszív",
         "description": "Régi fordulók összefoglalása és elévítése."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Szemantikai ritkítás (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Tartalomcímezhető lekérési jelölők ismétlődő kontextusblokkokhoz."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Szemantikus metszés)",
-        "description": "ONNX-alapú szemantikus token-osztályozás. Csak a folyószöveget tömöríti; a kódblokkok és a megőrzött struktúrák védettek. Modell- vagy worker-hibák esetén korlátozás nélkül továbbenged."
-      },
       "lite": {
         "name": "Lite",
         "description": "Gyors szóköz-, eszközeredmény- és kép-URL-csökkentés."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Tömörítési arány"
       },
-      "modelPath": {
-        "label": "Modell útvonala"
-      },
       "minRows": {
         "label": "Tömörítendő sorok minimális száma",
         "description": "Egy homogén JSON-tömb minimális sorszáma a táblázatos tömörítés indításához. Alapértelmezett: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimális pontszámküszöb"
       },
-      "slmFallbackToAggressive": {
-        "label": "Visszalépés az Agresszív módra"
-      },
       "intensity": {
         "label": "Intenzitás"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proaktívan vágja le a hosszú eszközeredményeket",
         "description": "A Lite tömörítés során a szerszám eredményeit 2,000 karakter felett levágja. Vészhelyzeti túlfolyás elleni védelem esetén a tartalom még mindig csökkenhet, ha a kontextus meghaladja a modell költségvetését."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Tömörítési arány (megőrzési arány)"
-        },
-        "modelPath": {
-          "label": "Modell útvonala (offline felülbírálás)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Osztott nézet (hamarosan)",
     "inputPlaceholder": "Illesszen be egy promptot, eszköz kimenetet vagy kontextust…",
     "activeCombined": "Aktív az összevont folyamatban",
-    "requiresOnnx": "ONNX modellt igényel",
     "verifyFidelity": "Hűség ellenőrzése (minden olyan réteg elutasítása, amely sérti a tartalmat)",
     "fuzzyDedup": "Fuzzy deduplikáció (közel-duplikált → CCR)",
     "protectSensitive": "Érzékeny tartalom védelme (kockázati kapu)",

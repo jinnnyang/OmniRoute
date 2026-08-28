@@ -1101,7 +1101,6 @@
     "contextHeadroom": "Headroom",
     "contextSessionDedup": "Session Dedup",
     "contextCcr": "CCR",
-    "contextLlmlingua": "LLMLingua",
     "combosLive": "Combo Studio",
     "combosLiveSubtitle": "Live routing cascade",
     "compressionStudio": "Compression Studio",
@@ -1110,7 +1109,6 @@
     "contextHeadroomSubtitle": "Tabular compaction",
     "contextSessionDedupSubtitle": "Cross-turn deduplication",
     "contextCcrSubtitle": "Kunin ang mga marker",
-    "contextLlmlinguaSubtitle": "Semantic pruning",
     "contextLiteSubtitle": "Mabilis na paglilinis ng whitespace",
     "contextAggressiveSubtitle": "Summary at aging",
     "contextUltraSubtitle": "Heuristic pruning",
@@ -1737,7 +1735,6 @@
     "ccr": "CCR",
     "headroom": "Headroom",
     "lite": "Lite",
-    "llmlingua": "LLMLingua",
     "omniglyph": "OmniGlyph",
     "rtk": "RTK",
     "sessionDedup": "Session Dedup",
@@ -7435,13 +7432,9 @@
     "compressionUltraConfigDesc": "I-fine-tune ang heuristic pruning, SLM fallback, at bawat-message threshold",
     "compressionUltraRate": "Panatilihin ang Rate",
     "compressionUltraMinScore": "Minimum na Threshold ng Marka",
-    "compressionUltraSlmFallback": "Fallback sa Agresibo",
     "compressionUltraModelPath": "Path ng Modelong SLM",
     "compressionUltraEngine": "Ultra tier",
     "compressionUltraEngineHeuristic": "Heuristic (Tier-A, default)",
-    "compressionUltraEngineSlm": "SLM (LLMLingua-2, opt-in)",
-    "compressionUltraSlmHint": "Nagda-download ang SLM ng maliit na ONNX model sa unang paggamit (cold-start) at transparent na bumabalik sa heuristic kapag nag-timeout o kung hindi magagamit.",
-    "compressionUltraSlmPrewarm": "I-pre-warm ang SLM model kapag pinagana",
     "compressionSummarizerEnabled": "Paganahin ang Summarizer",
     "compressionMaxTokensPerMessage": "Max Token Bawat Mensahe",
     "compressionMinSavings": "Min Savings Threshold",
@@ -7807,10 +7800,6 @@
       "aggressive": {
         "label": "Agresibo",
         "description": "Ibuod at patandain ang mga lumang turn."
-      },
-      "llmlingua": {
-        "label": "LLMLingua (SLM)",
-        "description": "Semantikong pag-prune (ONNX)."
       },
       "ultra": {
         "label": "Ultra",
@@ -8423,10 +8412,6 @@
         "name": "CCR",
         "description": "Mga content-addressed retrieval marker para sa mga inuulit na context block."
       },
-      "llmlingua": {
-        "name": "LLMLingua-2 (Semantic Pruning)",
-        "description": "ONNX-based na semantic token classification. Nagko-compress ng prose lamang; protektado ang mga code block at mga pinanatiling construct. Nagfe-fail open sa mga error sa modelo o worker."
-      },
       "lite": {
         "name": "Lite",
         "description": "Mabilis na pagbawas sa whitespace, tool-result, at URL ng larawan."
@@ -8466,9 +8451,6 @@
       "compressionRate": {
         "label": "Rate ng compression"
       },
-      "modelPath": {
-        "label": "Path ng model"
-      },
       "minRows": {
         "label": "Minimum na row na iko-compact",
         "description": "Minimum na row sa isang homogeneous na JSON array na kinakailangan upang ma-trigger ang tabular compaction. Default: 8."
@@ -8488,9 +8470,6 @@
       "minScoreThreshold": {
         "label": "Minimum na score threshold"
       },
-      "slmFallbackToAggressive": {
-        "label": "Mag-fallback sa Aggressive"
-      },
       "intensity": {
         "label": "Intensity"
       },
@@ -8500,16 +8479,6 @@
       "compressToolResults": {
         "label": "Proaktibong putulin ang mahahabang resulta ng tool",
         "description": "Pinaputol ang mga resulta ng tool na higit sa 2,000 na karakter sa panahon ng Lite compression. Ang emergency overflow protection ay maaari pa ring magbawas ng nilalaman kapag ang konteksto ay lumampas sa budget ng modelo."
-      }
-    },
-    "engineFields": {
-      "llmlingua": {
-        "compressionRate": {
-          "label": "Rate ng compression (keep ratio)"
-        },
-        "modelPath": {
-          "label": "Path ng model (offline override)"
-        }
       }
     },
     "options": {
@@ -8610,7 +8579,6 @@
     "splitComingSoon": "Split view (paparating na)",
     "inputPlaceholder": "Mag-paste ng prompt, output ng tool, o konteksto…",
     "activeCombined": "Aktibo sa pinagsamang flow",
-    "requiresOnnx": "nangangailangan ng ONNX model",
     "verifyFidelity": "I-verify ang fidelity (tanggihan ang anumang layer na sumisira sa nilalaman)",
     "fuzzyDedup": "Fuzzy deduplication (malapit na duplicate → CCR)",
     "protectSensitive": "Protektahan ang sensitibong nilalaman (risk gate)",
