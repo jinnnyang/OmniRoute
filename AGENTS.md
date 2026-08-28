@@ -267,12 +267,11 @@ When creating _any_ validation tests or one-off logic scripts, default to `scrip
 
 - **Root `_*` paths are private and NEVER tracked** (`_tasks/`, `_references/`, `_mono_repo/`,
   `_ideia/`, `_cache/` and any future `_<name>`): they live on disk only, are gitignored by the
-  anchored patterns `/_*/` + `/_*`, and some are full git repositories of their own (`_tasks` →
-  private remote `_tasks_omniroute`). Never `git add` anything inside them (a plain `add` is
-  already blocked by the ignore; never use `-f`), and never "clean them up" from the main repo —
-  untracking is done with `git rm --cached` so the disk content stays. The
-  `check:tracked-artifacts` gate (pre-commit + CI) fails on ANY tracked root path starting with
-  `_`, present or future. See Hard Rule #23 for the `_tasks` specifics.
+  anchored patterns `/_*/` + `/_*`, and they are local-only with no remote. Never `git add`
+  anything inside them (a plain `add` is already blocked by the ignore; never use `-f`), and
+  never "clean them up" from the main repo — untracking is done with `git rm --cached` so the
+  disk content stays. The `check:tracked-artifacts` gate (pre-commit + CI) fails on ANY tracked
+  root path starting with `_`, present or future. See Hard Rule #20 for the `_tasks` specifics.
 
 ---
 
@@ -453,21 +452,21 @@ For any non-trivial change, read the matching deep-dive first:
 | Coverage gate           | `npm run test:coverage` (60/60/60/60 — statements/lines/functions/branches)   |
 | Coverage report         | `npm run coverage:report`                                                     |
 
-**PR rule**: If you change production code in `src/`, `open-sse/`, `electron/`, or `bin/`, you must include or update tests in the same PR.
+**Test rule**: If you change production code in `src/`, `open-sse/`, `electron/`, or `bin/`, you must include or update tests in the same commit.
 
 **Test layer preference**: unit first → integration (multi-module or DB state) → e2e (UI/workflow only). Encode bug reproductions as automated tests before or alongside the fix.
 
-**Both test runners must pass**: `npm run test:unit` (Node native — most tests) AND `npm run test:vitest` (MCP server, autoCombo, cache) cover **non-overlapping files**. Both are wired in CI (jobs `test-unit` and `test-vitest`) and must be green before merging. A PR where only one suite passes may silently ship broken MCP tools or routing regressions.
+**Both test runners must pass**: `npm run test:unit` (Node native — most tests) AND `npm run test:vitest` (MCP server, autoCombo, cache) cover **non-overlapping files**. Both must be green before pushing to `less`. A change where only one suite passes may silently ship broken MCP tools or routing regressions.
 
 **Bug fix / issue triage protocol (Hard Rule #18)**: Every fix for a reported issue must be validated by one of the following — no exceptions:
 
 1. **TDD (preferred)** — write a failing test reproducing the bug → fix it → confirm the test passes. The test becomes the permanent regression guard. Touch only the files the test proves need changing; nothing more.
-2. **Real-environment test (when TDD is not possible)** — deploy to the production VPS (`root@192.168.0.15`) and run a documented live test. Record the exact command + result in the PR description. Applies to: OAuth upstream flows, Cloudflare/WS upstream behavior, UI-only regressions, hardware-dependent behavior.
-3. "It worked locally without a test" does not count. A fix without a test or a VPS validation record is not a fix — it is a guess.
+2. **Real-environment test (when TDD is not possible)** — run a documented live test against a real deployment and record the exact command + result in the commit message or `_tasks/`. Applies to: OAuth upstream flows, Cloudflare/WS upstream behavior, UI-only regressions, hardware-dependent behavior.
+3. "It worked locally without a test" does not count. A fix without a test or a live-test record is not a fix — it is a guess.
 
 Why this matters: fixing bug A while opening bug B is worse than not fixing at all. The TDD/VPS gate enforces surgical scope — you touch only what the failing test proves is broken. Examples where this paid off: #3090 (claude-web 403), #3113 (WS HTTP fallback), #3052 (heap-guard auto-calibration).
 
-**Copilot coverage policy**: When a PR changes production code and coverage is below 60% (statements/lines/functions/branches), do not just report — add or update tests, rerun the coverage gate, then ask for confirmation. Include commands run, changed test files, and final coverage result in the PR report.
+**Coverage policy**: When a change touches production code and coverage is below 60% (statements/lines/functions/branches), do not just report — add or update tests, rerun the coverage gate, then ask for confirmation. Report commands run, changed test files, and the final coverage result.
 
 ---
 
@@ -480,17 +479,16 @@ Why this matters: fixing bug A while opening bug B is worse than not fixing at a
   validation.
 - Treat Memory and Skills as cross-cutting changes that can affect MCP tools, the request
   pipeline, and A2A skills.
-- Do not close a contributor pull request after using its code; merge it through GitHub so
-  the contributor receives credit.
+- When porting code from another repo or a third party, credit the original author with a
+  standard `Co-authored-by:` trailer.
 
 ---
 
 ## Planning & Research Artifacts
 
-`_tasks/` is a **separate, isolated git repository** that is gitignored by the main
-repo (`.gitignore` → `_tasks/`). It is the canonical home for working artifacts —
-plans, specs/designs, research, hand-offs — so they stay **versioned in their own
-repo** instead of polluting the main OmniRoute tree.
+`_tasks/` is a plain **local-only, gitignored** directory at the repo root. It is the canonical
+home for working artifacts — plans, specs/designs, research, hand-offs — so they stay on disk
+instead of polluting the tracked OmniRoute tree. It has no remote and is never pushed.
 
 **Hard rule — never write planning / research output under `docs/` or the repo root.**
 Whenever any plan/spec/research generator runs in this project (superpowers or otherwise),
@@ -503,17 +501,26 @@ save to `_tasks/` using the filename convention:
 | Research       | `_tasks/research/…`                                           |
 | Hand-offs      | `_tasks/hands-off/<YYYY-MM-DD>_<branch>_v<versão>_sess-<id>/` |
 
-Commit those artifacts inside the `_tasks/` repo (`git -C _tasks …`), never in the main repo.
+Never `git add` those artifacts — they live on disk only, and there is no backup.
 
 ---
 
 ## Git Workflow
 
+**Mainline is `less`.** This is an independent fork (`jinnnyang/OmniRoute`) — there is no `main`
+and no upstream to merge back into. `less` is the long-lived development branch that everything
+targets; the legacy `main` and `release/v*` branches on the remote are historical and are not
+developed against.
+
 ```bash
-# Never commit directly to main
-git checkout -b feat/your-feature
+# Small changes: commit straight onto less
 git commit -m "feat: describe your change"
-git push -u origin feat/your-feature
+git push origin less
+
+# Larger or riskier work: short-lived branch off less, merge back when green
+git switch -c feat/your-feature less
+git commit -m "feat: describe your change"
+git switch less && git merge --no-ff feat/your-feature
 ```
 
 **Branch prefixes**: `feat/`, `fix/`, `refactor/`, `docs/`, `test/`, `chore/`
@@ -526,90 +533,6 @@ git push -u origin feat/your-feature
 - **pre-push**: intentionally light (PATH/npm sanity only). `any-budget` + `tracked-artifacts`
   already run on pre-commit; re-running them on every push was pure double-pay. CI still
   enforces both. (Was Fase 6A.12 full pre-push gate; folded into pre-commit in #6716.)
-
-### Worktree isolation (MANDATORY for every development task)
-
-Multiple sessions/agents work this repo in parallel. The main checkout is **shared**, so a
-`git checkout`/branch switch in it silently discards another session's uncommitted work and
-yanks the branch out from under whatever else is running (incidents: 2026-06-05, 2026-06-13).
-
-**Rule: never develop on the shared main checkout. Every task gets its own git worktree on its
-own dedicated branch, and you MUST confirm the base branch with the operator before creating it.**
-
-1. **Ask first — which base branch?** Before creating anything, ask the operator (unless they
-   already told you) from which branch the new worktree/branch should be cut. Do NOT assume
-   `main` or "whatever I'm on" — the answer is usually the active `release/vX.Y.Z`, but it can
-   be another feature/release branch. Get the base explicitly.
-2. **Create an isolated worktree + branch off that base** (never reuse the main checkout).
-   **🔴 MANDATORY PATH: every worktree lives under `.claude/worktrees/` — and nowhere else.**
-   This is the single canonical location. It is gitignored AND in the `tsconfig.json` /
-   `.dockerignore` excludes, so worktrees never leak into the build scope. **Never** use
-   `.worktrees/`, repo-root, or any other path — a worktree outside `.claude/worktrees/`
-   (a) escapes the build-scope excludes and poisons `next build` (the `tsconfig`
-   `include: **/*` globs ~70× the codebase → OOM; incident 2026-06-25) and (b) scatters
-   worktrees across two dirs.
-
-   ```bash
-   BASE_BRANCH="release/vX.Y.Z"          # ← the branch the operator confirmed in step 1
-   TASK="feat/your-feature"               # feat/ fix/ refactor/ docs/ test/ chore/
-   git fetch origin "$BASE_BRANCH"
-   git worktree add ".claude/worktrees/${TASK##*/}" -b "$TASK" "origin/$BASE_BRANCH"
-   cd ".claude/worktrees/${TASK##*/}"
-   # Reuse the main checkout's node_modules to skip a per-worktree npm install.
-   # HARD LINKS (`cp -al`), never a symlink: ~5s for the whole tree and near-zero extra
-   # disk (the inodes are shared), and unlike a symlink it does not break the dev server.
-   cp -al "$(git -C <main_checkout> rev-parse --show-toplevel)/node_modules" node_modules
-   ```
-
-   **Never `ln -s` node_modules.** Turbopack rejects a symlink that resolves outside the
-   project root, so `npm run dev` dies with a FATAL panic (`Symlink [project]/node_modules
-is invalid, it points out of the filesystem root`) while typecheck, lint and the test
-   runners all keep passing — the error names "filesystem root", not the worktree, so it
-   reads like a Next/build bug and costs real time to trace (incident 2026-07-31, #9043).
-
-3. **Work, commit, push, open the PR — all from inside the worktree.** Never `git checkout` a
-   different branch inside a worktree another session might share.
-4. **Tear down only your own** worktree + branch when done, from the main checkout:
-   `git worktree remove .claude/worktrees/<dir>` then `git branch -D <task>`. Never blanket-delete
-   `fix/*`/`feat/*` — other sessions keep their own; delete only the branches you created, by name.
-5. **Never touch another session's worktree, branch, or uncommitted changes.** If `git worktree
-list` shows worktrees you didn't create, leave them alone. End every session with the main
-   checkout back on the branch it started on (the active `release/vX.Y.Z`, never `main`).
-
-### Base-green check (PRs must not be born red)
-
-Before cutting a branch, merging the base into a PR branch, mass-retargeting PRs, or opening a
-PR: check whether the base tip is green. The `Release-Green (continuous)` workflow
-(`.github/workflows/nightly-release-green.yml`) publishes the verdict in a single deduplicated
-issue titled `🔴 Release branch not green: <branch>` (label `base-red`). One call replaces any
-local suite run for this purpose:
-
-```bash
-gh issue list --repo diegosouzapw/OmniRoute --state open \
-  --search "Release branch not green: <base> in:title"
-```
-
-If the base is red: never treat the inherited failures as your branch's defect; never "fix" them
-inside your feature branch (a base-red fix is its own freeze-gated `fix/release-vX.Y.Z-basereds`
-PR); and if you must open a PR anyway, add `⚠️ base-red inherited: #<issue>` to the PR body so
-reviewers and CI babysitters do not chase ghosts.
-
----
-
-## Upstream contributions
-
-This checkout is a fork of `diegosouzapw/OmniRoute`. Keep fork-only deployment and personal
-automation changes out of upstream PRs.
-
-Start upstream work from the active upstream default branch, not `main`:
-
-```bash
-git fetch upstream
-git switch -c <branch-name> upstream/<default-branch>
-```
-
-Target that same release branch in the pull request. Stage only the intended files, run the
-focused checks, and use a Conventional Commit message (for example, `docs: slim AGENTS.md`).
 
 ---
 
@@ -658,7 +581,7 @@ the stale-enforcement added in Fase 6A.3.
 1. Never commit secrets or credentials
 2. Never add logic to `localDb.ts`
 3. Never use `eval()` / `new Function()` / implied eval
-4. Never commit directly to `main`
+4. Never commit broken code to the mainline `less` — run `npm run typecheck:core` + `npm run lint` first
 5. Never write raw SQL in routes — use `src/lib/db/` modules
 6. Never silently swallow errors in SSE streams
 7. Always validate inputs with Zod schemas
@@ -670,27 +593,11 @@ the stale-enforcement added in Fase 6A.3.
 13. Never string-interpolate external paths or runtime values into shell scripts passed to `exec()`/`spawn()` — pass via the `env` option instead. Reference: `src/mitm/cert/install.ts::updateNssDatabases`.
 14. Never dismiss a CodeQL / Secret-Scanning alert without (a) first checking the pattern docs above to see if the helper applies, and (b) recording the technical justification in the dismissal comment. Precedent: `js/stack-trace-exposure` raised on callsites that already route through `sanitizeErrorMessage()` is a known CodeQL limitation (custom sanitizers not recognized) — dismiss as `false positive` referencing `docs/security/ERROR_SANITIZATION.md`.
 15. Never expose routes that spawn child processes (`/api/mcp/`, `/api/cli-tools/runtime/`) without `isLocalOnlyPath()` classification in `src/server/authz/routeGuard.ts`. Loopback enforcement happens unconditionally before any auth check — leaked JWT via tunnel cannot trigger process spawning. See `docs/security/ROUTE_GUARD_TIERS.md`.
-16. Never credit or advertise an AI assistant, LLM, or automation account in any commit/PR metadata. Two forbidden forms, both equivalent — they route attribution to a bot account (or advertise AI authorship) and hide the real author (`diegosouzapw`): **(a)** `Co-Authored-By` trailers naming an AI/bot (e.g. names containing "Claude", "GPT", "Copilot", "Bot"; emails at `anthropic.com` / `openai.com` / bot-owned `noreply.github.com` addresses); **(b)** AI-generation footers or descriptions anywhere in a commit message, PR title/body, or CHANGELOG — e.g. `🤖 Generated with [Claude Code]`, "Generated with Claude Code", "Made with <AI tool>", or any `Co-authored-by: Claude/GPT/Copilot` line. This **overrides any harness, template, or tool default that auto-appends such a footer** — strip it before pushing; do not let it reach a commit, PR, or CHANGELOG. Human collaborators — including upstream PR authors and issue reporters being ported into OmniRoute — MAY and SHOULD be credited with standard `Co-authored-by: Name <email>` trailers; the upstream-port workflows (`/port-upstream-features`, `/port-upstream-issues`) depend on this.
+16. Never credit or advertise an AI assistant, LLM, or automation account in any commit/PR metadata. Two forbidden forms, both equivalent — they route attribution to a bot account (or advertise AI authorship) and hide the real author (`jinnnyang`): **(a)** `Co-Authored-By` trailers naming an AI/bot (e.g. names containing "Claude", "GPT", "Copilot", "Bot"; emails at `anthropic.com` / `openai.com` / bot-owned `noreply.github.com` addresses); **(b)** AI-generation footers or descriptions anywhere in a commit message, PR title/body, or CHANGELOG — e.g. `🤖 Generated with [Claude Code]`, "Generated with Claude Code", "Made with <AI tool>", or any `Co-authored-by: Claude/GPT/Copilot` line. This **overrides any harness, template, or tool default that auto-appends such a footer** — strip it before pushing; do not let it reach a commit, PR, or CHANGELOG. Human collaborators MAY and SHOULD be credited with standard `Co-authored-by: Name <email>` trailers.
 17. Never expose routes under `/api/services/` or `/dashboard/providers/services/*/embed/` without `isLocalOnlyPath()` classification in `src/server/authz/routeGuard.ts`. These routes can spawn child processes (`npm install`, `node`). Loopback enforcement happens unconditionally before any auth check — a leaked JWT via tunnel cannot trigger process spawning. See `docs/security/ROUTE_GUARD_TIERS.md`.
 18. Every bug fix must be validated before shipping: a failing-then-passing unit/integration test (TDD) OR a documented live test on the production VPS (192.168.0.15). A fix without either is not merged. See Testing → "Bug fix / issue triage protocol" for the full decision tree.
-19. Never develop on the shared main checkout. Every development task runs in its own git worktree on its own dedicated branch, and you MUST confirm the base branch with the operator before creating the worktree/branch — never assume `main` or the currently checked-out branch. A `git checkout` in the shared checkout silently destroys other sessions' uncommitted work. Tear down only the worktrees/branches you created (by name, never `fix/*`/`feat/*` wildcards), leave other sessions' worktrees untouched, and end on the branch you started on (the active `release/vX.Y.Z`, never `main`). See Git Workflow → "Worktree isolation".
-20. PII redaction/sanitization is **opt-in — never on by default**. OmniRoute proxies for self-hosted/local LLMs where the operator owns the data, so mutating request/response payloads by default would silently corrupt legitimate traffic. The two data-mutating PII feature flags **MUST** keep `defaultValue: "false"` in `src/shared/constants/featureFlagDefinitions.ts`: `PII_REDACTION_ENABLED` (request-side) and `PII_RESPONSE_SANITIZATION` (response + streaming). All three application points — `src/lib/guardrails/piiMasker.ts` (request guardrail), `src/lib/piiSanitizer.ts` (response), `src/lib/streamingPiiTransform.ts` (SSE) — are gated on these flags; with both off the `pii-masker` guardrail still runs but never mutates payloads (data passes through untouched). Flipping either default to `"true"` requires explicit operator approval. The regression guard is `tests/unit/pii-opt-in-default.test.ts` (asserts both definition defaults + behavioral pass-through). Opt-in is per-operator via env or the settings/DB override (`src/lib/db/featureFlags.ts`), never a silent default. See `docs/security/GUARDRAILS.md`.
-21. **Release-freeze — the FROZEN release branch belongs to the release captain; development does NOT stop (parallel-cycle model, 2026-07-04).** `/generate-release` opens a marker issue labeled `release-freeze` at the start of reconciliation (Phase 0a), **immediately cuts the next cycle's branch `release/vX+1` from the frozen tip (Phase 0a.0b — bump + living release PR + re-home of open PRs)**, and closes the freeze once the release PR squash-merges to `main`. Before merging **any** PR, every campaign workflow (`/review-prs`, `/review-group-prs`, `/merge-prs`, `/triage-fix-bugs`, `/implement-fix-bugs`, `/triage-features`, `/implement-features`, `/green-prs`, `/port-upstream-*`) **MUST** check `gh issue list --repo diegosouzapw/OmniRoute --label release-freeze --state open` — if a freeze is active: **NEVER merge into the frozen `release/vX.Y.Z` named in the freeze title**; instead resolve the ACTIVE development branch (the **highest** `release/v*` by semver — normally `release/vX+1`, announced in a freeze-issue comment) and **retarget the PR there** (`gh pr edit <N> --base release/vX+1`, then VERIFY with `gh pr view <N> --json baseRefName` — the edit fails silently) and merge normally. **HOLD only when the highest release/v\* branch IS the frozen one** (the short window before 0a.0b completes, or a pre-parallel-cycle release) — in that case leave the PR ready and open, tell the operator, and resume when the next branch appears or the freeze lifts. The just-shipped fixes reach `release/vX+1` via the Phase 5 sync-back (`scripts/release/sync-next-cycle.mjs`); do not try to sync mid-release. This is a **coordination signal, not a permission lock**: the release captain and the campaign sessions share the `diegosouzapw` identity, so a GitHub branch-protection lock cannot distinguish them — only this honored marker prevents the mid-release commit races that forced full CHANGELOG re-reconciliation in v3.8.40/v3.8.41 (a parallel campaign advanced `release/vX.Y.Z` by 34 commits mid-run). The release captain's own reconciliation/cycle-open pushes are exempt — they _are_ the release. Fixes that must land during a freeze (a homologation finding) follow the post-merge read-only rule: land on `main` first via `fix/release-vX.Y.Z-*`. **⛔ ONLY `/generate-release` may raise a release-freeze, and ONLY at its Phase 0a (start of generating a new version) — lifted at Phase 12c after the squash-merge to `main`.** No campaign, session, or agent may open a `release-freeze` marker at any other time — a freeze is **never** a mid-development coordination tool. If a session ever believes a freeze is genuinely, unavoidably necessary outside the `/generate-release` flow, it **MUST first ask the operator (`diegosouzapw`) in chat, explicitly alert "estou criando um freeze" and get an explicit yes** — never open, extend, or re-open a `release-freeze` autonomously. Conversely, do **not** close/lift an active `/generate-release` freeze to unblock campaign merges: it protects the captain's single clean CI run and auto-lifts at Phase 12c — closing it early re-triggers the exact commit race it prevents. Verify a freeze is legitimate before acting on it: an open `release-freeze` whose title/body references an **OPEN** release PR (`gh pr view <N> --json state`) is the authorized captain freeze — hold, don't touch. (Cycle-model proposal: `_tasks/finished/release-flow/2026-07-04_proposta-ciclo-paralelo-v2.md`.)
-22. **Cross-session safety — this repo is worked by MANY parallel sessions/agents at once; never step on another's in-flight work.** Two absolute bans, both recurring incidents (this rule exists because they keep happening):
-    - **(a) Never `git stash` / `git stash pop` — ANYWHERE in this repo, including inside an isolated worktree, and including inside any subagent you dispatch.** `git stash` operates on the **shared repository object store**, not the per-worktree working tree — so a stash pushed or popped in one session can silently clobber or resurrect another parallel session's uncommitted changes. This is not hypothetical: 2026-07-02 a `#5923` quotaCache change leaked into the unrelated `#2296` worktree via a global `stash pop`, and the same class reincided through a **subagent**. To compare working changes against a base ref **without** stashing, use `git show <ref>:<path>` or `git diff <ref> -- <path>`; to confirm a typecheck/lint error is pre-existing on the base, inspect the base ref directly (`git show origin/release/vX.Y.Z:<path>`) — never stash your tree away to "get it clean". **Put this ban verbatim in the prompt of every subagent that touches git** (agents don't inherit this file's context — the recurrence was a subagent).
-    - **(b) Never merge, push, rebase, or force-push a PR / branch / worktree that another session is actively working.** An open PR whose head is a live fix worktree in `.claude/worktrees/` you did **not** create (e.g. `fix-5852`/`fix-5923` carrying fresh commits, even when they share your `diegosouzapw` identity), or any branch another session owns, is **off-limits — HOLD**, and let the owning session merge it. **Before** merging or pushing to any PR you did not create _this_ session, run `git worktree list` to check for a matching in-flight worktree and re-check `gh pr view <N> --json state,headRefOid`. Only the owning session merges its own in-flight PR; mid-flight merges race the owner and re-trigger the exact commit/CHANGELOG races Rule #19 and Rule #21 guard against. (Reinforces Rule #19.)
-23. **`_tasks/` é INTOCÁVEL como estrutura — append/edit-only.** É um repositório git SEPARADO
-    (remote privado `diegosouzapw/_tasks_omniroute`) montado como diretório real na raiz do
-    checkout principal. Regras absolutas: (a) NUNCA mover, renomear, deletar, esvaziar ou
-    transformar `_tasks` em symlink; sessões só podem CRIAR ou EDITAR arquivos dentro dele;
-    (b) NUNCA rastrear `_tasks` (nem como symlink) no repo principal — o blob rastreado foi a
-    causa-raiz de DOIS wipes (2026-08-08 e 2026-08-10: `git reset --hard` materializou o
-    symlink rastreado por cima do diretório real e o git apagou todo o conteúdo ignorado sem
-    aviso); (c) após qualquer escrita relevante, `git -C _tasks add -A && git -C _tasks commit
-&& git -C _tasks push` — o push frequente é o backup real; (d) repetir esta proibição
-    VERBATIM no prompt de todo subagente que toque git; (e) se `_tasks` aparecer como symlink
-    quebrado, NÃO commitar nada — restaurar do remote e avisar o operador. O gate
-    `check:tracked-artifacts` (pre-commit + CI) bloqueia `_tasks` rastreado em qualquer forma.
+19. PII redaction/sanitization is **opt-in — never on by default**. OmniRoute proxies for self-hosted/local LLMs where the operator owns the data, so mutating request/response payloads by default would silently corrupt legitimate traffic. The two data-mutating PII feature flags **MUST** keep `defaultValue: "false"` in `src/shared/constants/featureFlagDefinitions.ts`: `PII_REDACTION_ENABLED` (request-side) and `PII_RESPONSE_SANITIZATION` (response + streaming). All three application points — `src/lib/guardrails/piiMasker.ts` (request guardrail), `src/lib/piiSanitizer.ts` (response), `src/lib/streamingPiiTransform.ts` (SSE) — are gated on these flags; with both off the `pii-masker` guardrail still runs but never mutates payloads (data passes through untouched). Flipping either default to `"true"` requires explicit operator approval. The regression guard is `tests/unit/pii-opt-in-default.test.ts` (asserts both definition defaults + behavioral pass-through). Opt-in is per-operator via env or the settings/DB override (`src/lib/db/featureFlags.ts`), never a silent default. See `docs/security/GUARDRAILS.md`.
+20. **`_tasks/` is local-only and never pushed anywhere.** It is a plain, gitignored directory at the repo root (`.gitignore` has both `_tasks/` and the anchored `/_tasks`) holding planning, spec, research, and hand-off artifacts. Absolute rules: (a) NEVER move, rename, delete, empty, or turn `_tasks` into a symlink — sessions may only CREATE or EDIT files inside it; (b) NEVER track `_tasks` in git in any form (a tracked symlink blob caused two full content wipes: `git reset --hard` materialized the tracked symlink over the real directory and git silently deleted all ignored content); (c) it has no remote and no backup — treat its contents as unrecoverable and never run a destructive git command that could clobber it; (d) repeat this prohibition VERBATIM in the prompt of every subagent that touches git. The `check:tracked-artifacts` gate (pre-commit + CI) blocks a tracked `_tasks` in any form.
 
 ---
 
@@ -730,7 +637,7 @@ This project is indexed by GitNexus as **OmniRoute** (126776 symbols, 251119 rel
 ## Always Do
 
 - **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows. For regression review, compare against the default branch: `detect_changes({scope: "compare", base_ref: "release/v3.8.50"})`.
+- **MUST run `detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows. For regression review, compare against the mainline: `detect_changes({scope: "compare", base_ref: "less"})`.
 - **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
 - When exploring unfamiliar code, use `query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
 - When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `context({name: "symbolName"})`.

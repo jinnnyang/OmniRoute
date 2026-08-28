@@ -3,33 +3,19 @@
 @AGENTS.md
 
 **All project rules live in [`AGENTS.md`](AGENTS.md)** — the single source of truth for every AI
-assistant (architecture, conventions, testing, quality gates, git workflow, the 23 Hard Rules,
+assistant (architecture, conventions, testing, quality gates, git workflow, the 20 Hard Rules,
 PII learnings). Read it in full; do not re-add project rules here. Everything below applies ONLY
 to Claude Code — operational refinements of rules already defined in `AGENTS.md`.
 
-## Worktree isolation — Claude Code specifics
+## Git — Claude Code specifics
 
-The full mandatory worktree protocol (base-branch confirmation, `.claude/worktrees/` canonical
-path, `cp -al` node_modules, teardown rules) is in `AGENTS.md` → Git Workflow → "Worktree
-isolation". Claude-Code-specific points:
+The mainline is `less` (see `AGENTS.md` → Git Workflow). This is an independent fork with no
+upstream, and no `main`. Claude-Code-specific points:
 
-- Confirm the base branch with the operator via `AskUserQuestion` (Hard Rule #19) unless they
-  already told you.
-- Prefer the native `EnterWorktree` tool — it already creates worktrees under
-  `.claude/worktrees/` (the canonical path). Create the worktree with the documented `git
-worktree add` command, then call `EnterWorktree` with its `path`.
-
-## Cross-session safety — Claude Code specifics
-
-Hard Rules #19/#21/#22 (in `AGENTS.md`) govern parallel sessions. Operational reminders for this
-harness:
-
-- **Replicate the `git stash` ban verbatim in the prompt of every subagent that touches git**
-  (Agent tool / Workflow scripts) — subagents do not inherit this file, and the recorded
-  recurrence of the stash incident came through a subagent.
-- Before merging or pushing to any PR you did not create _this session_, run `git worktree list`
-  and re-check `gh pr view <N> --json state,headRefOid` (Hard Rule #22b).
-- End every session with the main checkout on the branch it started on.
+- Do not use the native `EnterWorktree` tool or create git worktrees — the project no longer uses
+  the worktree protocol. Work directly on `less`, or on a short-lived `feat/…` branch cut from it.
+- `git stash` is still discouraged: to compare working changes against a base ref, use
+  `git show <ref>:<path>` or `git diff <ref> -- <path>` instead of stashing your tree away.
 
 ## Superpowers / planning artifacts — path overrides
 
@@ -45,29 +31,22 @@ rewrite it to the `_tasks/…` equivalent before writing:
 | Research (`deep-research`, ad-hoc) | `docs/research/`          | `_tasks/research/…`                                           |
 | Hand-offs (`/handoff`)             | —                         | `_tasks/hands-off/<YYYY-MM-DD>_<branch>_v<versão>_sess-<id>/` |
 
-Commit those artifacts inside the `_tasks/` repo (`git -C _tasks …`), never in the main repo.
+Never `git add` those artifacts — `_tasks/` is local-only, gitignored, and has no backup.
 
 ## Scratch / temporary files — use `_artifacts/`, not `/tmp`
 
 This project overrides the harness's default session scratchpad (`/tmp/claude-*/…`). Write
 temporary/working files — exports, generated zips, one-off intermediate outputs, anything you'd
-otherwise put in `/tmp` — to `/home/diegosouzapw/dev/proxys/OmniRoute/_artifacts/` instead.
+otherwise put in `/tmp` — to the repo-local `_artifacts/` directory instead.
 
 - `_artifacts/` is a root `_*` path: already gitignored (`AGENTS.md` → "Root `_*` paths"), lives
   on disk only, never tracked.
 - Reason: keeping scratch output inside the project (vs `/tmp`) makes it trivial for the operator
   to find and delete everything temporary in one place, instead of hunting across ephemeral
   session-specific `/tmp` directories that vanish or accumulate untracked.
-- Do **not** confuse this with `_tasks/` (Hard Rule #23, its own private git repo for durable
+- Do **not** confuse this with `_tasks/` (Hard Rule #20, durable local-only
   plans/specs/research/hand-offs) — `_artifacts/` is for disposable working files only, nothing
   here needs to survive or be versioned.
-
-## Base-green before opening PRs
-
-Before cutting a branch or opening a PR, run the base-green check (`AGENTS.md` → Git Workflow →
-"Base-green check"; project skills reference it as `.agents/skills/_shared/base-green.md`). A PR
-opened while the base tip is red must carry `⚠️ base-red inherited: #<issue>` in its body. To
-drain an accumulated red state (base tip + red PRs), use the `/sweep-reds` skill.
 
 <!-- gitnexus:start -->
 
@@ -80,7 +59,7 @@ This project is indexed by GitNexus as **OmniRoute** (126776 symbols, 251119 rel
 ## Always Do
 
 - **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows. For regression review, compare against the default branch: `detect_changes({scope: "compare", base_ref: "release/v3.8.50"})`.
+- **MUST run `detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows. For regression review, compare against the mainline: `detect_changes({scope: "compare", base_ref: "less"})`.
 - **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
 - When exploring unfamiliar code, use `query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
 - When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `context({name: "symbolName"})`.
