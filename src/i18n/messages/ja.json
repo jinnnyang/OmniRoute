@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "ヒューリスティックプルーニング、SLMフォールバック、メッセージごとのしきい値を微調整する",
     "compressionUltraRate": "キープレート",
     "compressionUltraMinScore": "最小スコアしきい値",
-    "compressionUltraModelPath": "SLM モデルのパス",
     "compressionUltraEngine": "Ultraティア",
     "compressionUltraEngineHeuristic": "ヒューリスティック (Tier-A、デフォルト)",
     "compressionSummarizerEnabled": "サマライザーを有効にする",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "これより短いメッセージは圧縮されません。低い = 圧縮が高くなります。",
     "tooltipMinSavings": "少なくともこの数のトークンを保存する場合にのみ圧縮してください。",
     "ultraSettings": "ウルトラ設定",
-    "ultraSettingsDesc": "SLM を利用したセマンティック圧縮",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

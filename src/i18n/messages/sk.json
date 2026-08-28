@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Jemne dolaďte heuristické orezávanie, záložné riešenie SLM a prahové hodnoty pre jednotlivé správy",
     "compressionUltraRate": "Keep Rate",
     "compressionUltraMinScore": "Hranica minimálneho skóre",
-    "compressionUltraModelPath": "Cesta modelu SLM",
     "compressionUltraEngine": "Úroveň Ultra",
     "compressionUltraEngineHeuristic": "Heuristika (Tier-A, predvolené)",
     "compressionSummarizerEnabled": "Povoliť Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Správy kratšie ako toto nie sú komprimované. Nižšia = väčšia kompresia.",
     "tooltipMinSavings": "Komprimujte iba vtedy, ak uložíte aspoň toľko tokenov.",
     "ultraSettings": "Ultra nastavenia",
-    "ultraSettingsDesc": "Sémantická kompresia poháňaná SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

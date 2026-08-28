@@ -7444,7 +7444,6 @@
     "compressionUltraConfigDesc": "Fine-tune heuristic pruning, SLM fallback, and per-message thresholds",
     "compressionUltraRate": "Keep Rate",
     "compressionUltraMinScore": "Minimum Score Threshold",
-    "compressionUltraModelPath": "SLM Model Path",
     "compressionUltraEngine": "Ultra nível",
     "compressionUltraEngineHeuristic": "Heurística (Tier-A, padrão)",
     "compressionSummarizerEnabled": "Enable Summarizer",
@@ -8826,7 +8825,6 @@
     "tooltipMinLength": "Mensagens menores que isso não são compactadas. Menor = mais compressão.",
     "tooltipMinSavings": "Compacte apenas se salvar pelo menos esse número de tokens.",
     "ultraSettings": "Configurações Ultra",
-    "ultraSettingsDesc": "Compressão semântica alimentada por SLM",
     "preview": {
       "lite": "Responda conciso. Preserve termos tecnicos, codigo, erros, URLs e identificadores.",
       "full": "Responda seco e compacto. Preserve todo conteudo tecnico.",

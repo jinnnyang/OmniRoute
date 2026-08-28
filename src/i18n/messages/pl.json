@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Dostrajanie heurystycznego przycinania, SLM fallback oraz progów na wiadomość",
     "compressionUltraRate": "Wskaźnik zachowania",
     "compressionUltraMinScore": "Minimalny próg oceny",
-    "compressionUltraModelPath": "Ścieżka do model SLM",
     "compressionUltraEngine": "Poziom Ultra",
     "compressionUltraEngineHeuristic": "Heurystyczny (Poziom A, domyślny)",
     "compressionSummarizerEnabled": "Włącz podsumowywanie",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Wiadomości krótsze niż ta wartość nie są kompresowane. Niższa = większa kompresja.",
     "tooltipMinSavings": "Kompresuj tylko wtedy, gdy pozwala to zaoszczędzić co najmniej tyle tokens.",
     "ultraSettings": "Ustawienia Ultra",
-    "ultraSettingsDesc": "Kompresja semantyczna oparta na SLM",
     "preview": {
       "lite": "Odpowiadaj zwięźle. Zachowuj terminy techniczne, kod, błędy, adresy URL i identyfikatory.",
       "full": "Odpowiadaj krótko i zwięźle. Zachowuj całą treść merytoryczną.",

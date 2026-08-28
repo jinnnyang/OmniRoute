@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Buluşsal budama, SLM geri dönüşü ve mesaj başına eşiklerde ince ayar yapın",
     "compressionUltraRate": "Oranı Koru",
     "compressionUltraMinScore": "Minimum Puan Eşiği",
-    "compressionUltraModelPath": "SLM Modeli Yolu",
     "compressionUltraEngine": "Ultra katmanı",
     "compressionUltraEngineHeuristic": "Sezgisel (Tier-A, varsayılan)",
     "compressionSummarizerEnabled": "Özetleyiciyi Etkinleştir",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Bundan daha kısa mesajlar sıkıştırılmaz. Daha düşük = daha fazla sıkıştırma.",
     "tooltipMinSavings": "Yalnızca en az bu kadar jeton tasarrufu sağlıyorsa sıkıştırın.",
     "ultraSettings": "Ultra Ayarlar",
-    "ultraSettingsDesc": "SLM destekli anlamsal sıkıştırma",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

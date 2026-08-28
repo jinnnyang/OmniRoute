@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "경험적 정리, SLM 대체 및 메시지별 임계값을 미세 조정합니다.",
     "compressionUltraRate": "유지 비율",
     "compressionUltraMinScore": "최소 점수 기준",
-    "compressionUltraModelPath": "SLM 모델 경로",
     "compressionUltraEngine": "울트라 티어",
     "compressionUltraEngineHeuristic": "휴리스틱 (Tier-A, 기본값)",
     "compressionSummarizerEnabled": "요약기 활성화",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "이보다 짧은 메시지는 압축되지 않습니다. 낮음 = 더 많은 압축.",
     "tooltipMinSavings": "최소한 이만큼의 토큰을 절약할 수 있는 경우에만 압축합니다.",
     "ultraSettings": "울트라 설정",
-    "ultraSettingsDesc": "SLM 기반 의미 압축",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

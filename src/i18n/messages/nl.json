@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Verfijn heuristisch snoeien, SLM-fallback en drempelwaarden per bericht",
     "compressionUltraRate": "Houd koers",
     "compressionUltraMinScore": "Minimale scoredrempel",
-    "compressionUltraModelPath": "SLM-modelpad",
     "compressionUltraEngine": "Ultra-tier",
     "compressionUltraEngineHeuristic": "Heuristisch (Tier-A, standaard)",
     "compressionSummarizerEnabled": "Schakel Samenvattend in",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Berichten die korter zijn dan dit, worden niet gecomprimeerd. Lager = meer compressie.",
     "tooltipMinSavings": "Alleen comprimeren als het minstens zoveel tokens bespaart.",
     "ultraSettings": "Ultra-instellingen",
-    "ultraSettingsDesc": "SLM-aangedreven semantische compressie",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

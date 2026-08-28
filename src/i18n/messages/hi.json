@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "फाइन-ट्यून ह्यूरिस्टिक प्रूनिंग, एसएलएम फ़ॉलबैक और प्रति-संदेश सीमाएँ",
     "compressionUltraRate": "दर रखें",
     "compressionUltraMinScore": "न्यूनतम स्कोर सीमा",
-    "compressionUltraModelPath": "एसएलएम मॉडल पथ",
     "compressionUltraEngine": "Ultra टियर",
     "compressionUltraEngineHeuristic": "ह्यूरिस्टिक (Tier-A, डिफ़ॉल्ट)",
     "compressionSummarizerEnabled": "सारांश सक्षम करें",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "इससे छोटे संदेश संपीड़ित नहीं होते. कम = अधिक संपीड़न।",
     "tooltipMinSavings": "केवल तभी संपीड़ित करें यदि यह कम से कम इतने टोकन बचाता है।",
     "ultraSettings": "अल्ट्रा सेटिंग्स",
-    "ultraSettingsDesc": "एसएलएम-संचालित सिमेंटिक संपीड़न",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

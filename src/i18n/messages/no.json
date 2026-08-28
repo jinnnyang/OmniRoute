@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Finjuster heuristisk beskjæring, SLM-reservering og terskler per melding",
     "compressionUltraRate": "Behold sats",
     "compressionUltraMinScore": "Minimum poenggrense",
-    "compressionUltraModelPath": "SLM modellbane",
     "compressionUltraEngine": "Ultra-nivå",
     "compressionUltraEngineHeuristic": "Heuristisk (Tier-A, standard)",
     "compressionSummarizerEnabled": "Aktiver Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Meldinger som er kortere enn dette, komprimeres ikke. Lavere = mer kompresjon.",
     "tooltipMinSavings": "Komprimer bare hvis det sparer minst så mange tokens.",
     "ultraSettings": "Ultra-innstillinger",
-    "ultraSettingsDesc": "SLM-drevet semantisk komprimering",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

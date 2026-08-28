@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Perhalusi pemangkasan heuristik, sandaran SLM dan ambang setiap mesej",
     "compressionUltraRate": "Kekalkan Kadar",
     "compressionUltraMinScore": "Ambang Skor Minimum",
-    "compressionUltraModelPath": "Laluan Model SLM",
     "compressionUltraEngine": "Tahap Ultra",
     "compressionUltraEngineHeuristic": "Heuristik (Tahap-A, lalai)",
     "compressionSummarizerEnabled": "Dayakan Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Mesej yang lebih pendek daripada ini tidak dimampatkan. Rendah = lebih mampatan.",
     "tooltipMinSavings": "Hanya mampatkan jika ia menjimatkan sekurang-kurangnya token sebanyak ini.",
     "ultraSettings": "Tetapan Ultra",
-    "ultraSettingsDesc": "Pemampatan semantik berkuasa SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

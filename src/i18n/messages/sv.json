@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Finjustera heuristisk beskärning, SLM reserv och trösklar per meddelande",
     "compressionUltraRate": "Behåll kursen",
     "compressionUltraMinScore": "Minsta poängtröskel",
-    "compressionUltraModelPath": "SLM modellväg",
     "compressionUltraEngine": "Ultra-nivå",
     "compressionUltraEngineHeuristic": "Heuristik (Tier-A, standard)",
     "compressionSummarizerEnabled": "Aktivera Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Meddelanden kortare än detta komprimeras inte. Lägre = mer kompression.",
     "tooltipMinSavings": "Komprimera bara om det sparar åtminstone så många tokens.",
     "ultraSettings": "Ultrainställningar",
-    "ultraSettingsDesc": "SLM-driven semantisk komprimering",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Fine-tune heuristic kupogoa, kurudi nyuma kwa SLM, na vizingiti kwa kila ujumbe",
     "compressionUltraRate": "Weka Kiwango",
     "compressionUltraMinScore": "Kiwango cha chini cha Alama",
-    "compressionUltraModelPath": "Njia ya Mfano ya SLM",
     "compressionUltraEngine": "Kiwango cha Ultra",
     "compressionUltraEngineHeuristic": "Heuristic (Kiwango-A, chaguomsingi)",
     "compressionSummarizerEnabled": "Washa Muhtasari",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Ujumbe mfupi kuliko huu haujabanwa. Chini = compression zaidi.",
     "tooltipMinSavings": "Finyaza tu ikiwa itaokoa angalau ishara hizi nyingi.",
     "ultraSettings": "Mipangilio ya Juu",
-    "ultraSettingsDesc": "Mfinyazo wa kisemantiki unaoendeshwa na SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

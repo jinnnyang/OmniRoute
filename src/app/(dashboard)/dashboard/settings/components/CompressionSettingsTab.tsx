@@ -66,8 +66,6 @@ interface UltraConfig {
   enabled: boolean;
   compressionRate: number;
   minScoreThreshold: number;
-  slmFallbackToAggressive: boolean;
-  modelPath?: string;
   maxTokensPerMessage: number;
 }
 
@@ -207,7 +205,6 @@ export default function CompressionSettingsTab() {
       enabled: false,
       compressionRate: 0.5,
       minScoreThreshold: 0.3,
-      slmFallbackToAggressive: true,
       maxTokensPerMessage: 0,
     },
   });
@@ -834,47 +831,6 @@ export default function CompressionSettingsTab() {
                 />
                 <span className="text-xs text-text-muted">{t("tokens")}</span>
               </div>
-            </label>
-
-            <label className="flex items-center justify-between">
-              <span className="text-sm text-text-muted">{t("compressionUltraSlmFallback")}</span>
-              <button
-                onClick={() =>
-                  save({
-                    ultra: {
-                      ...config.ultra!,
-                      slmFallbackToAggressive: !config.ultra!.slmFallbackToAggressive,
-                    },
-                  })
-                }
-                className={`relative w-10 h-5 rounded-full transition-colors ${
-                  config.ultra.slmFallbackToAggressive ? "bg-green-500" : "bg-border"
-                }`}
-              >
-                <span
-                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
-                    config.ultra.slmFallbackToAggressive ? "left-5" : "left-0.5"
-                  }`}
-                />
-              </button>
-            </label>
-
-            <label className="block space-y-1">
-              <span className="text-sm text-text-muted">{t("compressionUltraModelPath")}</span>
-              <input
-                type="text"
-                value={config.ultra.modelPath ?? ""}
-                onChange={(e) =>
-                  save({
-                    ultra: {
-                      ...config.ultra!,
-                      modelPath: e.target.value.trim() || undefined,
-                    },
-                  })
-                }
-                placeholder="/path/to/model.onnx"
-                className="w-full px-2 py-1 text-sm rounded border border-border bg-surface text-text-main font-mono"
-              />
             </label>
           </div>
         )}

@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "فائن ٹیون ہیورسٹک پرننگ، ایس ایل ایم فال بیک، اور فی میسج تھریشولڈز",
     "compressionUltraRate": "ریٹ رکھیں",
     "compressionUltraMinScore": "کم از کم سکور کی حد",
-    "compressionUltraModelPath": "SLM ماڈل پاتھ",
     "compressionUltraEngine": "الٹرا ٹیئر",
     "compressionUltraEngineHeuristic": "ہیورسٹک (Tier-A، ڈیفالٹ)",
     "compressionSummarizerEnabled": "سمریزر کو فعال کریں۔",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "اس سے چھوٹے پیغامات کو کمپریس نہیں کیا جاتا ہے۔ کم = زیادہ کمپریشن۔",
     "tooltipMinSavings": "صرف اس صورت میں کمپریس کریں جب یہ کم از کم اتنے ٹوکن بچاتا ہے۔",
     "ultraSettings": "الٹرا سیٹنگز",
-    "ultraSettingsDesc": "SLM سے چلنے والا سیمنٹک کمپریشن",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

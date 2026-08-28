@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "ضبط التقليم الإرشادي، والاحتياطي SLM، والعتبات لكل رسالة",
     "compressionUltraRate": "الحفاظ على المعدل",
     "compressionUltraMinScore": "عتبة الحد الأدنى للنتيجة",
-    "compressionUltraModelPath": "مسار نموذج SLM",
     "compressionUltraEngine": "فئة Ultra",
     "compressionUltraEngineHeuristic": "الاستدلالي (Tier-A، الافتراضي)",
     "compressionSummarizerEnabled": "تمكين الملخص",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "لا يتم ضغط الرسائل الأقصر من ذلك. أقل = المزيد من الضغط.",
     "tooltipMinSavings": "قم بالضغط فقط إذا كان يحفظ هذا العدد من الرموز المميزة على الأقل.",
     "ultraSettings": "إعدادات الترا",
-    "ultraSettingsDesc": "الضغط الدلالي الذي يعمل بنظام SLM",
     "preview": {
       "lite": "أجب بإيجاز. حافظ على المصطلحات التقنية والشيفرة والأخطاء وعناوين URL والمعرّفات.",
       "full": "أجب باقتضاب وبصيغة مضغوطة مع الحفاظ على كامل المضمون التقني.",

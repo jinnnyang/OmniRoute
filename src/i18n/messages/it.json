@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Ottimizza l'eliminazione euristica, il fallback SLM e le soglie per messaggio",
     "compressionUltraRate": "Mantieni la tariffa",
     "compressionUltraMinScore": "Soglia di punteggio minimo",
-    "compressionUltraModelPath": "Percorso del modello SLM",
     "compressionUltraEngine": "Livello Ultra",
     "compressionUltraEngineHeuristic": "Euristico (Tier-A, predefinito)",
     "compressionSummarizerEnabled": "Abilita riepilogatore",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "I messaggi più brevi di questo non vengono compressi. Più basso = maggiore compressione.",
     "tooltipMinSavings": "Comprimi solo se salva almeno questo numero di token.",
     "ultraSettings": "Impostazioni ultra",
-    "ultraSettingsDesc": "Compressione semantica basata su SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Fine-tune heuristic pruning, SLM fallback, and per-message thresholds",
     "compressionUltraRate": "Keep Rate",
     "compressionUltraMinScore": "Minimum Score Threshold",
-    "compressionUltraModelPath": "SLM Model Path",
     "compressionUltraEngine": "Ultra səviyyəsi",
     "compressionUltraEngineHeuristic": "Evristik (Tier-A, standart)",
     "compressionSummarizerEnabled": "Enable Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Bundan qısa mesajlar sıxılmır. Aşağı = daha çox sıxılma.",
     "tooltipMinSavings": "Yalnız ən azı bu qədər token saxlasa sıxışdırın.",
     "ultraSettings": "Ultra Parametrlər",
-    "ultraSettingsDesc": "SLM ilə dəstəklənən semantik sıxılma",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "微調啟發式剪枝、SLM 後備和每條訊息閾值",
     "compressionUltraRate": "保留比例",
     "compressionUltraMinScore": "最低分數閾值",
-    "compressionUltraModelPath": "SLM 模型路徑",
     "compressionUltraEngine": "Ultra 層級",
     "compressionUltraEngineHeuristic": "啟發式（Tier-A，預設）",
     "compressionSummarizerEnabled": "啟用摘要器",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "比這短的訊息不會被壓縮。更低=更多壓縮。",
     "tooltipMinSavings": "僅當至少儲存這麼多權杖時才進行壓縮。",
     "ultraSettings": "超級設定",
-    "ultraSettingsDesc": "SLM 支援的語義壓縮",
     "preview": {
       "lite": "回覆要簡潔。保留技術術語、程式碼、錯誤、URL 和識別符號。",
       "full": "回覆要簡短緊湊。保留所有技術實質。",

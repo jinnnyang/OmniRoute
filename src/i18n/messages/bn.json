@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "ফাইন-টিউন হিউরিস্টিক প্রুনিং, SLM ফলব্যাক এবং প্রতি-বার্তা থ্রেশহোল্ড",
     "compressionUltraRate": "রেট রাখুন",
     "compressionUltraMinScore": "ন্যূনতম স্কোর থ্রেশহোল্ড",
-    "compressionUltraModelPath": "এসএলএম মডেল পাথ",
     "compressionUltraEngine": "আল্ট্রা টিয়ার",
     "compressionUltraEngineHeuristic": "হিউরিস্টিক (টিয়ার-এ, ডিফল্ট)",
     "compressionSummarizerEnabled": "সামারাইজার সক্ষম করুন",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "এর চেয়ে ছোট বার্তাগুলি সংকুচিত হয় না। নিম্ন = আরও সংকোচন।",
     "tooltipMinSavings": "শুধুমাত্র সংকুচিত করুন যদি এটি অন্তত এতগুলো টোকেন সংরক্ষণ করে।",
     "ultraSettings": "আল্ট্রা সেটিংস",
-    "ultraSettingsDesc": "SLM-চালিত শব্দার্থিক কম্প্রেশন",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

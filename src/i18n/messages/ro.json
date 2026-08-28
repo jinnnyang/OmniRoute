@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Ajustați tăierea euristică, retragerea SLM și pragurile per mesaj",
     "compressionUltraRate": "Păstrați rata",
     "compressionUltraMinScore": "Pragul minim de scor",
-    "compressionUltraModelPath": "Calea modelului SLM",
     "compressionUltraEngine": "Nivelul Ultra",
     "compressionUltraEngineHeuristic": "Euristică (Nivel-A, implicit)",
     "compressionSummarizerEnabled": "Activați Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Mesajele mai scurte decât aceasta nu sunt comprimate. Mai jos = compresie mai mare.",
     "tooltipMinSavings": "Comprimați doar dacă salvează cel puțin atât de multe jetoane.",
     "ultraSettings": "Setări Ultra",
-    "ultraSettingsDesc": "Compresie semantică alimentată de SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

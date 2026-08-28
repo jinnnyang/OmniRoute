@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Точне налаштування евристичної скорочення, резервної версії SLM і порогових значень для кожного повідомлення",
     "compressionUltraRate": "Зберегти ставку",
     "compressionUltraMinScore": "Мінімальний поріг балів",
-    "compressionUltraModelPath": "Шлях моделі SLM",
     "compressionUltraEngine": "Рівень Ultra",
     "compressionUltraEngineHeuristic": "Евристичний (Tier-A, за замовчуванням)",
     "compressionSummarizerEnabled": "Увімкнути підсумовувач",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Коротші повідомлення не стискаються. Нижче = більше стиснення.",
     "tooltipMinSavings": "Стискайте лише якщо це зберігає принаймні таку кількість токенів.",
     "ultraSettings": "Ультра налаштування",
-    "ultraSettingsDesc": "Семантичне стиснення на основі SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

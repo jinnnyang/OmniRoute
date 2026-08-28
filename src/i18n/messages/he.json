@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "כוונן עדין גיזום היוריסטי, SLM fallback וספים לכל הודעה",
     "compressionUltraRate": "שמור על שיעור",
     "compressionUltraMinScore": "סף ציון מינימלי",
-    "compressionUltraModelPath": "נתיב דגם SLM",
     "compressionUltraEngine": "רמת אולטרה",
     "compressionUltraEngineHeuristic": "יוריסטי (Tier-A, ברירת מחדל)",
     "compressionSummarizerEnabled": "הפעל את Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "הודעות קצרות מזה אינן דחוסות. נמוך יותר = יותר דחיסה.",
     "tooltipMinSavings": "דחוס רק אם זה חוסך לפחות כל כך הרבה אסימונים.",
     "ultraSettings": "הגדרות אולטרה",
-    "ultraSettingsDesc": "דחיסה סמנטית המופעלת על ידי SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

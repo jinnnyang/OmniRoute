@@ -7444,7 +7444,6 @@
     "compressionUltraConfigDesc": "Tinh chỉnh việc cắt tỉa theo quy tắc kinh nghiệm, dự phòng SLM và ngưỡng cho từng tin nhắn",
     "compressionUltraRate": "Tỷ lệ giữ lại",
     "compressionUltraMinScore": "Ngưỡng điểm tối thiểu",
-    "compressionUltraModelPath": "Đường dẫn mô hình SLM",
     "compressionUltraEngine": "Cấp độ siêu mạnh",
     "compressionUltraEngineHeuristic": "Theo quy tắc kinh nghiệm (Cấp A, mặc định)",
     "compressionSummarizerEnabled": "Bật trình tóm tắt",
@@ -8826,7 +8825,6 @@
     "tooltipMinLength": "Tin nhắn ngắn hơn mức này sẽ không được nén. Thấp hơn = nén nhiều hơn.",
     "tooltipMinSavings": "Chỉ nén nếu tiết kiệm được ít nhất ngần này token.",
     "ultraSettings": "Cài đặt tối đa",
-    "ultraSettingsDesc": "Nén ngữ nghĩa sử dụng SLM",
     "preview": {
       "lite": "Phản hồi ngắn gọn. Giữ nguyên thuật ngữ kỹ thuật, mã, lỗi, URL và mã định danh.",
       "full": "Phản hồi cực ngắn và gọn. Giữ nguyên toàn bộ nội dung kỹ thuật.",

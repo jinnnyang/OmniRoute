@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Affinez l’élagage heuristique, le repli SLM et les seuils par message",
     "compressionUltraRate": "Conserver le taux",
     "compressionUltraMinScore": "Seuil de score minimum",
-    "compressionUltraModelPath": "Chemin du modèle SLM",
     "compressionUltraEngine": "Niveau Ultra",
     "compressionUltraEngineHeuristic": "Heuristique (Tier-A, par défaut)",
     "compressionSummarizerEnabled": "Activer le résumé",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Les messages plus courts ne sont pas compressés. Plus faible = plus de compression.",
     "tooltipMinSavings": "Compressez uniquement si vous enregistrez au moins autant de jetons.",
     "ultraSettings": "Paramètres ultra",
-    "ultraSettingsDesc": "Compression sémantique basée sur SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

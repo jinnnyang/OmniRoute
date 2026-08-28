@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "फाइन-ट्यून ह्युरिस्टिक छाटणी, एसएलएम फॉलबॅक आणि प्रति-संदेश थ्रेशोल्ड",
     "compressionUltraRate": "दर ठेवा",
     "compressionUltraMinScore": "किमान स्कोअर थ्रेशोल्ड",
-    "compressionUltraModelPath": "SLM मॉडेल पथ",
     "compressionUltraEngine": "अल्ट्रा टियर",
     "compressionUltraEngineHeuristic": "ह्यूरिस्टिक (Tier-A, डीफॉल्ट)",
     "compressionSummarizerEnabled": "सारांश सक्षम करा",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "यापेक्षा लहान संदेश संकुचित केले जात नाहीत. लोअर = अधिक कॉम्प्रेशन.",
     "tooltipMinSavings": "कमीत कमी इतके टोकन वाचवले तरच संकुचित करा.",
     "ultraSettings": "अल्ट्रा सेटिंग्ज",
-    "ultraSettingsDesc": "SLM-चालित सिमेंटिक कॉम्प्रेशन",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

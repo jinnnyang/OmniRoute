@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "I-fine-tune ang heuristic pruning, SLM fallback, at bawat-message threshold",
     "compressionUltraRate": "Panatilihin ang Rate",
     "compressionUltraMinScore": "Minimum na Threshold ng Marka",
-    "compressionUltraModelPath": "Path ng Modelong SLM",
     "compressionUltraEngine": "Ultra tier",
     "compressionUltraEngineHeuristic": "Heuristic (Tier-A, default)",
     "compressionSummarizerEnabled": "Paganahin ang Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Ang mga mensaheng mas maikli kaysa dito ay hindi na-compress. Mas mababa = mas maraming compression.",
     "tooltipMinSavings": "I-compress lamang kung nakakatipid ito ng kahit gaano karaming token.",
     "ultraSettings": "Mga Ultra Setting",
-    "ultraSettingsDesc": "SLM-powered semantic compression",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

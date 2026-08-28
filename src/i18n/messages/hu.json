@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "A heurisztikus metszés, az SLM tartalék és az üzenetenkénti küszöbértékek finomhangolása",
     "compressionUltraRate": "Rate megtartása",
     "compressionUltraMinScore": "Minimális pontszám küszöb",
-    "compressionUltraModelPath": "SLM modell útvonal",
     "compressionUltraEngine": "Ultra szint",
     "compressionUltraEngineHeuristic": "Heurisztikus (Tier-A, alapértelmezett)",
     "compressionSummarizerEnabled": "Összefoglaló engedélyezése",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Az ennél rövidebb üzenetek nincsenek tömörítve. Alacsonyabb = nagyobb tömörítés.",
     "tooltipMinSavings": "Csak akkor tömörítse, ha legalább ennyi tokent megtakarít.",
     "ultraSettings": "Ultra beállítások",
-    "ultraSettingsDesc": "SLM-alapú szemantikai tömörítés",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

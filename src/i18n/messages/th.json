@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "ปรับแต่งการตัดแต่งฮิวริสติก, ทางเลือก SLM และเกณฑ์ต่อข้อความ",
     "compressionUltraRate": "เก็บอัตรา",
     "compressionUltraMinScore": "เกณฑ์คะแนนขั้นต่ำ",
-    "compressionUltraModelPath": "เส้นทางโมเดล SLM",
     "compressionUltraEngine": "ระดับ Ultra",
     "compressionUltraEngineHeuristic": "ฮิวริสติก (ระดับ A, ค่าเริ่มต้น)",
     "compressionSummarizerEnabled": "เปิดใช้งานตัวสรุป",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "ข้อความที่สั้นกว่านี้จะไม่ถูกบีบอัด ต่ำ = บีบอัดมากขึ้น",
     "tooltipMinSavings": "บีบอัดเฉพาะในกรณีที่บันทึกโทเค็นได้อย่างน้อยเท่านี้",
     "ultraSettings": "การตั้งค่าอัลตร้า",
-    "ultraSettingsDesc": "การบีบอัดความหมายที่ขับเคลื่อนด้วย SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

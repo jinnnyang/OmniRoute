@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "ஃபைன்-டியூன் ஹூரிஸ்டிக் ப்ரூனிங், SLM ஃபால்பேக் மற்றும் ஒரு-மெசேஜ் வரம்புகள்",
     "compressionUltraRate": "விகிதத்தை வைத்திருங்கள்",
     "compressionUltraMinScore": "குறைந்தபட்ச மதிப்பெண் வரம்பு",
-    "compressionUltraModelPath": "SLM மாதிரி பாதை",
     "compressionUltraEngine": "அல்ட்ரா அடுக்கு",
     "compressionUltraEngineHeuristic": "ஹியூரிஸ்டிக் (அடுக்கு-A, இயல்புநிலை)",
     "compressionSummarizerEnabled": "சுருக்கத்தை இயக்கு",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "இதை விட குறைவான செய்திகள் சுருக்கப்படாது. கீழ் = அதிக சுருக்கம்.",
     "tooltipMinSavings": "குறைந்தபட்சம் இத்தனை டோக்கன்களைச் சேமித்தால் மட்டுமே சுருக்கவும்.",
     "ultraSettings": "அல்ட்ரா அமைப்புகள்",
-    "ultraSettingsDesc": "SLM-இயங்கும் சொற்பொருள் சுருக்கம்",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

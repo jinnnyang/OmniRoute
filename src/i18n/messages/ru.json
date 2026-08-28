@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Точная настройка эвристического сокращения, резервного SLM и пороговых значений для каждого сообщения.",
     "compressionUltraRate": "Держите ставку",
     "compressionUltraMinScore": "Минимальный порог оценки",
-    "compressionUltraModelPath": "Путь модели УУЗР",
     "compressionUltraEngine": "Уровень Ultra",
     "compressionUltraEngineHeuristic": "Эвристический (Tier-A, по умолчанию)",
     "compressionSummarizerEnabled": "Включить сумматор",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Сообщения короче этого значения не сжимаются. Ниже = больше сжатия.",
     "tooltipMinSavings": "Сжимайте только в том случае, если при этом сохраняется хотя бы столько же токенов.",
     "ultraSettings": "Ультра настройки",
-    "ultraSettingsDesc": "Семантическое сжатие на основе SLM",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Afina a poda heurística, fallback SLM e limiares por mensagem",
     "compressionUltraRate": "Taxa de Manutenção",
     "compressionUltraMinScore": "Limiar de Pontuação Mínima",
-    "compressionUltraModelPath": "Caminho do Modelo SLM",
     "compressionUltraEngine": "Nível Ultra",
     "compressionUltraEngineHeuristic": "Heurística (Nível-A, predefinição)",
     "compressionSummarizerEnabled": "Ativar Sumarizador",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Mensagens menores que isso não são compactadas. Menor = mais compressão.",
     "tooltipMinSavings": "Compacte apenas se salvar pelo menos esse número de tokens.",
     "ultraSettings": "Configurações Ultra",
-    "ultraSettingsDesc": "Compressão semântica alimentada por SLM",
     "preview": {
       "lite": "Responde de forma concisa. Preserva termos técnicos, código, erros, URLs e identificadores.",
       "full": "Responde de forma curta e compacta. Preserva toda a substância técnica.",

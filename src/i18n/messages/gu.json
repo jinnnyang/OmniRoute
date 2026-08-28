@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "ફાઇન-ટ્યુન હ્યુરિસ્ટિક કાપણી, SLM ફોલબેક અને પ્રતિ-સંદેશ થ્રેશોલ્ડ",
     "compressionUltraRate": "દર રાખો",
     "compressionUltraMinScore": "ન્યૂનતમ સ્કોર થ્રેશોલ્ડ",
-    "compressionUltraModelPath": "SLM મોડલ પાથ",
     "compressionUltraEngine": "અલ્ટ્રા ટાયર",
     "compressionUltraEngineHeuristic": "હ્યુરિસ્ટિક (Tier-A, ડિફૉલ્ટ)",
     "compressionSummarizerEnabled": "સારાંશને સક્ષમ કરો",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "આના કરતાં ટૂંકા સંદેશાઓ સંકુચિત નથી. લોઅર = વધુ સંકોચન.",
     "tooltipMinSavings": "માત્ર સંકુચિત કરો જો તે ઓછામાં ઓછા આટલા બધા ટોકન્સ બચાવે.",
     "ultraSettings": "અલ્ટ્રા સેટિંગ્સ",
-    "ultraSettingsDesc": "SLM-સંચાલિત સિમેન્ટીક કમ્પ્રેશન",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Hienosäädä heuristista karsimista, SLM-varaa ja viestikohtaisia kynnysarvoja",
     "compressionUltraRate": "Pidä korko",
     "compressionUltraMinScore": "Pisteiden vähimmäiskynnys",
-    "compressionUltraModelPath": "SLM-mallin polku",
     "compressionUltraEngine": "Ultra-taso",
     "compressionUltraEngineHeuristic": "Heuristinen (A-taso, oletus)",
     "compressionSummarizerEnabled": "Ota Summarizer käyttöön",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Tätä lyhyempiä viestejä ei pakata. Alempi = enemmän pakkausta.",
     "tooltipMinSavings": "Pakkaa vain, jos se säästää vähintään näin monta merkkiä.",
     "ultraSettings": "Ultra-asetukset",
-    "ultraSettingsDesc": "SLM-käyttöinen semanttinen pakkaus",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

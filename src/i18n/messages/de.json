@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Feinabstimmung der heuristischen Bereinigung, des SLM-Fallbacks und der Schwellenwerte pro Nachricht",
     "compressionUltraRate": "Rate beibehalten",
     "compressionUltraMinScore": "Mindestpunktzahlschwelle",
-    "compressionUltraModelPath": "SLM-Modellpfad",
     "compressionUltraEngine": "Ultra-Stufe",
     "compressionUltraEngineHeuristic": "Heuristik (Tier-A, Standard)",
     "compressionSummarizerEnabled": "Aktivieren Sie die Zusammenfassung",
@@ -8826,7 +8825,6 @@
     "tooltipMinLength": "Nachrichten, die kürzer sind, werden nicht komprimiert. Niedriger = mehr Komprimierung.",
     "tooltipMinSavings": "Komprimieren Sie nur, wenn dadurch mindestens so viele Token eingespart werden.",
     "ultraSettings": "Ultra-Einstellungen",
-    "ultraSettingsDesc": "SLM-gestützte semantische Komprimierung",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",

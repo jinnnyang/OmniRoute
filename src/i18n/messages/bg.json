@@ -7432,7 +7432,6 @@
     "compressionUltraConfigDesc": "Фина настройка на евристично съкращаване, резервен SLM и прагове за всяко съобщение",
     "compressionUltraRate": "Запазете курса",
     "compressionUltraMinScore": "Минимален праг на резултата",
-    "compressionUltraModelPath": "SLM модел път",
     "compressionUltraEngine": "Ниво Ultra",
     "compressionUltraEngineHeuristic": "Евристичен (Ниво-А, по подразбиране)",
     "compressionSummarizerEnabled": "Активирайте Summarizer",
@@ -8824,7 +8823,6 @@
     "tooltipMinLength": "Съобщенията, по-кратки от това, не се компресират. По-ниска = повече компресия.",
     "tooltipMinSavings": "Компресирайте само ако спестява поне толкова токени.",
     "ultraSettings": "Ултра настройки",
-    "ultraSettingsDesc": "Захранвана от SLM семантична компресия",
     "preview": {
       "lite": "Respond concise. Preserve technical terms, code, errors, URLs, and identifiers.",
       "full": "Respond terse and compact. Preserve all technical substance.",
