@@ -7,7 +7,7 @@
 
 import { getCachedSettings } from "@/lib/db/readCache";
 import { updateProviderConnection } from "@/lib/db/providers";
-import { resolveProviderId, WEB_COOKIE_PROVIDERS } from "@/shared/constants/providers";
+import { resolveProviderId } from "@/shared/constants/providers";
 import { shouldAutoDisableBannedConnection } from "@/shared/utils/autoDisableBanned";
 import { shouldIsolateProbeFailures } from "@/shared/utils/probeOrigin";
 import * as log from "../utils/logger";
@@ -39,7 +39,6 @@ export async function maybeAutoDisableBannedAccount(input: {
         scope,
         authType: input.authType,
         providerId: resolveProviderId(input.provider || input.connectionProvider || ""),
-        webCookieProviderIds: WEB_COOKIE_PROVIDERS,
       })
     ) {
       if (settings.autoDisableBannedAccounts) {

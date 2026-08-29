@@ -8,7 +8,6 @@ import {
   isSelfHostedChatProvider,
   providerAllowsOptionalApiKey,
   resolveProviderId,
-  WEB_COOKIE_PROVIDERS,
 } from "@/shared/constants/providers";
 import { MODAL_DEFAULT_VALIDATION_MODEL_ID } from "@/shared/constants/modal";
 import { validateImageProviderApiKey } from "@/lib/providers/imageValidation";
@@ -88,7 +87,6 @@ import {
   validateClarifaiProvider,
   validateEmbeddingApiProvider,
   validateJinaFoundationProvider,
-  validateRerankApiProvider,
 } from "./validation/embeddingProviders";
 import {
   validateBedrockProvider,
@@ -103,11 +101,7 @@ import {
   validateAnthropicCompatibleProvider,
   validateClaudeCodeCompatibleProvider,
 } from "./validation/anthropicFormat";
-import {
-  validateWebCookieProvider,
-  bytezValidationResultFromStatus,
-  validateBytezProvider,
-} from "./validation/webCookie";
+import { validateBytezProvider } from "./validation/bytez";
 import { validateAiHordeProvider } from "./validation/aihorde";
 import { validateDifyProvider } from "./validation/dify";
 import { validateAdobeFireflyProvider } from "./validation/adobeFirefly";
@@ -134,14 +128,9 @@ export { validateCommandCodeProvider, validateClaudeCodeCompatibleProvider };
 // here to preserve the historical public surface (tests + route handlers import them via this module).
 export { isRetryableProxyTarget, isSecurityBlockError } from "./validation/transport";
 
-// validateWebCookieProvider + bytezValidationResultFromStatus have external importers (tests +
-// the web-cookie fallback suites) — re-export to preserve the historical public surface.
-export { validateWebCookieProvider, bytezValidationResultFromStatus };
-
-// validateWebCookieProvider, bytezValidationResultFromStatus, validateBytezProvider, and
-// validateKiroApiKeyRuntimeProbe now live in ./validation/webCookie and ./validation/kiro.
-// They are re-exported above to preserve the historical public surface.
-
+// bytezValidationResultFromStatus has external importers (tests) — re-export from
+// ./validation/bytez to preserve the historical public surface.
+export { bytezValidationResultFromStatus } from "./validation/bytez";
 export async function validateFreebuffProvider({ apiKey }: { apiKey: string }) {
   if (!apiKey) {
     return { valid: false, error: "Freebuff Auth Token required", unsupported: false };
@@ -166,7 +155,11 @@ export async function validateFreebuffProvider({ apiKey }: { apiKey: string }) {
       return { valid: false, error: "Invalid or expired Freebuff Auth Token", unsupported: false };
     }
     const errText = await res.text().catch(() => "");
-    return { valid: false, error: `Freebuff validation returned ${res.status}: ${errText.slice(0, 100)}`, unsupported: false };
+    return {
+      valid: false,
+      error: `Freebuff validation returned ${res.status}: ${errText.slice(0, 100)}`,
+      unsupported: false,
+    };
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     return { valid: false, error: `Freebuff validation network error: ${msg}`, unsupported: false };
@@ -224,7 +217,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
     aihorde: validateAiHordeProvider,
     // #10522: registered under both the canonical id and the short alias — Firefly
     // connections are commonly stored as "firefly" (same prefix as firefly/<model>
-    // routing ids), not the canonical "adobe-firefly" WEB_COOKIE_PROVIDERS key.
+    // routing ids), not the canonical "adobe-firefly" key.
     "adobe-firefly": validateAdobeFireflyProvider,
     firefly: validateAdobeFireflyProvider,
     qoder: validateQoderProvider,
@@ -369,24 +362,6 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
   if (SPECIALTY_VALIDATORS[provider]) {
     try {
       return await SPECIALTY_VALIDATORS[provider]({ apiKey, providerSpecificData });
-    } catch (error: any) {
-      return toValidationErrorResult(error);
-    }
-  }
-
-  // Web-cookie providers WITHOUT a dedicated specialty validator above fall back to the generic
-  // session-ping check (AUTH_007 SESSION_EXPIRED on 401/403). Providers that DO have a rich
-  // per-provider validator (grok-web, chatgpt-web, claude-web, …) are handled by
-  // SPECIALTY_VALIDATORS first and must not be shadowed by this generic probe (issue: the
-  // #4023 dispatch was placed too early and intercepted every web-cookie provider).
-  const canonicalProvider = resolveProviderId(provider);
-  if (WEB_COOKIE_PROVIDERS[canonicalProvider]) {
-    try {
-      return await validateWebCookieProvider({
-        provider: canonicalProvider,
-        apiKey,
-        providerSpecificData,
-      });
     } catch (error: any) {
       return toValidationErrorResult(error);
     }

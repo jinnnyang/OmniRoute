@@ -17,8 +17,6 @@
  * @module lib/usage/flatRateProviders
  */
 
-import { WEB_COOKIE_PROVIDERS } from "@/shared/constants/providers/web-cookie";
-
 /**
  * Dedicated subscription / coding-plan provider ids whose identity IS a
  * flat-rate plan. Kept explicit (not derived) because these entries sit in the
@@ -54,15 +52,14 @@ const FLAT_RATE_SUBSCRIPTION_PROVIDER_IDS: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * Whether a provider bills at a flat rate (subscription / coding plan / cookie
- * web session) rather than per token, so its per-token cost estimate should be
- * surfaced as $0 in analytics. Cookie/web providers are covered dynamically
- * (every web session is subscription-backed), plus the explicit plan set above.
+ * Whether a provider bills at a flat rate (subscription / coding plan) rather
+ * than per token, so its per-token cost estimate should be surfaced as $0 in
+ * analytics. The explicit plan set above is the whole signal (the cookie/web
+ * session category was removed with the web-cookie providers).
  */
 export function isFlatRateProvider(providerId: string | null | undefined): boolean {
   if (!providerId || typeof providerId !== "string") return false;
   const id = providerId.trim().toLowerCase();
   if (!id) return false;
-  if (FLAT_RATE_SUBSCRIPTION_PROVIDER_IDS.has(id)) return true;
-  return Object.prototype.hasOwnProperty.call(WEB_COOKIE_PROVIDERS, id);
+  return FLAT_RATE_SUBSCRIPTION_PROVIDER_IDS.has(id);
 }

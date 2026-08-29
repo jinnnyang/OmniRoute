@@ -50,22 +50,11 @@ import {
 import { USAGE_SUPPORTED_PROVIDERS } from "../../src/shared/constants/providers.ts";
 import { handleAdobeFireflyImageGeneration } from "../../open-sse/handlers/imageGeneration/providers/adobeFirefly.ts";
 import { handleAdobeFireflyVideoGeneration } from "../../open-sse/handlers/videoGeneration/adobeFireflyHandler.ts";
-import { WEB_COOKIE_PROVIDERS } from "../../src/shared/constants/providers/web-cookie.ts";
 import { IMAGE_PROVIDERS } from "../../open-sse/config/imageRegistry.ts";
 import { VIDEO_PROVIDERS } from "../../open-sse/config/videoRegistry.ts";
 import { getExecutor } from "../../open-sse/executors/index.ts";
 
 // --- Registry --------------------------------------------------------------
-
-test("adobe-firefly is registered in WEB_COOKIE_PROVIDERS with a webCookie risk notice", () => {
-  const entry = (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["adobe-firefly"];
-  assert.ok(entry, "adobe-firefly must exist in WEB_COOKIE_PROVIDERS");
-  assert.equal(entry.id, "adobe-firefly");
-  assert.equal(entry.alias, "firefly");
-  assert.equal(entry.subscriptionRisk, true);
-  assert.equal(entry.riskNoticeVariant, "webCookie");
-  assert.match(entry.website, /firefly\.adobe\.com/);
-});
 
 test("adobe-firefly is registered in IMAGE_PROVIDERS with adobe-firefly-image format", () => {
   const entry = (IMAGE_PROVIDERS as Record<string, unknown>)["adobe-firefly"];

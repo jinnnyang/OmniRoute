@@ -14,7 +14,6 @@
 
 import { NOAUTH_PROVIDERS } from "@/shared/constants/providers";
 import { APIKEY_PROVIDERS } from "@/shared/constants/providers";
-import { WEB_COOKIE_PROVIDERS } from "@/shared/constants/providers";
 import { WEB_SESSION_CREDENTIAL_REQUIREMENTS } from "@/shared/providers/webSessionCredentials";
 
 const DEFAULT_THRESHOLD_MS = 2_000;
@@ -37,10 +36,6 @@ for (const [id, def] of Object.entries(APIKEY_PROVIDERS)) {
   if ((def as Record<string, unknown>).anonymousFallback === true) {
     addSlowProvider(id, (def as Record<string, unknown>).alias as string | undefined);
   }
-}
-
-for (const [id, def] of Object.entries(WEB_COOKIE_PROVIDERS)) {
-  addSlowProvider(id, (def as Record<string, unknown>).alias as string | undefined);
 }
 
 for (const id of Object.keys(WEB_SESSION_CREDENTIAL_REQUIREMENTS)) {

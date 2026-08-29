@@ -122,7 +122,6 @@ const EXPECTED: Record<InventoryKind, Record<string, number>> = {
     "src/lib/copilot/tools.ts": 1,
     "src/lib/credentialHealth/scheduler.ts": 1,
     "src/lib/db/readCache.ts": 2,
-    "src/lib/freeProviderRankings.ts": 1,
     "src/lib/guardrails/visionBridgeCredentials.ts": 1,
     "src/lib/kimi/tokenRefresh.ts": 1,
     "src/lib/monitoring/providerHealthAutopilot.ts": 1,

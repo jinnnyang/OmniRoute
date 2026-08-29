@@ -2571,11 +2571,6 @@
       "count": 1
     }
   },
-  "src/lib/providers/validation.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/lib/providers/validation/searchProviders.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -5721,11 +5716,6 @@
       "count": 1
     }
   },
-  "tests/unit/qwen-web-cookie-validation-3958.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
   "tests/unit/radar-api-routes.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
@@ -6142,11 +6132,6 @@
       "count": 1
     }
   },
-  "tests/unit/t3chat-web-cookie-hint-5465.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
   "tests/unit/t43-gemini-tool-call-no-thought-signature.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 4
@@ -6530,11 +6515,6 @@
   "tests/unit/warmupScheduler.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
-    }
-  },
-  "tests/unit/web-cookie-providers-new.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 5
     }
   },
   "tests/unit/web-runtime-env.test.ts": {

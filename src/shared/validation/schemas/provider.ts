@@ -557,13 +557,11 @@ export const providersBatchTestSchema = z
       "apikey",
       "compatible",
       "all",
-      "web-cookie",
       "search",
       "audio",
       "local",
       "upstream-proxy",
       "cloud-agent",
-      "ide",
       "selected",
     ]),
     // Frontend may send null when mode != 'provider' — accept and treat as missing

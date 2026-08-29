@@ -1,4 +1,3 @@
-import { IDE_PROVIDER_IDS } from "@/shared/constants/providers";
 import {
   buildCompactProviderEntries,
   resolveDashboardProviderInfo,
@@ -13,7 +12,6 @@ export interface CompactProviderEntryOptions<TProvider> {
   freeSectionEntries: ProviderCategoryEntries<TProvider>;
   compatibleProviderEntries: ProviderCategoryEntries<TProvider>;
   oauthProviderEntries: ProviderCategoryEntries<TProvider>;
-  ideProviderEntries: ProviderCategoryEntries<TProvider>;
   noAuthEntries: ProviderCategoryEntries<TProvider>;
   upstreamProxyEntries: ProviderCategoryEntries<TProvider>;
   llmProviderEntries: ProviderCategoryEntries<TProvider>;
@@ -36,7 +34,6 @@ function getCompactProviderEntryGroups<TProvider>({
   freeSectionEntries,
   compatibleProviderEntries,
   oauthProviderEntries,
-  ideProviderEntries,
   noAuthEntries,
   upstreamProxyEntries,
   llmProviderEntries,
@@ -52,9 +49,6 @@ function getCompactProviderEntryGroups<TProvider>({
   localProviderEntries,
   cloudAgentProviderEntries,
 }: CompactProviderEntryOptions<TProvider>): ProviderEntry<TProvider>[][] {
-  const oauthEntries = oauthProviderEntries.filter(
-    (entry) => !IDE_PROVIDER_IDS.has(entry.providerId)
-  );
   const apiKeyEntries = [
     llmProviderEntries,
     aggregatorProviderEntries,
@@ -67,8 +61,7 @@ function getCompactProviderEntryGroups<TProvider>({
   if (showFreeOnly) return [freeSectionEntries];
 
   if (activeCategory === "compatible") return [compatibleProviderEntries];
-  if (activeCategory === "oauth") return [oauthEntries];
-  if (activeCategory === "ide") return [ideProviderEntries];
+  if (activeCategory === "oauth") return [oauthProviderEntries];
   if (activeCategory === "no-auth") return [noAuthEntries];
   if (activeCategory === "upstream-proxy") return [upstreamProxyEntries];
   if (activeCategory === "apikey") return apiKeyEntries;
@@ -81,8 +74,7 @@ function getCompactProviderEntryGroups<TProvider>({
 
   return [
     compatibleProviderEntries,
-    oauthEntries,
-    ideProviderEntries,
+    oauthProviderEntries,
     webCookieProviderEntries,
     llmProviderEntries,
     upstreamProxyEntries,

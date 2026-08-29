@@ -32,7 +32,6 @@ Proste przewodniki po korzystaniu z OmniRoute — bez wymaganej wiedzy techniczn
 - [TIERS.md](guides/TIERS.md) — poziomy OmniRoute wyjaśnione (przewodnik użytkownika).
 - [USAGE_QUOTA_GUIDE.md](guides/USAGE_QUOTA_GUIDE.md) — śledzenie użycia, limitów (quota) i wydatków.
 - [COST_TRACKING.md](guides/COST_TRACKING.md) — śledzenie kosztów i wydatków.
-- [FREE_PROVIDER_RANKINGS.md](guides/FREE_PROVIDER_RANKINGS.md) — rankingi darmowych dostawców (Arena ELO).
 - [DOCKER_GUIDE.md](guides/DOCKER_GUIDE.md) — uruchamianie OmniRoute w Dockerze.
 - [ELECTRON_GUIDE.md](guides/ELECTRON_GUIDE.md) — buildy desktopowe (Electron).
 - [TERMUX_GUIDE.md](guides/TERMUX_GUIDE.md) — uruchamianie na Androidzie przez Termux.

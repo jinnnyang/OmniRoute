@@ -22,37 +22,26 @@ export function normalizeAutoDisableBannedScope(value: unknown): AutoDisableBann
 }
 
 export function isApiKeyAuthType(authType: string | null | undefined): boolean {
-  return API_KEY_AUTH_TYPES.has(String(authType || "").trim().toLowerCase());
+  return API_KEY_AUTH_TYPES.has(
+    String(authType || "")
+      .trim()
+      .toLowerCase()
+  );
 }
 
 export function isSubscriptionAuthType(authType: string | null | undefined): boolean {
-  return SUBSCRIPTION_AUTH_TYPES.has(String(authType || "").trim().toLowerCase());
-}
-
-function isWebCookieProvider(
-  providerId: string | null | undefined,
-  webCookieProviderIds?: Iterable<string> | Record<string, unknown>
-): boolean {
-  const id = String(providerId || "")
-    .trim()
-    .toLowerCase();
-  if (!id || !webCookieProviderIds) return false;
-  if (Array.isArray(webCookieProviderIds) || webCookieProviderIds instanceof Set) {
-    for (const item of webCookieProviderIds) {
-      if (String(item).toLowerCase() === id) return true;
-    }
-    return false;
-  }
-  return Object.keys(webCookieProviderIds).some((key) => key.toLowerCase() === id);
+  return SUBSCRIPTION_AUTH_TYPES.has(
+    String(authType || "")
+      .trim()
+      .toLowerCase()
+  );
 }
 
 export function isSubscriptionStyleConnection(input: {
   authType?: string | null;
   providerId?: string | null;
-  webCookieProviderIds?: Iterable<string> | Record<string, unknown>;
 }): boolean {
   if (isSubscriptionAuthType(input.authType)) return true;
-  if (isWebCookieProvider(input.providerId, input.webCookieProviderIds)) return true;
   if (isApiKeyAuthType(input.authType)) return false;
   // Unknown auth types keep today's conservative behavior.
   return true;
@@ -63,7 +52,6 @@ export function shouldAutoDisableBannedConnection(input: {
   scope?: unknown;
   authType?: string | null;
   providerId?: string | null;
-  webCookieProviderIds?: Iterable<string> | Record<string, unknown>;
 }): boolean {
   if (!input.enabled) return false;
   if (normalizeAutoDisableBannedScope(input.scope) === "all") return true;

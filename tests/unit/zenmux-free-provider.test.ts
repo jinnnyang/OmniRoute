@@ -11,37 +11,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { WEB_COOKIE_PROVIDERS } from "../../src/shared/constants/providers/web-cookie.ts";
 import { REGISTRY } from "../../open-sse/config/providers/index.ts";
 import { getExecutor } from "../../open-sse/executors/index.ts";
 import { ZenmuxFreeExecutor } from "../../open-sse/executors/zenmux-free.ts";
-
-// ── Catalog / WEB_COOKIE_PROVIDERS ────────────────────────────────────────────
-
-test("zenmux-free is present in WEB_COOKIE_PROVIDERS (webCookie category)", () => {
-  const p = (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["zenmux-free"] as Record<
-    string,
-    unknown
-  >;
-  assert.ok(p, "WEB_COOKIE_PROVIDERS['zenmux-free'] must exist");
-  assert.equal(p.id, "zenmux-free");
-  assert.equal(p.alias, "zmf");
-  assert.equal((p.name as string).toLowerCase().includes("zenmux"), true);
-});
-
-test("zenmux-free WEB_COOKIE_PROVIDERS entry is marked as free-tier", () => {
-  const p = (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["zenmux-free"] as Record<
-    string,
-    unknown
-  >;
-  assert.equal(p.hasFree, true);
-  assert.ok(typeof p.freeNote === "string" && (p.freeNote as string).length > 0);
-  assert.ok(
-    !(p.freeNote as string).includes("MiMo V2 Flash Free"),
-    "free note must not advertise deprecated MiMo V2 Flash Free"
-  );
-  assert.ok(typeof p.authHint === "string" && (p.authHint as string).length > 0);
-});
 
 // ── Registry / REGISTRY ───────────────────────────────────────────────────────
 

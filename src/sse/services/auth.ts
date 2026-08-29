@@ -110,7 +110,6 @@ import {
   getProviderAlias,
   resolveProviderId,
   NOAUTH_PROVIDERS,
-  WEB_COOKIE_PROVIDERS,
   isSelfHostedChatProvider,
 } from "@/shared/constants/providers";
 import {
@@ -390,23 +389,10 @@ function isTerminalConnectionStatusForModel(
   return true;
 }
 
-// #8200: cookie-auth providers (perplexity-web, grok-web, ...) use a rotating browser
-// session, not a static API key — a 401 means "session needs a refresh", not "dead".
-function isRecoverableCookieAuth401(
-  provider: string | null,
-  providerErrorType: string | null
-): boolean {
-  return (
-    providerErrorType !== PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED &&
-    provider != null &&
-    resolveProviderId(provider) in WEB_COOKIE_PROVIDERS
-  );
-}
 function resolveTerminalConnectionStatus(
   status: number,
   result: { permanent?: boolean; creditsExhausted?: boolean },
-  providerErrorType: string | null = null,
-  provider: string | null = null
+  providerErrorType: string | null = null
 ): string | null {
   if (result.creditsExhausted || status === 402) return "credits_exhausted";
   if (
@@ -426,10 +412,9 @@ function resolveTerminalConnectionStatus(
     return "banned";
   }
   if (
-    (providerErrorType === PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED ||
-      providerErrorType === PROVIDER_ERROR_TYPES.UNAUTHORIZED ||
-      status === 401) &&
-    !isRecoverableCookieAuth401(provider, providerErrorType)
+    providerErrorType === PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED ||
+    providerErrorType === PROVIDER_ERROR_TYPES.UNAUTHORIZED ||
+    status === 401
   ) {
     return "expired";
   }
@@ -801,20 +786,13 @@ function providerCanUseSyntheticNoAuthFallback(providerId: string): boolean {
   const noAuthProviderDef = (
     NOAUTH_PROVIDERS as Record<string, AnonymousFallbackProviderDefinition | undefined>
   )[providerId];
-  const webCookieProviderDef = (
-    WEB_COOKIE_PROVIDERS as Record<string, AnonymousFallbackProviderDefinition | undefined>
-  )[providerId];
-  return (
-    providerDef?.anonymousFallback === true ||
-    noAuthProviderDef?.noAuth === true ||
-    webCookieProviderDef?.noAuth === true
-  );
+  return providerDef?.anonymousFallback === true || noAuthProviderDef?.noAuth === true;
 }
 
 /**
  * True only for API-key gateway providers whose synthetic anonymous fallback
  * eligibility comes from `anonymousFallback: true` on the static definition —
- * NOT for true no-auth providers (NOAUTH_PROVIDERS / WEB_COOKIE_PROVIDERS),
+ * NOT for true no-auth providers (NOAUTH_PROVIDERS),
  * where the synthetic credential is the only credential path (blockedProviders
  * is the disable mechanism for those). `noAuthFallbackDisabledProviders` gates
  * exactly this subset.
@@ -825,14 +803,7 @@ function isAnonymousFallbackOnlyProvider(providerId: string): boolean {
   const noAuthProviderDef = (
     NOAUTH_PROVIDERS as Record<string, AnonymousFallbackProviderDefinition | undefined>
   )[providerId];
-  const webCookieProviderDef = (
-    WEB_COOKIE_PROVIDERS as Record<string, AnonymousFallbackProviderDefinition | undefined>
-  )[providerId];
-  return (
-    providerDef?.anonymousFallback === true &&
-    noAuthProviderDef?.noAuth !== true &&
-    webCookieProviderDef?.noAuth !== true
-  );
+  return providerDef?.anonymousFallback === true && noAuthProviderDef?.noAuth !== true;
 }
 async function maybeSyntheticNoAuthFallback(
   providerId: string,
@@ -1295,7 +1266,6 @@ export async function getProviderCredentials(
     const resolvedId = resolveProviderId(provider);
     const providerMaps: Record<string, { noAuth?: boolean } | undefined>[] = [
       NOAUTH_PROVIDERS as Record<string, { noAuth?: boolean } | undefined>,
-      WEB_COOKIE_PROVIDERS as Record<string, { noAuth?: boolean } | undefined>,
     ];
     if (providerMaps.some((map) => map[resolvedId]?.noAuth)) {
       if (await isNoAuthProviderBlockedBySettings(resolvedId)) return null;
@@ -3061,8 +3031,7 @@ export async function markAccountUnavailable(
     const terminalStatus = resolveTerminalConnectionStatus(
       status,
       result as { permanent?: boolean; creditsExhausted?: boolean },
-      providerErrorType,
-      provider
+      providerErrorType
     );
     const cachedQuotaResetAt =
       providerErrorType === PROVIDER_ERROR_TYPES.QUOTA_EXHAUSTED ||

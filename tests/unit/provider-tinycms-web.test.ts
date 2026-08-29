@@ -14,7 +14,6 @@
 import test, { before, after } from "node:test";
 import assert from "node:assert/strict";
 
-import { WEB_COOKIE_PROVIDERS } from "../../src/shared/constants/providers/web-cookie.ts";
 import { REGISTRY } from "../../open-sse/config/providers/index.ts";
 import { getExecutor } from "../../open-sse/executors/index.ts";
 import { TinyCmsExecutor } from "../../open-sse/executors/tinycms.ts";
@@ -34,29 +33,6 @@ before(() => {
 
 after(() => {
   restoreDomMocks();
-});
-
-// ── Catalog / WEB_COOKIE_PROVIDERS ────────────────────────────────────────────
-
-test("tinycms-web is present in WEB_COOKIE_PROVIDERS", () => {
-  const p = (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["tinycms-web"] as Record<
-    string,
-    unknown
-  >;
-  assert.ok(p, "WEB_COOKIE_PROVIDERS['tinycms-web'] must exist");
-  assert.equal(p.id, "tinycms-web");
-  assert.equal(p.alias, "tcw");
-  assert.equal((p.name as string).toLowerCase().includes("tinycms"), true);
-});
-
-test("tinycms-web WEB_COOKIE_PROVIDERS entry is marked as free-tier", () => {
-  const p = (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["tinycms-web"] as Record<
-    string,
-    unknown
-  >;
-  assert.equal(p.hasFree, true);
-  assert.ok(typeof p.freeNote === "string" && (p.freeNote as string).length > 0);
-  assert.ok(typeof p.authHint === "string" && (p.authHint as string).length > 0);
 });
 
 // ── Registry / REGISTRY ───────────────────────────────────────────────────────

@@ -6,7 +6,6 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { WEB_COOKIE_PROVIDERS } from "../../src/shared/constants/providers.ts";
 import {
   getWebSessionCredentialRequirement,
   requiresWebSessionCredential,
@@ -30,7 +29,11 @@ const UUID_V7_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9
 type LMArenaExecutorTestAccess = {
   provider: string;
   buildUrl: (model: string, credentials: unknown) => string;
-  buildRequestHeaders: (model: string, credentials: unknown, body: unknown) => Record<string, string>;
+  buildRequestHeaders: (
+    model: string,
+    credentials: unknown,
+    body: unknown
+  ) => Record<string, string>;
   transformRequest: (
     body: unknown,
     model: string,
@@ -58,17 +61,6 @@ function access(executor: LMArenaExecutor): LMArenaExecutorTestAccess {
 }
 
 describe("LMArena Provider Definition", () => {
-  it("is registered in WEB_COOKIE_PROVIDERS", () => {
-    assert.ok(WEB_COOKIE_PROVIDERS.lmarena, "lmarena should be in WEB_COOKIE_PROVIDERS");
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.id, "lmarena");
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.alias, "lma");
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.name, "Arena (Free)");
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.textIcon, "AR");
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.website, "https://arena.ai");
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.hasFree, true);
-    assert.equal(WEB_COOKIE_PROVIDERS.lmarena.riskNoticeVariant, "webCookie");
-  });
-
   it("has correct metadata", () => {
     const provider = WEB_COOKIE_PROVIDERS.lmarena;
     assert.ok(provider.freeNote, "Should have freeNote");
@@ -159,7 +151,11 @@ describe("LMArena Executor", () => {
     assert.equal(headers.Cookie, "session=def");
 
     // providerSpecificData.cookie
-    headers = ex.buildRequestHeaders("gpt-4", { providerSpecificData: { cookie: "session=ghi" } }, {});
+    headers = ex.buildRequestHeaders(
+      "gpt-4",
+      { providerSpecificData: { cookie: "session=ghi" } },
+      {}
+    );
     assert.equal(headers.Cookie, "session=ghi");
 
     // Priority: direct > apiKey > providerSpecificData

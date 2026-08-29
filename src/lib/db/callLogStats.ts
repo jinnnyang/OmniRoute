@@ -25,15 +25,6 @@ export interface ProviderMetricRow {
   lastErrorStatus: number | null;
 }
 
-/** One provider's traffic over a bounded window. See `getProviderUsageSince`. */
-export interface ProviderUsageRow {
-  provider: string;
-  requests: number;
-  successes: number;
-  avgLatencyMs: number | null;
-  lastRequestAt: string | null;
-}
-
 export interface SearchProviderStatRow {
   provider: string;
   requests: number;
@@ -114,43 +105,6 @@ export function getProviderMetrics(): ProviderMetricRow[] {
         GROUP BY c.provider`
     )
     .all() as ProviderMetricRow[];
-}
-
-// ---------------------------------------------------------------------------
-// /api/free-provider-rankings — windowed usage aggregate
-// ---------------------------------------------------------------------------
-
-/**
- * Per-provider usage over a time window: how much traffic a provider actually
- * served, and how much of it succeeded.
- *
- * Deliberately NOT `getProviderMetrics()` with a `since` parameter: that query
- * carries two correlated subqueries (`lastStatus`, `lastErrorStatus`) which a
- * ranking never displays, and they dominate its cost — `call_logs` is indexed
- * on `timestamp` alone, so each correlated pass rescans the whole window per
- * provider. Here a single bounded `GROUP BY` uses `idx_cl_timestamp` and stops
- * there. The rules are shared with its neighbour, not the query: same success
- * definition, same `#10714` guard against providers whose connections are gone.
- */
-export function getProviderUsageSince(since: string): ProviderUsageRow[] {
-  const db = getDbInstance();
-  return db
-    .prepare(
-      `SELECT
-          c.provider,
-          COUNT(*) as requests,
-          SUM(CASE WHEN c.status >= 200 AND c.status < 400 THEN 1 ELSE 0 END) as successes,
-          ROUND(AVG(c.duration)) as avgLatencyMs,
-          MAX(c.timestamp) as lastRequestAt
-        FROM call_logs c
-        WHERE c.provider IS NOT NULL AND c.provider != '-'
-          AND c.timestamp >= @since
-          AND EXISTS (
-            SELECT 1 FROM provider_connections pc WHERE pc.provider = c.provider
-          )
-        GROUP BY c.provider`
-    )
-    .all({ since }) as ProviderUsageRow[];
 }
 
 // ---------------------------------------------------------------------------

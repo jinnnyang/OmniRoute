@@ -19,8 +19,6 @@ import {
 } from "@omniroute/open-sse/services/apiKeyRotator.ts";
 import { invalidateReasoningRoutingRuleCache } from "./reasoningRoutingRules";
 import { normalizeProviderSpecificData } from "@/lib/providers/requestDefaults";
-import { withDerivedCookieExpiry } from "@/shared/utils/webCookieExpiry";
-import { WEB_COOKIE_PROVIDERS } from "@/shared/constants/providers";
 import { ensureCodexFingerprintSeed } from "@omniroute/open-sse/config/codexIdentity.ts";
 import { bumpProxyConfigGeneration, getSettings } from "./settings";
 import {
@@ -54,35 +52,14 @@ function normalizeConnectionProviderSpecificData(
   existingProviderSpecificData?: unknown
 ) {
   const normalized = normalizeProviderSpecificData(provider, providerSpecificData);
-  const withExpiry = withDerivedCookieExpiryForProvider(provider, normalized, credentials);
-  if (provider !== "codex") return withExpiry;
+  if (provider !== "codex") return normalized;
   return ensureCodexFingerprintSeed(
-    withExpiry,
+    normalized,
     credentials,
     (existingProviderSpecificData as Record<string, unknown> | null) ?? null
   );
 }
 
-function withDerivedCookieExpiryForProvider(
-  provider: string | null,
-  providerSpecificData: unknown,
-  credentials: { accessToken?: unknown; refreshToken?: unknown } | unknown
-): Record<string, unknown> {
-  const key = String(provider || "").toLowerCase();
-  if (!(WEB_COOKIE_PROVIDERS as Record<string, unknown>)[key]) {
-    // Both branches must satisfy the Codex seed signature below; the
-    // passthrough keeps whatever shape normalization already returned.
-    return (providerSpecificData ?? {}) as Record<string, unknown>;
-  }
-  const source = credentials as Record<string, unknown> | null;
-  const credential =
-    source && typeof source === "object"
-      ? (typeof source.apiKey === "string" && source.apiKey) ||
-        (typeof source.cookie === "string" && source.cookie) ||
-        null
-      : null;
-  return withDerivedCookieExpiry(providerSpecificData, credential);
-}
 import {
   withNullableMaxConcurrent,
   withNullableQuotaWindowThresholds,

@@ -11,21 +11,11 @@ import {
   parseDesignerWebResponse,
   handleDesignerWebImageGeneration,
 } from "../../open-sse/handlers/imageGeneration/providers/designerWeb.ts";
-import { WEB_COOKIE_PROVIDERS } from "../../src/shared/constants/providers/web-cookie.ts";
 import { IMAGE_PROVIDERS } from "../../open-sse/config/imageRegistry.ts";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
 // --- Registry entries -------------------------------------------------
-
-test("microsoft-designer-web is registered in WEB_COOKIE_PROVIDERS with a webCookie risk notice", () => {
-  const entry = (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["microsoft-designer-web"];
-  assert.ok(entry, "microsoft-designer-web must exist in WEB_COOKIE_PROVIDERS");
-  assert.equal(entry.id, "microsoft-designer-web");
-  assert.equal(entry.subscriptionRisk, true);
-  assert.equal(entry.riskNoticeVariant, "webCookie");
-  assert.match(entry.website, /designer\.microsoft\.com/);
-});
 
 test("microsoft-designer-web is registered in IMAGE_PROVIDERS with the designer-web format", () => {
   const entry = (IMAGE_PROVIDERS as Record<string, unknown>)["microsoft-designer-web"];
@@ -38,7 +28,10 @@ test("microsoft-designer-web is registered in IMAGE_PROVIDERS with the designer-
 // --- Public credential (Hard Rule #11) ---------------------------------
 
 test("microsoft_designer_client_id embedded default decodes to the public Designer ClientId", () => {
-  assert.equal(resolvePublicCred("microsoft_designer_client_id"), "b5c2664a-7e9b-4a7a-8c9a-cd2c52dcf621");
+  assert.equal(
+    resolvePublicCred("microsoft_designer_client_id"),
+    "b5c2664a-7e9b-4a7a-8c9a-cd2c52dcf621"
+  );
 });
 
 test("designerWeb.ts never embeds the raw ClientId literal (Hard Rule #11)", () => {
@@ -85,7 +78,10 @@ test("buildDesignerWebFormBody encodes prompt, mapped size, fixed batch size, an
 
 test("parseDesignerWebResponse: ready state extracts thumbnail image URLs", () => {
   const parsed = parseDesignerWebResponse({
-    image_urls_thumbnail: [{ ImageUrl: "https://example.com/a.png" }, { ImageUrl: "https://example.com/b.png" }],
+    image_urls_thumbnail: [
+      { ImageUrl: "https://example.com/a.png" },
+      { ImageUrl: "https://example.com/b.png" },
+    ],
   });
   assert.equal(parsed.status, "ready");
   assert.deepEqual(parsed.imageUrls, ["https://example.com/a.png", "https://example.com/b.png"]);

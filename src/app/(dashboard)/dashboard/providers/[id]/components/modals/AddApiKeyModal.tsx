@@ -2,11 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Button, Badge, Input, Modal, Toggle, TALL_MODAL_PROPS } from "@/shared/components";
-import {
-  providerAllowsOptionalApiKey,
-  supportsBulkApiKey,
-  resolveWebProviderHost,
-} from "@/shared/constants/providers";
+import { providerAllowsOptionalApiKey, supportsBulkApiKey } from "@/shared/constants/providers";
 import { parseBulkApiKeys } from "@/shared/utils/bulkApiKeyParser";
 import { providerHasFreeModels } from "@/shared/utils/freeModels";
 import {
@@ -100,12 +96,6 @@ export default function AddApiKeyModal({
   const webSessionCredential = getWebSessionCredentialRequirement(provider);
   const isNoAuthWebSessionCredential = webSessionCredential?.kind === "none";
   const isWebSessionCredential = !!webSessionCredential && webSessionCredential.kind !== "none";
-  // #6268 — for web-session providers, resolve the provider's public site so the
-  // modal can offer a prominent "Open ‹host› →" link. Gated on webSessionCredential
-  // so non-web providers never render a link.
-  const webProviderHostLink = webSessionCredential
-    ? resolveWebProviderHost(provider, defaultBaseUrl)
-    : null;
   const providerDisplayName = providerName || provider || "";
   const apiKeyOptional =
     providerAllowsOptionalApiKey(provider) || Boolean(isNoAuthWebSessionCredential);
@@ -522,21 +512,6 @@ export default function AddApiKeyModal({
       {...TALL_MODAL_PROPS}
     >
       <div className="flex flex-col gap-4">
-        {webProviderHostLink && (
-          <a
-            href={webProviderHostLink.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
-          >
-            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
-              open_in_new
-            </span>
-            {providerText(t, "openWebProviderSite", "Open {host}", {
-              host: webProviderHostLink.host,
-            })}
-          </a>
-        )}
         {bulkSupported && (
           <div className="flex gap-1 border-b border-border">
             <button
@@ -779,48 +754,49 @@ export default function AddApiKeyModal({
                 onImport={(apiKey) => setFormData({ ...formData, apiKey })}
               />
             )}
-            {!isNoAuthWebSessionCredential && (() => {
-              const isCheckDisabled =
-                (!isCompatible && !apiKeyOptional && !formData.apiKey) ||
-                (isGooglePse && !formData.cx.trim()) ||
-                validating ||
-                saving;
-              return (
-                <div className="flex gap-2">
-                  <Input
-                    label={apiCredentialLabel}
-                    type="password"
-                    value={formData.apiKey}
-                    onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !isCheckDisabled) {
-                        e.preventDefault();
-                        handleValidate();
-                      }
-                    }}
-                    className="flex-1"
-                    placeholder={apiCredentialPlaceholder}
-                    hint={apiCredentialHint}
-                    autoComplete="off"
-                    spellCheck={false}
-                    autoCapitalize="off"
-                  />
-                  <div className="pt-6">
-                    <Button
-                      onClick={handleValidate}
-                      disabled={isCheckDisabled}
-                      variant="secondary"
-                    >
-                      {validating
-                        ? t("checking")
-                        : webSessionCredential
-                          ? getWebSessionCredentialCheckLabel(t, webSessionCredential)
-                          : t("check")}
-                    </Button>
+            {!isNoAuthWebSessionCredential &&
+              (() => {
+                const isCheckDisabled =
+                  (!isCompatible && !apiKeyOptional && !formData.apiKey) ||
+                  (isGooglePse && !formData.cx.trim()) ||
+                  validating ||
+                  saving;
+                return (
+                  <div className="flex gap-2">
+                    <Input
+                      label={apiCredentialLabel}
+                      type="password"
+                      value={formData.apiKey}
+                      onChange={(e) => setFormData({ ...formData, apiKey: e.target.value })}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !isCheckDisabled) {
+                          e.preventDefault();
+                          handleValidate();
+                        }
+                      }}
+                      className="flex-1"
+                      placeholder={apiCredentialPlaceholder}
+                      hint={apiCredentialHint}
+                      autoComplete="off"
+                      spellCheck={false}
+                      autoCapitalize="off"
+                    />
+                    <div className="pt-6">
+                      <Button
+                        onClick={handleValidate}
+                        disabled={isCheckDisabled}
+                        variant="secondary"
+                      >
+                        {validating
+                          ? t("checking")
+                          : webSessionCredential
+                            ? getWebSessionCredentialCheckLabel(t, webSessionCredential)
+                            : t("check")}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              );
-            })()}
+                );
+              })()}
             {isChatGptWebCodex && (
               <div className="space-y-3 rounded-lg border border-border bg-surface/40 p-3">
                 <div>

@@ -6,7 +6,6 @@ import {
   AGGREGATOR_PROVIDER_IDS,
   EMBEDDING_RERANK_PROVIDER_IDS,
   ENTERPRISE_CLOUD_PROVIDER_IDS,
-  IDE_PROVIDER_IDS,
   IMAGE_ONLY_PROVIDER_IDS,
   VIDEO_PROVIDER_IDS,
 } from "@/shared/constants/providers";
@@ -54,9 +53,7 @@ const AddCompatibleProviderModal = dynamic(
 import { CategoryDot } from "./components/CategoryDot";
 const ImportProvidersFromFileModal = dynamic(
   () =>
-    import("./components/ImportProvidersFromFileModal").then(
-      (m) => m.ImportProvidersFromFileModal
-    ),
+    import("./components/ImportProvidersFromFileModal").then((m) => m.ImportProvidersFromFileModal),
   { ssr: false }
 );
 import NoAuthProvidersSection from "./components/NoAuthProvidersSection";
@@ -767,25 +764,7 @@ export default function ProvidersPage() {
     liveModelsByProviderId
   );
 
-  // IDE providers: subset of oauth/apikey providers that are editors/IDEs with
-  // built-in AI subscription. Rendered in a dedicated "IDE Providers" section
-  // and excluded from the regular OAuth/API Key sections to avoid duplication.
-  const ideProviderEntriesAll = [...oauthProviderEntriesAll, ...apiKeyProviderEntriesAll].filter(
-    (e) => IDE_PROVIDER_IDS.has(e.providerId)
-  );
-  const ideProviderEntries = filterConfiguredProviderEntries(
-    ideProviderEntriesAll,
-    effectiveShowConfiguredOnly,
-    searchQuery,
-    showFreeOnly,
-    modelSearchQuery,
-    activeServiceKind,
-    liveModelsByProviderId
-  );
-
-  const oauthOnlyEntriesAll = oauthProviderEntriesAll
-    .filter((e) => e.toggleAuthType === "oauth")
-    .filter((e) => !IDE_PROVIDER_IDS.has(e.providerId));
+  const oauthOnlyEntriesAll = oauthProviderEntriesAll.filter((e) => e.toggleAuthType === "oauth");
 
   // Web Fetch providers: filter across all entries by serviceKinds
   const webFetchEntriesAll = dedupeProviderEntries(
@@ -810,7 +789,6 @@ export default function ProvidersPage() {
     freeSectionEntries,
     compatibleProviderEntries,
     oauthProviderEntries,
-    ideProviderEntries,
     noAuthEntries,
     upstreamProxyEntries,
     llmProviderEntries,
@@ -840,8 +818,8 @@ export default function ProvidersPage() {
     local: countConfigured(localProviderEntriesAll),
     upstreamproxy: countConfigured(upstreamProxyEntriesAll),
     cloudagent: countConfigured(cloudAgentProviderEntriesAll),
-    ide: countConfigured(ideProviderEntriesAll),
     webfetch: countConfigured(webFetchEntriesAll),
+    ide: countConfigured([]),
   };
   if (loading) {
     return (
@@ -1071,11 +1049,7 @@ export default function ProvidersPage() {
                   <h2 className="text-xl font-semibold flex items-center gap-2 flex-1 min-w-0">
                     {t("oauthProviders")}{" "}
                     <span className="size-2.5 rounded-full bg-blue-500" title={t("oauthLabel")} />
-                    <ProviderCountBadge
-                      {...countConfigured(
-                        oauthProviderEntriesAll.filter((e) => !IDE_PROVIDER_IDS.has(e.providerId))
-                      )}
-                    />
+                    <ProviderCountBadge {...countConfigured(oauthProviderEntriesAll)} />
                   </h2>
                   <div className="flex items-center gap-2">
                     {oauthEnvRepairStatus?.available && oauthEnvRepairStatus.missingCount > 0 && (
@@ -1118,9 +1092,8 @@ export default function ProvidersPage() {
                 </div>
                 <p className="text-sm text-text-muted -mt-2">{t("oauthProvidersDesc")}</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3">
-                  {oauthProviderEntries
-                    .filter((e) => !IDE_PROVIDER_IDS.has(e.providerId))
-                    .map(({ providerId, provider, stats, displayAuthType, toggleAuthType }) => (
+                  {oauthProviderEntries.map(
+                    ({ providerId, provider, stats, displayAuthType, toggleAuthType }) => (
                       <HighlightableProviderCard
                         key={providerId}
                         providerId={providerId}
@@ -1131,68 +1104,9 @@ export default function ProvidersPage() {
                           handleToggleProvider(providerId, toggleAuthType, active)
                         }
                       />
-                    ))}
+                    )
+                  )}
                 </div>
-              </div>
-            )}
-
-            {/* IDE Providers (Cursor, Zed, Trae) — editors with built-in AI subscription */}
-            {showSection("ide") && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-xl font-semibold flex items-center gap-2 flex-1 min-w-0">
-                    {t("ideProviders") || "IDE Providers"}{" "}
-                    <span
-                      className="size-2.5 rounded-full bg-cyan-500"
-                      title={t("ideProviders") || "IDE Providers"}
-                    />
-                    <ProviderCountBadge {...countConfigured(ideProviderEntriesAll)} />
-                  </h2>
-                  <button
-                    onClick={() => handleBatchTest("ide")}
-                    disabled={!!testingMode}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                      testingMode === "ide"
-                        ? "bg-primary/20 border-primary/40 text-primary animate-pulse"
-                        : "bg-bg-subtle border-border text-text-muted hover:text-text-primary hover:border-primary/40"
-                    }`}
-                    title={t("testAll")}
-                    aria-label={t("testAll")}
-                  >
-                    <span
-                      className={`material-symbols-outlined text-[14px]${testingMode === "ide" ? " animate-spin" : ""}`}
-                    >
-                      play_arrow
-                    </span>
-                    {testingMode === "ide" ? t("testing") : t("testAll")}
-                  </button>
-                </div>
-                <p className="text-sm text-text-muted -mt-2">
-                  {t("ideProvidersDesc") ||
-                    "Editors with built-in AI subscription. Use the provider page to import credentials directly from the IDE's keychain."}
-                </p>
-                {ideProviderEntries.length === 0 ? (
-                  <div className="rounded-lg border border-dashed border-border bg-bg-subtle p-6 text-center text-sm text-text-muted">
-                    {t("noIdeProviders") || "No IDE providers match the current filters."}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3">
-                    {ideProviderEntries.map(
-                      ({ providerId, provider, stats, displayAuthType, toggleAuthType }) => (
-                        <HighlightableProviderCard
-                          key={`ide-${providerId}`}
-                          providerId={providerId}
-                          provider={provider}
-                          stats={stats}
-                          authType={displayAuthType}
-                          onToggle={(active) =>
-                            handleToggleProvider(providerId, toggleAuthType, active)
-                          }
-                        />
-                      )
-                    )}
-                  </div>
-                )}
               </div>
             )}
 

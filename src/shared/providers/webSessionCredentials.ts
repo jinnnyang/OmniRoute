@@ -1,5 +1,3 @@
-import { WEB_COOKIE_PROVIDERS } from "@/shared/constants/providers";
-
 export type WebSessionCredentialRequirement =
   | {
       kind: "cookie" | "token";
@@ -363,8 +361,7 @@ export const WEB_SESSION_CREDENTIAL_REQUIREMENTS = {
     acceptsFullCookieHeader: true,
     storageKeys: ["cookie", "__Secure-better-auth.session_token"],
   },
-} satisfies Record<string, WebSessionCredentialRequirement> &
-  Record<keyof typeof WEB_COOKIE_PROVIDERS, WebSessionCredentialRequirement>;
+} satisfies Record<string, WebSessionCredentialRequirement>;
 
 export function getWebSessionCredentialRequirement(
   providerId: unknown

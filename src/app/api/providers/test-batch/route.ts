@@ -7,11 +7,9 @@ import {
   APIKEY_PROVIDERS,
   LOCAL_PROVIDERS,
   UPSTREAM_PROXY_PROVIDERS,
-  WEB_COOKIE_PROVIDERS,
   SEARCH_PROVIDERS,
   AUDIO_ONLY_PROVIDERS,
   CLOUD_AGENT_PROVIDERS,
-  IDE_PROVIDER_IDS,
   getProviderConnectionFamilyIds,
   OPENAI_COMPATIBLE_PREFIX,
   ANTHROPIC_COMPATIBLE_PREFIX,
@@ -26,7 +24,6 @@ import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error";
 function getAuthGroup(providerId) {
   if (NOAUTH_PROVIDERS[providerId]) return "no-auth";
   if (OAUTH_PROVIDERS[providerId]) return "oauth";
-  if (WEB_COOKIE_PROVIDERS[providerId]) return "web-cookie";
   if (SEARCH_PROVIDERS[providerId]) return "search";
   if (AUDIO_ONLY_PROVIDERS[providerId]) return "audio";
   if (LOCAL_PROVIDERS[providerId]) return "local";
@@ -118,8 +115,6 @@ export async function POST(request) {
       connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "no-auth");
     } else if (mode === "apikey") {
       connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "apikey");
-    } else if (mode === "web-cookie") {
-      connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "web-cookie");
     } else if (mode === "search") {
       connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "search");
     } else if (mode === "audio") {
@@ -132,8 +127,6 @@ export async function POST(request) {
       );
     } else if (mode === "cloud-agent") {
       connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "cloud-agent");
-    } else if (mode === "ide") {
-      connectionsToTest = allConnections.filter((c) => IDE_PROVIDER_IDS.has(c.provider));
     } else if (mode === "compatible") {
       connectionsToTest = allConnections.filter((c) => isCompatibleProvider(c.provider));
     } else if (mode === "all") {
@@ -142,7 +135,7 @@ export async function POST(request) {
       return NextResponse.json(
         {
           error:
-            "Invalid mode. Use: provider, oauth, free, no-auth, apikey, compatible, all, web-cookie, search, audio, local, upstream-proxy, cloud-agent, ide, selected",
+            "Invalid mode. Use: provider, oauth, free, no-auth, apikey, compatible, all, search, audio, local, upstream-proxy, cloud-agent, selected",
         },
         { status: 400 }
       );

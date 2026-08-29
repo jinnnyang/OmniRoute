@@ -1,8 +1,4 @@
-import { WEB_COOKIE_PROVIDERS } from "@/shared/constants/providers";
-import {
-  getWebSessionCredentialRequirement,
-  type WebSessionCredentialRequirement,
-} from "@/shared/providers/webSessionCredentials";
+import type { WebSessionCredentialRequirement } from "@/shared/providers/webSessionCredentials";
 
 export interface VncProviderEntry {
   /** Provider id stored in provider_connections.provider. */
@@ -25,36 +21,14 @@ export const VNC_UNSUPPORTED_PROVIDER_REASONS: Readonly<Record<string, string>> 
   "inner-ai": "requires the account email in addition to the session token",
 };
 
-export function getVncProvider(id: string | null | undefined): VncProviderEntry | null {
-  if (!id || VNC_UNSUPPORTED_PROVIDER_REASONS[id]) return null;
-
-  const catalog = WEB_COOKIE_PROVIDERS[id as keyof typeof WEB_COOKIE_PROVIDERS] as
-    | { id: string; name: string; website?: string }
-    | undefined;
-  const requirement = getWebSessionCredentialRequirement(id);
-
-  if (
-    !catalog ||
-    typeof catalog.website !== "string" ||
-    !catalog.website.startsWith("https://") ||
-    !requirement ||
-    requirement.kind === "none"
-  ) {
-    return null;
-  }
-
-  return {
-    id: catalog.id,
-    name: catalog.name,
-    url: catalog.website,
-    requirement,
-  };
+export function getVncProvider(_id: string | null | undefined): VncProviderEntry | null {
+  // Web-cookie providers were removed (trim-core B) — the VNC browser-session
+  // viewer has no catalogued providers left to serve.
+  return null;
 }
 
 export function listVncProviders(): VncProviderEntry[] {
-  return Object.keys(WEB_COOKIE_PROVIDERS)
-    .map((id) => getVncProvider(id))
-    .filter((entry): entry is VncProviderEntry => entry !== null);
+  return [];
 }
 
 export function isVncProvider(id: string | null | undefined): boolean {

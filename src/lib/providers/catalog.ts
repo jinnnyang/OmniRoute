@@ -7,7 +7,6 @@ import {
   OAUTH_PROVIDERS,
   SEARCH_PROVIDERS,
   UPSTREAM_PROXY_PROVIDERS,
-  WEB_COOKIE_PROVIDERS,
   isClaudeCodeCompatibleProvider,
   resolveProviderId,
   supportsApiKeyOnFreeProvider,
@@ -123,7 +122,7 @@ export const STATIC_PROVIDER_CATALOG_GROUPS: Record<
   },
   "web-cookie": {
     category: "web-cookie",
-    providers: WEB_COOKIE_PROVIDERS as ProviderRecord,
+    providers: {} as ProviderRecord,
     displayAuthType: "apikey",
     toggleAuthType: "apikey",
   },

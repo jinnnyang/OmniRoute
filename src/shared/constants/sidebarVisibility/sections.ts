@@ -471,13 +471,6 @@ const COSTS_ITEMS: readonly SidebarItemDefinition[] = [
     icon: "request_quote",
   },
   {
-    id: "free-provider-rankings",
-    href: "/dashboard/free-provider-rankings",
-    i18nKey: "freeProviderRankings",
-    subtitleKey: "freeProviderRankingsSubtitle",
-    icon: "leaderboard",
-  },
-  {
     id: "radar",
     href: "/dashboard/radar",
     i18nKey: "radar",
