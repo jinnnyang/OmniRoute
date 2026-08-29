@@ -26,7 +26,6 @@ import {
   normalizeModelCatalogSource,
 } from "@/shared/utils/modelCatalogSearch";
 import {
-  OAUTH_PROVIDERS,
   NOAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
   isOpenAICompatibleProvider,
@@ -35,12 +34,8 @@ import {
 import { hasEligibleConnectionForModel } from "@/domain/connectionModelRules";
 import { useNotificationStore } from "@/store/notificationStore";
 
-// Provider order: OAuth first, then no-auth, then API Key (matches dashboard/providers)
-const PROVIDER_ORDER = [
-  ...Object.keys(OAUTH_PROVIDERS),
-  ...Object.keys(NOAUTH_PROVIDERS),
-  ...Object.keys(APIKEY_PROVIDERS),
-];
+// Provider order: no-auth first, then API Key (matches dashboard/providers)
+const PROVIDER_ORDER = [...Object.keys(NOAUTH_PROVIDERS), ...Object.keys(APIKEY_PROVIDERS)];
 
 type ModelSelectModalProps = {
   isOpen: boolean;
@@ -271,10 +266,7 @@ export default function ModelSelectModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, activeProviders]);
 
-  const allProviders = useMemo(
-    () => ({ ...OAUTH_PROVIDERS, ...NOAUTH_PROVIDERS, ...APIKEY_PROVIDERS }),
-    []
-  );
+  const allProviders = useMemo(() => ({ ...NOAUTH_PROVIDERS, ...APIKEY_PROVIDERS }), []);
   const alwaysIncludeProvidersKey = Array.isArray(alwaysIncludeProviders)
     ? alwaysIncludeProviders
         .filter((providerId) => typeof providerId === "string" && providerId)

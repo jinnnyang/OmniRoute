@@ -3,7 +3,6 @@ import { getProviderConnections } from "@/models";
 import {
   AI_PROVIDERS,
   NOAUTH_PROVIDERS,
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
   LOCAL_PROVIDERS,
   UPSTREAM_PROXY_PROVIDERS,
@@ -23,7 +22,6 @@ import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error";
 // Determine auth type group for a provider id
 function getAuthGroup(providerId) {
   if (NOAUTH_PROVIDERS[providerId]) return "no-auth";
-  if (OAUTH_PROVIDERS[providerId]) return "oauth";
   if (SEARCH_PROVIDERS[providerId]) return "search";
   if (AUDIO_ONLY_PROVIDERS[providerId]) return "audio";
   if (LOCAL_PROVIDERS[providerId]) return "local";

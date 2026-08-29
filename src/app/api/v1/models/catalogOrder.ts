@@ -24,11 +24,10 @@
  * effort-variant scoping, and Claude-mirror gating are untouched. Pure; no DB/IO.
  */
 
-import { OAUTH_PROVIDERS, NOAUTH_PROVIDERS, APIKEY_PROVIDERS } from "@/shared/constants/providers";
+import { NOAUTH_PROVIDERS, APIKEY_PROVIDERS } from "@/shared/constants/providers";
 
 /** Canonical provider precedence, keyed by provider id (not alias). Built once. */
 const CANONICAL_PROVIDER_ORDER: readonly string[] = [
-  ...Object.keys(OAUTH_PROVIDERS),
   ...Object.keys(NOAUTH_PROVIDERS),
   ...Object.keys(APIKEY_PROVIDERS),
 ];

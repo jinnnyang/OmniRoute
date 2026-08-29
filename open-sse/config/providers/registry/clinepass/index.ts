@@ -7,7 +7,7 @@ import type { RegistryEntry } from "../../shared.ts";
 // the response path also tolerates the legacy {success, data} JSON envelope.
 export const clinepassProvider: RegistryEntry = {
   id: "clinepass",
-  // MUST match the OAUTH_PROVIDERS catalog alias (src/shared/constants/providers/oauth.ts).
+  // MUST match the static provider catalog alias used by the dashboard.
   // The dashboard sends models as `<catalogAlias>/<modelId>` (e.g. "cp/cline-pass/glm-5.2"),
   // and routing resolves the prefix via ALIAS_TO_PROVIDER_ID (built from this field). If the
   // registry alias drifts from the catalog alias, the prefix won't resolve, the executor falls

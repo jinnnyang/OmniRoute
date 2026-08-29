@@ -11,7 +11,6 @@ import {
   getProviderConnectionFamilyIds,
   isClaudeCodeCompatibleProvider,
   supportsApiKeyOnFreeProvider,
-  supportsDualAuthProvider,
 } from "@/shared/constants/providers";
 import { getModelsByProviderId } from "@/shared/constants/models";
 import { providerHasServiceKind } from "@/lib/providers/serviceKindIndex";
@@ -203,8 +202,6 @@ export function shouldShowProviderSection(
 
 type ProviderRecord<TProvider = Record<string, unknown>> = Record<string, TProvider>;
 
-const OAUTH_CARD_API_KEY_CONNECTION_PROVIDER_IDS = new Set(["kiro", "amazon-q", "kimi-coding"]);
-
 export function getProviderConnectionsRequestUrl(providerId: string): string {
   const hasAliases = getProviderConnectionFamilyIds(providerId).length > 1;
   return hasAliases
@@ -243,11 +240,7 @@ export function connectionMatchesProviderCard(
 ): boolean {
   if (!conn || !connectionBelongsToProviderPage(conn.provider, providerId)) return false;
   if (cardAuthType === "free") return true;
-  if (
-    supportsApiKeyOnFreeProvider(providerId) ||
-    supportsDualAuthProvider(providerId) ||
-    OAUTH_CARD_API_KEY_CONNECTION_PROVIDER_IDS.has(providerId)
-  ) {
+  if (supportsApiKeyOnFreeProvider(providerId)) {
     return conn.authType === "oauth" || conn.authType === "apikey" || conn.authType === "api_key";
   }
   return conn.authType === cardAuthType;

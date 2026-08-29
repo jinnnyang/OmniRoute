@@ -18,7 +18,6 @@ export interface ProviderSummaryStats {
   all: SummaryStat;
   free: SummaryStat;
   noauth: SummaryStat;
-  oauth: SummaryStat;
   apikey: SummaryStat;
   compatible: SummaryStat;
   webcookie: SummaryStat;
@@ -27,7 +26,6 @@ export interface ProviderSummaryStats {
   local: SummaryStat;
   upstreamproxy: SummaryStat;
   cloudagent: SummaryStat;
-  ide: SummaryStat;
   webfetch: SummaryStat;
 }
 
@@ -109,13 +107,6 @@ export default function ProviderSummaryCard({
 }: ProviderSummaryCardProps) {
   const categories = [
     { key: null, color: null, label: t("providerSummaryAll"), stat: summaryStats.all },
-    { key: "oauth", color: "bg-blue-500", label: t("oauthLabel"), stat: summaryStats.oauth },
-    {
-      key: "ide",
-      color: "bg-cyan-500",
-      label: providerText(t, "categoryIde", "IDE"),
-      stat: summaryStats.ide,
-    },
     {
       key: "free",
       color: "bg-green-500",

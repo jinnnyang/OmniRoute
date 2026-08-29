@@ -11,7 +11,6 @@ export interface CompactProviderEntryOptions<TProvider> {
   showFreeOnly: boolean;
   freeSectionEntries: ProviderCategoryEntries<TProvider>;
   compatibleProviderEntries: ProviderCategoryEntries<TProvider>;
-  oauthProviderEntries: ProviderCategoryEntries<TProvider>;
   noAuthEntries: ProviderCategoryEntries<TProvider>;
   upstreamProxyEntries: ProviderCategoryEntries<TProvider>;
   llmProviderEntries: ProviderCategoryEntries<TProvider>;
@@ -33,7 +32,6 @@ function getCompactProviderEntryGroups<TProvider>({
   showFreeOnly,
   freeSectionEntries,
   compatibleProviderEntries,
-  oauthProviderEntries,
   noAuthEntries,
   upstreamProxyEntries,
   llmProviderEntries,
@@ -61,7 +59,6 @@ function getCompactProviderEntryGroups<TProvider>({
   if (showFreeOnly) return [freeSectionEntries];
 
   if (activeCategory === "compatible") return [compatibleProviderEntries];
-  if (activeCategory === "oauth") return [oauthProviderEntries];
   if (activeCategory === "no-auth") return [noAuthEntries];
   if (activeCategory === "upstream-proxy") return [upstreamProxyEntries];
   if (activeCategory === "apikey") return apiKeyEntries;
@@ -74,7 +71,6 @@ function getCompactProviderEntryGroups<TProvider>({
 
   return [
     compatibleProviderEntries,
-    oauthProviderEntries,
     webCookieProviderEntries,
     llmProviderEntries,
     upstreamProxyEntries,

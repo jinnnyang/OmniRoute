@@ -1,7 +1,6 @@
 import {
   APIKEY_PROVIDERS,
   FREE_PROVIDERS,
-  OAUTH_PROVIDERS,
   providerAllowsOptionalApiKey,
   supportsApiKeyOnFreeProvider,
 } from "@/shared/constants/providers";
@@ -90,7 +89,7 @@ export function getWizardApiKeyProviderOptions(): WizardProviderOption[] {
 
 export function getWizardOAuthProviderOptions(): WizardProviderOption[] {
   const providersById = new Map<string, WizardProviderDefinition>();
-  for (const provider of [...Object.values(OAUTH_PROVIDERS), ...Object.values(FREE_PROVIDERS)]) {
+  for (const provider of Object.values(FREE_PROVIDERS)) {
     if (SUPPORTED_WIZARD_OAUTH_PROVIDER_IDS.has(provider.id)) {
       providersById.set(provider.id, provider);
     }

@@ -315,7 +315,6 @@ export const APIKEY_PROVIDERS_SPECIALTY = {
     textIcon: "CA",
     website: "https://cursor.com/dashboard/api",
     subscriptionRisk: true,
-    riskNoticeVariant: "oauth",
     authHint:
       "Paste a Cursor user API key (crsr_...) from cursor.com/dashboard/api. OmniRoute exchanges it for a session token on demand; no IDE or cursor-agent install is needed. Usage bills to the Cursor plan that owns the key.",
     apiHint:

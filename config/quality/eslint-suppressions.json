@@ -1063,11 +1063,6 @@
       "count": 1
     }
   },
-  "src/app/(dashboard)/dashboard/providers/page.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
-    }
-  },
   "src/app/(dashboard)/dashboard/providers/utils/buildCurl.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1

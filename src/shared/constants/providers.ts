@@ -1,10 +1,9 @@
 // Re-export service kinds from leaf module (avoids circular dep with providerSchema)
 export type { ServiceKind } from "./serviceKinds";
-export type RiskNoticeVariant = "oauth" | "deprecated" | "embedded-service";
+export type RiskNoticeVariant = "deprecated" | "embedded-service";
 
 import { NOAUTH_PROVIDERS } from "./providers/noauth";
 export { supportsNoAuthProviderProxy } from "./providers/noauth";
-import { OAUTH_PROVIDERS } from "./providers/oauth";
 import { APIKEY_PROVIDERS } from "./providers/apikey";
 import { LOCAL_PROVIDERS } from "./providers/local";
 import { SEARCH_PROVIDERS } from "./providers/search";
@@ -39,14 +38,6 @@ export function supportsApiKeyOnFreeProvider(providerId: unknown): boolean {
   return typeof providerId === "string" && FREE_APIKEY_PROVIDER_IDS.has(providerId);
 }
 
-// Providers presented as one dashboard card with OAuth as the primary action
-// and a direct API-key alternative. Keep these out of FREE_APIKEY_PROVIDER_IDS.
-const DUAL_AUTH_PROVIDER_IDS = new Set(["clinepass", "codebuddy-cn", "xai"]);
-
-export function supportsDualAuthProvider(providerId: unknown): boolean {
-  return typeof providerId === "string" && DUAL_AUTH_PROVIDER_IDS.has(providerId);
-}
-
 /**
  * Backend provider IDs that are managed from one dashboard provider family.
  *
@@ -59,7 +50,6 @@ export function supportsDualAuthProvider(providerId: unknown): boolean {
 export const PROVIDER_CONNECTION_FAMILY_ALIASES: Readonly<Record<string, readonly string[]>> = {
   alibaba: ["alibaba-cn"],
   "kimi-coding": ["kimi-coding-apikey"],
-  xai: ["xai-oauth", "xao"],
   // magnific is the canonical (post-rebrand) slug; freepik stays a legacy
   // alias so old URLs and pre-migration connection rows keep working.
   magnific: ["freepik"],
@@ -291,7 +281,6 @@ export function supportsBulkApiKey(providerId: unknown): boolean {
 
 const _PROVIDER_SECTIONS = [
   NOAUTH_PROVIDERS,
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
   LOCAL_PROVIDERS,
   SEARCH_PROVIDERS,
@@ -306,7 +295,6 @@ let _validated = false;
 function ensureProvidersValidated() {
   if (_validated) return;
   validateProviders(NOAUTH_PROVIDERS, "NOAUTH_PROVIDERS");
-  validateProviders(OAUTH_PROVIDERS, "OAUTH_PROVIDERS");
   validateProviders(APIKEY_PROVIDERS, "APIKEY_PROVIDERS");
   validateProviders(LOCAL_PROVIDERS, "LOCAL_PROVIDERS");
   validateProviders(SEARCH_PROVIDERS, "SEARCH_PROVIDERS");
@@ -360,7 +348,6 @@ function getOrCreateIdToAlias(): Record<string, string> {
 export function getProviderById(id: string) {
   return (
     (NOAUTH_PROVIDERS as Record<string, any>)[id] ??
-    (OAUTH_PROVIDERS as Record<string, any>)[id] ??
     (APIKEY_PROVIDERS as Record<string, any>)[id] ??
     (LOCAL_PROVIDERS as Record<string, any>)[id] ??
     (SEARCH_PROVIDERS as Record<string, any>)[id] ??
@@ -394,7 +381,6 @@ export const AI_PROVIDERS = new Proxy({} as Record<string, any>, {
 
 export type AiProviderDefinition =
   | (typeof NOAUTH_PROVIDERS)[keyof typeof NOAUTH_PROVIDERS]
-  | (typeof OAUTH_PROVIDERS)[keyof typeof OAUTH_PROVIDERS]
   | (typeof APIKEY_PROVIDERS)[keyof typeof APIKEY_PROVIDERS]
   | (typeof LOCAL_PROVIDERS)[keyof typeof LOCAL_PROVIDERS]
   | (typeof SEARCH_PROVIDERS)[keyof typeof SEARCH_PROVIDERS]
@@ -405,7 +391,6 @@ export type AiProviderDefinition =
 
 // Auth methods
 export const AUTH_METHODS = {
-  oauth: { id: "oauth", name: "OAuth", icon: "lock" },
   apikey: { id: "apikey", name: "API Key", icon: "key" },
 };
 
@@ -506,9 +491,6 @@ export const USAGE_SUPPORTED_PROVIDERS = [
   "firefly",
   "hyperagent",
   "ha",
-  // xAI OAuth (Grok) weekly quota (id + public alias, same pattern as ha/agy)
-  "xai-oauth",
-  "xao",
   // Grok Build subscription, billing credits, and auto top-up status
   "grok-cli",
   // Firecrawl team credits (GET /v2/team/credit-usage)
@@ -534,7 +516,6 @@ export const USAGE_SUPPORTED_PROVIDERS = [
 // Re-export the extracted data catalogs so external importers of providers.ts are unchanged.
 export {
   NOAUTH_PROVIDERS,
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
   LOCAL_PROVIDERS,
   SEARCH_PROVIDERS,

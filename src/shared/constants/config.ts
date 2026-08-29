@@ -67,7 +67,6 @@ export const PROVIDER_ENDPOINTS = {
 // Re-export from providers.js for backward compatibility
 export {
   NOAUTH_PROVIDERS,
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
   SEARCH_PROVIDERS,
   AUDIO_ONLY_PROVIDERS,

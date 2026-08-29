@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card, CardSkeleton, Button, Modal } from "@/shared/components";
 import ProviderIcon from "@/shared/components/ProviderIcon";
-import { AI_PROVIDERS, NOAUTH_PROVIDERS, OAUTH_PROVIDERS } from "@/shared/constants/providers";
+import { AI_PROVIDERS, NOAUTH_PROVIDERS } from "@/shared/constants/providers";
 import {
   isProviderConnectionConnected,
   isProviderConnectionErrored,
@@ -427,11 +427,7 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
       const providerKeys = new Set([providerId, providerInfo.alias].filter(Boolean));
       const providerModels = models.filter((m) => providerKeys.has(m.provider));
 
-      const authType = NOAUTH_PROVIDERS[providerId]
-        ? "no-auth"
-        : OAUTH_PROVIDERS[providerId]
-          ? "oauth"
-          : "apikey";
+      const authType = NOAUTH_PROVIDERS[providerId] ? "no-auth" : "apikey";
 
       return {
         id: providerId,

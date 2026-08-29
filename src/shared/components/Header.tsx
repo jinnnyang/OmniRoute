@@ -17,7 +17,6 @@ import LanguageSelector from "./LanguageSelector";
 import ProviderIcon from "./ProviderIcon";
 import { useTranslations } from "next-intl";
 import {
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
   NOAUTH_PROVIDERS,
   CLAUDE_CODE_COMPATIBLE_PREFIX,
@@ -151,7 +150,7 @@ function usePageInfo(pathname: string | null): PageInfo {
   const providerMatch = pathname.match(/\/providers\/([^/]+)$/);
   if (providerMatch) {
     const pid = providerMatch[1];
-    const info = OAUTH_PROVIDERS[pid] || NOAUTH_PROVIDERS[pid] || APIKEY_PROVIDERS[pid];
+    const info = NOAUTH_PROVIDERS[pid] || APIKEY_PROVIDERS[pid];
     if (info) return { title: info.name, description: "", providerId: info.id };
     if (pid.startsWith(CLAUDE_CODE_COMPATIBLE_PREFIX))
       return { title: "CC Compatible", description: "", providerId: "claude" };

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Card, CardSkeleton, Badge, Button, CollapsibleSection } from "@/shared/components";
+import { useState, useEffect, useMemo } from "react";
+import { Card, CardSkeleton, Button } from "@/shared/components";
 import {
   AGGREGATOR_PROVIDER_IDS,
   EMBEDDING_RERANK_PROVIDER_IDS,
@@ -199,7 +199,7 @@ export default function ProvidersPage() {
   const [codexGlobalServiceMode, setCodexGlobalServiceMode] =
     useState<CodexGlobalServiceMode>("none");
   const [loading, setLoading] = useState(true);
-  const [showAllProviders, setShowAllProviders] = useState(false);
+  const [showAllProviders] = useState(false);
   const [showAddCompatibleModal, setShowAddCompatibleModal] = useState(false);
   const [showAddAnthropicCompatibleModal, setShowAddAnthropicCompatibleModal] = useState(false);
   const [showAddCcCompatibleModal, setShowAddCcCompatibleModal] = useState(false);
@@ -207,11 +207,6 @@ export default function ProvidersPage() {
   const [testingMode, setTestingMode] = useState<string | null>(null);
   const [testResults, setTestResults] = useState<any>(null);
   const [providerDisplayMode, setProviderDisplayMode] = useState<ProviderDisplayMode>("all");
-  const [oauthEnvRepairStatus, setOauthEnvRepairStatus] = useState<{
-    available: boolean;
-    missingCount: number;
-  } | null>(null);
-  const [repairingEnv, setRepairingEnv] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [modelSearchQuery, setModelSearchQuery] = useState("");
   const liveModelsByProviderId = useSyncedModelsByProvider();
@@ -236,11 +231,6 @@ export default function ProvidersPage() {
   };
   const t = useTranslations("providers");
   const tc = useTranslations("common");
-  const webCookieProvidersDesc = providerText(
-    t,
-    "webCookieProvidersDesc",
-    "These providers use browser web sessions, cookies, or web tokens instead of API keys. Open a provider to add the required session credential."
-  );
   const ccCompatibleLabel = t("ccCompatibleLabel");
   const addCcCompatibleLabel = t("addCcCompatible");
   const searchParams = useSearchParams();
@@ -300,51 +290,6 @@ export default function ProvidersPage() {
       setProviderDisplayMode("all");
     }
   }, [connections.length, displayModePreferenceReady, providerDisplayMode, loading]);
-
-  const fetchOauthEnvRepairStatus = useCallback(async () => {
-    try {
-      const res = await fetch("/api/system/env/repair", { cache: "no-store" });
-      const data = await res.json();
-      if (res.ok) {
-        setOauthEnvRepairStatus({
-          available: Boolean(data.available),
-          missingCount: Number(data.missingCount || 0),
-        });
-      } else {
-        setOauthEnvRepairStatus(null);
-      }
-    } catch {
-      setOauthEnvRepairStatus(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    void fetchOauthEnvRepairStatus();
-  }, [fetchOauthEnvRepairStatus]);
-
-  const handleRepairEnv = async () => {
-    if (!oauthEnvRepairStatus?.available || repairingEnv) return;
-
-    setRepairingEnv(true);
-    try {
-      const res = await fetch("/api/system/env/repair", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || t("repairEnvFailed"));
-      }
-      notify.success(
-        data.backupPath ? `${t("repairEnvSuccess")} (${data.backupPath})` : t("repairEnvSuccess")
-      );
-      await fetchOauthEnvRepairStatus();
-    } catch (error) {
-      notify.error(error instanceof Error ? error.message : t("repairEnvFailed"));
-    } finally {
-      setRepairingEnv(false);
-    }
-  };
 
   const getProviderStats = (providerId, authType) => {
     const providerConnections = connections.filter((c) =>
@@ -530,17 +475,6 @@ export default function ProvidersPage() {
     connections.length
   );
   const isCompactProviderDisplay = effectiveProviderDisplayMode === "compact";
-
-  const oauthProviderEntriesAll = buildStaticProviderEntries("oauth", getProviderStats);
-  const oauthProviderEntries = filterConfiguredProviderEntries(
-    oauthProviderEntriesAll,
-    effectiveShowConfiguredOnly,
-    searchQuery,
-    showFreeOnly,
-    modelSearchQuery,
-    activeServiceKind,
-    liveModelsByProviderId
-  );
 
   const rawNoAuthEntriesAll = buildStaticProviderEntries("no-auth", getProviderStats);
   // Partition rather than drop: blocked no-auth providers stay surfaced on the page
@@ -739,7 +673,6 @@ export default function ProvidersPage() {
   );
 
   const staticProviderEntriesAll = dedupeProviderEntries([
-    ...oauthProviderEntriesAll,
     ...noAuthEntriesAll,
     ...apiKeyProviderEntriesAll,
     ...webCookieProviderEntriesAll,
@@ -764,8 +697,6 @@ export default function ProvidersPage() {
     liveModelsByProviderId
   );
 
-  const oauthOnlyEntriesAll = oauthProviderEntriesAll.filter((e) => e.toggleAuthType === "oauth");
-
   // Web Fetch providers: filter across all entries by serviceKinds
   const webFetchEntriesAll = dedupeProviderEntries(
     [...staticProviderEntriesAll, ...compatibleProviderEntriesAll].filter((e) => {
@@ -788,7 +719,6 @@ export default function ProvidersPage() {
     showFreeOnly,
     freeSectionEntries,
     compatibleProviderEntries,
-    oauthProviderEntries,
     noAuthEntries,
     upstreamProxyEntries,
     llmProviderEntries,
@@ -809,7 +739,6 @@ export default function ProvidersPage() {
     all: countConfigured(dashboardProviderEntriesAll),
     free: countConfigured(freeSectionEntriesAll),
     noauth: countConfigured(noAuthEntriesAll),
-    oauth: countConfigured(oauthOnlyEntriesAll),
     apikey: countConfigured(apiKeyProviderEntriesAll),
     compatible: countConfigured(compatibleProviderEntriesAll),
     webcookie: countConfigured(webCookieProviderEntriesAll),
@@ -819,7 +748,6 @@ export default function ProvidersPage() {
     upstreamproxy: countConfigured(upstreamProxyEntriesAll),
     cloudagent: countConfigured(cloudAgentProviderEntriesAll),
     webfetch: countConfigured(webFetchEntriesAll),
-    ide: countConfigured([]),
   };
   if (loading) {
     return (
@@ -1039,74 +967,6 @@ export default function ProvidersPage() {
                     )}
                   </div>
                 )}
-              </div>
-            )}
-
-            {/* OAuth Providers (including providers that expose free tiers via OAuth) */}
-            {showSection("oauth") && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-xl font-semibold flex items-center gap-2 flex-1 min-w-0">
-                    {t("oauthProviders")}{" "}
-                    <span className="size-2.5 rounded-full bg-blue-500" title={t("oauthLabel")} />
-                    <ProviderCountBadge {...countConfigured(oauthProviderEntriesAll)} />
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    {oauthEnvRepairStatus?.available && oauthEnvRepairStatus.missingCount > 0 && (
-                      <button
-                        onClick={handleRepairEnv}
-                        disabled={repairingEnv}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                          repairingEnv
-                            ? "bg-primary/20 border-primary/40 text-primary animate-pulse"
-                            : "bg-bg-subtle border-border text-text-muted hover:text-text-primary hover:border-primary/40"
-                        }`}
-                        title={t("repairEnvHint")}
-                        aria-label={t("repairEnv")}
-                      >
-                        <span className="material-symbols-outlined text-[14px]">
-                          {repairingEnv ? "sync" : "settings_backup_restore"}
-                        </span>
-                        {repairingEnv ? t("repairEnvWorking") : t("repairEnv")}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleBatchTest("oauth")}
-                      disabled={!!testingMode}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-                        testingMode === "oauth"
-                          ? "bg-primary/20 border-primary/40 text-primary animate-pulse"
-                          : "bg-bg-subtle border-border text-text-muted hover:text-text-primary hover:border-primary/40"
-                      }`}
-                      title={t("testAllOAuth")}
-                      aria-label={t("testAllOAuth")}
-                    >
-                      <span
-                        className={`material-symbols-outlined text-[14px]${testingMode === "oauth" ? " animate-spin" : ""}`}
-                      >
-                        play_arrow
-                      </span>
-                      {testingMode === "oauth" ? t("testing") : t("testAll")}
-                    </button>
-                  </div>
-                </div>
-                <p className="text-sm text-text-muted -mt-2">{t("oauthProvidersDesc")}</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3">
-                  {oauthProviderEntries.map(
-                    ({ providerId, provider, stats, displayAuthType, toggleAuthType }) => (
-                      <HighlightableProviderCard
-                        key={providerId}
-                        providerId={providerId}
-                        provider={provider}
-                        stats={stats}
-                        authType={displayAuthType}
-                        onToggle={(active) =>
-                          handleToggleProvider(providerId, toggleAuthType, active)
-                        }
-                      />
-                    )
-                  )}
-                </div>
               </div>
             )}
 
@@ -1824,7 +1684,6 @@ function ProviderTestResultsView({ results }: { results: ProviderBatchTestResult
 
   const modeLabel =
     {
-      oauth: t("oauthLabel"),
       free: tc("free"),
       apikey: t("apiKeyLabel"),
       compatible: t("compatibleLabel"),

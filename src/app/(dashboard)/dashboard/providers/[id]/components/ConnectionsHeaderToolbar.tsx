@@ -10,7 +10,6 @@ type ConnectionsHeaderToolbarProps = {
   isCompatible: boolean;
   isCommandCode: boolean;
   isOAuth: boolean;
-  supportsDualAuth: boolean;
   providerSupportsPat: boolean;
   connections: any[]; // ConnectionRowConnection[]
   batchTesting: boolean;
@@ -60,7 +59,6 @@ export default function ConnectionsHeaderToolbar({
   isCompatible,
   isCommandCode,
   isOAuth,
-  supportsDualAuth,
   providerSupportsPat,
   connections,
   batchTesting,
@@ -274,7 +272,7 @@ export default function ConnectionsHeaderToolbar({
         )}
         {!isCompatible ? (
           <>
-            {isCommandCode || supportsDualAuth ? (
+            {isCommandCode ? (
               <>
                 <Button
                   size="sm"

@@ -4,13 +4,11 @@ import {
   CLOUD_AGENT_PROVIDERS,
   LOCAL_PROVIDERS,
   NOAUTH_PROVIDERS,
-  OAUTH_PROVIDERS,
   SEARCH_PROVIDERS,
   UPSTREAM_PROXY_PROVIDERS,
   isClaudeCodeCompatibleProvider,
   resolveProviderId,
   supportsApiKeyOnFreeProvider,
-  supportsDualAuthProvider,
   type RiskNoticeVariant,
 } from "@/shared/constants/providers";
 
@@ -18,7 +16,6 @@ export type ProviderDisplayAuthType = "oauth" | "apikey" | "compatible" | "no-au
 export type ProviderToggleAuthType = "oauth" | "free" | "apikey" | "no-auth";
 export type StaticProviderCatalogCategory =
   | "no-auth"
-  | "oauth"
   | "web-cookie"
   | "local"
   | "search"
@@ -114,12 +111,6 @@ export const STATIC_PROVIDER_CATALOG_GROUPS: Record<
     displayAuthType: "no-auth",
     toggleAuthType: "no-auth",
   },
-  oauth: {
-    category: "oauth",
-    providers: OAUTH_PROVIDERS as ProviderRecord,
-    displayAuthType: "oauth",
-    toggleAuthType: "oauth",
-  },
   "web-cookie": {
     category: "web-cookie",
     providers: {} as ProviderRecord,
@@ -166,7 +157,6 @@ export const STATIC_PROVIDER_CATALOG_GROUPS: Record<
 
 export const STATIC_PROVIDER_CATALOG_RESOLUTION_ORDER: StaticProviderCatalogCategory[] = [
   "no-auth",
-  "oauth",
   "web-cookie",
   "local",
   "search",
@@ -212,7 +202,6 @@ export function resolveStaticProviderCatalogEntry(
 
 export function isManagedProviderConnectionId(providerId: string): boolean {
   if (supportsApiKeyOnFreeProvider(providerId)) return true;
-  if (supportsDualAuthProvider(providerId)) return true;
 
   const entry = resolveStaticProviderCatalogEntry(providerId);
   return !!(entry && MANAGED_PROVIDER_CONNECTION_CATEGORIES.has(entry.category));
