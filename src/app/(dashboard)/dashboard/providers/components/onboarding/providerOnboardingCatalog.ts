@@ -5,7 +5,7 @@ import {
   supportsApiKeyOnFreeProvider,
 } from "@/shared/constants/providers";
 
-export type WizardProviderAuthKind = "apikey" | "oauth";
+export type WizardProviderAuthKind = "apikey";
 
 export type WizardProviderDefinition = {
   id: string;
@@ -33,30 +33,12 @@ export type WizardProviderOption = {
   deprecated: boolean;
 };
 
-export const SUPPORTED_WIZARD_OAUTH_PROVIDER_IDS = new Set([
-  "claude",
-  "codex",
-  "antigravity",
-  "agy",
-  "kimi-coding",
-  "github",
-  "gitlab-duo",
-  "kiro",
-  "amazon-q",
-  "cursor",
-  "kilocode",
-  "cline",
-]);
-
 function toProviderOption(
   provider: WizardProviderDefinition,
   authKind: WizardProviderAuthKind
 ): WizardProviderOption {
   const name = provider.name || provider.id;
-  const fallbackDescription =
-    authKind === "oauth"
-      ? `Connect ${name} with the existing OAuth flow.`
-      : `Connect ${name} with an API key.`;
+  const fallbackDescription = `Connect ${name} with an API key.`;
 
   return {
     id: provider.id,
@@ -85,18 +67,6 @@ export function getWizardApiKeyProviderOptions(): WizardProviderOption[] {
     (provider) => !(provider as WizardProviderDefinition).hiddenFromDashboard
   );
   return sortProviderOptions(providers.map((provider) => toProviderOption(provider, "apikey")));
-}
-
-export function getWizardOAuthProviderOptions(): WizardProviderOption[] {
-  const providersById = new Map<string, WizardProviderDefinition>();
-  for (const provider of Object.values(FREE_PROVIDERS)) {
-    if (SUPPORTED_WIZARD_OAUTH_PROVIDER_IDS.has(provider.id)) {
-      providersById.set(provider.id, provider);
-    }
-  }
-  return sortProviderOptions(
-    [...providersById.values()].map((provider) => toProviderOption(provider, "oauth"))
-  );
 }
 
 export function filterWizardProviderOptions(

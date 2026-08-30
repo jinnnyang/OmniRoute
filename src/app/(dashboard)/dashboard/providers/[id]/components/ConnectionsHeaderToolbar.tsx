@@ -9,7 +9,6 @@ type ConnectionsHeaderToolbarProps = {
   providerInfo: any; // resolveDashboardProviderInfo result
   isCompatible: boolean;
   isCommandCode: boolean;
-  isOAuth: boolean;
   providerSupportsPat: boolean;
   connections: any[]; // ConnectionRowConnection[]
   batchTesting: boolean;
@@ -41,15 +40,9 @@ type ConnectionsHeaderToolbarProps = {
   openPrimaryAddFlow: () => void;
   connectVolcengineAccount?: () => void;
   connectingVolcengineAccount?: boolean;
-  openExternalLinkFlow: () => void;
   handleOpenCommandCodeConnect: () => void;
   commandCodeAuthState: { phase: string };
-  onOpenOAuthModal: () => void;
   onOpenCodexCliGuide: () => void;
-  onOpenImportCodex: () => void;
-  onOpenImportClaude: () => void;
-  onOpenImportGemini: () => void;
-  onOpenImportGrokCli: () => void;
   t: ProviderMessageTranslator;
 };
 
@@ -58,7 +51,6 @@ export default function ConnectionsHeaderToolbar({
   providerInfo,
   isCompatible,
   isCommandCode,
-  isOAuth,
   providerSupportsPat,
   connections,
   batchTesting,
@@ -88,15 +80,9 @@ export default function ConnectionsHeaderToolbar({
   openPrimaryAddFlow,
   connectVolcengineAccount,
   connectingVolcengineAccount,
-  openExternalLinkFlow,
   handleOpenCommandCodeConnect,
   commandCodeAuthState,
-  onOpenOAuthModal,
   onOpenCodexCliGuide,
-  onOpenImportCodex,
-  onOpenImportClaude,
-  onOpenImportGemini,
-  onOpenImportGrokCli,
   t,
 }: ConnectionsHeaderToolbarProps) {
   return (
@@ -318,15 +304,6 @@ export default function ConnectionsHeaderToolbar({
                       {providerText(t, "connectVolcengineAccount", "Connect Volcano Account")}
                     </Button>
                   )}
-                {providerId === "qoder" && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => gateConnectionFlow(onOpenOAuthModal)}
-                  >
-                    {providerText(t, "experimentalOauth", "Experimental OAuth")}
-                  </Button>
-                )}
                 {providerId === "codex" && (
                   <Button
                     size="sm"
@@ -335,46 +312,6 @@ export default function ConnectionsHeaderToolbar({
                     onClick={() => onOpenCodexCliGuide()}
                   >
                     {providerText(t, "codexCliGuideButton", "Codex CLI Guide")}
-                  </Button>
-                )}
-                {providerId === "codex" && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    icon="share"
-                    onClick={() => gateConnectionFlow(openExternalLinkFlow)}
-                  >
-                    {providerText(t, "codexExternalLinkButton", "External Codex link")}
-                  </Button>
-                )}
-                {providerId === "codex" && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    icon="upload_file"
-                    onClick={() => gateConnectionFlow(onOpenImportCodex)}
-                  >
-                    {providerText(t, "importCodexAuth", "Import auth")}
-                  </Button>
-                )}
-                {providerId === "claude" && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    icon="upload_file"
-                    onClick={() => gateConnectionFlow(onOpenImportClaude)}
-                  >
-                    {providerText(t, "importClaudeAuth", "Import auth")}
-                  </Button>
-                )}
-                {providerId === "grok-cli" && (
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    icon="upload_file"
-                    onClick={() => gateConnectionFlow(onOpenImportGrokCli)}
-                  >
-                    {providerText(t, "importGrokAuth", "Import auth")}
                   </Button>
                 )}
               </>

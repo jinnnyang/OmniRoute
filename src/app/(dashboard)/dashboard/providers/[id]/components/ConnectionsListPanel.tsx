@@ -15,7 +15,6 @@ type ConnectionsListPanelProps = {
   connections: ConnectionRowConnection[];
   providerId: string;
   isCcCompatible: boolean;
-  isOAuth: boolean;
   codexGlobalServiceMode: CodexGlobalServiceMode | string;
   selectedIds: Set<string>;
   batchUpdating: string | null;
@@ -34,10 +33,6 @@ type ConnectionsListPanelProps = {
     { proxy?: { host?: string; name?: string }; level?: string } | undefined
   >;
   proxyConfig: any;
-  applyingCodexAuthId: string | null;
-  exportingCodexAuthId: string | null;
-  applyingClaudeAuthId: string | null;
-  exportingClaudeAuthId: string | null;
   emailsVisible: boolean;
   // Setters
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
@@ -63,7 +58,6 @@ type ConnectionsListPanelProps = {
   handleToggleProxyEnabled: (id: string, enabled: boolean) => void;
   handleTogglePerKeyProxyEnabled: (id: string, enabled: boolean) => void;
   handleRetestConnection: (id: string) => void;
-  handleRefreshToken: (id: string) => void;
   handleSwapPriority: (a: ConnectionRowConnection, b: ConnectionRowConnection) => void;
   handleBatchSetActive: (active: boolean) => void;
   handleBatchDeleteOpenModal: () => void;
@@ -74,12 +68,7 @@ type ConnectionsListPanelProps = {
   cpaProviderEnabled: boolean;
   // Modal triggers (all pass through from client, no closing over client internals)
   onOpenEditModal: (conn: ConnectionRowConnection) => void;
-  onOpenOAuth: (conn: ConnectionRowConnection) => void;
   onSetProxyTarget: (target: { level: string; id: string; label: string }) => void;
-  onOpenApplyCodexModal: (connId: string) => void;
-  onExportCodexAuthFile: (connId: string) => void;
-  onOpenApplyClaudeModal: (connId: string) => void;
-  onExportClaudeAuthFile: (connId: string) => void;
   gateConnectionFlow: (callback: () => void) => void;
   t: any; // ProviderMessageTranslator
 };
@@ -106,7 +95,6 @@ export default function ConnectionsListPanel({
   connections,
   providerId,
   isCcCompatible,
-  isOAuth,
   codexGlobalServiceMode,
   selectedIds,
   batchUpdating,
@@ -122,10 +110,6 @@ export default function ConnectionsListPanel({
   PAGE_SIZE,
   connProxyMap,
   proxyConfig,
-  applyingCodexAuthId,
-  exportingCodexAuthId,
-  applyingClaudeAuthId,
-  exportingClaudeAuthId,
   emailsVisible,
   setSelectedIds,
   setPage,
@@ -145,7 +129,6 @@ export default function ConnectionsListPanel({
   handleToggleProxyEnabled,
   handleTogglePerKeyProxyEnabled,
   handleRetestConnection,
-  handleRefreshToken,
   handleSwapPriority,
   handleBatchSetActive,
   handleBatchDeleteOpenModal,
@@ -156,12 +139,7 @@ export default function ConnectionsListPanel({
   cpaProviderEnabled,
   canAutoSync,
   onOpenEditModal,
-  onOpenOAuth,
   onSetProxyTarget,
-  onOpenApplyCodexModal,
-  onExportCodexAuthFile,
-  onOpenApplyClaudeModal,
-  onExportClaudeAuthFile,
   gateConnectionFlow,
   t,
 }: ConnectionsListPanelProps) {
@@ -385,7 +363,6 @@ export default function ConnectionsListPanel({
               <ConnectionRow
                 key={conn.id}
                 connection={conn}
-                isOAuth={conn.authType === "oauth"}
                 isClaude={providerId === "claude"}
                 codexGlobalServiceMode={codexGlobalServiceMode}
                 isFirst={index === 0}
@@ -429,31 +406,7 @@ export default function ConnectionsListPanel({
                     pickDisplayValue([conn.name, conn.email], emailsVisible, conn.id)
                   )
                 }
-                onReauth={
-                  conn.authType === "oauth"
-                    ? () => gateConnectionFlow(() => onOpenOAuth(conn))
-                    : undefined
-                }
-                onRefreshToken={
-                  conn.authType === "oauth" ? () => handleRefreshToken(conn.id) : undefined
-                }
                 isRefreshing={refreshingId === conn.id}
-                onApplyCodexAuthLocal={
-                  providerId === "codex" ? () => onOpenApplyCodexModal(conn.id) : undefined
-                }
-                isApplyingCodexAuthLocal={applyingCodexAuthId === conn.id}
-                onExportCodexAuthFile={
-                  providerId === "codex" ? () => onExportCodexAuthFile(conn.id) : undefined
-                }
-                isExportingCodexAuthFile={exportingCodexAuthId === conn.id}
-                onApplyClaudeAuthLocal={
-                  providerId === "claude" ? () => onOpenApplyClaudeModal(conn.id) : undefined
-                }
-                isApplyingClaudeAuthLocal={applyingClaudeAuthId === conn.id}
-                onExportClaudeAuthFile={
-                  providerId === "claude" ? () => onExportClaudeAuthFile(conn.id) : undefined
-                }
-                isExportingClaudeAuthFile={exportingClaudeAuthId === conn.id}
                 onProxy={() =>
                   onSetProxyTarget({
                     level: "key",
@@ -586,7 +539,6 @@ export default function ConnectionsListPanel({
                   <ConnectionRow
                     key={conn.id}
                     connection={conn}
-                    isOAuth={conn.authType === "oauth"}
                     isClaude={providerId === "claude"}
                     codexGlobalServiceMode={codexGlobalServiceMode}
                     isFirst={gi === 0 && index === 0}
@@ -632,31 +584,7 @@ export default function ConnectionsListPanel({
                         pickDisplayValue([conn.name, conn.email], emailsVisible, conn.id)
                       )
                     }
-                    onReauth={
-                      conn.authType === "oauth"
-                        ? () => gateConnectionFlow(() => onOpenOAuth(conn))
-                        : undefined
-                    }
-                    onRefreshToken={
-                      conn.authType === "oauth" ? () => handleRefreshToken(conn.id) : undefined
-                    }
                     isRefreshing={refreshingId === conn.id}
-                    onApplyCodexAuthLocal={
-                      providerId === "codex" ? () => onOpenApplyCodexModal(conn.id) : undefined
-                    }
-                    isApplyingCodexAuthLocal={applyingCodexAuthId === conn.id}
-                    onExportCodexAuthFile={
-                      providerId === "codex" ? () => onExportCodexAuthFile(conn.id) : undefined
-                    }
-                    isExportingCodexAuthFile={exportingCodexAuthId === conn.id}
-                    onApplyClaudeAuthLocal={
-                      providerId === "claude" ? () => onOpenApplyClaudeModal(conn.id) : undefined
-                    }
-                    isApplyingClaudeAuthLocal={applyingClaudeAuthId === conn.id}
-                    onExportClaudeAuthFile={
-                      providerId === "claude" ? () => onExportClaudeAuthFile(conn.id) : undefined
-                    }
-                    isExportingClaudeAuthFile={exportingClaudeAuthId === conn.id}
                     onProxy={() =>
                       onSetProxyTarget({
                         level: "key",

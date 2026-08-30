@@ -79,7 +79,6 @@ import { notifyWebhookEvent } from "../../src/lib/webhookDispatcher";
 import { type ProviderCandidate } from "./autoCombo/scoring.ts";
 import { estimateTokens } from "./contextManager.ts";
 import { getSessionConnection } from "./sessionManager.ts";
-import { getOAuthSessionAvailability } from "./oauthSessionOccupancy.ts";
 import {
   applySessionStickiness,
   normalizeStickinessMessages,
@@ -536,8 +535,7 @@ export async function buildAutoCandidates(
       const fetcher = getQuotaFetcher(resolveProviderId(provider));
       const connection = target.connectionId ? connectionById.get(target.connectionId) : undefined;
       const authType = typeof connection?.authType === "string" ? connection.authType : null;
-      const sessionAvailability =
-        authType === "oauth" ? getOAuthSessionAvailability(target.connectionId, sessionId) : 1;
+      const sessionAvailability = 1;
       // Gate the terminal-status cutoff behind the same opt-in as the quota-percent
       // cutoff (#4483): when quota cutoff is disabled, a connection in a terminal
       // testStatus must still fall through to normal connection-cooldown / model-lockout
@@ -3286,24 +3284,20 @@ async function handleRoundRobinCombo({
               "COMBO-RR",
               `Maximum combo attempts (${maxGlobalAttempts}) exceeded. Terminating loop to prevent runaway requests.`
             );
-            return errorResponseWithComboDiagnostics(
-              503,
-              "Maximum combo retry limit reached",
-              {
-                poolSize: modelCount,
-                attempted: globalAttempts,
-                excluded: [
-                  ...[...exhaustedProviders].map((p) => ({ provider: p, reason: "exhausted" })),
-                  ...[...exhaustedConnections].map((c) => formatExhaustedConnectionKey(String(c))),
-                ],
-                attemptOrder: rrOutcomes.map((o) => ({
-                  provider: o.model.split("/")[0] || "unknown",
-                  model: o.model,
-                })),
-                terminalReason: "max_attempts_exceeded",
-                recovery: buildRecoveryHint("max_attempts_exceeded"),
-              }
-            );
+            return errorResponseWithComboDiagnostics(503, "Maximum combo retry limit reached", {
+              poolSize: modelCount,
+              attempted: globalAttempts,
+              excluded: [
+                ...[...exhaustedProviders].map((p) => ({ provider: p, reason: "exhausted" })),
+                ...[...exhaustedConnections].map((c) => formatExhaustedConnectionKey(String(c))),
+              ],
+              attemptOrder: rrOutcomes.map((o) => ({
+                provider: o.model.split("/")[0] || "unknown",
+                model: o.model,
+              })),
+              terminalReason: "max_attempts_exceeded",
+              recovery: buildRecoveryHint("max_attempts_exceeded"),
+            });
           }
           if (retry > 0) {
             log.info(

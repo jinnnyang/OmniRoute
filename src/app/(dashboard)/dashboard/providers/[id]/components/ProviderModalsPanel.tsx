@@ -2,15 +2,7 @@
 
 // Phase 1t.5 extraction — Issue #3501
 // Pure composition of all modal elements rendered by ProviderDetailPageClient.
-import {
-  ConfirmModal,
-  OAuthModal,
-  KiroOAuthWrapper,
-  CursorAuthModal,
-  TraeAuthModal,
-  RaycastAuthModal,
-  ProxyConfigModal,
-} from "@/shared/components";
+import { ConfirmModal, ProxyConfigModal } from "@/shared/components";
 import RiskNoticeModal from "../../components/RiskNoticeModal";
 import CodexCliGuideModal from "../../components/CodexCliGuideModal";
 import SiliconFlowEndpointModal from "./SiliconFlowEndpointModal";
@@ -18,23 +10,17 @@ import KimiCodeAuthMethodModal from "./KimiCodeAuthMethodModal";
 import AddApiKeyModal from "./modals/AddApiKeyModal";
 import EditConnectionModal from "./modals/EditConnectionModal";
 import EditCompatibleNodeModal from "./modals/EditCompatibleNodeModal";
-import ExternalLinkModal from "./ExternalLinkModal";
 import BatchTestResultsModal from "./BatchTestResultsModal";
 import ImportProgressModal from "./ImportProgressModal";
 import { AdaptaTutorialModal } from "./AdaptaTutorialModal";
-import { ImportCodexAuthModal, ApplyCodexAuthModal } from "./modals/ImportCodexAuthModal";
-import { ImportClaudeAuthModal, ApplyClaudeAuthModal } from "./modals/ImportClaudeAuthModal";
-import ImportGrokCliAuthModal from "./modals/ImportGrokCliAuthModal";
 import { type ConnectionRowConnection } from "./ConnectionRow";
 import { type BatchTestResults } from "../hooks/useProviderConnections";
 import { type ConnectionDeleteConfirmState } from "../hooks/useConnectionDeleteConfirm";
 import { type ImportProgress } from "../hooks/useModelImportHandlers";
 import { providerText, type ProviderMessageTranslator } from "../providerPageHelpers";
-import { resolveProviderOAuthBackendId } from "../../providerPageUtils";
 
 interface ProviderInfo {
   name: string;
-  oauthProviderId?: string;
   riskNoticeVariant?: string;
   website?: string;
   [key: string]: unknown;
@@ -63,11 +49,6 @@ interface ProviderModalsPanelProps {
   // Provider-specific auth method selection
   showKimiAuthMethodModal: boolean;
   setShowKimiAuthMethodModal: (open: boolean) => void;
-  // OAuth
-  showOAuthModal: boolean;
-  reauthConnection: ConnectionRowConnection | null;
-  handleOAuthSuccess: () => void;
-  setShowOAuthModal: (show: boolean) => void;
   // SiliconFlow
   showSiliconFlowEndpointModal: boolean;
   setSiliconFlowInitialBaseUrl: (url: string | undefined) => void;
@@ -88,22 +69,6 @@ interface ProviderModalsPanelProps {
   batchDeleting: boolean;
   // Single-connection delete confirm
   deleteConfirm: ConnectionDeleteConfirmState;
-  // Codex auth
-  applyCodexModalConnectionId: string | null;
-  setApplyCodexModalConnectionId: (id: string | null) => void;
-  applyingCodexAuthId: string | null;
-  handleApplyCodexAuthLocal: (id: string) => Promise<void>;
-  importCodexModalOpen: boolean;
-  setImportCodexModalOpen: (open: boolean) => void;
-  fetchConnections: () => Promise<void>;
-  // External link
-  externalLinkModalOpen: boolean;
-  setExternalLinkModalOpen: (open: boolean) => void;
-  externalLinkLoading: boolean;
-  externalLinkError: string | null;
-  externalLinkUrl: string | null;
-  externalLinkCopied: boolean;
-  externalLinkCopy: () => void;
   // Edit connection
   showEditModal: boolean;
   setShowEditModal: (open: boolean) => void;
@@ -121,16 +86,6 @@ interface ProviderModalsPanelProps {
   // Codex CLI guide
   codexCliGuideOpen: boolean;
   setCodexCliGuideOpen: (open: boolean) => void;
-  // Claude auth
-  applyClaudeModalConnectionId: string | null;
-  setApplyClaudeModalConnectionId: (id: string | null) => void;
-  applyingClaudeAuthId: string | null;
-  handleApplyClaudeAuthLocal: (id: string) => Promise<void>;
-  importClaudeModalOpen: boolean;
-  setImportClaudeModalOpen: (open: boolean) => void;
-  // Grok Build auth
-  importGrokCliModalOpen: boolean;
-  setImportGrokCliModalOpen: (open: boolean) => void;
   // Batch test results
   batchTestResults: BatchTestResults | null;
   setBatchTestResults: (r: BatchTestResults | null) => void;
@@ -163,10 +118,6 @@ export default function ProviderModalsPanel({
   handleCancelRiskNotice,
   showKimiAuthMethodModal,
   setShowKimiAuthMethodModal,
-  showOAuthModal,
-  reauthConnection,
-  handleOAuthSuccess,
-  setShowOAuthModal,
   showSiliconFlowEndpointModal,
   setSiliconFlowInitialBaseUrl,
   setShowSiliconFlowEndpointModal,
@@ -184,20 +135,6 @@ export default function ProviderModalsPanel({
   selectedIds,
   batchDeleting,
   deleteConfirm,
-  applyCodexModalConnectionId,
-  setApplyCodexModalConnectionId,
-  applyingCodexAuthId,
-  handleApplyCodexAuthLocal,
-  importCodexModalOpen,
-  setImportCodexModalOpen,
-  fetchConnections,
-  externalLinkModalOpen,
-  setExternalLinkModalOpen,
-  externalLinkLoading,
-  externalLinkError,
-  externalLinkUrl,
-  externalLinkCopied,
-  externalLinkCopy,
   showEditModal,
   setShowEditModal,
   selectedConnection,
@@ -209,14 +146,6 @@ export default function ProviderModalsPanel({
   handleUpdateNode,
   codexCliGuideOpen,
   setCodexCliGuideOpen,
-  applyClaudeModalConnectionId,
-  setApplyClaudeModalConnectionId,
-  applyingClaudeAuthId,
-  handleApplyClaudeAuthLocal,
-  importClaudeModalOpen,
-  setImportClaudeModalOpen,
-  importGrokCliModalOpen,
-  setImportGrokCliModalOpen,
   batchTestResults,
   setBatchTestResults,
   emailsVisible,
@@ -230,13 +159,13 @@ export default function ProviderModalsPanel({
   setShowTutorialModal,
   t,
 }: ProviderModalsPanelProps) {
-  const oauthProviderId = resolveProviderOAuthBackendId(providerId, providerInfo);
-
   return (
     <>
       {showRiskNoticeModal && subscriptionRisk && (
         <RiskNoticeModal
-          variant={(providerInfo.riskNoticeVariant as string) ?? "oauth"}
+          variant={
+            (providerInfo.riskNoticeVariant ?? "deprecated") as "deprecated" | "embedded-service"
+          }
           providerId={providerId}
           providerName={providerInfo.name}
           onConfirm={handleConfirmRiskNotice}
@@ -246,10 +175,6 @@ export default function ProviderModalsPanel({
       {providerId === "kimi-coding" && (
         <KimiCodeAuthMethodModal
           isOpen={showKimiAuthMethodModal}
-          onSelectOAuth={() => {
-            setShowKimiAuthMethodModal(false);
-            setShowOAuthModal(true);
-          }}
           onSelectApiKey={() => {
             setShowKimiAuthMethodModal(false);
             setShowAddApiKeyModal(true);
@@ -258,46 +183,6 @@ export default function ProviderModalsPanel({
           t={t}
         />
       )}
-      {!isUpstreamProxyProvider &&
-        (providerId === "kiro" || providerId === "amazon-q" ? (
-          <KiroOAuthWrapper
-            isOpen={showOAuthModal}
-            reauthConnection={reauthConnection}
-            providerInfo={{ ...providerInfo, id: providerId }}
-            onSuccess={handleOAuthSuccess}
-            onClose={() => setShowOAuthModal(false)}
-          />
-        ) : providerId === "cursor" ? (
-          <CursorAuthModal
-            isOpen={showOAuthModal}
-            reauthConnection={reauthConnection}
-            onSuccess={handleOAuthSuccess}
-            onClose={() => setShowOAuthModal(false)}
-          />
-        ) : providerId === "trae" ? (
-          <TraeAuthModal
-            isOpen={showOAuthModal}
-            reauthConnection={reauthConnection}
-            onSuccess={handleOAuthSuccess}
-            onClose={() => setShowOAuthModal(false)}
-          />
-        ) : providerId === "raycast" ? (
-          <RaycastAuthModal
-            isOpen={showOAuthModal}
-            reauthConnection={reauthConnection}
-            onSuccess={handleOAuthSuccess}
-            onClose={() => setShowOAuthModal(false)}
-          />
-        ) : (
-          <OAuthModal
-            isOpen={showOAuthModal}
-            reauthConnection={reauthConnection}
-            provider={oauthProviderId}
-            providerInfo={providerInfo}
-            onSuccess={handleOAuthSuccess}
-            onClose={() => setShowOAuthModal(false)}
-          />
-        ))}
       {providerId === "siliconflow" && (
         <SiliconFlowEndpointModal
           isOpen={showSiliconFlowEndpointModal}
@@ -355,15 +240,6 @@ export default function ProviderModalsPanel({
         cancelText={providerText(t, "cancel", "Cancel")}
         loading={deleteConfirm.deleting}
       />
-      {providerId === "codex" && applyCodexModalConnectionId && (
-        <ApplyCodexAuthModal
-          key={applyCodexModalConnectionId}
-          connectionId={applyCodexModalConnectionId}
-          inProgress={!!applyingCodexAuthId}
-          onConfirm={handleApplyCodexAuthLocal}
-          onClose={() => setApplyCodexModalConnectionId(null)}
-        />
-      )}
       {!isUpstreamProxyProvider && (
         <EditConnectionModal
           isOpen={showEditModal}
@@ -386,56 +262,6 @@ export default function ProviderModalsPanel({
         />
       )}
       <CodexCliGuideModal isOpen={codexCliGuideOpen} onClose={() => setCodexCliGuideOpen(false)} />
-      {providerId === "codex" && importCodexModalOpen && (
-        <ImportCodexAuthModal
-          key="import-codex-modal"
-          onClose={() => setImportCodexModalOpen(false)}
-          onSuccess={() => {
-            setImportCodexModalOpen(false);
-            void fetchConnections();
-          }}
-        />
-      )}
-      {providerId === "codex" && externalLinkModalOpen && (
-        <ExternalLinkModal
-          isOpen={externalLinkModalOpen}
-          onClose={() => setExternalLinkModalOpen(false)}
-          loading={externalLinkLoading}
-          error={externalLinkError}
-          url={externalLinkUrl}
-          copied={externalLinkCopied}
-          onCopy={externalLinkCopy}
-        />
-      )}
-      {providerId === "claude" && applyClaudeModalConnectionId && (
-        <ApplyClaudeAuthModal
-          key={applyClaudeModalConnectionId}
-          connectionId={applyClaudeModalConnectionId}
-          inProgress={!!applyingClaudeAuthId}
-          onConfirm={handleApplyClaudeAuthLocal}
-          onClose={() => setApplyClaudeModalConnectionId(null)}
-        />
-      )}
-      {providerId === "claude" && importClaudeModalOpen && (
-        <ImportClaudeAuthModal
-          key="import-claude-modal"
-          onClose={() => setImportClaudeModalOpen(false)}
-          onSuccess={() => {
-            setImportClaudeModalOpen(false);
-            void fetchConnections();
-          }}
-        />
-      )}
-      {providerId === "grok-cli" && importGrokCliModalOpen && (
-        <ImportGrokCliAuthModal
-          key="import-grok-cli-modal"
-          onClose={() => setImportGrokCliModalOpen(false)}
-          onSuccess={() => {
-            setImportGrokCliModalOpen(false);
-            void fetchConnections();
-          }}
-        />
-      )}
       <BatchTestResultsModal
         batchTestResults={batchTestResults}
         providerInfo={providerInfo}

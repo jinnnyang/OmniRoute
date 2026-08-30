@@ -26,7 +26,7 @@ import {
   parseGitLabDirectAccessDetails,
   resolveGitLabOAuthBaseUrl,
   type GitLabDirectAccessDetails,
-} from "@/lib/oauth/gitlab";
+} from "../utils/gitlabEndpoints.ts";
 
 type OpenAIToolCall = {
   id?: string;

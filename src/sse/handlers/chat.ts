@@ -107,7 +107,6 @@ import {
 } from "./chatPredicates";
 import { markAntigravityMissingCloudCodeProject } from "@omniroute/open-sse/services/antigravityProjectPersistence.ts";
 import { connectionHasExtraKeys } from "@omniroute/open-sse/services/apiKeyRotator.ts";
-import { wrapResponseWithOAuthSessionRelease } from "@omniroute/open-sse/services/oauthSessionOccupancy.ts";
 import {
   extractReasoningIntent,
   type ExtractedReasoningIntent,
@@ -1130,9 +1129,7 @@ async function handleChatImplementation(
       perTargetAdmission: admissionContext.createPerTargetAdmissionHook(apiKeyInfo?.id, request),
     });
 
-    for (const credentials of comboPreselectedCredentials.values()) {
-      credentials.releaseOAuthSession?.();
-    }
+    // combo preselection credentials are released by their owning path
     comboPreselectedCredentials.clear();
 
     // ── Global Fallback Provider (#689) ────────────────────────────────────
@@ -1573,7 +1570,6 @@ async function handleSingleModelChat(
               model,
               {
                 sessionKey: occupancySessionKey,
-                reserveOAuthSession: true,
                 excludeConnectionIds: Array.from(excludedConnectionIds),
                 ...(runtimeOptions.allowRateLimitedConnection
                   ? { allowRateLimitedConnections: true }
@@ -1703,7 +1699,6 @@ async function handleSingleModelChat(
       }
 
       const accountId = credentials.connectionId.slice(0, 8);
-      const releaseOAuthSession = credentials.releaseOAuthSession ?? (() => {});
       // #10348: redact the account prefix by default. Gated on the narrow
       // AUTH_LOG_INCLUDE_ACCOUNT_ID flag (default off) rather than the broad
       // `debugMode` setting — `debugMode` is a general dashboard-visibility
@@ -1741,7 +1736,6 @@ async function handleSingleModelChat(
           requestRoutingTags: runtimeOptions.reasoningRequestTags,
         });
         if (connectionRouting.response) {
-          releaseOAuthSession();
           return connectionRouting.response;
         }
         requestBody = connectionRouting.body;
@@ -1772,7 +1766,6 @@ async function handleSingleModelChat(
       try {
         refreshedCredentials = await checkAndRefreshToken(provider, credentials);
       } catch (error) {
-        releaseOAuthSession();
         throw error;
       }
       const storeEnabled = isOpenAIResponsesStoreEnabled(
@@ -1808,7 +1801,6 @@ async function handleSingleModelChat(
       try {
         proxyInfo = await safeResolveProxy(credentials.connectionId, apiKeyInfo?.id, provider);
       } catch (error) {
-        releaseOAuthSession();
         throw error;
       }
       // #5217: sink for the proxy the executor pins internally (e.g. OpencodeExecutor
@@ -1857,7 +1849,6 @@ async function handleSingleModelChat(
           runtimeOptions
         );
       } catch (error) {
-        releaseOAuthSession();
         throw error;
       }
       if (telemetry) telemetry.endPhase();
@@ -1865,7 +1856,6 @@ async function handleSingleModelChat(
         return execution.localResourcePressureResult.response;
       }
       const { result, tlsFingerprintUsed } = execution;
-      if (!result.success) releaseOAuthSession();
 
       const proxyLatency = Date.now() - proxyStartTime;
       const providerAlias = PROVIDER_ID_TO_ALIAS[provider] || provider;
@@ -1900,10 +1890,6 @@ async function handleSingleModelChat(
         }
         if (telemetry) telemetry.startPhase("finalize");
         if (telemetry) telemetry.endPhase();
-        if (requestBody.stream === true) {
-          return wrapResponseWithOAuthSessionRelease(result.response, releaseOAuthSession);
-        }
-        releaseOAuthSession();
         return result.response;
       }
 
@@ -2258,7 +2244,6 @@ async function handleSingleModelChat(
         );
         const completed = await waitForCooldownAwareRetry(waitMs, requestSignal);
         if (!completed) {
-          releaseOAuthSession();
           return errorResponse(499, "Request aborted");
         }
         preselectedCredentials = credentials;

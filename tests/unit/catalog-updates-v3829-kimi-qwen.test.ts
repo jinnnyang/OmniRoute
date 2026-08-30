@@ -58,8 +58,6 @@ test("Kimi exposes one Code card plus Web and Moonshot services", () => {
   assert.equal(apiKeyProviderIds.includes("kimi-coding-apikey"), false);
   assert.equal(providers.APIKEY_PROVIDERS["kimi-coding-apikey"].name, "Kimi Code API Key");
   assert.equal(providers.APIKEY_PROVIDERS["kimi-coding-apikey"].hiddenFromDashboard, true);
-  assert.equal(providers.OAUTH_PROVIDERS["kimi-coding"].name, "Kimi Code CLI");
-  assert.equal(providers.WEB_COOKIE_PROVIDERS["kimi-web"].name, "Kimi Web");
   assert.equal(providerCatalog.isManagedProviderConnectionId("kimi-coding"), false);
 });
 

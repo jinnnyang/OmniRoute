@@ -38,15 +38,3 @@ test("#3493 env override takes priority over the embedded default", () => {
     else process.env.CLAUDE_OAUTH_CLIENT_ID = prev;
   }
 });
-
-test("#3493 the migrated OAuth/registry configs resolve to the expected client_ids", async () => {
-  const { CLAUDE_CONFIG, CODEX_CONFIG } = await import("../../src/lib/oauth/constants/oauth.ts");
-  // Only assert when env doesn't override (CI/dev may set these); skip the assert
-  // for any that are env-overridden so the test stays deterministic.
-  if (!process.env.CLAUDE_OAUTH_CLIENT_ID) {
-    assert.equal(CLAUDE_CONFIG.clientId, EXPECTED_CLIENT_IDS.claude_id);
-  }
-  if (!process.env.CODEX_OAUTH_CLIENT_ID) {
-    assert.equal(CODEX_CONFIG.clientId, EXPECTED_CLIENT_IDS.codex_id);
-  }
-});

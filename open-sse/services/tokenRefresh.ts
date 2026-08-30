@@ -39,10 +39,8 @@ import {
   getCircuitBreakerStatus,
   refreshWithRetry,
 } from "./tokenRefresh/circuitBreaker.ts";
-import { refreshCodebuddyCnToken } from "./tokenRefresh/providers/codebuddyCn.ts";
 import { refreshClineToken } from "./tokenRefresh/providers/cline.ts";
 import { refreshKimiCodingToken } from "./tokenRefresh/providers/kimiCoding.ts";
-import { refreshGitLabDuoToken } from "./tokenRefresh/providers/gitlabDuo.ts";
 import { refreshClaudeOAuthToken } from "./tokenRefresh/providers/claudeOAuth.ts";
 import { refreshGoogleToken } from "./tokenRefresh/providers/google.ts";
 import { ensureAntigravityProjectAssigned } from "./antigravityProjectBootstrap.ts";
@@ -59,7 +57,6 @@ export {
   refreshCodebuddyCnToken,
   refreshClineToken,
   refreshKimiCodingToken,
-  refreshGitLabDuoToken,
   refreshClaudeOAuthToken,
   refreshGoogleToken,
   refreshCodexToken,
@@ -109,7 +106,6 @@ export const REFRESH_LEAD_MS: Record<string, number> = {
   codex: 5 * 60 * 1000, // 5 minutes
   openai: 5 * 60 * 1000, // same Auth0 backend as codex
   claude: 5 * 60 * 1000, // Anthropic OAuth rotates refresh_tokens (user-reported)
-  "gitlab-duo": 5 * 60 * 1000, // GitLab token family revocation on misuse
   kiro: 5 * 60 * 1000, // AWS SSO OIDC issues one-time-use refresh tokens
   "kimi-coding": 5 * 60 * 1000, // Moonshot rotates per-refresh
   // Google OAuth refresh_tokens are permanent (non-rotating) — longer lead
@@ -420,17 +416,6 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
         proxyConfig
       );
 
-    case "gitlab-duo":
-      return await refreshGitLabDuoToken(
-        credentials.refreshToken,
-        credentials.providerSpecificData,
-        log,
-        proxyConfig
-      );
-
-    case "codebuddy-cn":
-      return await refreshCodebuddyCnToken(credentials.refreshToken, log, proxyConfig);
-
     default:
       // Fallback to generic OAuth refresh for unknown providers
       return refreshAccessToken(provider, credentials.refreshToken, credentials, log, proxyConfig);
@@ -459,8 +444,6 @@ export function supportsTokenRefresh(provider) {
     // (#8407). Neither connection carries a refresh token, so listing either
     // provider would make tokenHealthCheck force a healthy connection to
     // testStatus="expired" / errorCode="no_refresh_token".
-    "gitlab-duo",
-    "codebuddy-cn",
     "cursor",
   ]);
   if (explicitlySupported.has(provider)) return true;

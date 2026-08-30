@@ -39,7 +39,6 @@ const P = await import("../../src/shared/constants/providers.ts");
 test("barrel still exports every catalog + key helpers", () => {
   for (const name of [
     "NOAUTH_PROVIDERS",
-    "OAUTH_PROVIDERS",
     "APIKEY_PROVIDERS",
     "LOCAL_PROVIDERS",
     "SEARCH_PROVIDERS",
@@ -90,7 +89,7 @@ test("AI_PROVIDERS Proxy aggregates all sections; lookups resolve", () => {
   const ai = (P as Record<string, Record<string, unknown>>).AI_PROVIDERS;
   assert.ok(Object.keys(ai).length > 200);
   assert.ok((P as Record<string, (id: string) => unknown>).getProviderById("openai"));
-  assert.ok((P as Record<string, (id: string) => unknown>).getProviderById("claude"));
+  assert.ok((P as Record<string, (id: string) => unknown>).getProviderById("anthropic"));
   // a moved catalog is reachable through the barrel re-export
   assert.ok((P as Record<string, Record<string, unknown>>).APIKEY_PROVIDERS["openai"]);
 });
@@ -98,7 +97,6 @@ test("AI_PROVIDERS Proxy aggregates all sections; lookups resolve", () => {
 test("each extracted data module is importable on its own", async () => {
   const mods = [
     ["noauth", "NOAUTH_PROVIDERS"],
-    ["oauth", "OAUTH_PROVIDERS"],
     ["local", "LOCAL_PROVIDERS"],
     ["search", "SEARCH_PROVIDERS"],
     ["audio", "AUDIO_ONLY_PROVIDERS"],

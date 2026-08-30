@@ -6,7 +6,6 @@ import {
 import { getCachedProviderConnections } from "../../../src/lib/db/readCache";
 import { parseModel } from "../model.ts";
 import type { ResolvedComboTarget } from "./types.ts";
-import { getOAuthSessionAvailability } from "../oauthSessionOccupancy.ts";
 
 interface PromptCacheAffinityTarget {
   executionKey: string;
@@ -137,11 +136,10 @@ function normalizedRendezvousScore(key: string, identity: string): number {
 function combinedAffinityScore(
   key: string,
   target: PromptCacheAffinityTarget,
-  sessionKey?: string | null
+  _sessionKey?: string | null
 ): number {
   const cacheScore = normalizedRendezvousScore(key, promptCacheTargetIdentity(target));
-  const availability =
-    target.authType === "oauth" ? getOAuthSessionAvailability(target.connectionId, sessionKey) : 1;
+  const availability = 1;
   return cacheScore * 0.75 + availability * 0.25;
 }
 

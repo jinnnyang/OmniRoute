@@ -8,7 +8,6 @@ import { readCookieExpiresAt } from "@/shared/utils/webCookieExpiry";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Badge, Button, Toggle } from "@/shared/components";
-import { pickDisplayValue } from "@/shared/utils/maskEmail";
 import useEmailPrivacyStore from "@/store/emailPrivacyStore";
 import { isClaudeExtraUsageBlockEnabled } from "@/lib/providers/claudeExtraUsage";
 import { shouldShowConnectionLastError } from "./connectionRowHelpers";
@@ -56,7 +55,6 @@ export interface ConnectionRowConnection {
 
 export interface ConnectionRowProps {
   connection: ConnectionRowConnection;
-  isOAuth: boolean;
   isClaude?: boolean;
   isCodex?: boolean;
   codexGlobalServiceMode?: CodexGlobalServiceMode;
@@ -87,7 +85,6 @@ export interface ConnectionRowProps {
   isRetesting?: boolean;
   onEdit: () => void;
   onDelete: () => void;
-  onReauth?: () => void;
   onProxy?: () => void;
   hasProxy?: boolean;
   proxySource?: string;
@@ -97,15 +94,10 @@ export interface ConnectionRowProps {
   perKeyProxyEnabled?: boolean;
   onToggleProxyEnabled?: (enabled: boolean) => void;
   onTogglePerKeyProxyEnabled?: (enabled: boolean) => void;
-  onRefreshToken?: () => void;
   isRefreshing?: boolean;
-  onApplyCodexAuthLocal?: () => void;
   isApplyingCodexAuthLocal?: boolean;
-  onExportCodexAuthFile?: () => void;
   isExportingCodexAuthFile?: boolean;
-  onApplyClaudeAuthLocal?: () => void;
   isApplyingClaudeAuthLocal?: boolean;
-  onExportClaudeAuthFile?: () => void;
   isExportingClaudeAuthFile?: boolean;
 }
 
@@ -347,12 +339,10 @@ function getStatusPresentation(
 
 export default function ConnectionRow({
   connection,
-  isOAuth,
   isClaude,
   isCodex,
   codexGlobalServiceMode,
   isCcCompatible,
-  cliproxyapiEnabled,
   upstreamProxyMode,
   upstreamProxyFallbackBackend,
   onSetUpstreamProxyMode,
@@ -369,27 +359,15 @@ export default function ConnectionRow({
   onToggleAutoSync,
   onToggleCodex5h,
   onToggleCodexWeekly,
-  onToggleCliproxyapiMode,
   onRetest,
   isRetesting,
   onEdit,
   onDelete,
-  onReauth,
   onProxy,
   hasProxy,
   proxySource,
   proxyHost,
   proxyName,
-  onRefreshToken,
-  isRefreshing,
-  onApplyCodexAuthLocal,
-  isApplyingCodexAuthLocal,
-  onExportCodexAuthFile,
-  isExportingCodexAuthFile,
-  onApplyClaudeAuthLocal,
-  isApplyingClaudeAuthLocal,
-  onExportClaudeAuthFile,
-  isExportingClaudeAuthFile,
   perKeyProxyEnabled,
   onTogglePerKeyProxyEnabled,
   proxyEnabled,
@@ -397,28 +375,16 @@ export default function ConnectionRow({
 }: ConnectionRowProps) {
   const t = useTranslations("providers");
   const emailsVisible = useEmailPrivacyStore((s) => s.emailsVisible);
-  const displayName = isOAuth
-    ? pickDisplayValue(
-        [connection.name, connection.email, connection.displayName],
-        emailsVisible,
-        t("oauthAccount")
-      )
-    : connection.name;
-  const applyCodexAuthLabel = providerText(t, "applyCodexAuthLocal", "Apply auth");
-  const exportCodexAuthLabel = providerText(t, "exportCodexAuthFile", "Export auth");
-  const applyClaudeAuthLabel = providerText(t, "applyClaudeAuthLocal", "Apply auth");
-  const exportClaudeAuthLabel = providerText(t, "exportClaudeAuthFile", "Export auth");
+  const displayName = connection.name;
   // Use useState + useEffect for impure Date.now() to avoid calling during render
   const [isCooldown, setIsCooldown] = useState(false);
   // T12: token expiry status — lazy init avoids calling Date.now() during render;
   // updates every 30s via interval only (no sync setState in effect body).
   // Prefer tokenExpiresAt (updated on each refresh) over expiresAt (original grant date).
-  // #11497: cookie rows with a decodable JWT credential carry a persisted
   // cookieExpiresAt — feed it into the same countdown badge OAuth rows use.
   const cookieExpiresAt = readCookieExpiresAt(connection.providerSpecificData);
-  const effectiveExpiresAt =
-    connection.tokenExpiresAt || connection.expiresAt || cookieExpiresAt;
-  const hasExpirySource = isOAuth || Boolean(cookieExpiresAt);
+  const effectiveExpiresAt = connection.tokenExpiresAt || connection.expiresAt || cookieExpiresAt;
+  const hasExpirySource = Boolean(cookieExpiresAt);
   const getTokenMinsLeft = () => {
     if (!hasExpirySource || !effectiveExpiresAt) return null;
     const expiresMs = new Date(effectiveExpiresAt).getTime();
@@ -557,9 +523,7 @@ export default function ConnectionRow({
             <span className="material-symbols-outlined text-sm">keyboard_arrow_down</span>
           </button>
         </div>
-        <span className="material-symbols-outlined text-base text-text-muted">
-          {isOAuth ? "lock" : "key"}
-        </span>
+        <span className="material-symbols-outlined text-base text-text-muted">{"key"}</span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{displayName}</p>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -862,77 +826,6 @@ export default function ConnectionRow({
         >
           {t("retest")}
         </Button>
-        {/* T12: Manual token refresh for OAuth accounts */}
-        {onRefreshToken && (
-          <Button
-            size="sm"
-            variant="ghost"
-            icon="token"
-            loading={isRefreshing}
-            disabled={connection.isActive === false || isRefreshing}
-            onClick={onRefreshToken}
-            className="!h-7 !px-2 text-xs text-amber-500 hover:text-amber-400"
-            title={t("refreshOauthTokenTitle")}
-          >
-            {t("tokenShort")}
-          </Button>
-        )}
-        {isCodex && onApplyCodexAuthLocal && (
-          <Button
-            size="sm"
-            variant="ghost"
-            icon="download_done"
-            loading={isApplyingCodexAuthLocal}
-            disabled={isApplyingCodexAuthLocal}
-            onClick={onApplyCodexAuthLocal}
-            className="!h-7 !px-2 text-xs text-emerald-500 hover:text-emerald-400"
-            title={applyCodexAuthLabel}
-          >
-            {applyCodexAuthLabel}
-          </Button>
-        )}
-        {isCodex && onExportCodexAuthFile && (
-          <Button
-            size="sm"
-            variant="ghost"
-            icon="download"
-            loading={isExportingCodexAuthFile}
-            disabled={isExportingCodexAuthFile}
-            onClick={onExportCodexAuthFile}
-            className="!h-7 !px-2 text-xs text-sky-500 hover:text-sky-400"
-            title={exportCodexAuthLabel}
-          >
-            {exportCodexAuthLabel}
-          </Button>
-        )}
-        {isClaude && onApplyClaudeAuthLocal && (
-          <Button
-            size="sm"
-            variant="ghost"
-            icon="install_desktop"
-            loading={isApplyingClaudeAuthLocal}
-            disabled={isApplyingClaudeAuthLocal}
-            onClick={onApplyClaudeAuthLocal}
-            className="!h-7 !px-2 text-xs text-emerald-500 hover:text-emerald-400"
-            title={applyClaudeAuthLabel}
-          >
-            {applyClaudeAuthLabel}
-          </Button>
-        )}
-        {isClaude && onExportClaudeAuthFile && (
-          <Button
-            size="sm"
-            variant="ghost"
-            icon="download"
-            loading={isExportingClaudeAuthFile}
-            disabled={isExportingClaudeAuthFile}
-            onClick={onExportClaudeAuthFile}
-            className="!h-7 !px-2 text-xs text-sky-500 hover:text-sky-400"
-            title={exportClaudeAuthLabel}
-          >
-            {exportClaudeAuthLabel}
-          </Button>
-        )}
         <Toggle
           size="sm"
           checked={connection.isActive ?? true}
@@ -940,15 +833,6 @@ export default function ConnectionRow({
           title={(connection.isActive ?? true) ? t("disableConnection") : t("enableConnection")}
         />
         <div className="flex gap-1 ms-1 transition-opacity">
-          {onReauth && (
-            <button
-              onClick={onReauth}
-              className="p-2 hover:bg-amber-500/10 rounded text-amber-600 hover:text-amber-500"
-              title={t("reauthenticateConnection")}
-            >
-              <span className="material-symbols-outlined text-[18px]">passkey</span>
-            </button>
-          )}
           <button
             onClick={onEdit}
             className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded text-text-muted hover:text-primary"

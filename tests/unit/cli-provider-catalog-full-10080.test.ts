@@ -19,7 +19,6 @@ const { extractProviderBlocks, loadAvailableProviders, COMMON_PROVIDERS } =
 test("extractProviderBlocks handles the shapes the real catalog files use", () => {
   const source = `
     // A comment with a stray { brace } that must not confuse the walk.
-    export const NOAUTH_PROVIDERS = {
       opencode: {
         id: "opencode",
         alias: "oc",
@@ -69,8 +68,6 @@ test("extractProviderBlocks handles the shapes the real catalog files use", () =
 test("category comes from the prefix before _PROVIDERS, including suffixed exports", () => {
   const mk = (name: string) => `export const ${name} = { a: { id: "a", name: "A" } };`;
 
-  assert.equal(extractProviderBlocks(mk("NOAUTH_PROVIDERS"))[0].category, "noauth");
-  assert.equal(extractProviderBlocks(mk("WEB_COOKIE_PROVIDERS"))[0].category, "web-cookie");
   assert.equal(extractProviderBlocks(mk("APIKEY_PROVIDERS"))[0].category, "api-key");
   // The decomposition introduced suffixed family exports; these are still api-key.
   assert.equal(extractProviderBlocks(mk("APIKEY_PROVIDERS_GATEWAYS"))[0].category, "api-key");

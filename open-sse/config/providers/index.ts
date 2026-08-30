@@ -153,7 +153,6 @@ import { felo_webProvider } from "./registry/felo-web/index.ts";
 import { xaiProvider, xai_oauthProvider } from "./registry/xai/index.ts";
 import { morphProvider } from "./registry/morph/index.ts";
 import { siliconflowProvider } from "./registry/siliconflow/index.ts";
-import { gitlab_duoProvider } from "./registry/gitlab-duo/index.ts";
 import { command_codeProvider } from "./registry/command-code/index.ts";
 import { novitaProvider } from "./registry/novita/index.ts";
 import { regoloProvider } from "./registry/regolo/index.ts";
@@ -221,7 +220,6 @@ import { ditProvider } from "./registry/dit/index.ts";
 import { tokenrouterProvider } from "./registry/tokenrouter/index.ts";
 import { token_kioskProvider } from "./registry/token-kiosk/index.ts";
 import { grok_cliProvider } from "./registry/grok-cli/index.ts";
-import { codebuddy_cnProvider } from "./registry/codebuddy-cn/index.ts";
 import { pioneerProvider } from "./registry/pioneer/index.ts";
 import { zenmux_freeProvider } from "./registry/zenmux-free/index.ts";
 import { tinycmsProvider } from "./registry/tinycms/index.ts";
@@ -424,7 +422,6 @@ export const REGISTRY: Record<string, RegistryEntry> = {
   "xai-oauth": xai_oauthProvider,
   morph: morphProvider,
   siliconflow: siliconflowProvider,
-  "gitlab-duo": gitlab_duoProvider,
   "command-code": command_codeProvider,
   novita: novitaProvider,
   regolo: regoloProvider,
@@ -494,7 +491,6 @@ export const REGISTRY: Record<string, RegistryEntry> = {
   tokenrouter: tokenrouterProvider,
   "token-kiosk": token_kioskProvider,
   "grok-cli": grok_cliProvider,
-  "codebuddy-cn": codebuddy_cnProvider,
   pioneer: pioneerProvider,
   "zenmux-free": zenmux_freeProvider,
   "tinycms-web": tinycmsProvider,

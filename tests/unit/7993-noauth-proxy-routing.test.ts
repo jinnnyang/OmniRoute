@@ -1,6 +1,5 @@
 /**
  * #7993 — "OpenCode Free" is served by TWO distinct provider identities that
- * are never unified: the no-auth "opencode" provider (NOAUTH_PROVIDERS —
  * the id the NoAuthAccountCard UI writes fingerprints + accountProxies onto
  * via a `provider_connections` row) and the "opencode-zen" APIKEY_PROVIDERS
  * gateway (anonymousFallback: true, resolved from the canonical

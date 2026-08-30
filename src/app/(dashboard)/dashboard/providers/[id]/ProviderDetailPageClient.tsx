@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Card, Button, CardSkeleton } from "@/shared/components";
+import { Card, CardSkeleton } from "@/shared/components";
 import {
   NOAUTH_PROVIDERS,
   getProviderAlias,
@@ -30,20 +30,13 @@ import { normalizeModelCatalogSource } from "@/shared/utils/modelCatalogSearch";
 import { useCopyToClipboard } from "@/shared/hooks/useCopyToClipboard";
 import useEmailPrivacyStore from "@/store/emailPrivacyStore";
 import { useNotificationStore } from "@/store/notificationStore";
-import {
-  resolveDashboardProviderInfo,
-  resolveProviderHeaderLink,
-  resolveProviderOAuthBackendId,
-} from "../providerPageUtils";
+import { resolveDashboardProviderInfo, resolveProviderHeaderLink } from "../providerPageUtils";
 import { findDefaultReferral } from "@/lib/radar/referrals";
-import { type ConnectionRowConnection } from "./components/ConnectionRow";
 import { useProviderConnections } from "./hooks/useProviderConnections";
 import { useProviderSettings } from "./hooks/useProviderSettings";
 import { useProviderModels } from "./hooks/useProviderModels";
 import { useCommandCodeAuth } from "./hooks/useCommandCodeAuth";
 import { useConnectionAutoSync } from "./hooks/useConnectionAutoSync";
-import { useExternalLinkFlow } from "./hooks/useExternalLinkFlow";
-import { useAuthFileHandlers } from "./hooks/useAuthFileHandlers";
 import { useModelImportHandlers } from "./hooks/useModelImportHandlers";
 import { useApiKeySave } from "./hooks/useApiKeySave";
 import { useModelVisibilityHandlers } from "./hooks/useModelVisibilityHandlers";
@@ -59,7 +52,6 @@ import ConnectionsHeaderToolbar from "./components/ConnectionsHeaderToolbar";
 import VolcengineConnectModal from "./components/VolcengineConnectModal";
 import ProviderAccountRoutingCard from "../../settings/components/ProviderAccountRoutingCard";
 import ZedImportCard from "./components/ZedImportCard";
-import CursorAgentNudge from "./components/CursorAgentNudge";
 import ProviderPageHeader from "./components/ProviderPageHeader";
 import CompatibleNodeCard from "./components/CompatibleNodeCard";
 import ProviderModalsPanel from "./components/ProviderModalsPanel";
@@ -76,8 +68,6 @@ export default function ProviderDetailPageClient() {
   const providerId = params.id as string;
 
   // ── UI-only modal state (not owned by hooks) ─────────────────────────────
-  const [showOAuthModal, _setShowOAuthModal] = useState(false);
-  const [reauthConnection, setReauthConnection] = useState<ConnectionRowConnection | null>(null);
   const [showKimiAuthMethodModal, setShowKimiAuthMethodModal] = useState(false);
   const [showVolcengineConnectModal, setShowVolcengineConnectModal] = useState(false);
   const [showAddApiKeyModal, setShowAddApiKeyModal] = useState(false);
@@ -88,12 +78,8 @@ export default function ProviderDetailPageClient() {
   const [showTutorialModal, setShowTutorialModal] = useState(false);
   const [selectedConnection, setSelectedConnection] = useState(null);
   const [proxyTarget, setProxyTarget] = useState(null);
-  const [importCodexModalOpen, setImportCodexModalOpen] = useState(false);
   const [codexCliGuideOpen, setCodexCliGuideOpen] = useState(false);
-  const [importClaudeModalOpen, setImportClaudeModalOpen] = useState(false);
   const [importGeminiModalOpen, setImportGeminiModalOpen] = useState(false);
-  const [importGrokCliModalOpen, setImportGrokCliModalOpen] = useState(false);
-  const [connectingVolcengineAccount, setConnectingVolcengineAccount] = useState(false);
   const isOpenAICompatible = isOpenAICompatibleProvider(providerId);
   const isCcCompatible = isClaudeCodeCompatibleProvider(providerId);
   const isCommandCode = providerId === "command-code";
@@ -165,8 +151,6 @@ export default function ProviderDetailPageClient() {
     handleToggleSelectOne,
     handleToggleSelectAll,
     handleDistributeProxies,
-    parseApiErrorMessage,
-    getAttachmentFilename,
     PAGE_SIZE,
   } = useProviderConnections(providerId, isCompatible, isSearchProvider);
 
@@ -201,23 +185,6 @@ export default function ProviderDetailPageClient() {
   const t = useTranslations("providers");
   const emailsVisible = useEmailPrivacyStore((s) => s.emailsVisible);
   const notify = useNotificationStore();
-
-  // Phase 1i: external link flow — placed after notify/fetchConnections are defined
-  const {
-    externalLinkModalOpen,
-    setExternalLinkModalOpen,
-    externalLinkUrl,
-    externalLinkLoading,
-    externalLinkError,
-    externalLinkCopied,
-    externalLinkCopy,
-    openExternalLinkFlow,
-  } = useExternalLinkFlow({ providerId, notify, fetchConnections });
-
-  const setShowOAuthModal = (show: boolean, connectionRow?: ConnectionRowConnection) => {
-    _setShowOAuthModal(show);
-    setReauthConnection(show && connectionRow ? connectionRow : null);
-  };
 
   const providerInfo = resolveDashboardProviderInfo(providerId, {
     providerNode,
@@ -260,11 +227,6 @@ export default function ProviderDetailPageClient() {
     providerInfo?.website,
     referralUrl
   );
-  const oauthProviderId = resolveProviderOAuthBackendId(providerId, providerInfo);
-  const providerSupportsOAuth =
-    providerInfo?.toggleAuthType === "oauth" ||
-    providerInfo?.toggleAuthType === "free" ||
-    oauthProviderId !== providerId;
   const subscriptionRisk = providerInfo?.subscriptionRisk === true;
 
   // ── Phase 1t.3: connection gate + risk-notice modal state ───────────────
@@ -276,7 +238,6 @@ export default function ProviderDetailPageClient() {
   } = useConnectionGate({ providerId, subscriptionRisk });
 
   const providerSupportsPat = supportsApiKeyOnFreeProvider(providerId);
-  const isOAuth = providerSupportsOAuth && !providerSupportsPat;
   const providerAlias = getProviderAlias(providerId);
   const isFreeNoAuth =
     NOAUTH_PROVIDERS[providerId]?.noAuth === true ||
@@ -356,11 +317,6 @@ export default function ProviderDetailPageClient() {
     fetchAliases();
   }, [loading, isSearchProvider, fetchProviderModelMeta, fetchAliases]);
 
-  const handleOAuthSuccess = useCallback(() => {
-    fetchConnections();
-    setShowOAuthModal(false);
-  }, [fetchConnections]);
-
   const openApiKeyAddFlow = useCallback(() => {
     if (providerId === "siliconflow") {
       setShowSiliconFlowEndpointModal(true);
@@ -375,12 +331,8 @@ export default function ProviderDetailPageClient() {
 
   const openPrimaryAddFlow = useCallback(() => {
     if (providerId === "kimi-coding") return setShowKimiAuthMethodModal(true);
-    if (isOAuth) {
-      setShowOAuthModal(true);
-      return;
-    }
     openApiKeyAddFlow();
-  }, [providerId, isOAuth, openApiKeyAddFlow]);
+  }, [providerId, openApiKeyAddFlow]);
 
   // Legacy manual flow: headful browser login on the machine running OmniRoute.
   // Kept as the fallback for the phone/SMS auto-login modal.
@@ -455,22 +407,6 @@ export default function ProviderDetailPageClient() {
     setShowEditModal,
     t,
   });
-
-  // Phase 1j: auth file handlers
-  const {
-    applyingCodexAuthId,
-    applyCodexModalConnectionId,
-    setApplyCodexModalConnectionId,
-    exportingCodexAuthId,
-    handleApplyCodexAuthLocal,
-    handleExportCodexAuthFile,
-    applyingClaudeAuthId,
-    applyClaudeModalConnectionId,
-    setApplyClaudeModalConnectionId,
-    exportingClaudeAuthId,
-    handleApplyClaudeAuthLocal,
-    handleExportClaudeAuthFile,
-  } = useAuthFileHandlers({ parseApiErrorMessage, getAttachmentFilename, notify, t });
 
   // Phase 1e: compat-state derivations
   const compat = useModelCompatState(modelMeta.customModels, modelMeta.modelCompatOverrides);
@@ -558,7 +494,6 @@ export default function ProviderDetailPageClient() {
       {providerId === "zed" && (
         <ZedImportCard fetchConnections={fetchConnections} notify={notify} />
       )}
-      {providerId === "cursor" && <CursorAgentNudge />}
       {isCompatible && providerNode && (
         <CompatibleNodeCard
           providerId={providerId}
@@ -603,7 +538,6 @@ export default function ProviderDetailPageClient() {
             providerInfo={providerInfo}
             isCompatible={isCompatible}
             isCommandCode={isCommandCode}
-            isOAuth={isOAuth}
             providerSupportsPat={providerSupportsPat}
             connections={connections}
             batchTesting={batchTesting}
@@ -634,21 +568,14 @@ export default function ProviderDetailPageClient() {
             openPrimaryAddFlow={openPrimaryAddFlow}
             connectVolcengineAccount={connectVolcengineAccount}
             connectingVolcengineAccount={connectingVolcengineAccount}
-            openExternalLinkFlow={openExternalLinkFlow}
             handleOpenCommandCodeConnect={handleOpenCommandCodeConnect}
             commandCodeAuthState={commandCodeAuthState}
-            onOpenOAuthModal={() => setShowOAuthModal(true)}
             onOpenCodexCliGuide={() => setCodexCliGuideOpen(true)}
-            onOpenImportCodex={() => setImportCodexModalOpen(true)}
-            onOpenImportClaude={() => setImportClaudeModalOpen(true)}
-            onOpenImportGemini={() => setImportGeminiModalOpen(true)}
-            onOpenImportGrokCli={() => setImportGrokCliModalOpen(true)}
             t={t}
           />
 
           {connections.length === 0 ? (
             <EmptyConnectionsPlaceholder
-              isOAuth={isOAuth}
               isCompatible={isCompatible}
               isCommandCode={isCommandCode}
               providerId={providerId}
@@ -658,11 +585,6 @@ export default function ProviderDetailPageClient() {
               openApiKeyAddFlow={openApiKeyAddFlow}
               openPrimaryAddFlow={openPrimaryAddFlow}
               handleOpenCommandCodeConnect={handleOpenCommandCodeConnect}
-              onOpenOAuthModal={() => setShowOAuthModal(true)}
-              onOpenImportCodex={() => setImportCodexModalOpen(true)}
-              onOpenImportClaude={() => setImportClaudeModalOpen(true)}
-              onOpenImportGemini={() => setImportGeminiModalOpen(true)}
-              onOpenImportGrokCli={() => setImportGrokCliModalOpen(true)}
               t={t}
             />
           ) : (
@@ -672,7 +594,6 @@ export default function ProviderDetailPageClient() {
                 connections={connections}
                 providerId={providerId}
                 isCcCompatible={isCcCompatible}
-                isOAuth={isOAuth}
                 codexGlobalServiceMode={codexGlobalServiceMode}
                 selectedIds={selectedIds}
                 batchUpdating={batchUpdating}
@@ -687,11 +608,6 @@ export default function ProviderDetailPageClient() {
                 accountSearch={accountSearch}
                 PAGE_SIZE={PAGE_SIZE}
                 connProxyMap={connProxyMap}
-                proxyConfig={proxyConfig}
-                applyingCodexAuthId={applyingCodexAuthId}
-                exportingCodexAuthId={exportingCodexAuthId}
-                applyingClaudeAuthId={applyingClaudeAuthId}
-                exportingClaudeAuthId={exportingClaudeAuthId}
                 emailsVisible={emailsVisible}
                 setSelectedIds={setSelectedIds}
                 setPage={setPage}
@@ -725,12 +641,7 @@ export default function ProviderDetailPageClient() {
                   setSelectedConnection(conn);
                   setShowEditModal(true);
                 }}
-                onOpenOAuth={(conn) => gateConnectionFlow(() => setShowOAuthModal(true, conn))}
                 onSetProxyTarget={setProxyTarget}
-                onOpenApplyCodexModal={setApplyCodexModalConnectionId}
-                onExportCodexAuthFile={handleExportCodexAuthFile}
-                onOpenApplyClaudeModal={setApplyClaudeModalConnectionId}
-                onExportClaudeAuthFile={handleExportClaudeAuthFile}
                 gateConnectionFlow={gateConnectionFlow}
                 t={t}
               />
@@ -840,10 +751,6 @@ export default function ProviderDetailPageClient() {
         handleCancelRiskNotice={handleCancelRiskNotice}
         showKimiAuthMethodModal={showKimiAuthMethodModal}
         setShowKimiAuthMethodModal={setShowKimiAuthMethodModal}
-        showOAuthModal={showOAuthModal}
-        reauthConnection={reauthConnection}
-        handleOAuthSuccess={handleOAuthSuccess}
-        setShowOAuthModal={setShowOAuthModal}
         showSiliconFlowEndpointModal={showSiliconFlowEndpointModal}
         setSiliconFlowInitialBaseUrl={setSiliconFlowInitialBaseUrl}
         setShowSiliconFlowEndpointModal={setShowSiliconFlowEndpointModal}
@@ -860,20 +767,6 @@ export default function ProviderDetailPageClient() {
         selectedIds={selectedIds}
         batchDeleting={batchDeleting}
         deleteConfirm={deleteConfirm}
-        applyCodexModalConnectionId={applyCodexModalConnectionId}
-        setApplyCodexModalConnectionId={setApplyCodexModalConnectionId}
-        applyingCodexAuthId={applyingCodexAuthId}
-        handleApplyCodexAuthLocal={handleApplyCodexAuthLocal}
-        importCodexModalOpen={importCodexModalOpen}
-        setImportCodexModalOpen={setImportCodexModalOpen}
-        fetchConnections={fetchConnections}
-        externalLinkModalOpen={externalLinkModalOpen}
-        setExternalLinkModalOpen={setExternalLinkModalOpen}
-        externalLinkLoading={externalLinkLoading}
-        externalLinkError={externalLinkError}
-        externalLinkUrl={externalLinkUrl}
-        externalLinkCopied={externalLinkCopied}
-        externalLinkCopy={externalLinkCopy}
         showEditModal={showEditModal}
         setShowEditModal={setShowEditModal}
         selectedConnection={selectedConnection}
@@ -885,14 +778,6 @@ export default function ProviderDetailPageClient() {
         handleUpdateNode={handleUpdateNode}
         codexCliGuideOpen={codexCliGuideOpen}
         setCodexCliGuideOpen={setCodexCliGuideOpen}
-        applyClaudeModalConnectionId={applyClaudeModalConnectionId}
-        setApplyClaudeModalConnectionId={setApplyClaudeModalConnectionId}
-        applyingClaudeAuthId={applyingClaudeAuthId}
-        handleApplyClaudeAuthLocal={handleApplyClaudeAuthLocal}
-        importClaudeModalOpen={importClaudeModalOpen}
-        setImportClaudeModalOpen={setImportClaudeModalOpen}
-        importGrokCliModalOpen={importGrokCliModalOpen}
-        setImportGrokCliModalOpen={setImportGrokCliModalOpen}
         batchTestResults={batchTestResults}
         setBatchTestResults={setBatchTestResults}
         emailsVisible={emailsVisible}

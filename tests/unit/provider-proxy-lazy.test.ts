@@ -8,17 +8,14 @@ const {
   getProviderById,
   getProviderByAlias,
   FREE_PROVIDERS,
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
-  WEB_COOKIE_PROVIDERS,
   LOCAL_PROVIDERS,
   SEARCH_PROVIDERS,
   AUDIO_ONLY_PROVIDERS,
 } = await import("../../src/shared/constants/providers.ts");
 
-const { IMAGE_PROVIDERS, getImageProvider } = await import(
-  "../../open-sse/config/imageRegistry.ts"
-);
+const { IMAGE_PROVIDERS, getImageProvider } =
+  await import("../../open-sse/config/imageRegistry.ts");
 
 function getImageProviders() {
   return IMAGE_PROVIDERS;
@@ -26,9 +23,7 @@ function getImageProviders() {
 
 const ALL_SECTIONS = [
   FREE_PROVIDERS,
-  OAUTH_PROVIDERS,
   APIKEY_PROVIDERS,
-  WEB_COOKIE_PROVIDERS,
   LOCAL_PROVIDERS,
   SEARCH_PROVIDERS,
   AUDIO_ONLY_PROVIDERS,

@@ -1015,12 +1015,7 @@
   },
   "src/app/(dashboard)/dashboard/providers/[id]/components/ConnectionRow.tsx": {
     "@typescript-eslint/no-unused-vars": {
-      "count": 2
-    }
-  },
-  "src/app/(dashboard)/dashboard/providers/[id]/components/ConnectionsHeaderToolbar.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
+      "count": 1
     }
   },
   "src/app/(dashboard)/dashboard/providers/[id]/components/ConnectionsListPanel.tsx": {
@@ -1036,16 +1031,6 @@
   "src/app/(dashboard)/dashboard/providers/[id]/components/PassthroughModelsSection.tsx": {
     "@typescript-eslint/no-unused-vars": {
       "count": 3
-    }
-  },
-  "src/app/(dashboard)/dashboard/providers/[id]/components/__tests__/CursorAgentNudge.test.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/app/(dashboard)/dashboard/providers/[id]/components/modals/ImportCodexAuthModal.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/app/(dashboard)/dashboard/providers/[id]/hooks/useModelImportHandlers.ts": {
@@ -1100,11 +1085,6 @@
   },
   "src/app/(dashboard)/dashboard/settings/components/AuthzSection.tsx": {
     "no-restricted-syntax": {
-      "count": 1
-    }
-  },
-  "src/app/(dashboard)/dashboard/settings/components/CliproxyapiSettingsTab.tsx": {
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -1455,16 +1435,6 @@
   },
   "src/app/api/monitoring/health/route.ts": {
     "no-restricted-imports": {
-      "count": 1
-    }
-  },
-  "src/app/api/oauth/[provider]/[action]/route.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
-    }
-  },
-  "src/app/api/oauth/kiro/auto-import/route.ts": {
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },
@@ -2292,11 +2262,6 @@
       "count": 1
     }
   },
-  "src/lib/db/providers.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 4
-    }
-  },
   "src/lib/db/providers/lazyConnectionView.ts": {
     "no-restricted-syntax": {
       "count": 1
@@ -2466,74 +2431,6 @@
   "src/lib/notion/api.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
-    }
-  },
-  "src/lib/oauth/providers.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/cline.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/codebuddy-cn.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/codex.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/ghe-copilot.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/github.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/kimi-coding.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/providers/kiro.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    }
-  },
-  "src/lib/oauth/utils/agyAuthImport.ts": {
-    "no-restricted-imports": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/utils/claudeAuthFile.ts": {
-    "no-restricted-imports": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/utils/claudeAuthImport.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    },
-    "no-restricted-imports": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/utils/codexAuthFile.ts": {
-    "no-restricted-imports": {
-      "count": 1
-    }
-  },
-  "src/lib/oauth/utils/codexAuthImport.ts": {
-    "no-restricted-imports": {
-      "count": 1
     }
   },
   "src/lib/obsidian/api.ts": {
@@ -2805,11 +2702,6 @@
       "count": 1
     }
   },
-  "src/shared/components/KiroAuthModal.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/shared/components/LanguageSelector.tsx": {
     "@next/next/no-img-element": {
       "count": 1
@@ -2818,11 +2710,6 @@
   "src/shared/components/NotificationToast.tsx": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
-    }
-  },
-  "src/shared/components/OAuthModal.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
     }
   },
   "src/shared/components/PricingModal.tsx": {
@@ -5293,11 +5180,6 @@
       "count": 1
     }
   },
-  "tests/unit/oauth-providers-config.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 2
-    }
-  },
   "tests/unit/observability-fase04.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 1
@@ -6033,14 +5915,6 @@
   },
   "tests/unit/spend-batch-writer.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
-  "tests/unit/sse-auth.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 13
-    },
-    "@typescript-eslint/no-unused-vars": {
       "count": 1
     }
   },

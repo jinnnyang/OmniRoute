@@ -4,7 +4,6 @@
  * Why this is a deprecation and not a deletion — measured on 2026-07-30:
  *
  *  - `gemini-cli` is NOT routable: absent from PROVIDERS (open-sse/config/constants),
- *    REGISTRY (providerRegistry), OAUTH_PROVIDERS, and no executor references it. A
  *    stored connection can therefore never serve a request, no matter how fresh its
  *    token is.
  *  - The legacy refresh path DID work: it redeemed the token with

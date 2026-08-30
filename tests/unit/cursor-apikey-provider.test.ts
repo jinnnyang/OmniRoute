@@ -8,15 +8,13 @@
 import { describe, it, afterEach } from "node:test";
 import assert from "node:assert/strict";
 
-const { APIKEY_PROVIDERS, OAUTH_PROVIDERS } =
-  await import("../../src/shared/constants/providers.ts");
+await import("../../src/shared/constants/providers.ts");
 const { isManagedProviderConnectionId } = await import("../../src/lib/providers/catalog.ts");
 const { cursorProvider, cursor_apiProvider } =
   await import("../../open-sse/config/providers/registry/cursor/index.ts");
 const { REGISTRY, generateAliasMap, getProviderCategory } =
   await import("../../open-sse/config/providerRegistry.ts");
-const { getExecutor, hasSpecializedExecutor } =
-  await import("../../open-sse/executors/index.ts");
+const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
 const { CursorExecutor } = await import("../../open-sse/executors/cursor.ts");
 const { __resetCursorApiKeyAuthForTest } =
   await import("../../open-sse/services/cursorApiKeyAuth.ts");
@@ -44,14 +42,12 @@ describe("cursor-api provider wiring", () => {
   it("leaves the IDE cursor provider OAuth-only", () => {
     assert.equal(cursorProvider.authType, "oauth");
     assert.equal(getProviderCategory("cursor"), "oauth");
-    assert.ok(OAUTH_PROVIDERS.cursor);
     assert.ok(!APIKEY_PROVIDERS.cursor);
   });
 
   it("has its own API-key catalog card admitted by the managed-connection gate", () => {
     assert.ok(APIKEY_PROVIDERS["cursor-api"]);
     assert.equal(APIKEY_PROVIDERS["cursor-api"].alias, "cua");
-    assert.ok(!OAUTH_PROVIDERS["cursor-api"]);
     assert.equal(isManagedProviderConnectionId("cursor-api"), true);
   });
 

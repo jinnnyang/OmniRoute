@@ -11,7 +11,6 @@
  * enabled and real keyed connections working.
  *
  * The gate applies ONLY to `anonymousFallback: true` API-key providers. True
- * no-auth providers (NOAUTH_PROVIDERS / WEB_COOKIE_PROVIDERS entries with
  * `noAuth: true`, e.g. opencode, mimocode) are NOT affected — for them the
  * synthetic credential is the only credential path and `blockedProviders` is
  * the disable mechanism.

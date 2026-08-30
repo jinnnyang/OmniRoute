@@ -155,10 +155,6 @@ import {
   type CredentialLeaseSelectionContext,
 } from "./exclusiveConnectionLeasePolicy";
 import { readHeaderValue, type AuthRequestHeaders } from "./headerReader.ts";
-import {
-  getOAuthSessionAvailability,
-  reserveOAuthSession,
-} from "@omniroute/open-sse/services/oauthSessionOccupancy.ts";
 
 type JsonRecord = Record<string, unknown>;
 interface RecoverableConnectionState {
@@ -178,7 +174,6 @@ export interface CredentialSelectionOptions {
   excludeConnectionIds?: string[] | null;
   sessionKey?: string | null;
   sessionAffinityTtlMs?: number | null;
-  reserveOAuthSession?: boolean;
   lease?: CredentialLeaseSelectionContext;
   materializeCredentials?: boolean;
   deferLeaseClaim?: boolean;
@@ -578,7 +573,6 @@ function getConnectionQuotaHeadroomPercent(
 }
 function getConnectionErrorPenalty(connection: ProviderConnectionView): number {
   const errorType = normalizeStatus(connection.lastErrorType);
-  const errorSource = normalizeStatus(connection.lastErrorSource);
   const numericErrorCode = toNumber(connection.errorCode, 0);
 
   let penalty = 0;
@@ -591,7 +585,7 @@ function getConnectionErrorPenalty(connection: ProviderConnectionView): number {
     numericErrorCode === 429
   ) {
     penalty += 24;
-  } else if (numericErrorCode === 401 || numericErrorCode === 403 || errorSource === "oauth") {
+  } else if (numericErrorCode === 401 || numericErrorCode === 403) {
     penalty += 18;
   } else if (numericErrorCode >= 500) {
     penalty += 10;
@@ -1153,16 +1147,12 @@ async function hydrateAccountProxyReferences(
 
 async function materializeConnection(
   connection: ProviderConnectionView,
-  options: CredentialSelectionOptions,
+  _options: CredentialSelectionOptions,
   extra: DeferredLeaseSelection & { exclusiveLease?: ExclusiveConnectionLease } = {}
 ) {
   const providerSpecificData = await hydrateAccountProxyReferences(connection.providerSpecificData);
   const apiKeyHealth = providerSpecificData.apiKeyHealth as Record<string, KeyHealth> | undefined;
   if (apiKeyHealth) syncHealthFromDB(connection.id, apiKeyHealth);
-  const releaseOAuthSession =
-    options.reserveOAuthSession === true && connection.authType === "oauth" && options.sessionKey
-      ? reserveOAuthSession(connection.id, options.sessionKey)
-      : undefined;
   return {
     apiKey: connection.apiKey,
     accessToken: connection.accessToken,
@@ -1188,7 +1178,6 @@ async function materializeConnection(
     rateLimitedUntil: connection.rateLimitedUntil,
     maxConcurrent: connection.maxConcurrent,
     quotaWindowThresholds: connection.quotaWindowThresholds ?? null,
-    ...(releaseOAuthSession ? { releaseOAuthSession } : {}),
     ...extra,
   };
 }
@@ -1920,15 +1909,7 @@ export async function getProviderCredentials(
         : null;
     }
 
-    const orderedConnections = [...leasePolicy.connections].sort((a, b) => {
-      if (a.authType !== "oauth" || b.authType !== "oauth") return 0;
-      const priorityDelta = (a.priority || 999) - (b.priority || 999);
-      if (priorityDelta !== 0) return priorityDelta;
-      return (
-        getOAuthSessionAvailability(b.id, options.sessionKey) -
-        getOAuthSessionAvailability(a.id, options.sessionKey)
-      );
-    });
+    const orderedConnections = [...leasePolicy.connections];
 
     const providerStrategyOverrides = (settings.providerStrategies || {}) as Record<
       string,
@@ -2127,26 +2108,6 @@ export async function getProviderCredentials(
       connection = orderedConnections[0];
     }
 
-    if (options.reserveOAuthSession === true && connection?.authType === "oauth") {
-      const selectedPriority = connection.priority || 999;
-      const selectedAvailability = getOAuthSessionAvailability(connection.id, options.sessionKey);
-      const moreAvailablePeer = [...orderedConnections]
-        .filter(
-          (candidate) =>
-            candidate.authType === "oauth" && (candidate.priority || 999) <= selectedPriority + 1
-        )
-        .sort(
-          (a, b) =>
-            getOAuthSessionAvailability(b.id, options.sessionKey) -
-            getOAuthSessionAvailability(a.id, options.sessionKey)
-        )
-        .find(
-          (candidate) =>
-            getOAuthSessionAvailability(candidate.id, options.sessionKey) > selectedAvailability
-        );
-      if (moreAvailablePeer) connection = moreAvailablePeer;
-    }
-
     let exclusiveLease: ExclusiveConnectionLease | undefined;
     if (options.lease) {
       const candidateIds = orderedConnections.map((candidate) => candidate.id);
@@ -2284,7 +2245,6 @@ export async function getProviderCredentialsWithQuotaPreflight(
       connectionId?: string;
       commitSelectionSideEffects?: () => Promise<void> | void;
       selectNextLeaseCandidate?: (excludedConnectionId: string) => Promise<typeof credentials>;
-      releaseOAuthSession?: () => void;
     };
     const connectionId = selectedCredentials.connectionId;
     if (!connectionId) {
@@ -2299,7 +2259,6 @@ export async function getProviderCredentialsWithQuotaPreflight(
         options.lease
       );
       if (claim.kind === "LOST") {
-        selectedCredentials.releaseOAuthSession?.();
         excludedConnectionIds.add(connectionId);
         pendingCredentialSelection =
           await selectedCredentials.selectNextLeaseCandidate?.(connectionId);
@@ -2308,7 +2267,6 @@ export async function getProviderCredentialsWithQuotaPreflight(
       if (claim.kind === "STALE") return { leaseFenceStale: true };
       await selectedCredentials.commitSelectionSideEffects?.();
       if (options.materializeCredentials === false) {
-        selectedCredentials.releaseOAuthSession?.();
         return { exclusiveLease: claim.lease, connectionId, provider };
       }
       return { ...credentials, exclusiveLease: claim.lease };
@@ -2404,7 +2362,6 @@ export async function getProviderCredentialsWithQuotaPreflight(
         }
       );
     } catch (error) {
-      selectedCredentials.releaseOAuthSession?.();
       throw error;
     }
     if (preflight.proceed) {
@@ -2412,8 +2369,6 @@ export async function getProviderCredentialsWithQuotaPreflight(
       if (committed === null) continue;
       return committed;
     }
-
-    selectedCredentials.releaseOAuthSession?.();
 
     const unavailableUntil = await markQuotaPreflightAccountUnavailable(
       provider,

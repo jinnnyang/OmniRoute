@@ -90,7 +90,7 @@ test("a NEW literal is still flagged even with the real frozen allowlist", () =>
 });
 
 test("real scanned files produce ZERO violations with the frozen allowlist (gate exits 0)", () => {
-  const scanned = ["open-sse/config/providerRegistry.ts", "src/lib/oauth/constants/oauth.ts"];
+  const scanned = ["open-sse/config/providerRegistry.ts"];
   for (const rel of scanned) {
     const src = fs.readFileSync(path.join(repoRoot, rel), "utf8") as string;
     const v = findLiteralCreds(src, KNOWN_LITERAL_CREDS, rel);
@@ -103,7 +103,7 @@ test("every frozen literal is actually present in a scanned file (no dead allowl
   // per-provider plugins (#3993), so providerRegistry.ts is now a re-export barrel;
   // entries keyed by an explicit `file:line:value` are checked against the file named
   // in the key (which is where the literal actually lives), not this anchor blob.
-  const anchorFiles = ["open-sse/config/providerRegistry.ts", "src/lib/oauth/constants/oauth.ts"];
+  const anchorFiles = ["open-sse/config/providerRegistry.ts"];
   const anchorBlob = anchorFiles
     .map((rel) => fs.readFileSync(path.join(repoRoot, rel), "utf8") as string)
     .join("\n");
@@ -136,21 +136,11 @@ test("with an empty allowlist the real scanned files surface zero violations (al
     path.join(repoRoot, "open-sse/config/providerRegistry.ts"),
     "utf8"
   ) as string;
-  const oauth = fs.readFileSync(
-    path.join(repoRoot, "src/lib/oauth/constants/oauth.ts"),
-    "utf8"
-  ) as string;
   const regViolations = findLiteralCreds(reg, new Set(), "providerRegistry.ts");
-  const oauthViolations = findLiteralCreds(oauth, new Set(), "oauth.ts");
   assert.equal(
     regViolations.length,
     0,
     `providerRegistry.ts should be clean, got: ${regViolations.join(", ")}`
-  );
-  assert.equal(
-    oauthViolations.length,
-    0,
-    `oauth.ts should be clean, got: ${oauthViolations.join(", ")}`
   );
 });
 

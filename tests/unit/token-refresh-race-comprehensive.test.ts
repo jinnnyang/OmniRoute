@@ -56,44 +56,6 @@ test("Fix A: base.ts proactive refresh also wraps refreshCredentials with runWit
   );
 });
 
-test("Fix B: refreshOAuthToken in test/route.ts includes connectionId in credentials", async () => {
-  const src = await read("src/app/api/providers/[id]/test/route.ts");
-  const fnIdx = src.indexOf("async function refreshOAuthToken(");
-  assert.ok(fnIdx >= 0, "refreshOAuthToken function must exist");
-  const fnSlice = src.slice(fnIdx, fnIdx + 2500);
-  assert.match(
-    fnSlice,
-    /connectionId:\s*connection\.id/,
-    "refreshOAuthToken credentials must include connectionId so Layer 1 (per-connection mutex) is used instead of Layer 2 (token-hash dedup)"
-  );
-  assert.match(
-    fnSlice,
-    /onPersist|async\s*\(refreshed\)\s*=>/,
-    "refreshOAuthToken must pass an onPersist callback so the DB write is atomic with the network refresh"
-  );
-});
-
-test("Fix C reverted: codexAuthImport does NOT refresh tokens on import (avoids family revocation on stale auth.json)", async () => {
-  const src = await read("src/lib/oauth/utils/codexAuthImport.ts");
-  assert.doesNotMatch(
-    src,
-    /refreshConnectionTokensOnImport\(/,
-    "Fix C was reverted because auth.json files exported from Codex CLI are often partially rotated; refreshing with a stale refresh_token caused upstream to invalidate the entire token family"
-  );
-  assert.doesNotMatch(
-    src,
-    /import\s*\{[^}]*getAccessToken[^}]*\}\s*from\s*"@omniroute\/open-sse\/services\/tokenRefresh/,
-    "codexAuthImport should not import getAccessToken (refresh-on-import was reverted)"
-  );
-});
-
-test("codexAuthImport public surface keeps only consumed auth import types", async () => {
-  const src = await read("src/lib/oauth/utils/codexAuthImport.ts");
-  assert.doesNotMatch(src, /export interface CodexAuthFileInput\b/);
-  assert.match(src, /export interface ParsedCodexAuth\b/);
-  assert.match(src, /export interface CreateConnectionOptions\b/);
-});
-
 test("Fix D: staleness fallback returns absolute expiresAt, not raw expiresIn", async () => {
   const src = await read("open-sse/services/tokenRefresh.ts");
   // Locate the actual return statement, not the JSDoc mention.

@@ -10,7 +10,6 @@ interface CommandCodeAuthState {
 }
 
 interface EmptyConnectionsPlaceholderProps {
-  isOAuth: boolean;
   isCompatible: boolean;
   isCommandCode: boolean;
   providerId: string;
@@ -20,16 +19,10 @@ interface EmptyConnectionsPlaceholderProps {
   openApiKeyAddFlow: () => void;
   openPrimaryAddFlow: () => void;
   handleOpenCommandCodeConnect: () => void;
-  onOpenOAuthModal: () => void;
-  onOpenImportCodex: () => void;
-  onOpenImportClaude: () => void;
-  onOpenImportGemini: () => void;
-  onOpenImportGrokCli: () => void;
   t: ProviderMessageTranslator;
 }
 
 export default function EmptyConnectionsPlaceholder({
-  isOAuth,
   isCompatible,
   isCommandCode,
   providerId,
@@ -39,17 +32,12 @@ export default function EmptyConnectionsPlaceholder({
   openApiKeyAddFlow,
   openPrimaryAddFlow,
   handleOpenCommandCodeConnect,
-  onOpenOAuthModal,
-  onOpenImportCodex,
-  onOpenImportClaude,
-  onOpenImportGemini,
-  onOpenImportGrokCli,
   t,
 }: EmptyConnectionsPlaceholderProps) {
   return (
     <div className="text-center py-12">
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4">
-        <span className="material-symbols-outlined text-[32px]">{isOAuth ? "lock" : "key"}</span>
+        <span className="material-symbols-outlined text-[32px]">key</span>
       </div>
       <p className="text-text-main font-medium mb-1">{t("noConnectionsYet")}</p>
       <p className="text-sm text-text-muted mb-4">{t("addFirstConnectionHint")}</p>
@@ -86,42 +74,6 @@ export default function EmptyConnectionsPlaceholder({
               <Button icon="add" onClick={() => gateConnectionFlow(openPrimaryAddFlow)}>
                 {providerSupportsPat ? "Add PAT" : t("addConnection")}
               </Button>
-              {providerId === "qoder" && (
-                <Button variant="secondary" onClick={() => gateConnectionFlow(onOpenOAuthModal)}>
-                  Experimental OAuth
-                </Button>
-              )}
-              {providerId === "codex" && (
-                <Button
-                  variant="secondary"
-                  icon="upload_file"
-                  onClick={() => gateConnectionFlow(onOpenImportCodex)}
-                >
-                  {typeof t.has === "function" && t.has("importCodexAuth")
-                    ? t("importCodexAuth")
-                    : "Import auth"}
-                </Button>
-              )}
-              {providerId === "claude" && (
-                <Button
-                  variant="secondary"
-                  icon="upload_file"
-                  onClick={() => gateConnectionFlow(onOpenImportClaude)}
-                >
-                  {typeof t.has === "function" && t.has("importClaudeAuth")
-                    ? t("importClaudeAuth")
-                    : "Import auth"}
-                </Button>
-              )}
-              {providerId === "grok-cli" && (
-                <Button
-                  variant="secondary"
-                  icon="upload_file"
-                  onClick={() => gateConnectionFlow(onOpenImportGrokCli)}
-                >
-                  Import auth
-                </Button>
-              )}
             </>
           )}
         </div>

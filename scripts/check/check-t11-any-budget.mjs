@@ -12,7 +12,6 @@ const cwd = process.cwd();
 const budget = [
   { file: "src/app/api/settings/proxy/route.ts", maxAny: 0 },
   { file: "src/app/api/settings/proxy/test/route.ts", maxAny: 0 },
-  { file: "src/shared/components/OAuthModal.tsx", maxAny: 0 },
   { file: "open-sse/translator/index.ts", maxAny: 0 },
   { file: "open-sse/translator/registry.ts", maxAny: 0 },
   // Freeze legacy hot spots to avoid any-regression while strict migration continues.

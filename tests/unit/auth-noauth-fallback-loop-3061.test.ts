@@ -5,7 +5,6 @@
  *
  * For a no-auth provider, getProviderCredentials early-returns synthetic
  * credentials with connectionId "noauth" BEFORE honoring the exclusion set
- * (src/sse/services/auth.ts: the NOAUTH_PROVIDERS block and the opencode-zen
  * keyless fallback). So when the chat fallback loop marks the failed "noauth"
  * connection and excludes it, the selector hands "noauth" right back → it loops
  * forever, writing key-health + request logs every iteration until the disk
@@ -73,4 +72,3 @@ test("#3061 opencode-zen no-auth: excluding 'noauth' returns null (breaks the fa
     "excluded synthetic noauth must not be re-selected for the opencode-zen keyless path"
   );
 });
-

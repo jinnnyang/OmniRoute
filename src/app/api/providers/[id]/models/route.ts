@@ -88,9 +88,6 @@ import { getAdobeModels } from "./adobeFireflyDiscovery";
 import { parseGeminiModelsList } from "@/lib/providerModels/geminiModelsParser";
 import { getSyncedAvailableModels, getCustomModels } from "@/lib/db/models";
 import { isConnectionUnavailableToAuxiliaryActivity } from "@/lib/exclusiveLeaseIsolation";
-import { fetchCursorAgentModels } from "@/lib/providerModels/cursorAgent";
-import { fetchCursorAvailableModels } from "@/lib/providerModels/cursorAvailableModels";
-import { ensureCursorAutoCatalogEntry } from "@/lib/providerModels/cursorAutoCatalog";
 import { fetchRaycastModels } from "@omniroute/open-sse/services/raycast.ts";
 import { runWithProxyContext } from "@omniroute/open-sse/utils/proxyFetch.ts";
 import {
@@ -1350,57 +1347,6 @@ export async function GET(
       }
     }
 
-    if (provider === "cursor") {
-      const cachedResponse = maybeReturnCachedDiscovery();
-      if (cachedResponse) return cachedResponse;
-
-      const autoFetchDisabledResponse = maybeReturnAutoFetchDisabled();
-      if (autoFetchDisabledResponse) return autoFetchDisabledResponse;
-
-      const warnings: string[] = [];
-      const token = (accessToken || apiKey || "").trim();
-      const machineId =
-        typeof connection?.providerSpecificData === "object" &&
-        connection.providerSpecificData &&
-        typeof (connection.providerSpecificData as { machineId?: unknown }).machineId === "string"
-          ? (connection.providerSpecificData as { machineId: string }).machineId
-          : null;
-
-      if (token) {
-        try {
-          const models = await fetchCursorAvailableModels({
-            accessToken: token,
-            machineId,
-          });
-          return buildApiDiscoveryResponse(models);
-        } catch (err) {
-          const message = err instanceof Error ? err.message : String(err);
-          console.log("[models] Cursor AvailableModels failed:", message);
-          warnings.push(`AvailableModels unavailable (${message})`);
-        }
-      } else {
-        warnings.push("no Cursor access token on connection");
-      }
-
-      try {
-        const models = ensureCursorAutoCatalogEntry(await fetchCursorAgentModels());
-        return buildApiDiscoveryResponse(models);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.log("[models] cursor-agent fetch failed:", message);
-        const detail = [...warnings, `cursor-agent unavailable (${message})`].join("; ");
-        const fallback = buildDiscoveryFallbackResponse({
-          cacheWarning: `${detail} — using cached catalog`,
-          localWarning: `${detail} — using local catalog`,
-        });
-        if (fallback) return fallback;
-        return NextResponse.json(
-          { error: `Failed to fetch Cursor models: ${detail}` },
-          { status: 502 }
-        );
-      }
-    }
-
     if (provider === "inner-ai") {
       const cachedResponse = maybeReturnCachedDiscovery();
       if (cachedResponse) return cachedResponse;
@@ -1906,8 +1852,7 @@ export async function GET(
       // ponytail: Anthropic partner models via Model Garden publisher endpoint (Bearer only)
       if (bearerToken) {
         const psd = asRecord(connection.providerSpecificData);
-        const region =
-          (typeof psd.region === "string" && psd.region.trim()) || "us-central1";
+        const region = (typeof psd.region === "string" && psd.region.trim()) || "us-central1";
 
         // Extract project_id from SA JSON for project-scoped listing (mirrors executor URL pattern).
         // Falls back to global publisher endpoint if no project available.
@@ -1917,7 +1862,9 @@ export async function GET(
           try {
             const sa = JSON.parse(credential);
             if (sa?.project_id) projectId = sa.project_id;
-          } catch { /* not SA JSON, skip */ }
+          } catch {
+            /* not SA JSON, skip */
+          }
         }
         if (projectId) {
           anthropicModelsUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/anthropic/models`;
@@ -1938,9 +1885,8 @@ export async function GET(
           });
           if (anthropicResponse.ok) {
             const anthropicData = await anthropicResponse.json();
-            const { parseVertexAnthropicModels } = await import(
-              "@/lib/providerModels/vertexAnthropicModelsParser"
-            );
+            const { parseVertexAnthropicModels } =
+              await import("@/lib/providerModels/vertexAnthropicModelsParser");
             allModels.push(...parseVertexAnthropicModels(anthropicData));
           } else {
             console.log("[models] Vertex Anthropic partner discovery failed", {

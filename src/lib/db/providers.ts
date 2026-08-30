@@ -5,19 +5,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { getDbInstance, rowToCamel, cleanNulls } from "./core";
 import { backupDbFile } from "./backup";
-import {
-  encryptConnectionFields,
-  decryptConnectionFields,
-  migrateLegacyEncryptedString,
-} from "./encryption";
+import { encryptConnectionFields, decryptConnectionFields } from "./encryption";
 import { createLazyRowProxy } from "./providers/lazyConnectionView";
 import { invalidateDbCache, getCachedRawProviderConnections } from "./readCache";
 import { reorderConnections } from "./providers/deletion";
-import {
-  removeConnectionHealth,
-  removeConnectionIndex,
-} from "@omniroute/open-sse/services/apiKeyRotator.ts";
-import { invalidateReasoningRoutingRuleCache } from "./reasoningRoutingRules";
+import {} from "@omniroute/open-sse/services/apiKeyRotator.ts";
 import { normalizeProviderSpecificData } from "@/lib/providers/requestDefaults";
 import { ensureCodexFingerprintSeed } from "@omniroute/open-sse/config/codexIdentity.ts";
 import { bumpProxyConfigGeneration, getSettings } from "./settings";
@@ -26,12 +18,7 @@ import {
   isBcryptHash,
   verifyManagementPassword,
 } from "@/lib/auth/managementPassword";
-import {
-  webSessionCredentialKey,
-  parseProviderSpecificData,
-  isMatchingOauthIdentity,
-} from "./webSessionDedup";
-import { pickCodexConnectionForUser } from "@/lib/oauth/utils/codexConnectionSelection";
+import { webSessionCredentialKey, parseProviderSpecificData } from "./webSessionDedup";
 import { reconcileCodexUsageHistory } from "./providers/usageIdentityReconciliation";
 
 /**
@@ -429,75 +416,8 @@ export async function createProviderConnection(data: JsonRecord) {
   );
 
   let existing: JsonRecord | null = null;
-  let promotedCodexIdentity = false;
 
-  const providerSpecificData = toRecord(data.providerSpecificData);
-  const workspaceId = toStringOrNull(providerSpecificData.workspaceId);
-  const chatgptUserId = toStringOrNull(providerSpecificData.chatgptUserId);
-
-  if (data.authType === "oauth" && data.provider === "codex" && chatgptUserId) {
-    const strongSql = workspaceId
-      ? "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.workspaceId') = ? AND json_extract(provider_specific_data, '$.chatgptUserId') = ?"
-      : "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND (json_extract(provider_specific_data, '$.workspaceId') IS NULL OR json_extract(provider_specific_data, '$.workspaceId') = '') AND json_extract(provider_specific_data, '$.chatgptUserId') = ?";
-    existing =
-      ((workspaceId
-        ? db.prepare(strongSql).get(data.provider, workspaceId, chatgptUserId)
-        : db.prepare(strongSql).get(data.provider, chatgptUserId)) as JsonRecord | undefined) ||
-      null;
-
-    if (!existing && workspaceId) {
-      const workspaceMatches = db
-        .prepare(
-          `SELECT * FROM provider_connections
-           WHERE provider = ? AND auth_type = 'oauth'
-             AND json_extract(provider_specific_data, '$.workspaceId') = ?
-           ORDER BY created_at`
-        )
-        .all(data.provider, workspaceId) as JsonRecord[];
-      existing = pickCodexConnectionForUser(
-        workspaceMatches,
-        chatgptUserId,
-        toStringOrNull(data.email)
-      );
-      promotedCodexIdentity = existing !== null;
-    }
-  } else if (data.authType === "oauth" && data.email) {
-    if (data.provider === "codex") {
-      if (workspaceId) {
-        existing =
-          (db
-            .prepare(
-              `SELECT * FROM provider_connections
-               WHERE provider = ? AND auth_type = 'oauth'
-                 AND json_extract(provider_specific_data, '$.workspaceId') = ?
-                 AND email = ?
-               LIMIT 1`
-            )
-            .get(data.provider, workspaceId, data.email) as JsonRecord | undefined) || null;
-      }
-    } else {
-      // For other providers (or Codex without workspaceId), match on email —
-      // disambiguated by providerSpecificData.username and/or
-      // providerSpecificData.profileArn when present on both sides. Two
-      // different IdPs (or two distinct Kiro/AWS profiles authenticated via
-      // the same email-carrying IdP) can share the same email address;
-      // matching on email alone would silently overwrite the other
-      // account's connection on the second login. Only fall back to the
-      // bare email-only match when neither side carries a username/profileArn
-      // (legacy rows created before this disambiguation existed).
-      const incomingUsername = toStringOrNull(providerSpecificData.username);
-      const incomingProfileArn = toStringOrNull(providerSpecificData.profileArn);
-      const emailMatches = db
-        .prepare(
-          "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND email = ?"
-        )
-        .all(data.provider, data.email) as JsonRecord[];
-      existing =
-        emailMatches.find((row) =>
-          isMatchingOauthIdentity(row, incomingUsername, incomingProfileArn)
-        ) || null;
-    }
-  } else if (data.authType === "apikey") {
+  if (data.authType === "apikey") {
     // Name-based upsert (existing behavior): same provider + same name → update.
     if (data.name) {
       existing =
@@ -561,14 +481,6 @@ export async function createProviderConnection(data: JsonRecord) {
       }
     }
     db.transaction(() => {
-      if (promotedCodexIdentity) {
-        reconcileCodexUsageHistory(db, {
-          connectionId: existingId,
-          existing,
-          merged,
-          matchedExistingCodexByWorkspace: true,
-        });
-      }
       _updateConnectionRow(db, existingId, encryptConnectionFields(persistence));
     })();
     backupDbFile("pre-write");
@@ -584,7 +496,7 @@ export async function createProviderConnection(data: JsonRecord) {
   // Generate name: prefer explicit name, then email, then a stable short-ID label.
   // Avoid sequential "Account N" — it reassigns when accounts are deleted/reordered.
   let connectionName = data.name || null;
-  if (!connectionName && (data.authType === "oauth" || data.authType === "access_token")) {
+  if (!connectionName && data.authType === "access_token") {
     if (data.email) {
       connectionName = data.email as string;
     } else if (data.displayName) {
@@ -606,7 +518,7 @@ export async function createProviderConnection(data: JsonRecord) {
   const connection: Record<string, unknown> = {
     id: uuidv4(),
     provider: data.provider,
-    authType: data.authType || "oauth",
+    authType: data.authType || "apikey",
     name: connectionName,
     priority: connectionPriority,
     isActive: data.isActive !== undefined ? data.isActive : true,

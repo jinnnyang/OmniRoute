@@ -78,7 +78,6 @@ describe("phase-1d extractions (#3501)", () => {
     const c = renderComponent(
       <ConnectionRow
         connection={conn}
-        isOAuth={false}
         isFirst={true}
         isLast={false}
         onMoveUp={vi.fn()}
@@ -103,7 +102,6 @@ describe("phase-1d extractions (#3501)", () => {
     const c = renderComponent(
       <ConnectionRow
         connection={conn}
-        isOAuth={true}
         isClaude={true}
         isFirst={false}
         isLast={true}
@@ -124,7 +122,6 @@ describe("phase-1d extractions (#3501)", () => {
     const c = renderComponent(
       <ConnectionRow
         connection={{ id: "conn-quota", name: "Hidden quota", quotaVisible: false }}
-        isOAuth={false}
         isFirst={true}
         isLast={true}
         onMoveUp={vi.fn()}
@@ -156,7 +153,6 @@ describe("phase-1d extractions (#3501)", () => {
     const c = renderComponent(
       <ConnectionRow
         connection={conn}
-        isOAuth={false}
         isFirst={true}
         isLast={true}
         onMoveUp={vi.fn()}
