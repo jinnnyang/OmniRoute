@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json pro objevování modelu brány",
     "ccOnboardingCopy": "Kopírovat",
     "ccOnboardingCopied": "Zkopírováno",
-    "ccOnboardingKeyPlaceholder": "<váš klíč API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<váš klíč API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code předpokládá kontextové okno 200K pro jakýkoli model id, který nepozná. Pro model s jiným skutečným oknem přidejte CLAUDE_CODE_AUTO_COMPACT_WINDOW těsně pod něj, aby automatická komprese nenastala příliš brzy.",
     "failedSave": "Nepodařilo se uložit",
     "profileSyncTitle": "Automatická synchronizace profilů CLI",
@@ -12821,7 +12821,7 @@
         "description": "Po synchronizaci poskytovatelů a modelů regenerovat profily ~/.codex/*.config.toml z živého katalogu. Toto nikdy nemění aktivní nebo výchozí konfiguraci Codexu a je ve výchozím nastavení vypnuto."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Po synchronizaci poskytovatelů a modelů regenerovat profily ~/.claude/profiles/<name>/settings.json z živého katalogu. Toto nikdy nemění aktivní nebo výchozí konfiguraci Claude a je ve výchozím nastavení vypnuto."
+        "description": "Po synchronizaci poskytovatelů a modelů regenerovat profily ~/.claude/profiles/'<name>'/settings.json z živého katalogu. Toto nikdy nemění aktivní nebo výchozí konfiguraci Claude a je ve výchozím nastavení vypnuto."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Zakázat koncový bod kontroly stavu lokální instance."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Také na Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Zavřít"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Inzerujte <gateway-alias>/<model> zrcadlové ID na /v1/models pro modely, jejichž kanonický vlastník nemá aktivní pověření, ale passtrhough brána s aktivním pověřením je směruje. Upozornění: při globálním povolení přidává katalogové položky pro všechny klienty.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Inzerujte '<gateway-alias>'/'<model>' zrcadlové ID na /v1/models pro modely, jejichž kanonický vlastník nemá aktivní pověření, ale passtrhough brána s aktivním pověřením je směruje. Upozornění: při globálním povolení přidává katalogové položky pro všechny klienty.",
   "radarPage": {
     "title": "Radar katalog",
     "subtitle": "Bezplatný modelový katalog obohacený komunitními informacemi",

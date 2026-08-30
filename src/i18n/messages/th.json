@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json สำหรับการค้นพบโมเดลเกตเวย์",
     "ccOnboardingCopy": "คัดลอก",
     "ccOnboardingCopied": "คัดลอกแล้ว",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Claude Code สมมติว่ามีหน้าต่างบริบท 200K สำหรับรหัสโมเดลใด ๆ ที่มันไม่รู้จัก สำหรับโมเดลที่มีหน้าต่างจริงที่แตกต่างกัน ให้เพิ่ม CLAUDE_CODE_AUTO_COMPACT_WINDOW ลงไปใต้โมเดลนั้นเพื่อไม่ให้การบีบอัดอัตโนมัติทำงานเร็วเกินไป",
     "failedSave": "บันทึกไม่สำเร็จ",
     "profileSyncTitle": "การซิงค์โปรไฟล์ CLI อัตโนมัติ",
@@ -12821,7 +12821,7 @@
         "description": "หลังจากการซิงโครไนซ์ผู้ให้บริการ-โมเดล ให้สร้างโปรไฟล์ ~/.codex/*.config.toml ใหม่จากแคตตาล็อกที่ใช้งานอยู่ การดำเนินการนี้จะไม่เปลี่ยนการกำหนดค่า Codex ที่ใช้งานอยู่หรือค่าเริ่มต้น และปิดใช้งานเป็นค่าเริ่มต้น"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "หลังจากการซิงโครไนซ์ผู้ให้บริการ-โมเดล ให้สร้างโปรไฟล์ ~/.claude/profiles/<name>/settings.json ใหม่จากแคตตาล็อกที่ใช้งานอยู่ การดำเนินการนี้จะไม่เปลี่ยนการกำหนดค่า Claude ที่ใช้งานอยู่หรือค่าเริ่มต้น และปิดใช้งานเป็นค่าเริ่มต้น"
+        "description": "หลังจากการซิงโครไนซ์ผู้ให้บริการ-โมเดล ให้สร้างโปรไฟล์ ~/.claude/profiles/'<name>'/settings.json ใหม่จากแคตตาล็อกที่ใช้งานอยู่ การดำเนินการนี้จะไม่เปลี่ยนการกำหนดค่า Claude ที่ใช้งานอยู่หรือค่าเริ่มต้น และปิดใช้งานเป็นค่าเริ่มต้น"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "ปิดใช้งานปลายทาง health-check ของอินสแตนซ์ในเครื่อง"
@@ -13197,7 +13197,7 @@
     "secondaryNote": "มีให้ใช้งานบน Open VSX ด้วย (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "ปิด"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "โฆษณา <gateway-alias>/<model> รหัสกระจกบน /v1/models สำหรับโมเดลที่เจ้าของตามกฎหมายไม่มีข้อมูลรับรองที่ใช้งานอยู่ แต่มีเกตเวย์แบบผ่านที่มีข้อมูลรับรองที่ใช้งานอยู่ทำการส่งต่อพวกเขา เตือน: จะเพิ่มรายการในแคตตาล็อกสำหรับลูกค้าทั้งหมดเมื่อเปิดใช้งานทั่วโลก.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "โฆษณา '<gateway-alias>'/'<model>' รหัสกระจกบน /v1/models สำหรับโมเดลที่เจ้าของตามกฎหมายไม่มีข้อมูลรับรองที่ใช้งานอยู่ แต่มีเกตเวย์แบบผ่านที่มีข้อมูลรับรองที่ใช้งานอยู่ทำการส่งต่อพวกเขา เตือน: จะเพิ่มรายการในแคตตาล็อกสำหรับลูกค้าทั้งหมดเมื่อเปิดใช้งานทั่วโลก.",
   "radarPage": {
     "title": "แคตตาล็อกเรดาร์",
     "subtitle": "แคตตาล็อกโมเดลฟรีที่เสริมด้วยข้อมูลจากชุมชน",

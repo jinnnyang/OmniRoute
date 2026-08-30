@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json för gateway-modellupptäckten",
     "ccOnboardingCopy": "Kopiera",
     "ccOnboardingCopied": "Kopierad",
-    "ccOnboardingKeyPlaceholder": "<din OmniRoute API-nyckel>",
+    "ccOnboardingKeyPlaceholder": "'<din OmniRoute API-nyckel>'",
     "ccOnboardingWindowNote": "Claude Code förutsätter ett 200K kontextfönster för alla modell-ID:n som det inte känner igen. För en modell med ett annat verkligt fönster, lägg till CLAUDE_CODE_AUTO_COMPACT_WINDOW precis under den så att automatisk komprimering inte aktiveras för tidigt.",
     "failedSave": "Misslyckades med att spara",
     "profileSyncTitle": "Automatisk synkning av CLI-profil",
@@ -12821,7 +12821,7 @@
         "description": "Efter synkronisering av leverantörsmodell, generera om ~/.codex/*.config.toml-profiler från den aktiva katalogen. Detta ändrar aldrig den aktiva eller standardinställda Codex-konfigurationen och är inaktiverat som standard."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Efter synkronisering av leverantörsmodell, generera om ~/.claude/profiles/<name>/settings.json-profiler från den aktiva katalogen. Detta ändrar aldrig den aktiva eller standardinställda Claude-konfigurationen och är inaktiverat som standard."
+        "description": "Efter synkronisering av leverantörsmodell, generera om ~/.claude/profiles/'<name>'/settings.json-profiler från den aktiva katalogen. Detta ändrar aldrig den aktiva eller standardinställda Claude-konfigurationen och är inaktiverat som standard."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Inaktivera slutpunkten för hälsokontroll av den lokala instansen."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Finns även på Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Avvisa"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Annonsera <gateway-alias>/<model> spegel-id på /v1/models för modeller vars kanoniska ägare inte har någon aktiv legitimation men en passthrough-gateway med en aktiv legitimation dirigerar dem. Varning: lägger till katalogposter för alla klienter när det är aktiverat globalt.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Annonsera '<gateway-alias>'/'<model>' spegel-id på /v1/models för modeller vars kanoniska ägare inte har någon aktiv legitimation men en passthrough-gateway med en aktiv legitimation dirigerar dem. Varning: lägger till katalogposter för alla klienter när det är aktiverat globalt.",
   "radarPage": {
     "title": "Radar Katalog",
     "subtitle": "Gratis modellkatalog berikad med gemenskapsintelligens",

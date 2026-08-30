@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "gateway 모델 발견을 위한 settings.json",
     "ccOnboardingCopy": "복사",
     "ccOnboardingCopied": "복사됨",
-    "ccOnboardingKeyPlaceholder": "<귀하의 OmniRoute API 키>",
+    "ccOnboardingKeyPlaceholder": "'<귀하의 OmniRoute API 키>'",
     "ccOnboardingWindowNote": "Claude Code는 인식하지 못하는 모델 ID에 대해 200K 컨텍스트 창을 가정합니다. 다른 실제 창을 가진 모델의 경우, 자동 압축이 너무 일찍 발생하지 않도록 그 아래에 CLAUDE_CODE_AUTO_COMPACT_WINDOW를 추가하세요.",
     "failedSave": "저장하지 못했습니다",
     "profileSyncTitle": "CLI 프로필 자동 동기화",
@@ -12821,7 +12821,7 @@
         "description": "공급자-모델 동기화 후 라이브 카탈로그에서 ~/.codex/*.config.toml 프로필을 재생성합니다. 이는 활성 또는 기본 Codex 구성을 변경하지 않으며 기본적으로 꺼져 있습니다."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "공급자-모델 동기화 후 라이브 카탈로그에서 ~/.claude/profiles/<name>/settings.json 프로필을 재생성합니다. 이는 활성 또는 기본 Claude 구성을 변경하지 않으며 기본적으로 꺼져 있습니다."
+        "description": "공급자-모델 동기화 후 라이브 카탈로그에서 ~/.claude/profiles/'<name>'/settings.json 프로필을 재생성합니다. 이는 활성 또는 기본 Claude 구성을 변경하지 않으며 기본적으로 꺼져 있습니다."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "로컬 인스턴스 상태 확인 엔드포인트를 비활성화합니다."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX(Cursor, Windsurf, VSCodium 등)에서도 이용 가능",
     "dismissAriaLabel": "닫기"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "<gateway-alias>/<model> 미러 ID를 /v1/models에서 광고합니다. 이는 정식 소유자가 활성 자격 증명이 없지만 패스스루 게이트웨이가 활성 자격 증명으로 라우팅하는 모델에 해당합니다. 경고: 전역적으로 활성화되면 모든 클라이언트에 대한 카탈로그 항목이 추가됩니다.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "'<gateway-alias>'/'<model>' 미러 ID를 /v1/models에서 광고합니다. 이는 정식 소유자가 활성 자격 증명이 없지만 패스스루 게이트웨이가 활성 자격 증명으로 라우팅하는 모델에 해당합니다. 경고: 전역적으로 활성화되면 모든 클라이언트에 대한 카탈로그 항목이 추가됩니다.",
   "radarPage": {
     "title": "레이더 카탈로그",
     "subtitle": "커뮤니티 인텔리전스로 강화된 무료 모델 카탈로그",

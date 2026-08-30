@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json برای کشف مدل دروازه",
     "ccOnboardingCopy": "کپی",
     "ccOnboardingCopied": "کپی شد",
-    "ccOnboardingKeyPlaceholder": "<کلید API OmniRoute شما>",
+    "ccOnboardingKeyPlaceholder": "'<کلید API OmniRoute شما>'",
     "ccOnboardingWindowNote": "Claude Code فرض می‌کند که یک پنجره متنی 200K برای هر شناسه مدلی که شناسایی نمی‌کند وجود دارد. برای مدلی با پنجره واقعی متفاوت، CLAUDE_CODE_AUTO_COMPACT_WINDOW را درست زیر آن اضافه کنید تا فشرده‌سازی خودکار خیلی زود فعال نشود.",
     "failedSave": "ذخیره‌سازی ناموفق بود",
     "profileSyncTitle": "همگام‌سازی خودکار پروفایل CLI",
@@ -12821,7 +12821,7 @@
         "description": "پس از همگام‌سازی ارائه‌دهنده-مدل، پروفایل‌های ~/.codex/*.config.toml را از کاتالوگ زنده بازسازی کنید. این کار هرگز پیکربندی فعال یا پیش‌فرض Codex را تغییر نمی‌دهد و به طور پیش‌فرض غیرفعال است."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "پس از همگام‌سازی ارائه‌دهنده-مدل، پروفایل‌های ~/.claude/profiles/<name>/settings.json را از کاتالوگ زنده بازسازی کنید. این کار هرگز پیکربندی فعال یا پیش‌فرض Claude را تغییر نمی‌دهد و به طور پیش‌فرض غیرفعال است."
+        "description": "پس از همگام‌سازی ارائه‌دهنده-مدل، پروفایل‌های ~/.claude/profiles/'<name>'/settings.json را از کاتالوگ زنده بازسازی کنید. این کار هرگز پیکربندی فعال یا پیش‌فرض Claude را تغییر نمی‌دهد و به طور پیش‌فرض غیرفعال است."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "غیرفعال کردن نقطه پایانی بررسی سلامت نمونه محلی."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "همچنین در Open VSX (Cursor، Windsurf، VSCodium…)",
     "dismissAriaLabel": "بستن"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "آگهی <gateway-alias>/<model> شناسه‌های آینه‌ای در /v1/models برای مدل‌هایی که مالک قانونی آن‌ها هیچ اعتبار فعالی ندارد اما یک دروازه عبوری با اعتبار فعال آن‌ها را مسیریابی می‌کند. هشدار: در صورت فعال‌سازی جهانی، ورودی‌های کاتالوگ را برای تمام مشتریان اضافه می‌کند.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "آگهی '<gateway-alias>'/'<model>' شناسه‌های آینه‌ای در /v1/models برای مدل‌هایی که مالک قانونی آن‌ها هیچ اعتبار فعالی ندارد اما یک دروازه عبوری با اعتبار فعال آن‌ها را مسیریابی می‌کند. هشدار: در صورت فعال‌سازی جهانی، ورودی‌های کاتالوگ را برای تمام مشتریان اضافه می‌کند.",
   "radarPage": {
     "title": "کاتالوگ رادار",
     "subtitle": "کاتالوگ مدل رایگان غنی‌شده با هوش جمعی",

@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "गेटवे मॉडल खोज के लिए settings.json",
     "ccOnboardingCopy": "कॉपी",
     "ccOnboardingCopied": "कॉपी किया गया",
-    "ccOnboardingKeyPlaceholder": "<आपकी OmniRoute API कुंजी>",
+    "ccOnboardingKeyPlaceholder": "'<आपकी OmniRoute API कुंजी>'",
     "ccOnboardingWindowNote": "Claude Code किसी भी मॉडल आईडी के लिए 200K संदर्भ विंडो मानता है जिसे वह पहचानता नहीं है। यदि किसी मॉडल की वास्तविक विंडो अलग है, तो इसे उसके ठीक नीचे CLAUDE_CODE_AUTO_COMPACT_WINDOW जोड़ें ताकि ऑटो-कम्पैक्शन बहुत जल्दी न चले।",
     "failedSave": "सहेजने में विफल",
     "profileSyncTitle": "CLI प्रोफ़ाइल ऑटो-सिंक",
@@ -12821,7 +12821,7 @@
         "description": "प्रदाता-मॉडल सिंक्रनाइज़ेशन के बाद, लाइव कैटलॉग से ~/.codex/*.config.toml प्रोफाइल को पुनरुत्पादित करें। यह सक्रिय या डिफ़ॉल्ट Codex कॉन्फ़िगरेशन को कभी नहीं बदलता है और डिफ़ॉल्ट रूप से बंद रहता है।"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "प्रदाता-मॉडल सिंक्रनाइज़ेशन के बाद, लाइव कैटलॉग से ~/.claude/profiles/<name>/settings.json प्रोफाइल को पुनरुत्पादित करें। यह सक्रिय या डिफ़ॉल्ट Claude कॉन्फ़िगरेशन को कभी नहीं बदलता है और डिफ़ॉल्ट रूप से बंद रहता है।"
+        "description": "प्रदाता-मॉडल सिंक्रनाइज़ेशन के बाद, लाइव कैटलॉग से ~/.claude/profiles/'<name>'/settings.json प्रोफाइल को पुनरुत्पादित करें। यह सक्रिय या डिफ़ॉल्ट Claude कॉन्फ़िगरेशन को कभी नहीं बदलता है और डिफ़ॉल्ट रूप से बंद रहता है।"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "स्थानीय इंस्टेंस स्वास्थ्य-जांच एंडपॉइंट को अक्षम करें।"
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX पर भी उपलब्ध (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "खारिज करें"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/<model> मिरर आईडी को /v1/models पर विज्ञापित करें उन मॉडलों के लिए जिनके कैनोनिकल मालिक के पास कोई सक्रिय क्रेडेंशियल नहीं है लेकिन एक पासथ्रू गेटवे के साथ सक्रिय क्रेडेंशियल उन्हें रूट करता है। चेतावनी: जब वैश्विक रूप से सक्षम किया जाता है तो सभी क्लाइंट्स के लिए कैटलॉग प्रविष्टियाँ जोड़ता है।",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/'<model>' मिरर आईडी को /v1/models पर विज्ञापित करें उन मॉडलों के लिए जिनके कैनोनिकल मालिक के पास कोई सक्रिय क्रेडेंशियल नहीं है लेकिन एक पासथ्रू गेटवे के साथ सक्रिय क्रेडेंशियल उन्हें रूट करता है। चेतावनी: जब वैश्विक रूप से सक्षम किया जाता है तो सभी क्लाइंट्स के लिए कैटलॉग प्रविष्टियाँ जोड़ता है।",
   "radarPage": {
     "title": "रडार कैटलॉग",
     "subtitle": "समुदाय की बुद्धिमत्ता से समृद्ध मुफ्त मॉडल कैटलॉग",

@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json dla odkrywania modelu bramy",
     "ccOnboardingCopy": "Kopiuj",
     "ccOnboardingCopied": "Skopiowano",
-    "ccOnboardingKeyPlaceholder": "<twój klucz API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<twój klucz API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code zakłada okno kontekstowe 200K dla każdego identyfikatora modelu, którego nie rozpoznaje. Dla modelu z innym rzeczywistym oknem, dodaj CLAUDE_CODE_AUTO_COMPACT_WINDOW tuż pod nim, aby automatyczna kompresja nie uruchomiła się zbyt wcześnie.",
     "failedSave": "Nie udało się zapisać",
     "profileSyncTitle": "Automatyczna synchronizacja profili CLI",
@@ -12821,7 +12821,7 @@
         "description": "Po synchronizacji dostawców i modeli wygeneruj ponownie profile ~/.codex/*.config.toml z aktywnego katalogu. To nigdy nie zmienia aktywnej ani domyślnej konfiguracji Codex i jest domyślnie wyłączone."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Po synchronizacji dostawców i modeli wygeneruj ponownie profile ~/.claude/profiles/<name>/settings.json z aktywnego katalogu. To nigdy nie zmienia aktywnej ani domyślnej konfiguracji Claude i jest domyślnie wyłączone."
+        "description": "Po synchronizacji dostawców i modeli wygeneruj ponownie profile ~/.claude/profiles/'<name>'/settings.json z aktywnego katalogu. To nigdy nie zmienia aktywnej ani domyślnej konfiguracji Claude i jest domyślnie wyłączone."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Wyłącz punkt końcowy sprawdzania stanu lokalnej instancji."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Dostępne również na Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Odrzuć"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Reklamuj identyfikatory luster <gateway-alias>/<model> na /v1/models dla modeli, których kanoniczny właściciel nie ma aktywnego poświadczenia, ale brama passthrough z aktywnym poświadczeniem je kieruje. Uwaga: dodaje wpisy katalogu dla wszystkich klientów, gdy jest włączone globalnie.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Reklamuj identyfikatory luster '<gateway-alias>'/'<model>' na /v1/models dla modeli, których kanoniczny właściciel nie ma aktywnego poświadczenia, ale brama passthrough z aktywnym poświadczeniem je kieruje. Uwaga: dodaje wpisy katalogu dla wszystkich klientów, gdy jest włączone globalnie.",
   "radarPage": {
     "title": "Katalog Radar",
     "subtitle": "Bezpłatny katalog modeli wzbogacony o inteligencję społeczności",

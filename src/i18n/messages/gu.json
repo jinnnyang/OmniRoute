@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "ગેટવે મોડલ શોધ માટે settings.json",
     "ccOnboardingCopy": "કોપી",
     "ccOnboardingCopied": "કોપી કરેલ",
-    "ccOnboardingKeyPlaceholder": "<તમારો OmniRoute API કી>",
+    "ccOnboardingKeyPlaceholder": "'<તમારો OmniRoute API કી>'",
     "ccOnboardingWindowNote": "Claude Code એ કોઈપણ મોડેલ આઈડી માટે 200K સંદર્ભ વિન્ડો માન્ય રાખે છે જે તે ઓળખતું નથી. જુદા રિયલ વિન્ડો ધરાવતા મોડેલ માટે, નીચે CLAUDE_CODE_AUTO_COMPACT_WINDOW ઉમેરો જેથી ઓટો-કમ્પેક્શન ખૂબ જ વહેલા ન ફાયર થાય.",
     "failedSave": "સાચવવામાં નિષ્ફળ",
     "profileSyncTitle": "CLI પ્રોફાઇલ ઓટો-સિંક",
@@ -12821,7 +12821,7 @@
         "description": "પ્રદાતા-મોડલ સિંક્રનાઇઝેશન પછી, લાઇવ કૅટેલોગમાંથી ~/.codex/*.config.toml પ્રોફાઇલ્સ ફરીથી જનરેટ કરો. આ ક્યારેય સક્રિય અથવા ડિફોલ્ટ Codex રૂપરેખાંકનને બદલતું નથી અને ડિફોલ્ટ રૂપે off હોય છે."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "પ્રદાતા-મોડલ સિંક્રનાઇઝેશન પછી, લાઇવ કૅટેલોગમાંથી ~/.claude/profiles/<name>/settings.json પ્રોફાઇલ્સ ફરીથી જનરેટ કરો. આ ક્યારેય સક્રિય અથવા ડિફોલ્ટ Claude રૂપરેખાંકનને બદલતું નથી અને ડિફોલ્ટ રૂપે off હોય છે."
+        "description": "પ્રદાતા-મોડલ સિંક્રનાઇઝેશન પછી, લાઇવ કૅટેલોગમાંથી ~/.claude/profiles/'<name>'/settings.json પ્રોફાઇલ્સ ફરીથી જનરેટ કરો. આ ક્યારેય સક્રિય અથવા ડિફોલ્ટ Claude રૂપરેખાંકનને બદલતું નથી અને ડિફોલ્ટ રૂપે off હોય છે."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "સ્થાનિક ઇન્સ્ટન્સ હેલ્થ-ચેક એન્ડપોઇન્ટ નિષ્ક્રિય કરો."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX પર પણ ઉપલબ્ધ (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "બંધ કરો"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/<model> મિરર આઈડીઓને /v1/models પર જાહેરાત આપો તે મોડલ્સ માટે જેમના કૅનોનિકલ માલિક પાસે કોઈ સક્રિય પ્રમાણપત્ર નથી પરંતુ એક પાસથ્રૂ ગેટવે સાથે સક્રિય પ્રમાણપત્ર તેમને માર્ગદર્શિત કરે છે. ચેતવણી: વૈશ્વિક રીતે સક્રિય કરવામાં આવે ત્યારે તમામ ક્લાયન્ટ્સ માટે કૅટલોગ એન્ટ્રીઓ ઉમેરે છે.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/'<model>' મિરર આઈડીઓને /v1/models પર જાહેરાત આપો તે મોડલ્સ માટે જેમના કૅનોનિકલ માલિક પાસે કોઈ સક્રિય પ્રમાણપત્ર નથી પરંતુ એક પાસથ્રૂ ગેટવે સાથે સક્રિય પ્રમાણપત્ર તેમને માર્ગદર્શિત કરે છે. ચેતવણી: વૈશ્વિક રીતે સક્રિય કરવામાં આવે ત્યારે તમામ ક્લાયન્ટ્સ માટે કૅટલોગ એન્ટ્રીઓ ઉમેરે છે.",
   "radarPage": {
     "title": "રેડાર કેટલોગ",
     "subtitle": "સમુદાયની બુદ્ધિથી સમૃદ્ધ મફત મોડલ કેટલોગ",

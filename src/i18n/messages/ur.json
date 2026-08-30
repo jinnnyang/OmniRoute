@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "gateway ماڈل کی دریافت کے لیے settings.json",
     "ccOnboardingCopy": "کاپی",
     "ccOnboardingCopied": "نقل کیا گیا",
-    "ccOnboardingKeyPlaceholder": "<آپ کا OmniRoute API کلید>",
+    "ccOnboardingKeyPlaceholder": "'<آپ کا OmniRoute API کلید>'",
     "ccOnboardingWindowNote": "Claude Code کسی بھی ماڈل ID کے لیے 200K سیاق و سباق کی ونڈو فرض کرتا ہے جسے یہ نہیں پہچانتا۔ اگر کسی ماڈل کی حقیقی ونڈو مختلف ہو تو اس کے نیچے CLAUDE_CODE_AUTO_COMPACT_WINDOW شامل کریں تاکہ خودکار کمپیکشن بہت جلد نہ ہو۔",
     "failedSave": "محفوظ کرنے میں ناکامی",
     "profileSyncTitle": "CLI پروفائل کی خودکار مطابقت پذیری",
@@ -12821,7 +12821,7 @@
         "description": "فراہم کنندہ-ماڈل سنکرونائزیشن کے بعد، لائیو کیٹلاگ سے ~/.codex/*.config.toml پروفائلز کو دوبارہ تیار کریں۔ یہ فعال یا پہلے سے طے شدہ Codex کنفیگریشن کو کبھی تبدیل نہیں کرتا ہے اور پہلے سے طے شدہ طور پر بند ہے۔"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "فراہم کنندہ-ماڈل سنکرونائزیشن کے بعد، لائیو کیٹلاگ سے ~/.claude/profiles/<name>/settings.json پروفائلز کو دوبارہ تیار کریں۔ یہ فعال یا پہلے سے طے شدہ Claude کنفیگریشن کو کبھی تبدیل نہیں کرتا ہے اور پہلے سے طے شدہ طور پر بند ہے۔"
+        "description": "فراہم کنندہ-ماڈل سنکرونائزیشن کے بعد، لائیو کیٹلاگ سے ~/.claude/profiles/'<name>'/settings.json پروفائلز کو دوبارہ تیار کریں۔ یہ فعال یا پہلے سے طے شدہ Claude کنفیگریشن کو کبھی تبدیل نہیں کرتا ہے اور پہلے سے طے شدہ طور پر بند ہے۔"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "مقامی انسٹنس ہیلتھ چیک اینڈ پوائنٹ کو غیر فعال کریں۔"
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX پر بھی دستیاب ہے (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "خارج کریں"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/<model> کی عکاسی کے IDs کو /v1/models پر اشتہار دیں ان ماڈلز کے لیے جن کے حقیقی مالک کے پاس کوئی فعال سند نہیں ہے لیکن ایک پاس تھرو گیٹ وے جس کے پاس ایک فعال سند ہے انہیں روٹ کرتا ہے۔ انتباہ: جب عالمی طور پر فعال کیا جائے تو یہ تمام کلائنٹس کے لیے کیٹلاگ کی اندراجات شامل کرتا ہے۔",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/'<model>' کی عکاسی کے IDs کو /v1/models پر اشتہار دیں ان ماڈلز کے لیے جن کے حقیقی مالک کے پاس کوئی فعال سند نہیں ہے لیکن ایک پاس تھرو گیٹ وے جس کے پاس ایک فعال سند ہے انہیں روٹ کرتا ہے۔ انتباہ: جب عالمی طور پر فعال کیا جائے تو یہ تمام کلائنٹس کے لیے کیٹلاگ کی اندراجات شامل کرتا ہے۔",
   "radarPage": {
     "title": "ریڈار کیٹلاگ",
     "subtitle": "کمیونٹی کی ذہانت سے بھرپور مفت ماڈل کیٹلاگ",

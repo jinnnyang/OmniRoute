@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "gatewayモデル発見のためのsettings.json",
     "ccOnboardingCopy": "コピー",
     "ccOnboardingCopied": "コピーしました",
-    "ccOnboardingKeyPlaceholder": "<あなたのOmniRoute APIキー>",
+    "ccOnboardingKeyPlaceholder": "'<あなたのOmniRoute APIキー>'",
     "ccOnboardingWindowNote": "Claude Codeは、認識できないモデルIDに対して200Kのコンテキストウィンドウを仮定します。異なる実際のウィンドウを持つモデルの場合は、CLAUDE_CODE_AUTO_COMPACT_WINDOWをその直下に追加して、自動圧縮が早すぎることがないようにします。",
     "failedSave": "保存に失敗しました",
     "profileSyncTitle": "CLIプロファイルの自動同期",
@@ -12821,7 +12821,7 @@
         "description": "After provider-model synchronization, regenerate ~/.codex/*.config.toml profiles from the live catalog. This never changes the active or default Codex configuration and is off by default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disable the local instance health-check endpoint."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSXでも利用可能（Cursor、Windsurf、VSCodiumなど）",
     "dismissAriaLabel": "閉じる"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "<gateway-alias>/<model> ミラー ID を /v1/models で広告します。これは、正規の所有者にアクティブな資格情報がないが、パススルーゲートウェイがアクティブな資格情報でルーティングされるモデルに適用されます。警告: グローバルに有効にすると、すべてのクライアントにカタログエントリが追加されます。",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "'<gateway-alias>'/'<model>' ミラー ID を /v1/models で広告します。これは、正規の所有者にアクティブな資格情報がないが、パススルーゲートウェイがアクティブな資格情報でルーティングされるモデルに適用されます。警告: グローバルに有効にすると、すべてのクライアントにカタログエントリが追加されます。",
   "radarPage": {
     "title": "レーダーカタログ",
     "subtitle": "コミュニティインテリジェンスで強化された無料モデルカタログ",

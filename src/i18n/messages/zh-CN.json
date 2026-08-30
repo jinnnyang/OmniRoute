@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "网关模型发现的 settings.json",
     "ccOnboardingCopy": "复制",
     "ccOnboardingCopied": "已复制",
-    "ccOnboardingKeyPlaceholder": "<你的 OmniRoute API 密钥>",
+    "ccOnboardingKeyPlaceholder": "'<你的 OmniRoute API 密钥>'",
     "ccOnboardingWindowNote": "Claude Code 对所有不认识的模型 ID 都假设 200K 上下文窗口。如果模型的实际窗口不同，请在下方添加 CLAUDE_CODE_AUTO_COMPACT_WINDOW，这样自动压缩就不会过早触发。",
     "failedSave": "保存失败",
     "profileSyncTitle": "CLI 配置文件自动同步",
@@ -12821,7 +12821,7 @@
         "description": "提供者-模型同步后，从实时目录重新生成 ~/.codex/*.config.toml 配置文件。这绝不会更改活动或默认的 Codex 配置，并且默认关闭。"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "提供者-模型同步后，从实时目录重新生成 ~/.claude/profiles/<name>/settings.json 配置文件。这绝不会更改活动或默认的 Claude 配置，并且默认关闭。"
+        "description": "提供者-模型同步后，从实时目录重新生成 ~/.claude/profiles/'<name>'/settings.json 配置文件。这绝不会更改活动或默认的 Claude 配置，并且默认关闭。"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "禁用本地实例健康检查端点。"
@@ -13197,7 +13197,7 @@
     "secondaryNote": "同样支持 Open VSX（Cursor、Windsurf、VSCodium…）",
     "dismissAriaLabel": "关闭"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "在/v1/models上为那些规范所有者没有活动凭证但通过一个具有活动凭证的通道网关路由的模型宣传<gateway-alias>/<model>镜像ID。警告：当全局启用时，会为所有客户端添加目录条目。",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "在/v1/models上为那些规范所有者没有活动凭证但通过一个具有活动凭证的通道网关路由的模型宣传'<gateway-alias>'/'<model>'镜像ID。警告：当全局启用时，会为所有客户端添加目录条目。",
   "radarPage": {
     "title": "雷达目录",
     "subtitle": "由社区智能丰富的免费模型目录",

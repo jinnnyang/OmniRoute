@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json per la scoperta modelli gateway",
     "ccOnboardingCopy": "Copia",
     "ccOnboardingCopied": "Copiato",
-    "ccOnboardingKeyPlaceholder": "<la tua chiave API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<la tua chiave API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code assume una finestra di contesto di 200K per qualsiasi id modello non riconosciuto. Per un modello con una finestra reale diversa, aggiungi CLAUDE_CODE_AUTO_COMPACT_WINDOW subito sotto in modo che l'auto-compattazione non si attivi troppo presto.",
     "failedSave": "Impossibile salvare",
     "profileSyncTitle": "Sincronizzazione automatica profili CLI",
@@ -12821,7 +12821,7 @@
         "description": "Dopo la sincronizzazione provider-modello, rigenera i profili ~/.codex/*.config.toml dal catalogo live. Questa operazione non modifica mai la configurazione attiva o predefinita di Codex ed è disattivata per impostazione predefinita."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Dopo la sincronizzazione provider-modello, rigenera i profili ~/.claude/profiles/<name>/settings.json dal catalogo live. Questa operazione non modifica mai la configurazione attiva o predefinita di Claude ed è disattivata per impostazione predefinita."
+        "description": "Dopo la sincronizzazione provider-modello, rigenera i profili ~/.claude/profiles/'<name>'/settings.json dal catalogo live. Questa operazione non modifica mai la configurazione attiva o predefinita di Claude ed è disattivata per impostazione predefinita."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disabilita l'endpoint di health check dell'istanza locale."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Disponibile anche su Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Ignora"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Mostra gli id specchio <gateway-alias>/<model> su /v1/models per i modelli il cui proprietario canonico non ha credenziali attive ma un gateway di transito con una credenziale attiva li instrada. Attenzione: aggiunge voci nel catalogo per tutti i client quando abilitato globalmente.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Mostra gli id specchio '<gateway-alias>'/'<model>' su /v1/models per i modelli il cui proprietario canonico non ha credenziali attive ma un gateway di transito con una credenziale attiva li instrada. Attenzione: aggiunge voci nel catalogo per tutti i client quando abilitato globalmente.",
   "radarPage": {
     "title": "Catalogo Radar",
     "subtitle": "Catalogo di modelli gratuito arricchito con intelligenza della comunità",

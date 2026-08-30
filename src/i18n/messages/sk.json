@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json pre objavovanie modelu brány",
     "ccOnboardingCopy": "Kopírovať",
     "ccOnboardingCopied": "Skopírované",
-    "ccOnboardingKeyPlaceholder": "<váš kľúč API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<váš kľúč API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code predpokladá kontextové okno 200K pre akékoľvek ID modelu, ktoré nerozpoznáva. Pre model s iným skutočným oknom pridajte CLAUDE_CODE_AUTO_COMPACT_WINDOW tesne pod ním, aby sa automatická kompresia nespustila príliš skoro.",
     "failedSave": "Nepodarilo sa uložiť",
     "profileSyncTitle": "Automatická synchronizácia profilov CLI",
@@ -12821,7 +12821,7 @@
         "description": "Po synchronizácii modelov poskytovateľov pregenerovať profily ~/.codex/*.config.toml zo živého katalógu. Toto nikdy nezmení aktívnu ani predvolenú konfiguráciu Codexu a je to predvolene vypnuté."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Po synchronizácii modelov poskytovateľov pregenerovať profily ~/.claude/profiles/<name>/settings.json zo živého katalógu. Toto nikdy nezmení aktívnu ani predvolenú konfiguráciu Claude a je to predvolene vypnuté."
+        "description": "Po synchronizácii modelov poskytovateľov pregenerovať profily ~/.claude/profiles/'<name>'/settings.json zo živého katalógu. Toto nikdy nezmení aktívnu ani predvolenú konfiguráciu Claude a je to predvolene vypnuté."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Zakázať koncový bod kontroly stavu lokálnej inštancie."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Dostupné aj na Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Zavrieť"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Inzerujte <gateway-alias>/<model> zrkadlové ID na /v1/models pre modely, ktorých kanonický vlastník nemá aktívnu certifikáciu, ale pasívny gateway s aktívnou certifikáciou ich smeruje. Upozornenie: pri globálnom povolení pridáva záznamy do katalógu pre všetkých klientov.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Inzerujte '<gateway-alias>'/'<model>' zrkadlové ID na /v1/models pre modely, ktorých kanonický vlastník nemá aktívnu certifikáciu, ale pasívny gateway s aktívnou certifikáciou ich smeruje. Upozornenie: pri globálnom povolení pridáva záznamy do katalógu pre všetkých klientov.",
   "radarPage": {
     "title": "Radar katalóg",
     "subtitle": "Bezplatný modelový katalóg obohatený komunitnou inteligenciou",

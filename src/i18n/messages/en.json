@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json for gateway model discovery",
     "ccOnboardingCopy": "Copy",
     "ccOnboardingCopied": "Copied",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Claude Code assumes a 200K context window for any model id it does not recognize. For a model with a different real window, add CLAUDE_CODE_AUTO_COMPACT_WINDOW just under it so auto-compaction does not fire too early.",
     "failedSave": "Failed to save",
     "profileSyncTitle": "CLI profile auto-sync",
@@ -12827,7 +12827,7 @@
         "description": "After provider-model synchronization, regenerate ~/.codex/*.config.toml profiles from the live catalog. This never changes the active or default Codex configuration and is off by default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disable the local instance health-check endpoint."
@@ -13199,7 +13199,7 @@
     "secondaryNote": "Also on Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Dismiss"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Advertise <gateway-alias>/<model> mirror ids on /v1/models for models whose canonical owner has no active credential but a passthrough gateway with an active credential routes them. Warning: adds catalog entries for all clients when enabled globally.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Advertise '<gateway-alias>'/'<model>' mirror ids on /v1/models for models whose canonical owner has no active credential but a passthrough gateway with an active credential routes them. Warning: adds catalog entries for all clients when enabled globally.",
   "radarPage": {
     "title": "Radar Catalog",
     "subtitle": "Free model catalog enriched with community intelligence",

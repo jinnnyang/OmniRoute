@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json a gateway modell felfedezéshez",
     "ccOnboardingCopy": "Másolás",
     "ccOnboardingCopied": "Másolt",
-    "ccOnboardingKeyPlaceholder": "<az OmniRoute API kulcsod>",
+    "ccOnboardingKeyPlaceholder": "'<az OmniRoute API kulcsod>'",
     "ccOnboardingWindowNote": "A Claude Code 200K kontextusablakot feltételez bármely olyan modellazonosító esetén, amelyet nem ismer fel. Ha a modellnek eltérő valós ablaka van, add hozzá a CLAUDE_CODE_AUTO_COMPACT_WINDOW-t közvetlenül alá, hogy az automatikus tömörítés ne lépjen működésbe túl korán.",
     "failedSave": "Nem sikerült menteni",
     "profileSyncTitle": "CLI-profil automatikus szinkronizálása",
@@ -12821,7 +12821,7 @@
         "description": "A szolgáltató-modell szinkronizálás után a ~/.codex/*.config.toml profilok újragenerálása az élő katalógusból. Ez soha nem változtatja meg az aktív vagy alapértelmezett Codex konfigurációt, és alapértelmezés szerint ki van kapcsolva."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "A szolgáltató-modell szinkronizálás után a ~/.claude/profiles/<name>/settings.json profilok újragenerálása az élő katalógusból. Ez soha nem változtatja meg az aktív vagy alapértelmezett Claude konfigurációt, és alapértelmezés szerint ki van kapcsolva."
+        "description": "A szolgáltató-modell szinkronizálás után a ~/.claude/profiles/'<name>'/settings.json profilok újragenerálása az élő katalógusból. Ez soha nem változtatja meg az aktív vagy alapértelmezett Claude konfigurációt, és alapértelmezés szerint ki van kapcsolva."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "A helyi példány állapotellenőrző végpontjának letiltása."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Elérhető az Open VSX-en is (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Elvetés"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Hirdesse a <gateway-alias>/<model> tükör azonosítókat a /v1/models-on olyan modellekhez, amelyek kanonikus tulajdonosa nem rendelkezik aktív hitelesítő adatokkal, de egy átjáró, amelynek aktív hitelesítő adatai vannak, irányítja őket. Figyelmeztetés: globális engedélyezés esetén a katalógus bejegyzéseket ad hozzá az összes klienshez.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Hirdesse a '<gateway-alias>'/'<model>' tükör azonosítókat a /v1/models-on olyan modellekhez, amelyek kanonikus tulajdonosa nem rendelkezik aktív hitelesítő adatokkal, de egy átjáró, amelynek aktív hitelesítő adatai vannak, irányítja őket. Figyelmeztetés: globális engedélyezés esetén a katalógus bejegyzéseket ad hozzá az összes klienshez.",
   "radarPage": {
     "title": "Radar Katalógus",
     "subtitle": "Közösségi intelligenciával gazdagított ingyenes modell katalógus",

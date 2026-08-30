@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json pour la découverte des modèles de la passerelle",
     "ccOnboardingCopy": "Copier",
     "ccOnboardingCopied": "Copié",
-    "ccOnboardingKeyPlaceholder": "<votre clé API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<votre clé API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code suppose une fenêtre de contexte de 200K pour tout identifiant de modèle qu'il ne reconnaît pas. Pour un modèle dont la fenêtre réelle est différente, ajoutez CLAUDE_CODE_AUTO_COMPACT_WINDOW juste en dessous afin que le compactage automatique ne se déclenche pas trop tôt.",
     "failedSave": "Échec de l'enregistrement",
     "profileSyncTitle": "Synchronisation automatique des profils CLI",
@@ -12821,7 +12821,7 @@
         "description": "Après la synchronisation fournisseur-modèle, régénérer les profils ~/.codex/*.config.toml à partir du catalogue en direct. Cela ne modifie jamais la configuration Codex active ou par défaut et est désactivé par défaut."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Après la synchronisation fournisseur-modèle, régénérer les profils ~/.claude/profiles/<name>/settings.json à partir du catalogue en direct. Cela ne modifie jamais la configuration Claude active ou par défaut et est désactivé par défaut."
+        "description": "Après la synchronisation fournisseur-modèle, régénérer les profils ~/.claude/profiles/'<name>'/settings.json à partir du catalogue en direct. Cela ne modifie jamais la configuration Claude active ou par défaut et est désactivé par défaut."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Désactiver le point de terminaison de vérification de l'état de l'instance locale."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Aussi sur Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Ignorer"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Annoncez les identifiants de miroir <gateway-alias>/<model> sur /v1/models pour les modèles dont le propriétaire canonique n'a pas de crédentiel actif mais un passerelle de contournement avec un crédentiel actif les achemine. Avertissement : ajoute des entrées de catalogue pour tous les clients lorsqu'il est activé globalement.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Annoncez les identifiants de miroir '<gateway-alias>'/'<model>' sur /v1/models pour les modèles dont le propriétaire canonique n'a pas de crédentiel actif mais un passerelle de contournement avec un crédentiel actif les achemine. Avertissement : ajoute des entrées de catalogue pour tous les clients lorsqu'il est activé globalement.",
   "radarPage": {
     "title": "Catalogue Radar",
     "subtitle": "Catalogue de modèles gratuit enrichi par l'intelligence communautaire",

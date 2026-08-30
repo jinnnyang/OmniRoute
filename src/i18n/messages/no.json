@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json for gateway modelloppdagelse",
     "ccOnboardingCopy": "Kopier",
     "ccOnboardingCopied": "Kopiert",
-    "ccOnboardingKeyPlaceholder": "<din OmniRoute API-nøkkel>",
+    "ccOnboardingKeyPlaceholder": "'<din OmniRoute API-nøkkel>'",
     "ccOnboardingWindowNote": "Claude Code antar et 200K kontekstvindu for enhver modell-ID den ikke gjenkjenner. For en modell med et annet reelt vindu, legg til CLAUDE_CODE_AUTO_COMPACT_WINDOW rett under den, slik at automatisk komprimering ikke aktiveres for tidlig.",
     "failedSave": "Kunne ikke lagre",
     "profileSyncTitle": "Automatisk synkronisering av CLI-profiler",
@@ -12821,7 +12821,7 @@
         "description": "Etter synkronisering av leverandørmodell, regenerer ~/.codex/*.config.toml-profiler fra den aktive katalogen. Dette endrer aldri den aktive eller standard Codex-konfigurasjonen og er av som standard."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Etter synkronisering av leverandørmodell, regenerer ~/.claude/profiles/<name>/settings.json-profiler fra den aktive katalogen. Dette endrer aldri den aktive eller standard Claude-konfigurasjonen og er av som standard."
+        "description": "Etter synkronisering av leverandørmodell, regenerer ~/.claude/profiles/'<name>'/settings.json-profiler fra den aktive katalogen. Dette endrer aldri den aktive eller standard Claude-konfigurasjonen og er av som standard."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Deaktiver helsesjekk-endepunktet for den lokale instansen."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Også på Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Avvis"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Reklamer <gateway-alias>/<model> speil-id-er på /v1/models for modeller hvis kanoniske eier ikke har aktive legitimasjoner, men en passthrough-gateway med aktive legitimasjoner ruter dem. Advarsel: legger til katalogoppføringer for alle klienter når det er aktivert globalt.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Reklamer '<gateway-alias>'/'<model>' speil-id-er på /v1/models for modeller hvis kanoniske eier ikke har aktive legitimasjoner, men en passthrough-gateway med aktive legitimasjoner ruter dem. Advarsel: legger til katalogoppføringer for alle klienter når det er aktivert globalt.",
   "radarPage": {
     "title": "Radar Katalog",
     "subtitle": "Gratis modellkatalog beriket med fellesskapsintelligens",

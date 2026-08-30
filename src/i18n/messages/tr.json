@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "gateway modeli keşfi için settings.json",
     "ccOnboardingCopy": "Kopyala",
     "ccOnboardingCopied": "Kopyalandı",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API anahtarınız>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API anahtarınız>'",
     "ccOnboardingWindowNote": "Claude Code, tanımadığı herhangi bir model kimliği için 200K bağlam penceresi varsayıyor. Farklı bir gerçek pencereye sahip bir model için, otomatik sıkıştırmanın çok erken başlamaması için hemen altına CLAUDE_CODE_AUTO_COMPACT_WINDOW ekleyin.",
     "failedSave": "Kaydedilemedi",
     "profileSyncTitle": "CLI profili otomatik senkronizasyonu",
@@ -12821,7 +12821,7 @@
         "description": "Sağlayıcı-model senkronizasyonundan sonra, canlı katalogdan ~/.codex/*.config.toml profillerini yeniden oluşturun. Bu işlem aktif veya varsayılan Codex yapılandırmasını asla değiştirmez ve varsayılan olarak kapalıdır."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Sağlayıcı-model senkronizasyonundan sonra, canlı katalogdan ~/.claude/profiles/<name>/settings.json profillerini yeniden oluşturun. Bu işlem aktif veya varsayılan Claude yapılandırmasını asla değiştirmez ve varsayılan olarak kapalıdır."
+        "description": "Sağlayıcı-model senkronizasyonundan sonra, canlı katalogdan ~/.claude/profiles/'<name>'/settings.json profillerini yeniden oluşturun. Bu işlem aktif veya varsayılan Claude yapılandırmasını asla değiştirmez ve varsayılan olarak kapalıdır."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Yerel örnek sağlık kontrolü (health-check) uç noktasını devre dışı bırakın."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX'te de mevcut (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Kapat"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "<gateway-alias>/<model> ayna kimliklerini /v1/models üzerinde, kanonik sahibi aktif bir kimliğe sahip olmayan ancak aktif bir kimliğe sahip bir geçiş geçidi tarafından yönlendirilen modeller için tanıtın. Uyarı: Küresel olarak etkinleştirildiğinde tüm istemciler için katalog girişleri ekler.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "'<gateway-alias>'/'<model>' ayna kimliklerini /v1/models üzerinde, kanonik sahibi aktif bir kimliğe sahip olmayan ancak aktif bir kimliğe sahip bir geçiş geçidi tarafından yönlendirilen modeller için tanıtın. Uyarı: Küresel olarak etkinleştirildiğinde tüm istemciler için katalog girişleri ekler.",
   "radarPage": {
     "title": "Radar Kataloğu",
     "subtitle": "Topluluk zekası ile zenginleştirilmiş ücretsiz model kataloğu",

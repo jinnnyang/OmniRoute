@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json portin mallin löytämiseksi",
     "ccOnboardingCopy": "Kopioi",
     "ccOnboardingCopied": "Kopioitu",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Claude Code olettaa 200K kontekstin ikkunan kaikille mallin tunnuksille, joita se ei tunnista. Mallille, jolla on eri todellinen ikkuna, lisää CLAUDE_CODE_AUTO_COMPACT_WINDOW sen alle, jotta automaattinen tiivistys ei käynnisty liian aikaisin.",
     "failedSave": "Tallennus epäonnistui",
     "profileSyncTitle": "CLI-profiilien automaattinen synkronointi",
@@ -12821,7 +12821,7 @@
         "description": "Tarjoajamallien synkronoinnin jälkeen luo ~/.codex/*.config.toml -profiilit uudelleen reaaliaikaisesta luettelosta. Tämä ei koskaan muuta aktiivista tai oletusarvoista Codex-konfiguraatiota ja on oletuksena pois päältä."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Tarjoajamallien synkronoinnin jälkeen luo ~/.claude/profiles/<name>/settings.json -profiilit uudelleen reaaliaikaisesta luettelosta. Tämä ei koskaan muuta aktiivista tai oletusarvoista Claude-konfiguraatiota ja on oletuksena pois päältä."
+        "description": "Tarjoajamallien synkronoinnin jälkeen luo ~/.claude/profiles/'<name>'/settings.json -profiilit uudelleen reaaliaikaisesta luettelosta. Tämä ei koskaan muuta aktiivista tai oletusarvoista Claude-konfiguraatiota ja on oletuksena pois päältä."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Poista käytöstä paikallisen instanssin terveystarkistuksen päätepiste."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Myös Open VSX:ssä (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Sulje"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Mainosta <gateway-alias>/<model> peilid tunnuksia /v1/models -osoitteessa malleille, joiden kanoninen omistaja ei omaa aktiivista tunnistetta, mutta ohjaa niitä aktiivisella tunnisteella varustettu ohitusportti. Varoitus: lisää luettelo-merkintöjä kaikille asiakkaille, kun se on otettu käyttöön globaalisti.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Mainosta '<gateway-alias>'/'<model>' peilid tunnuksia /v1/models -osoitteessa malleille, joiden kanoninen omistaja ei omaa aktiivista tunnistetta, mutta ohjaa niitä aktiivisella tunnisteella varustettu ohitusportti. Varoitus: lisää luettelo-merkintöjä kaikille asiakkaille, kun se on otettu käyttöön globaalisti.",
   "radarPage": {
     "title": "Radar-katalogi",
     "subtitle": "Ilmainen mallikatalogi, joka on rikastettu yhteisön tiedoilla",

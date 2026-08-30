@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "gateway मॉडेल शोधासाठी settings.json",
     "ccOnboardingCopy": "कॉपी",
     "ccOnboardingCopied": "कॉपी केलेले",
-    "ccOnboardingKeyPlaceholder": "<तुमचा OmniRoute API की>",
+    "ccOnboardingKeyPlaceholder": "'<तुमचा OmniRoute API की>'",
     "ccOnboardingWindowNote": "Claude Code कोणत्याही ओळखत नसलेल्या मॉडेल आयडीसाठी 200K संदर्भ विंडो गृहीत धरतो. भिन्न वास्तविक विंडो असलेल्या मॉडेलसाठी, CLAUDE_CODE_AUTO_COMPACT_WINDOW त्याच्या खालीच जोडा जेणेकरून ऑटो-कम्पॅक्शन लवकर सुरू होणार नाही.",
     "failedSave": "सेव्ह करण्यात अयशस्वी",
     "profileSyncTitle": "CLI प्रोफाइल ऑटो-सिंक",
@@ -12821,7 +12821,7 @@
         "description": "प्रदाता-मॉडेल सिंक्रोनाइझेशननंतर, लाइव्ह कॅटलॉगमधून ~/.codex/*.config.toml प्रोफाइल्स पुन्हा तयार करा. हे सक्रिय किंवा डीफॉल्ट Codex कॉन्फिगरेशन कधीही बदलत नाही आणि डीफॉल्टनुसार बंद असते."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "प्रदाता-मॉडेल सिंक्रोनाइझेशननंतर, लाइव्ह कॅटलॉगमधून ~/.claude/profiles/<name>/settings.json प्रोफाइल्स पुन्हा तयार करा. हे सक्रिय किंवा डीफॉल्ट Claude कॉन्फिगरेशन कधीही बदलत नाही आणि डीफॉल्टनुसार बंद असते."
+        "description": "प्रदाता-मॉडेल सिंक्रोनाइझेशननंतर, लाइव्ह कॅटलॉगमधून ~/.claude/profiles/'<name>'/settings.json प्रोफाइल्स पुन्हा तयार करा. हे सक्रिय किंवा डीफॉल्ट Claude कॉन्फिगरेशन कधीही बदलत नाही आणि डीफॉल्टनुसार बंद असते."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "स्थानिक इन्स्टन्स हेल्थ-चेक एंडपॉइंट अक्षम करा."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX वर देखील उपलब्ध (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "बंद करा"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "<gateway-alias>/<model> मिरर आयडीज /v1/models वर जाहिरात करा त्या मॉडेलसाठी ज्यांचे कॅनॉनिकल मालकाकडे सक्रिय क्रेडेन्शियल नाही परंतु एक पासथ्रू गेटवे ज्यामध्ये सक्रिय क्रेडेन्शियल आहे त्यांना रूट करते. चेतावणी: जागतिक स्तरावर सक्षम केल्यास सर्व क्लायंटसाठी कॅटलॉग नोंदी जोडते.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "'<gateway-alias>'/'<model>' मिरर आयडीज /v1/models वर जाहिरात करा त्या मॉडेलसाठी ज्यांचे कॅनॉनिकल मालकाकडे सक्रिय क्रेडेन्शियल नाही परंतु एक पासथ्रू गेटवे ज्यामध्ये सक्रिय क्रेडेन्शियल आहे त्यांना रूट करते. चेतावणी: जागतिक स्तरावर सक्षम केल्यास सर्व क्लायंटसाठी कॅटलॉग नोंदी जोडते.",
   "radarPage": {
     "title": "रडार कॅटलॉग",
     "subtitle": "समुदाय बुद्धिमत्तेने समृद्ध मोफत मॉडेल कॅटलॉग",

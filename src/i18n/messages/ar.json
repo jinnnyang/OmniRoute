@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json لاكتشاف نموذج البوابة",
     "ccOnboardingCopy": "نسخ",
     "ccOnboardingCopied": "تم النسخ",
-    "ccOnboardingKeyPlaceholder": "<مفتاح واجهة برمجة تطبيقات OmniRoute الخاص بك>",
+    "ccOnboardingKeyPlaceholder": "'<مفتاح واجهة برمجة تطبيقات OmniRoute الخاص بك>'",
     "ccOnboardingWindowNote": "يفترض Claude Code وجود نافذة سياق تبلغ 200K لأي معرف نموذج لا يتعرف عليه. بالنسبة لنموذج له نافذة حقيقية مختلفة، أضف CLAUDE_CODE_AUTO_COMPACT_WINDOW أسفلها مباشرة حتى لا يتم تشغيل الضغط التلقائي في وقت مبكر جدًا.",
     "failedSave": "فشل الحفظ",
     "profileSyncTitle": "المزامنة التلقائية لملفات تعريف CLI",
@@ -12821,7 +12821,7 @@
         "description": "بعد مزامنة المزود والنموذج، أعد إنشاء ملفات التعريف ~/.codex/*.config.toml من الكتالوج المباشر. لا يغير هذا أبداً تكوين Codex النشط أو الافتراضي ويكون معطلاً بشكل افتراضي."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "بعد مزامنة المزود والنموذج، أعد إنشاء ملفات التعريف ~/.claude/profiles/<name>/settings.json من الكتالوج المباشر. لا يغير هذا أبداً تكوين Claude النشط أو الافتراضي ويكون معطلاً بشكل افتراضي."
+        "description": "بعد مزامنة المزود والنموذج، أعد إنشاء ملفات التعريف ~/.claude/profiles/'<name>'/settings.json من الكتالوج المباشر. لا يغير هذا أبداً تكوين Claude النشط أو الافتراضي ويكون معطلاً بشكل افتراضي."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "تعطيل نقطة نهاية فحص صحة المثيل المحلي."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "متوفر أيضًا على Open VSX (Cursor، Windsurf، VSCodium…)",
     "dismissAriaLabel": "تجاهل"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "قم بالإعلان عن معرفات المرايا <gateway-alias>/<model> على /v1/models للنماذج التي ليس لديها مالك قانوني لديه بيانات اعتماد نشطة ولكن بوابة تمرير مع بيانات اعتماد نشطة توجهها. تحذير: يضيف إدخالات الكتالوج لجميع العملاء عند تمكينه عالميًا.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "قم بالإعلان عن معرفات المرايا '<gateway-alias>'/'<model>' على /v1/models للنماذج التي ليس لديها مالك قانوني لديه بيانات اعتماد نشطة ولكن بوابة تمرير مع بيانات اعتماد نشطة توجهها. تحذير: يضيف إدخالات الكتالوج لجميع العملاء عند تمكينه عالميًا.",
   "radarPage": {
     "title": "كتالوج الرادار",
     "subtitle": "كتالوج نموذج مجاني معزز بذكاء المجتمع",

@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json за откриване на модел на шлюз",
     "ccOnboardingCopy": "Копирай",
     "ccOnboardingCopied": "Копирано",
-    "ccOnboardingKeyPlaceholder": "<вашият ключ за OmniRoute API>",
+    "ccOnboardingKeyPlaceholder": "'<вашият ключ за OmniRoute API>'",
     "ccOnboardingWindowNote": "Claude Code предполагае контекстен прозорец от 200K за всяко идентификатор на модел, който не разпознава. За модел с различен реален прозорец, добавете CLAUDE_CODE_AUTO_COMPACT_WINDOW точно под него, за да не се задейства автоматичното компресиране твърде рано.",
     "failedSave": "Неуспешно запазване",
     "profileSyncTitle": "Автоматично синхронизиране на CLI профили",
@@ -12821,7 +12821,7 @@
         "description": "След синхронизиране на доставчик-модел, регенериране на ~/.codex/*.config.toml профили от каталога на живо. Това никога не променя активната или подразбиращата се конфигурация на Codex и е изключено по подразбиране."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Деактивиране на крайната точка за проверка на състоянието на локалния екземпляр."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Налично и в Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Затваряне"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Рекламирайте <gateway-alias>/<model> mirror ids на /v1/models за модели, чийто каноничен собственик няма активна идентификация, но пасивен шлюз с активна идентификация ги маршрутизира. Внимание: добавя записи в каталога за всички клиенти, когато е активирано глобално.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Рекламирайте '<gateway-alias>'/'<model>' mirror ids на /v1/models за модели, чийто каноничен собственик няма активна идентификация, но пасивен шлюз с активна идентификация ги маршрутизира. Внимание: добавя записи в каталога за всички клиенти, когато е активирано глобално.",
   "radarPage": {
     "title": "Каталог на радара",
     "subtitle": "Безплатен модел каталог, обогатен с информация от общността",

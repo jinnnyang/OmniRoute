@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json עבור גילוי מודל שער",
     "ccOnboardingCopy": "העתק",
     "ccOnboardingCopied": "הועתק",
-    "ccOnboardingKeyPlaceholder": "<מפתח ה-API של OmniRoute שלך>",
+    "ccOnboardingKeyPlaceholder": "'<מפתח ה-API של OmniRoute שלך>'",
     "ccOnboardingWindowNote": "Claude Code מניח חלון הקשר של 200K עבור כל מזהה מודל שהוא לא מזהה. עבור מודל עם חלון אמיתי שונה, הוסף CLAUDE_CODE_AUTO_COMPACT_WINDOW מיד מתחתיו כך שהדחיסה האוטומטית לא תתבצע מוקדם מדי.",
     "failedSave": "השמירה נכשלה",
     "profileSyncTitle": "סנכרון אוטומטי של פרופילי CLI",
@@ -12821,7 +12821,7 @@
         "description": "לאחר סנכרון ספק-מודל, יצירה מחדש של פרופילי ~/.codex/*.config.toml מתוך הקטלוג הפעיל. פעולה זו אינה משנה לעולם את תצורת Codex הפעילה או כברירת מחדל, והיא כבויה כברירת מחדל."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "לאחר סנכרון ספק-מודל, יצירה מחדש של פרופילי ~/.claude/profiles/<name>/settings.json מתוך הקטלוג הפעיל. פעולה זו אינה משנה לעולם את תצורת Claude הפעילה או כברירת מחדל, והיא כבויה כברירת מחדל."
+        "description": "לאחר סנכרון ספק-מודל, יצירה מחדש של פרופילי ~/.claude/profiles/'<name>'/settings.json מתוך הקטלוג הפעיל. פעולה זו אינה משנה לעולם את תצורת Claude הפעילה או כברירת מחדל, והיא כבויה כברירת מחדל."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "השבתת נקודת הקצה לבדיקת תקינות של המופע המקומי."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "זמין גם ב-Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "התעלם"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "פרסם את מזהי המראה של <gateway-alias>/<model> ב-/v1/models עבור מודלים שבעליהם הקנוניים אין להם אישור פעיל אך שער העברת נתונים עם אישור פעיל מנתב אותם. אזהרה: מוסיף רשומות קטלוג לכל הלקוחות כאשר זה מופעל באופן גלובלי.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "פרסם את מזהי המראה של '<gateway-alias>'/'<model>' ב-/v1/models עבור מודלים שבעליהם הקנוניים אין להם אישור פעיל אך שער העברת נתונים עם אישור פעיל מנתב אותם. אזהרה: מוסיף רשומות קטלוג לכל הלקוחות כאשר זה מופעל באופן גלובלי.",
   "radarPage": {
     "title": "קטלוג רדאר",
     "subtitle": "קטלוג מודלים חינמי מועשר באינטליגנציה קהילתית",

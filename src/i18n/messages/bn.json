@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "gateway মডেল আবিষ্কারের জন্য settings.json",
     "ccOnboardingCopy": "কপি করুন",
     "ccOnboardingCopied": "কপি করা হয়েছে",
-    "ccOnboardingKeyPlaceholder": "<আপনার OmniRoute API কী>",
+    "ccOnboardingKeyPlaceholder": "'<আপনার OmniRoute API কী>'",
     "ccOnboardingWindowNote": "Claude Code একটি 200K প্রসঙ্গ উইন্ডো ধারণ করে যেকোন মডেল আইডির জন্য যা এটি চিনতে পারে না। একটি ভিন্ন বাস্তব উইন্ডো সহ মডেলের জন্য, এর ঠিক নিচে CLAUDE_CODE_AUTO_COMPACT_WINDOW যোগ করুন যাতে স্বয়ংক্রিয় সংকোচন খুব তাড়াতাড়ি শুরু না হয়।",
     "failedSave": "সংরক্ষণ করতে ব্যর্থ হয়েছে",
     "profileSyncTitle": "CLI প্রোফাইল অটো-সিঙ্ক",
@@ -12821,7 +12821,7 @@
         "description": "প্রোভাইডার-মডেল সিঙ্ক্রোনাইজেশনের পরে, লাইভ ক্যাটালগ থেকে ~/.codex/*.config.toml প্রোফাইলগুলি পুনরায় তৈরি করুন। এটি সক্রিয় বা ডিফল্ট Codex কনফিগারেশন কখনই পরিবর্তন করে না এবং ডিফল্টভাবে বন্ধ থাকে।"
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "প্রোভাইডার-মডেল সিঙ্ক্রোনাইজেশনের পরে, লাইভ ক্যাটালগ থেকে ~/.claude/profiles/<name>/settings.json প্রোফাইলগুলি পুনরায় তৈরি করুন। এটি সক্রিয় বা ডিফল্ট Claude কনফিগারেশন কখনই পরিবর্তন করে না এবং ডিফল্টভাবে বন্ধ থাকে।"
+        "description": "প্রোভাইডার-মডেল সিঙ্ক্রোনাইজেশনের পরে, লাইভ ক্যাটালগ থেকে ~/.claude/profiles/'<name>'/settings.json প্রোফাইলগুলি পুনরায় তৈরি করুন। এটি সক্রিয় বা ডিফল্ট Claude কনফিগারেশন কখনই পরিবর্তন করে না এবং ডিফল্টভাবে বন্ধ থাকে।"
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "স্থানীয় ইনস্ট্যান্স হেলথ-চেক এন্ডপয়েন্ট নিষ্ক্রিয় করুন।"
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Open VSX-এও পাওয়া যায় (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "খারিজ করুন"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/<model> মিরর আইডি গুলি /v1/models এ বিজ্ঞাপন দিন তাদের জন্য মডেল যাদের ক্যানোনিকাল মালিকের কোনো সক্রিয় শংসাপত্র নেই কিন্তু একটি পাসথ্রু গেটওয়ে তাদের সক্রিয় শংসাপত্র দ্বারা রাউট করে। সতর্কতা: এটি বিশ্বব্যাপী সক্ষম হলে সমস্ত ক্লায়েন্টের জন্য ক্যাটালগ এন্ট্রি যোগ করে।",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "/gateway-alias/'<model>' মিরর আইডি গুলি /v1/models এ বিজ্ঞাপন দিন তাদের জন্য মডেল যাদের ক্যানোনিকাল মালিকের কোনো সক্রিয় শংসাপত্র নেই কিন্তু একটি পাসথ্রু গেটওয়ে তাদের সক্রিয় শংসাপত্র দ্বারা রাউট করে। সতর্কতা: এটি বিশ্বব্যাপী সক্ষম হলে সমস্ত ক্লায়েন্টের জন্য ক্যাটালগ এন্ট্রি যোগ করে।",
   "radarPage": {
     "title": "রাডার ক্যাটালগ",
     "subtitle": "কমিউনিটি বুদ্ধিমত্তা সমৃদ্ধ ফ্রি মডেল ক্যাটালগ",

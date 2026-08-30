@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json pentru descoperirea modelului gateway",
     "ccOnboardingCopy": "Copiază",
     "ccOnboardingCopied": "Copiat",
-    "ccOnboardingKeyPlaceholder": "<cheia ta API OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<cheia ta API OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code presupune o fereastră de context de 200K pentru orice ID de model pe care nu îl recunoaște. Pentru un model cu o fereastră reală diferită, adăugați CLAUDE_CODE_AUTO_COMPACT_WINDOW imediat sub acesta, astfel încât auto-compacția să nu se activeze prea devreme.",
     "failedSave": "Eroare la salvare",
     "profileSyncTitle": "Sincronizare automată profil CLI",
@@ -12821,7 +12821,7 @@
         "description": "După sincronizarea furnizor-model, regenerează profilurile ~/.codex/*.config.toml din catalogul live. Acest lucru nu modifică niciodată configurația Codex activă sau implicită și este dezactivat în mod implicit."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "După sincronizarea furnizor-model, regenerează profilurile ~/.claude/profiles/<name>/settings.json din catalogul live. Acest lucru nu modifică niciodată configurația Claude activă sau implicită și este dezactivat în mod implicit."
+        "description": "După sincronizarea furnizor-model, regenerează profilurile ~/.claude/profiles/'<name>'/settings.json din catalogul live. Acest lucru nu modifică niciodată configurația Claude activă sau implicită și este dezactivat în mod implicit."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Dezactivează endpoint-ul de health-check al instanței locale."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Disponibil și pe Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Închide"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Publica ID-urile oglinzii <gateway-alias>/<model> pe /v1/models pentru modelele al căror proprietar canonical nu are un acreditiv activ, dar un gateway passthrough cu un acreditiv activ le rotește. Atenție: adaugă intrări în catalog pentru toți clienții când este activat global.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Publica ID-urile oglinzii '<gateway-alias>'/'<model>' pe /v1/models pentru modelele al căror proprietar canonical nu are un acreditiv activ, dar un gateway passthrough cu un acreditiv activ le rotește. Atenție: adaugă intrări în catalog pentru toți clienții când este activat global.",
   "radarPage": {
     "title": "Catalog Radar",
     "subtitle": "Catalog gratuit de modele îmbogățit cu inteligență comunitară",

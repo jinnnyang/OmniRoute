@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json для обнаружения gateway моделей",
     "ccOnboardingCopy": "Копировать",
     "ccOnboardingCopied": "Скопировано",
-    "ccOnboardingKeyPlaceholder": "<ваш API ключ OmniRoute>",
+    "ccOnboardingKeyPlaceholder": "'<ваш API ключ OmniRoute>'",
     "ccOnboardingWindowNote": "Claude Code предполагает окно контекста в 200K для любой незнакомой модели. Если у модели другой реальный размер окна, добавьте CLAUDE_CODE_AUTO_COMPACT_WINDOW прямо под ней, чтобы авто-компактизация не срабатывала слишком рано.",
     "failedSave": "Не удалось сохранить",
     "profileSyncTitle": "Автосинхронизация профилей CLI",
@@ -12821,7 +12821,7 @@
         "description": "After provider-model synchronization, regenerate ~/.codex/*.config.toml profiles from the live catalog. This never changes the active or default Codex configuration and is off by default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/<name>/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
+        "description": "After provider-model synchronization, regenerate ~/.claude/profiles/'<name>'/settings.json profiles from the live catalog. This never changes the active or default Claude configuration and is off by default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Disable the local instance health-check endpoint."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Также доступно на Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Закрыть"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Рекламируйте <gateway-alias>/<model> идентификаторы зеркал на /v1/models для моделей, у которых канонический владелец не имеет активной учетной записи, но шлюз с пропуском с активной учетной записью маршрутизирует их. Внимание: добавляет записи каталога для всех клиентов при глобальном включении.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Рекламируйте '<gateway-alias>'/'<model>' идентификаторы зеркал на /v1/models для моделей, у которых канонический владелец не имеет активной учетной записи, но шлюз с пропуском с активной учетной записью маршрутизирует их. Внимание: добавляет записи каталога для всех клиентов при глобальном включении.",
   "radarPage": {
     "title": "Каталог Радар",
     "subtitle": "Бесплатный каталог моделей, обогащенный данными сообщества",

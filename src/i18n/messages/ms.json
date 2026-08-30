@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json untuk penemuan model gateway",
     "ccOnboardingCopy": "Salin",
     "ccOnboardingCopied": "Disalin",
-    "ccOnboardingKeyPlaceholder": "<kunci API OmniRoute anda>",
+    "ccOnboardingKeyPlaceholder": "'<kunci API OmniRoute anda>'",
     "ccOnboardingWindowNote": "Claude Code menganggap tetingkap konteks 200K untuk mana-mana ID model yang tidak dikenali. Untuk model dengan tetingkap sebenar yang berbeza, tambah CLAUDE_CODE_AUTO_COMPACT_WINDOW tepat di bawahnya supaya pemampatan automatik tidak berlaku terlalu awal.",
     "failedSave": "Gagal menyimpan",
     "profileSyncTitle": "Penyinkronan automatik profil CLI",
@@ -12821,7 +12821,7 @@
         "description": "Selepas penyegerakan penyedia-model, jana semula profil ~/.codex/*.config.toml daripada katalog langsung. Ini tidak pernah mengubah konfigurasi Codex yang aktif atau lalai dan dinyahdayakan secara lalai."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Selepas penyegerakan penyedia-model, jana semula profil ~/.claude/profiles/<name>/settings.json daripada katalog langsung. Ini tidak pernah mengubah konfigurasi Claude yang aktif atau lalai dan dinyahdayakan secara lalai."
+        "description": "Selepas penyegerakan penyedia-model, jana semula profil ~/.claude/profiles/'<name>'/settings.json daripada katalog langsung. Ini tidak pernah mengubah konfigurasi Claude yang aktif atau lalai dan dinyahdayakan secara lalai."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Nyahdayakan titik akhir pemeriksaan kesihatan tika tempatan."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Juga di Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Tutup"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Iklankan <gateway-alias>/<model> mirror ids pada /v1/models untuk model yang pemilik kanoniknya tiada kelayakan aktif tetapi gateway passthrough dengan kelayakan aktif mengarahkannya. Amaran: menambah entri katalog untuk semua klien apabila diaktifkan secara global.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Iklankan '<gateway-alias>'/'<model>' mirror ids pada /v1/models untuk model yang pemilik kanoniknya tiada kelayakan aktif tetapi gateway passthrough dengan kelayakan aktif mengarahkannya. Amaran: menambah entri katalog untuk semua klien apabila diaktifkan secara global.",
   "radarPage": {
     "title": "Katalog Radar",
     "subtitle": "Katalog model percuma yang diperkaya dengan kecerdasan komuniti",

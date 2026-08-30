@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json para sa pagtuklas ng modelo ng gateway",
     "ccOnboardingCopy": "Kopyahin",
     "ccOnboardingCopied": "Nakopya",
-    "ccOnboardingKeyPlaceholder": "<your OmniRoute API key>",
+    "ccOnboardingKeyPlaceholder": "'<your OmniRoute API key>'",
     "ccOnboardingWindowNote": "Ipinapalagay ng Claude Code ang 200K na konteksto para sa anumang model id na hindi nito nakikilala. Para sa isang modelo na may ibang tunay na bintana, idagdag ang CLAUDE_CODE_AUTO_COMPACT_WINDOW sa ilalim nito upang hindi masyadong maaga ang pag-activate ng auto-compaction.",
     "failedSave": "Nabigong i-save",
     "profileSyncTitle": "Auto-sync ng profile ng CLI",
@@ -12821,7 +12821,7 @@
         "description": "Pagkatapos ng pag-synchronize ng provider-model, muling buuin ang mga profile ng ~/.codex/*.config.toml mula sa live catalog. Hindi nito kailanman binabago ang aktibo o default na configuration ng Codex at naka-off bilang default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Pagkatapos ng pag-synchronize ng provider-model, muling buuin ang mga profile ng ~/.claude/profiles/<name>/settings.json mula sa live catalog. Hindi nito kailanman binabago ang aktibo o default na configuration ng Claude at naka-off bilang default."
+        "description": "Pagkatapos ng pag-synchronize ng provider-model, muling buuin ang mga profile ng ~/.claude/profiles/'<name>'/settings.json mula sa live catalog. Hindi nito kailanman binabago ang aktibo o default na configuration ng Claude at naka-off bilang default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "I-disable ang health-check endpoint ng lokal na instance."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Nasa Open VSX din (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "I-dismiss"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "I-anunsyo ang <gateway-alias>/<model> mirror ids sa /v1/models para sa mga modelong ang canonical owner ay walang aktibong credential ngunit may passthrough gateway na may aktibong credential na nagruruta sa kanila. Babala: nagdadagdag ng mga entry sa katalogo para sa lahat ng kliyente kapag pinagana nang globally.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "I-anunsyo ang '<gateway-alias>'/'<model>' mirror ids sa /v1/models para sa mga modelong ang canonical owner ay walang aktibong credential ngunit may passthrough gateway na may aktibong credential na nagruruta sa kanila. Babala: nagdadagdag ng mga entry sa katalogo para sa lahat ng kliyente kapag pinagana nang globally.",
   "radarPage": {
     "title": "Radar Catalog",
     "subtitle": "Free model catalog enriched with community intelligence",

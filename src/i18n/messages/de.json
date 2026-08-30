@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json für die Entdeckung des Gateway-Modells",
     "ccOnboardingCopy": "Kopieren",
     "ccOnboardingCopied": "Kopiert",
-    "ccOnboardingKeyPlaceholder": "<dein OmniRoute API-Schlüssel>",
+    "ccOnboardingKeyPlaceholder": "'<dein OmniRoute API-Schlüssel>'",
     "ccOnboardingWindowNote": "Claude Code geht von einem 200K-Kontextfenster für jede Modell-ID aus, die es nicht erkennt. Für ein Modell mit einem anderen tatsächlichen Fenster fügen Sie CLAUDE_CODE_AUTO_COMPACT_WINDOW direkt darunter hinzu, damit die automatische Komprimierung nicht zu früh ausgelöst wird.",
     "failedSave": "Speichern fehlgeschlagen",
     "profileSyncTitle": "Automatische Synchronisierung von CLI-Profilen",
@@ -12827,7 +12827,7 @@
         "description": "Nach der Anbieter-Modell-Synchronisierung ~/.codex/*.config.toml-Profile aus dem Live-Katalog neu generieren. Dies ändert niemals die aktive oder Standard-Codex-Konfiguration und ist standardmäßig deaktiviert."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Nach der Anbieter-Modell-Synchronisierung ~/.claude/profiles/<name>/settings.json-Profile aus dem Live-Katalog neu generieren. Dies ändert niemals die aktive oder Standard-Claude-Konfiguration und ist standardmäßig deaktiviert."
+        "description": "Nach der Anbieter-Modell-Synchronisierung ~/.claude/profiles/'<name>'/settings.json-Profile aus dem Live-Katalog neu generieren. Dies ändert niemals die aktive oder Standard-Claude-Konfiguration und ist standardmäßig deaktiviert."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Den Health-Check-Endpunkt der lokalen Instanz deaktivieren."
@@ -13199,7 +13199,7 @@
     "secondaryNote": "Auch auf Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Schließen"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Bewerben Sie <gateway-alias>/<model> Spiegel-IDs auf /v1/models für Modelle, deren kanonischer Eigentümer keine aktiven Anmeldeinformationen hat, aber ein Durchgangsgateway mit aktiven Anmeldeinformationen sie weiterleitet. Warnung: Fügt Katalogeinträge für alle Clients hinzu, wenn global aktiviert.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Bewerben Sie '<gateway-alias>'/'<model>' Spiegel-IDs auf /v1/models für Modelle, deren kanonischer Eigentümer keine aktiven Anmeldeinformationen hat, aber ein Durchgangsgateway mit aktiven Anmeldeinformationen sie weiterleitet. Warnung: Fügt Katalogeinträge für alle Clients hinzu, wenn global aktiviert.",
   "radarPage": {
     "title": "Radar-Katalog",
     "subtitle": "Kostenloser Modellkatalog, angereichert mit Community-Intelligenz",

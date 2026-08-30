@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json untuk penemuan model gateway",
     "ccOnboardingCopy": "Salin",
     "ccOnboardingCopied": "Disalin",
-    "ccOnboardingKeyPlaceholder": "<kunci API OmniRoute Anda>",
+    "ccOnboardingKeyPlaceholder": "'<kunci API OmniRoute Anda>'",
     "ccOnboardingWindowNote": "Claude Code mengasumsikan jendela konteks 200K untuk setiap ID model yang tidak dikenalnya. Untuk model dengan jendela nyata yang berbeda, tambahkan CLAUDE_CODE_AUTO_COMPACT_WINDOW tepat di bawahnya agar kompak otomatis tidak aktif terlalu awal.",
     "failedSave": "Gagal menyimpan",
     "profileSyncTitle": "Sinkronisasi otomatis profil CLI",
@@ -12821,7 +12821,7 @@
         "description": "Setelah sinkronisasi model penyedia, buat ulang profil ~/.codex/*.config.toml dari katalog langsung. Ini tidak pernah mengubah konfigurasi Codex yang aktif atau default dan nonaktif secara default."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Setelah sinkronisasi model penyedia, buat ulang profil ~/.claude/profiles/<name>/settings.json dari katalog langsung. Ini tidak pernah mengubah konfigurasi Claude yang aktif atau default dan nonaktif secara default."
+        "description": "Setelah sinkronisasi model penyedia, buat ulang profil ~/.claude/profiles/'<name>'/settings.json dari katalog langsung. Ini tidak pernah mengubah konfigurasi Claude yang aktif atau default dan nonaktif secara default."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Nonaktifkan titik akhir pemeriksaan kesehatan instans lokal."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Juga tersedia di Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Tutup"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Iklankan id cermin <gateway-alias>/<model> di /v1/models untuk model yang pemilik kanoniknya tidak memiliki kredensial aktif tetapi gateway passthrough dengan kredensial aktif mengarahkannya. Peringatan: menambahkan entri katalog untuk semua klien saat diaktifkan secara global.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Iklankan id cermin '<gateway-alias>'/'<model>' di /v1/models untuk model yang pemilik kanoniknya tidak memiliki kredensial aktif tetapi gateway passthrough dengan kredensial aktif mengarahkannya. Peringatan: menambahkan entri katalog untuk semua klien saat diaktifkan secara global.",
   "radarPage": {
     "title": "रडार कैटलॉग",
     "subtitle": "समुदाय की बुद्धिमत्ता से समृद्ध मुफ्त मॉडल कैटलॉग",

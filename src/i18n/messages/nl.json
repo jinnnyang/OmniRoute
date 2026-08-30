@@ -2683,7 +2683,7 @@
     "ccOnboardingTitle": "settings.json voor gateway model ontdekking",
     "ccOnboardingCopy": "Kopiëren",
     "ccOnboardingCopied": "Gekopieerd",
-    "ccOnboardingKeyPlaceholder": "<je OmniRoute API-sleutel>",
+    "ccOnboardingKeyPlaceholder": "'<je OmniRoute API-sleutel>'",
     "ccOnboardingWindowNote": "Claude Code gaat uit van een contextvenster van 200K voor elk model-id dat het niet herkent. Voor een model met een ander echt venster, voeg CLAUDE_CODE_AUTO_COMPACT_WINDOW net eronder toe zodat automatische compactie niet te vroeg wordt geactiveerd.",
     "failedSave": "Opslaan mislukt",
     "profileSyncTitle": "Automatische synchronisatie van CLI-profielen",
@@ -12821,7 +12821,7 @@
         "description": "Genereer na provider-modelsynchronisatie ~/.codex/*.config.toml-profielen opnieuw vanuit de live catalogus. Dit wijzigt nooit de actieve of standaard Codex-configuratie en is standaard uitgeschakeld."
       },
       "OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES": {
-        "description": "Genereer na provider-modelsynchronisatie ~/.claude/profiles/<name>/settings.json-profielen opnieuw vanuit de live catalogus. Dit wijzigt nooit de actieve of standaard Claude-configuratie en is standaard uitgeschakeld."
+        "description": "Genereer na provider-modelsynchronisatie ~/.claude/profiles/'<name>'/settings.json-profielen opnieuw vanuit de live catalogus. Dit wijzigt nooit de actieve of standaard Claude-configuratie en is standaard uitgeschakeld."
       },
       "OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK": {
         "description": "Schakel het health-check-eindpunt van de lokale instantie uit."
@@ -13197,7 +13197,7 @@
     "secondaryNote": "Ook op Open VSX (Cursor, Windsurf, VSCodium…)",
     "dismissAriaLabel": "Sluiten"
   },
-  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Adverteer <gateway-alias>/<model> mirror-id's op /v1/models voor modellen waarvan de canonieke eigenaar geen actieve referentie heeft, maar een passthrough-gateway met een actieve referentie ze doorstuurt. Waarschuwing: voegt catalogusvermeldingen toe voor alle klanten wanneer wereldwijd ingeschakeld.",
+  "featureFlagExposeFunctionalGatewayMirrorsDescription": "Adverteer '<gateway-alias>'/'<model>' mirror-id's op /v1/models voor modellen waarvan de canonieke eigenaar geen actieve referentie heeft, maar een passthrough-gateway met een actieve referentie ze doorstuurt. Waarschuwing: voegt catalogusvermeldingen toe voor alle klanten wanneer wereldwijd ingeschakeld.",
   "radarPage": {
     "title": "Radar Catalogus",
     "subtitle": "Gratis modelcatalogus verrijkt met community-intelligentie",
