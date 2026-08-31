@@ -463,6 +463,34 @@ export function modelIdLikelyVision(modelId: string | null | undefined): boolean
 }
 
 /**
+ * Single shared verdict for "can this model accept image input?" — full
+ * capability resolution (#9195 operator override → synced catalog → static
+ * registry/spec → modalities) with the #4072 id-fragment heuristic as the
+ * last-resort fallback.
+ *
+ * An authoritative `supportsVision: false` WINS over the name heuristic:
+ * vision-sounding ids that a known source marks text-only must never be
+ * re-admitted by the fragment list (auto-combo vision-pool flip bug).
+ * `null` (nothing known about the model) falls back to
+ * {@link modelIdLikelyVision}; resolution failures fail open the same way so
+ * a broken catalog read cannot silently empty vision pools.
+ */
+export function hasVisionCapability(
+  provider: string,
+  model: string,
+  snapshot?: ModelCapabilityResolutionSnapshot | null
+): boolean {
+  try {
+    const caps = getResolvedModelCapabilities({ provider, model }, undefined, snapshot);
+    if (caps.supportsVision === true) return true;
+    if (caps.supportsVision === false) return false;
+  } catch {
+    // Best-effort: fall through to the id-fragment heuristic below.
+  }
+  return isVisionModelId(model);
+}
+
+/**
  * Models that upstream catalogs (notably models.dev) mislabel as vision-capable but
  * are TEXT-ONLY per the vendor's own docs. Listed here so a wrong synced
  * `attachment:true` cannot route an image request to a blind model (the #4071 failure

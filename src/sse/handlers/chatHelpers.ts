@@ -1,6 +1,7 @@
 import { getModelInfo, getComboForModel } from "../services/model";
 import { clearAccountError, markAccountUnavailable } from "../services/auth";
 import { connectionHasExtraKeys } from "@omniroute/open-sse/services/apiKeyRotator.ts";
+import { requestHasImageContent } from "@/lib/guardrails/visionBridgeHelpers";
 import { createBuiltinAutoCombo } from "@omniroute/open-sse/services/autoCombo/builtinCatalog.ts";
 import * as log from "../utils/logger";
 import { updateProviderCredentials } from "../services/tokenRefresh";
@@ -190,6 +191,10 @@ export async function resolveModelOrError(
     const suffix = modelInfo.model || "";
     const fuzzyCandidates = [`auto/best-${suffix}`, `auto/${suffix}`];
 
+    // Image-request flag for virtual auto-combo scoring (vision models first,
+    // text-only strongly demoted). Computed only on the auto path; the vision
+    // bridge later re-uses the same extraction contract.
+    const visionOpts = { requestHasVision: requestHasImageContent(body) };
     const exactCombo = await getComboForModel(modelStr);
     if (exactCombo) {
       log.info("ROUTING", `"auto" provider → combo "${modelStr}"`);
@@ -206,7 +211,7 @@ export async function resolveModelOrError(
     }
 
     try {
-      const virtualCombo = await createBuiltinAutoCombo(modelStr, suffix);
+      const virtualCombo = await createBuiltinAutoCombo(modelStr, suffix, undefined, visionOpts);
       const poolSize = virtualCombo.candidatePool?.length || 0;
       log.info(
         "AUTO",
@@ -231,7 +236,9 @@ export async function resolveModelOrError(
       try {
         const virtualCombo = await createBuiltinAutoCombo(
           candidate,
-          candidate.replace(/^auto\/?/, "")
+          candidate.replace(/^auto\/?/, ""),
+          undefined,
+          visionOpts
         );
         log.info(
           "AUTO",

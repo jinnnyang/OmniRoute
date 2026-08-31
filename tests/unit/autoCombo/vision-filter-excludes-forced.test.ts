@@ -36,4 +36,35 @@ describe("buildAutoCandidateFilter — vision category", () => {
     const filter = buildAutoCandidateFilter("coding");
     expect(filter).toBeNull();
   });
+
+  it("never lets the name heuristic overturn an explicit resolved false", () => {
+    const filter = buildAutoCandidateFilter("vision");
+    // Prepared-pool candidates carry resolvedSupportsVision from full capability
+    // resolution (which already folds the #4072 name heuristic in). An explicit
+    // false — operator override, static spec, synced catalog — must win;
+    // a vision-sounding id must not re-admit a known text-only model.
+    expect(
+      filter?.({ provider: "acme", model: "acme-ultra-vision", resolvedSupportsVision: false })
+    ).toBe(false);
+    expect(filter?.({ provider: "acme", model: "acme-text", resolvedSupportsVision: false })).toBe(
+      false
+    );
+  });
+
+  it("resolved-true candidates pass, forced-bridge exclusion applies on the resolved path", () => {
+    const filter = buildAutoCandidateFilter("vision");
+    expect(filter?.({ provider: "acme", model: "acme-text", resolvedSupportsVision: true })).toBe(
+      true
+    );
+    // The old resolved-branch bypassed isVisionBridgeForcedModel — lock it
+    // (catalog-overstating entries must not leak into vision pools via the
+    // prepared-capability path). deepseek-v4-flash is in the forced set.
+    expect(
+      filter?.({
+        provider: "opencode-go",
+        model: "deepseek-v4-flash",
+        resolvedSupportsVision: true,
+      })
+    ).toBe(false);
+  });
 });

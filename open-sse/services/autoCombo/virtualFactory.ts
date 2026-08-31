@@ -781,6 +781,17 @@ export async function prepareVirtualAutoComboInputs(
 }
 
 /**
+ * Per-request vision scoring knobs for virtual auto-combos (image requests).
+ * requestHasVision flags image-carrying requests; boost/penalty default to
+ * 1 / 0.15 inside computeSnapshotWeights when omitted.
+ */
+export interface VirtualComboVisionOptions {
+  requestHasVision?: boolean;
+  visionBoost?: number;
+  visionPenalty?: number;
+}
+
+/**
  * Score candidates at snapshot time using available data (capabilities, tier)
  * and the mode-pack's dominant factors. Runtime telemetry (p95 latency, quota
  * remaining) is not available during combo creation — this uses static signals only.
@@ -789,8 +800,12 @@ export async function prepareVirtualAutoComboInputs(
  */
 export function computeSnapshotWeights(
   candidates: readonly VirtualAutoComboCandidate[],
-  weights: ScoringWeights
+  weights: ScoringWeights,
+  opts?: VirtualComboVisionOptions
 ): Map<string, number> {
+  const requestHasVision = opts?.requestHasVision === true;
+  const visionBoost = opts?.visionBoost ?? 1;
+  const visionPenalty = opts?.visionPenalty ?? 0.15;
   const scores = new Map<string, number>();
   for (const c of candidates) {
     let score = 0;
@@ -798,7 +813,11 @@ export function computeSnapshotWeights(
     // taskFit: reasoning + vision capable models score higher when taskFit is weighted
     if (weights.taskFit > 0) {
       if (c.resolvedReasoning || c.resolvedSupportsThinking) score += weights.taskFit * 0.6;
-      if (c.resolvedSupportsVision) score += weights.taskFit * 0.3;
+      if (c.resolvedSupportsVision) {
+        // Image request: vision capability is fully on-task (boost, default 1)
+        // vs the always-on 0.3 partial credit for capability diversity.
+        score += weights.taskFit * (requestHasVision ? visionBoost : 0.3);
+      }
     }
 
     // stability: models with richer capabilities are assumed more stable
@@ -830,6 +849,11 @@ export function computeSnapshotWeights(
     // health + quota: no runtime telemetry at snapshot time → neutral baseline
     score += (weights.health + weights.quota) * 0.5;
 
+    // Image request: strongly demote (not exclude) text-only models so every
+    // vision-capable candidate ranks above them while text-only relative
+    // ordering survives as the fallback tail.
+    if (requestHasVision && !c.resolvedSupportsVision) score *= visionPenalty;
+
     scores.set(c.modelStr, Math.min(score, 1));
   }
   return scores;
@@ -851,7 +875,8 @@ export async function createVirtualAutoComboFromPrepared(
   variant: AutoVariant | undefined,
   spec?: AutoComboSpec,
   apiKeyId?: string,
-  autoChannel?: string
+  autoChannel?: string,
+  visionOpts?: VirtualComboVisionOptions
 ): Promise<VirtualAutoCombo> {
   let candidatePool = clonePreparedCandidates(
     spec?.family ? prepared.familyCandidates : prepared.regularCandidates
@@ -1029,7 +1054,11 @@ export async function createVirtualAutoComboFromPrepared(
   }
 
   const providerPool = [...new Set(effectivePool.map((c) => c.provider))];
-  const snapshotScores = computeSnapshotWeights(effectivePool, weights);
+  const snapshotScores = computeSnapshotWeights(effectivePool, weights, {
+    requestHasVision: visionOpts?.requestHasVision,
+    visionBoost: visionOpts?.visionBoost,
+    visionPenalty: visionOpts?.visionPenalty,
+  });
   const models = effectivePool.map((candidate, index) => ({
     id: `virtual-auto-${variant || "default"}-${index + 1}-${candidate.provider}`,
     kind: "model" as const,
@@ -1120,8 +1149,16 @@ export async function createVirtualAutoCombo(
   variant: AutoVariant | undefined,
   spec?: AutoComboSpec,
   apiKeyId?: string,
-  autoChannel?: string
+  autoChannel?: string,
+  visionOpts?: VirtualComboVisionOptions
 ): Promise<VirtualAutoCombo> {
   const prepared = await prepareVirtualAutoComboInputs();
-  return createVirtualAutoComboFromPrepared(prepared, variant, spec, apiKeyId, autoChannel);
+  return createVirtualAutoComboFromPrepared(
+    prepared,
+    variant,
+    spec,
+    apiKeyId,
+    autoChannel,
+    visionOpts
+  );
 }

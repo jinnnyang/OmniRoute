@@ -98,6 +98,7 @@ import {
   withConversationId,
 } from "./chatHelpers";
 import { buildModalityBridgeHeader } from "@/lib/guardrails/modalityBridge/bridgeStats";
+import { requestHasImageContent } from "@/lib/guardrails/visionBridgeHelpers";
 import { resolveConversationId } from "@omniroute/open-sse/services/conversationTracker.ts";
 import {
   isAntigravityMissingProjectError,
@@ -889,7 +890,9 @@ async function handleChatImplementation(
     }
   }
 
-  const virtualCombo = await createVirtualAutoCombo(autoRouting, combo, apiKeyInfo?.id);
+  const virtualCombo = await createVirtualAutoCombo(autoRouting, combo, apiKeyInfo?.id, {
+    requestHasVision: requestHasImageContent(body),
+  });
   if (virtualCombo instanceof Response) return virtualCombo;
   combo = virtualCombo;
   if (combo) {

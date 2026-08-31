@@ -2,7 +2,7 @@ import type { ModelCapabilityResolutionSnapshot } from "@/lib/modelCapabilities"
 
 import type { AutoVariant } from "./autoPrefix";
 import { VALID_VARIANTS } from "./autoPrefix";
-import type { PreparedVirtualAutoComboInputs } from "./virtualFactory";
+import type { PreparedVirtualAutoComboInputs, VirtualComboVisionOptions } from "./virtualFactory";
 import { parseAutoSuffix, type AutoCategory, type AutoTier } from "./suffixComposition";
 import { isValidModelFamily, AUTO_FAMILY_IDS } from "./modelFamily";
 
@@ -191,7 +191,8 @@ export async function prepareBuiltinAutoComboInputs(
 export async function createBuiltinAutoCombo(
   modelStr: string,
   suffix: string,
-  prepared?: PreparedVirtualAutoComboInputs
+  prepared?: PreparedVirtualAutoComboInputs,
+  visionOpts?: VirtualComboVisionOptions
 ) {
   const { createVirtualAutoCombo, createVirtualAutoComboFromPrepared } =
     await import("./virtualFactory.ts");
@@ -200,8 +201,15 @@ export async function createBuiltinAutoCombo(
     spec?: Parameters<typeof createVirtualAutoCombo>[1]
   ) =>
     prepared
-      ? createVirtualAutoComboFromPrepared(prepared, variant, spec)
-      : createVirtualAutoCombo(variant, spec);
+      ? createVirtualAutoComboFromPrepared(
+          prepared,
+          variant,
+          spec,
+          undefined,
+          undefined,
+          visionOpts
+        )
+      : createVirtualAutoCombo(variant, spec, undefined, undefined, visionOpts);
 
   const spec = resolveBuiltinAutoSpec(modelStr, suffix);
 

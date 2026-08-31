@@ -215,6 +215,22 @@ export function extractImageParts(messages: RequestMessage[]): ImagePart[] {
     }));
 }
 
+/**
+ * True when the request body carries at least one top-level image part, per
+ * the shared vision-bridge extraction contract (extractImageParts →
+ * detectMediaParts). Feeds auto-combo vision scoring so routing and the
+ * vision bridge agree on what counts as image content. Fail-closed: missing
+ * or malformed bodies are treated as text-only.
+ */
+export function requestHasImageContent(body?: RequestBody | null): boolean {
+  try {
+    const messages = (body?.messages ?? body?.input) as RequestMessage[] | undefined;
+    if (!messages || messages.length === 0) return false;
+    return extractImageParts(messages).length > 0;
+  } catch {
+    return false;
+  }
+}
 // Undici fetch with a browser-ish User-Agent: Wikimedia (and other CDNs)
 // reject requests without a UA with HTTP 400, silently breaking remote image
 // downloads in the describe path.

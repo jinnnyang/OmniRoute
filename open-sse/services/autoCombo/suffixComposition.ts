@@ -18,8 +18,7 @@
  */
 import type { AutoVariant } from "./autoPrefix";
 import { classifyTier } from "../tierResolver";
-import { getResolvedModelCapabilities } from "@/lib/modelCapabilities";
-import { isVisionModelId } from "@/shared/constants/visionModels";
+import { getResolvedModelCapabilities, hasVisionCapability } from "@/lib/modelCapabilities";
 import { isVisionBridgeForcedModel } from "@/shared/constants/visionBridgeDefaults";
 
 export type AutoCategory = "coding" | "reasoning" | "vision" | "chat" | "multimodal";
@@ -131,21 +130,20 @@ export function buildAutoCandidateFilter(
 
   if (category === "vision" || category === "multimodal") {
     checks.push((c) => {
+      // #vison-pool: registry entries whose catalog OVERSTATES vision support
+      // (opencode-go/opencode-zen/tokenrouter — the backend models are text-only)
+      // are forced through the vision bridge by isVisionBridgeForcedModel.
+      // They must never be selected as the vision-capable candidate itself.
+      const notBridgeForced = !isVisionBridgeForcedModel(`${c.provider}/${c.model}`);
       if (c.resolvedSupportsVision !== undefined) {
-        return c.resolvedSupportsVision || isVisionModelId(c.model);
+        // Resolved values come from full capability resolution, which already
+        // folds the #4072 id-fragment heuristic in. An explicit false therefore
+        // wins — re-applying the name list here would flip known text-only
+        // models back into vision pools (the flip bug).
+        return c.resolvedSupportsVision && notBridgeForced;
       }
-      try {
-        const caps = getResolvedModelCapabilities({ provider: c.provider, model: c.model });
-        const capable = caps.supportsVision === true || isVisionModelId(c.model);
-        if (!capable) return false;
-        // #vison-pool: registry entries whose catalog OVERSTATES vision support
-        // (opencode-go/opencode-zen/tokenrouter — the backend models are text-only)
-        // are forced through the vision bridge by isVisionBridgeForcedModel.
-        // They must never be selected as the vision-capable candidate itself.
-        return !isVisionBridgeForcedModel(`${c.provider}/${c.model}`);
-      } catch {
-        return isVisionModelId(c.model) && !isVisionBridgeForcedModel(`${c.provider}/${c.model}`);
-      }
+      // hasVisionCapability never throws (fail-open to the id heuristic).
+      return hasVisionCapability(c.provider, c.model) && notBridgeForced;
     });
   }
   if (category === "reasoning") {

@@ -241,3 +241,127 @@ test("computeSnapshotWeights produces different relative weights for quality-fir
     `quality-first should widen the capability gap more than ship-fast: ${gapQ.toFixed(3)} vs ${gapF.toFixed(3)}`
   );
 });
+
+// ── requestHasVision: image-request scoring (visionBoost / visionPenalty) ──
+
+test("requestHasVision gives vision models full taskFit credit and multiplies text-only total score down", () => {
+  const candidates = [
+    makeCandidate("p/vision-model", { vision: true }),
+    makeCandidate("p/plain-model"),
+  ];
+  const weights = {
+    taskFit: 0.2,
+    stability: 0,
+    tierPriority: 0,
+    costInv: 0,
+    latencyInv: 0,
+    health: 0.5,
+    quota: 0.5,
+  };
+
+  const scores = computeSnapshotWeights(candidates, weights, { requestHasVision: true });
+
+  // vision: taskFit × visionBoost(1.0) = 0.2 + baseline (health+quota)×0.5 = 0.5 → 0.7
+  assert.ok(
+    Math.abs((scores.get("p/vision-model") ?? 0) - 0.7) < 1e-9,
+    `vision model should get full taskFit credit: ${scores.get("p/vision-model")}`
+  );
+  // text-only: 0.5 raw × visionPenalty(0.15) = 0.075 — strong demotion, not exclusion
+  assert.ok(
+    Math.abs((scores.get("p/plain-model") ?? 0) - 0.075) < 1e-9,
+    `text-only model should be multiplied down: ${scores.get("p/plain-model")}`
+  );
+});
+
+test("without requestHasVision the legacy partial-credit vision scoring is unchanged", () => {
+  const candidates = [
+    makeCandidate("p/vision-model", { vision: true }),
+    makeCandidate("p/plain-model"),
+  ];
+  const weights = {
+    taskFit: 0.2,
+    stability: 0,
+    tierPriority: 0,
+    costInv: 0,
+    latencyInv: 0,
+    health: 0.5,
+    quota: 0.5,
+  };
+
+  const scores = computeSnapshotWeights(candidates, weights);
+
+  // Legacy: vision gets taskFit × 0.3, no total-score penalty.
+  assert.ok(Math.abs((scores.get("p/vision-model") ?? 0) - (0.2 * 0.3 + 0.5)) < 1e-9);
+  assert.ok(Math.abs((scores.get("p/plain-model") ?? 0) - 0.5) < 1e-9);
+});
+
+test("visionBoost and visionPenalty are configurable", () => {
+  const candidates = [
+    makeCandidate("p/vision-model", { vision: true }),
+    makeCandidate("p/plain-model"),
+  ];
+  const weights = {
+    taskFit: 0.2,
+    stability: 0,
+    tierPriority: 0,
+    costInv: 0,
+    latencyInv: 0,
+    health: 0.2,
+    quota: 0.2,
+  };
+
+  const scores = computeSnapshotWeights(candidates, weights, {
+    requestHasVision: true,
+    visionBoost: 0.5,
+    visionPenalty: 0.4,
+  });
+
+  // vision: 0.2×0.5 + (0.4)×0.5 = 0.3
+  assert.ok(Math.abs((scores.get("p/vision-model") ?? 0) - 0.3) < 1e-9);
+  // plain: (0.4)×0.5 = 0.2 raw × 0.4 = 0.08
+  assert.ok(Math.abs((scores.get("p/plain-model") ?? 0) - 0.08) < 1e-9);
+});
+
+test("requestHasVision keeps the reasoning taskFit credit intact (regression lock)", () => {
+  const candidates = [
+    makeCandidate("p/reasoning-only", { reasoning: true }),
+    makeCandidate("p/vision-model", { vision: true }),
+  ];
+  const weights = {
+    taskFit: 0.2,
+    stability: 0,
+    tierPriority: 0,
+    costInv: 0,
+    latencyInv: 0,
+    health: 0,
+    quota: 0,
+  };
+
+  const scores = computeSnapshotWeights(candidates, weights, { requestHasVision: true });
+
+  // reasoning credit stays 0.6×taskFit; the text-only penalty applies on top
+  // (multiplicative on the total, not on the taskFit component).
+  assert.ok(Math.abs((scores.get("p/reasoning-only") ?? 0) - 0.2 * 0.6 * 0.15) < 1e-9);
+  assert.ok(Math.abs((scores.get("p/vision-model") ?? 0) - 0.2) < 1e-9);
+});
+
+test("visionPenalty 1.0 is a no-op for non-vision scores", () => {
+  const candidates = [makeCandidate("p/plain-model")];
+  const weights = {
+    taskFit: 0.2,
+    stability: 0,
+    tierPriority: 0,
+    costInv: 0,
+    latencyInv: 0,
+    health: 0.2,
+    quota: 0.2,
+  };
+
+  const flagged = computeSnapshotWeights(candidates, weights, {
+    requestHasVision: true,
+    visionPenalty: 1,
+  });
+  const legacy = computeSnapshotWeights(candidates, weights);
+
+  assert.equal(flagged.get("p/plain-model"), legacy.get("p/plain-model"));
+});
