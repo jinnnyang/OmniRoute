@@ -321,6 +321,12 @@ export async function handleEmbedding({
   const useGeminiNativeTransport =
     providerConfig.structuredInputProtocol === "gemini-embed-content" &&
     (isGeminiEmbedding2Family(model) || canonicalStructured || geminiNative || jinaNative);
+  // Ark multimodal embeddings: only canonical structured input takes the
+  // fused-vector /embeddings/multimodal translator; plain string[] inputs keep
+  // the OpenAI-shaped default path on the standard /embeddings endpoint where
+  // N inputs really produce N vectors (live-verified 2026-08-31).
+  const useArkStructuredTransport =
+    providerConfig.structuredInputProtocol === "ark-multimodal" && canonicalStructured;
 
   if (providerConfig.structuredInputProtocol === "jina-v1" && jinaNative && canonicalStructured) {
     try {
@@ -336,7 +342,11 @@ export async function handleEmbedding({
     } catch (error) {
       return { success: false, status: 400, error: sanitizeErrorMessage(error) };
     }
-  } else if (useGeminiNativeTransport || (!passThroughJinaNative && canonicalStructured)) {
+  } else if (
+    useArkStructuredTransport ||
+    useGeminiNativeTransport ||
+    (!passThroughJinaNative && canonicalStructured)
+  ) {
     if (!model) {
       return {
         success: false,

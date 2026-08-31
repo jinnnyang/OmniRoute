@@ -124,7 +124,17 @@ export function resolveExecutionCredentials(opts: {
 
   // #8969: Poe's native /v1/responses surface — DefaultExecutor.buildUrl("poe")
   // reads this marker so Responses requests do not land on chat/completions.
-  if (targetFormat === FORMATS.OPENAI_RESPONSES && provider === "poe") {
+  // #volcengine-coding-plan-builtin: same marker contract for the Ark Coding
+  // Plan — buildUrl("volcengine-coding-plan") switches to responsesBaseUrl on
+  // the marker. The condition keys on the RESOLVED targetFormat, so both
+  // sources (static registry marks and #2905 DB overrides) funnel through
+  // this single injection point; buildUrl intentionally checks the marker
+  // alone (single disjunction — no registry/psd targetFormat re-disjunctions,
+  // which would be dead code for this provider).
+  if (
+    targetFormat === FORMATS.OPENAI_RESPONSES &&
+    (provider === "poe" || provider === "volcengine-coding-plan")
+  ) {
     providerSpecificData._omnirouteForceResponsesUpstream = true;
   }
 

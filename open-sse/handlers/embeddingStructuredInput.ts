@@ -128,10 +128,7 @@ export async function prepareJinaMixedEmbeddingInput(
       continue;
     }
     if (isCanonicalEmbeddingItem(item)) {
-      const [translated] = await prepareJinaInput(
-        [item as EmbeddingMultimodalItem],
-        fetchMedia
-      );
+      const [translated] = await prepareJinaInput([item as EmbeddingMultimodalItem], fetchMedia);
       out.push(translated);
       continue;
     }
@@ -163,7 +160,9 @@ function embeddingValues(entry: unknown): unknown[] {
   return Array.isArray(values) ? values : [];
 }
 
-function normalizeGeminiEmbedContentResponse(data: Record<string, unknown>): Record<string, unknown> {
+function normalizeGeminiEmbedContentResponse(
+  data: Record<string, unknown>
+): Record<string, unknown> {
   return {
     object: "list",
     data: [{ object: "embedding", embedding: embeddingValues(data.embedding), index: 0 }],
@@ -263,10 +262,7 @@ async function itemToGeminiContent(
     return { parts: [await jinaDocToGeminiPart(item, fetchMedia)] };
   }
   if (isCanonicalEmbeddingItem(item)) {
-    const [part] = await prepareGeminiParts(
-      [item as EmbeddingMultimodalItem],
-      fetchMedia
-    );
+    const [part] = await prepareGeminiParts([item as EmbeddingMultimodalItem], fetchMedia);
     return { parts: [part] };
   }
   throw new Error("Unsupported Gemini embedding input item");
@@ -281,6 +277,65 @@ async function prepareGeminiParts(
     if (item.type === "text") return { text: item.text };
     return { inline_data: { mime_type: inline!.mediaType, data: inline!.data } };
   });
+}
+
+/**
+ * Ark multimodal embeddings (doubao-embedding-vision-*, live-verified
+ * 2026-08-31): the input array is the PART LIST of ONE fused vector, not a
+ * batch. Text parts stay { type: "text", text }; every image part is inlined
+ * as a base64 data URI under { type: "image_url", image_url: { url } } so the
+ * shared 16 MiB aggregate cap (resolveInlineItems) stays enforceable — Ark
+ * accepts both http(s) URLs and data URIs there. Batched array-of-arrays is
+ * rejected upstream ("Mismatch type embedding.Input").
+ */
+async function prepareArkMultimodalInput(
+  items: EmbeddingMultimodalItem[],
+  fetchMedia: StructuredEmbeddingFetchOptions["fetchMedia"]
+): Promise<Array<Record<string, unknown>>> {
+  const resolved = await resolveInlineItems(items, fetchMedia);
+  return resolved.map(({ item, inline }) => {
+    if (item.type === "text") return { type: "text", text: item.text };
+    if (item.type !== "image") {
+      throw new Error("Ark multimodal embeddings support only text and image inputs");
+    }
+    return {
+      type: "image_url",
+      image_url: { url: `data:${inline!.mediaType};base64,${inline!.data}` },
+    };
+  });
+}
+
+/** Derive the fused-vector endpoint from the standard OpenAI-shaped baseUrl. */
+function arkMultimodalUrl(baseUrl: string): string {
+  return baseUrl.replace(/\/embeddings\/?$/, "/embeddings/multimodal");
+}
+
+/**
+ * Ark's multimodal response wraps the single fused vector as `data:
+ * { embedding: [...] }` — an object, not the OpenAI array. Re-wrap into the
+ * OpenAI shape the rest of the pipeline expects (usage passes through).
+ */
+function normalizeArkMultimodalResponse(data: Record<string, unknown>): Record<string, unknown> {
+  const payload = data.data;
+  const rawEmbedding =
+    payload && typeof payload === "object" && !Array.isArray(payload)
+      ? (payload as { embedding?: unknown }).embedding
+      : undefined;
+  const usage =
+    data.usage && typeof data.usage === "object"
+      ? (data.usage as Record<string, unknown>)
+      : { prompt_tokens: 0, total_tokens: 0 };
+  return {
+    object: "list",
+    data: [
+      {
+        object: "embedding",
+        embedding: Array.isArray(rawEmbedding) ? rawEmbedding : [],
+        index: 0,
+      },
+    ],
+    usage,
+  };
 }
 
 function normalizeEmbeddingInputItems(input: unknown): unknown[] {
@@ -342,6 +397,17 @@ export async function prepareStructuredEmbeddingRequest(
       },
       authHeader,
       normalizeResponse: normalizeGeminiBatchResponse,
+    };
+  }
+  if (provider.structuredInputProtocol === "ark-multimodal") {
+    const input = await prepareArkMultimodalInput(
+      items as EmbeddingMultimodalItem[],
+      options.fetchMedia
+    );
+    return {
+      url: arkMultimodalUrl(provider.baseUrl),
+      body: { model, input },
+      normalizeResponse: normalizeArkMultimodalResponse,
     };
   }
   throw new Error(`Provider ${provider.id} has no structured embedding input translator`);

@@ -202,7 +202,7 @@ export const APIKEY_PROVIDERS_REGIONAL = {
   "volcengine-agent-plan": {
     id: "volcengine-agent-plan",
     alias: "veap",
-    name: "Volcengine Ark Agent Plan",
+    name: "Volcengine Agent",
     icon: "local_fire_department",
     color: "#DC2626",
     textIcon: "VA",
@@ -212,7 +212,7 @@ export const APIKEY_PROVIDERS_REGIONAL = {
   "volcengine-coding-plan": {
     id: "volcengine-coding-plan",
     alias: "vecp",
-    name: "Volcengine Ark Coding Plan",
+    name: "Volcengine Coding",
     icon: "code",
     color: "#FF6A00",
     textIcon: "VC",

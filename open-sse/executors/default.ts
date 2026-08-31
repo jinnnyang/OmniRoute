@@ -357,6 +357,20 @@ export class DefaultExecutor extends BaseExecutor {
           defaultChatUrl: this.config.baseUrl,
         });
       }
+      case "volcengine-coding-plan": {
+        // #volcengine-coding-plan-builtin: the Ark coding endpoint serves both
+        // protocols at the same base. A resolved targetFormat of
+        // openai-responses is surfaced by resolveExecutionCredentials as the
+        // marker below (registry marks AND #2905 DB overrides both funnel
+        // through it), so this case checks the marker ALONE — registry and
+        // psd.targetFormat disjunctions would be dead code here (nothing
+        // writes either for this provider).
+        const psd = credentials?.providerSpecificData;
+        if (psd?._omnirouteForceResponsesUpstream === true && this.config.responsesBaseUrl) {
+          return this.config.responsesBaseUrl;
+        }
+        return this.config.baseUrl;
+      }
       case "claude":
       case "glm":
       case "glmt":
@@ -639,8 +653,7 @@ export class DefaultExecutor extends BaseExecutor {
 
     const record = body as Record<string, unknown>;
     const rf = record.response_format as
-      | { type?: string; json_schema?: { schema?: unknown } }
-      | undefined;
+      { type?: string; json_schema?: { schema?: unknown } } | undefined;
     if (!rf) return body;
 
     // openai-compatible-* providers accept json_object natively — only the

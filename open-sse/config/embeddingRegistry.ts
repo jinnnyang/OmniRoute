@@ -9,7 +9,7 @@
  */
 
 export type EmbeddingModality = "text" | "image" | "audio" | "video" | "document";
-export type StructuredEmbeddingProtocol = "jina-v1" | "gemini-embed-content";
+export type StructuredEmbeddingProtocol = "jina-v1" | "gemini-embed-content" | "ark-multimodal";
 
 export interface EmbeddingModel {
   id: string;
@@ -408,11 +408,35 @@ export const EMBEDDING_PROVIDERS: Record<string, EmbeddingProvider> = {
       },
     ],
   },
+
+  // Volcengine Ark Coding Plan (#volcengine-coding-plan-builtin). Live-verified
+  // 2026-08-31: the standard /embeddings endpoint is OpenAI-shaped and batches
+  // string[] into N vectors; /embeddings/multimodal fuses a canonical part
+  // array into ONE vector and returns data as an object. Plain string[] inputs
+  // therefore hit baseUrl directly (true batching); structured input is routed
+  // through the ark-multimodal translator in embeddingStructuredInput.ts.
+  "volcengine-coding-plan": {
+    id: "volcengine-coding-plan",
+    structuredInputProtocol: "ark-multimodal",
+    baseUrl: "https://ark.cn-beijing.volces.com/api/coding/v3/embeddings",
+    authType: "apikey",
+    authHeader: "bearer",
+    models: [
+      {
+        id: "doubao-embedding-vision-250615",
+        name: "Doubao Embedding Vision 250615",
+        dimensions: 2048,
+        modalities: ["text", "image"],
+      },
+    ],
+  },
 };
 
 const EMBEDDING_PROVIDER_ALIASES: Record<string, string> = {
   jina: "jina-ai",
   voyage: "voyage-ai",
+  // Builtin Volcengine Coding Plan chat provider prefix (registry alias "vecp").
+  vecp: "volcengine-coding-plan",
   // The dashboard stores LM Studio connections under the hyphenated provider
   // id "lm-studio" while the embedding registry keys the provider "lmstudio"
   // (#11233). Alias the dashboard id so "lm-studio/<model>" resolves instead

@@ -431,15 +431,23 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Volcano Ark plan providers: discover models live from the console API
     // (cookie+csrf captured at bind time). The chat API has no /models
-    // endpoint, so the default discovery path below cannot serve them.
+    // Volcano Ark plan providers bound to a console session (cookie+csrf
+    // captured at "Connect Volcano Account" time) discover models live from
+    // the console API. API-key connections have no console session; the
+    // coding endpoint DOES serve GET /models with a Bearer key (live-verified
+    // 2026-08-31), so they fall through to the default discovery path below
+    // instead of failing with a re-bind error.
     const volcPlanKind = providerToVolcPlanKind(logProvider);
-    if (volcPlanKind) {
-      const psd =
-        connection.providerSpecificData && typeof connection.providerSpecificData === "object"
-          ? (connection.providerSpecificData as JsonRecord)
-          : {};
-      const cookie = toNonEmptyString(psd.volcConsoleCookie) || "";
-      const csrf = toNonEmptyString(psd.volcCsrfToken) || "";
+    const volcPlanPsd =
+      connection.providerSpecificData && typeof connection.providerSpecificData === "object"
+        ? (connection.providerSpecificData as JsonRecord)
+        : {};
+    const volcPlanHasConsoleSession =
+      toNonEmptyString(volcPlanPsd.volcConsoleCookie) !== "" &&
+      toNonEmptyString(volcPlanPsd.volcCsrfToken) !== "";
+    if (volcPlanKind && volcPlanHasConsoleSession) {
+      const cookie = toNonEmptyString(volcPlanPsd.volcConsoleCookie) || "";
+      const csrf = toNonEmptyString(volcPlanPsd.volcCsrfToken) || "";
       const duration = Date.now() - start;
       let discovered;
       try {

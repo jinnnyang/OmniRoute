@@ -344,8 +344,8 @@ Use the dashboard at `/dashboard/providers` to enable, configure, and test each 
 | `vertex-partner` | `vp` | Vertex AI Partners | API key, enterprise | [link](https://cloud.google.com/vertex-ai) | Provide the same Service Account JSON used for Vertex AI partner models. |
 | `void-ai` | `void-ai` | Void AI | API key, aggregator | [link](https://voidai.app) | The public model catalog marks some models with a free plan requirement, but access is conditional and no numeric quota is confirmed. |
 | `volcengine` | `volcengine` | Volcengine | API key | [link](https://www.volcengine.com) | — |
-| `volcengine-agent-plan` | `veap` | Volcengine Ark Agent Plan | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/agent-plan) | Connect your Volcano Engine account or use an Ark Agent Plan subscription API key. |
-| `volcengine-coding-plan` | `vecp` | Volcengine Ark Coding Plan | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/coding-plan) | Connect your Volcano Engine account or use an Ark Coding Plan subscription API key. |
+| `volcengine-agent-plan` | `veap` | Volcengine Agent | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/agent-plan) | Connect your Volcano Engine account or use an Ark Agent Plan subscription API key. |
+| `volcengine-coding-plan` | `vecp` | Volcengine Coding | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/coding-plan) | Connect your Volcano Engine account or use an Ark Coding Plan subscription API key. |
 | `voyage-ai` | `voyage` | Voyage AI | API key, embed/rerank | [link](https://www.voyageai.com) | Bearer API key for Voyage AI embeddings and rerank APIs. |
 | `wafer` | `wafer` | Wafer AI | API key | [link](https://wafer.ai) | — |
 | `wandb` | `wandb` | Weights & Biases Inference | API key | [link](https://wandb.ai) | — |
