@@ -70,6 +70,7 @@ export default function ProviderDetailPageClient() {
   // ── UI-only modal state (not owned by hooks) ─────────────────────────────
   const [showKimiAuthMethodModal, setShowKimiAuthMethodModal] = useState(false);
   const [showVolcengineConnectModal, setShowVolcengineConnectModal] = useState(false);
+  const [connectingVolcengineAccount, setConnectingVolcengineAccount] = useState(false);
   const [showAddApiKeyModal, setShowAddApiKeyModal] = useState(false);
   const [showSiliconFlowEndpointModal, setShowSiliconFlowEndpointModal] = useState(false);
   const [siliconFlowInitialBaseUrl, setSiliconFlowInitialBaseUrl] = useState<string | undefined>();
@@ -79,7 +80,6 @@ export default function ProviderDetailPageClient() {
   const [selectedConnection, setSelectedConnection] = useState(null);
   const [proxyTarget, setProxyTarget] = useState(null);
   const [codexCliGuideOpen, setCodexCliGuideOpen] = useState(false);
-  const [importGeminiModalOpen, setImportGeminiModalOpen] = useState(false);
   const isOpenAICompatible = isOpenAICompatibleProvider(providerId);
   const isCcCompatible = isClaudeCodeCompatibleProvider(providerId);
   const isCommandCode = providerId === "command-code";
