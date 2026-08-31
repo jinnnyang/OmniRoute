@@ -2322,11 +2322,6 @@
       "count": 1
     }
   },
-  "src/lib/guardrails/visionBridgeRouter.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/lib/idempotencyLayer.ts": {
     "no-restricted-imports": {
       "count": 1

@@ -2,12 +2,47 @@
  * Vision Bridge Auto-Router
  * Automatically selects the fastest vision-capable model from available models.
  */
+/**
+ * Vision Bridge Auto-Router
+ * Automatically selects the fastest vision-capable model from available models.
+ *
+ * Candidate reliability rule (#vision-bridge-vcp): selection is driven by REAL
+ * credentials, never by hardcoded provider-name tables. Keyed connections win,
+ * no-auth free relays are excluded by default (`excludeNoAuth`), and
+ * indeterminate credential stores fail open. Candidates come from the static
+ * registry PLUS every active connection's models that carry an explicit vision
+ * marker (synced row flag or the dashboard #9195 override) — upstream naming is
+ * never guessed.
+ */
 
 import { getResolvedModelCapabilities } from "@/lib/modelCapabilities";
 import { PROVIDER_MODELS, PROVIDER_ID_TO_ALIAS } from "@omniroute/open-sse/config/providerModels";
-import { hasUsableCredentialsForModel } from "./visionBridgeCredentials";
+import {
+  classifyModelCredentials,
+  hasUsableCredentialsForModel,
+  type ModelCredentialVerdict,
+} from "./visionBridgeCredentials";
 import { isVisionBridgeForcedModel } from "@/shared/constants/visionBridgeDefaults";
 
+/** Minimal row shapes so tests can inject pure data instead of mocking the DB. */
+export interface RouterConnectionLike {
+  id?: string;
+  provider?: string | null;
+  isActive?: boolean | null;
+  [key: string]: unknown;
+}
+export interface RouterNodeLike {
+  id?: string;
+  name?: string | null;
+  prefix?: string | null;
+  type?: string | null;
+}
+export interface RouterSyncedModelLike {
+  id: string;
+  supportsVision?: boolean | null;
+  [key: string]: unknown;
+}
+export type RouterVisionOverrideMap = ReadonlyMap<string, ReadonlyMap<string, boolean>>;
 export interface VisionModelCandidate {
   modelId: string;
   fullName: string; // provider/model format
@@ -35,6 +70,12 @@ export interface VisionBridgeRouterConfig {
   minLatencySamples: number;
   /** Models to exclude from auto-routing */
   excludedModels: string[];
+  /**
+   * Exclude no-auth providers (free relays, e.g. cloudflare-playground) from
+   * auto-selection. Default `true` — a free relay that hallucinates a describe
+   * poisons every downstream text target. Opt back in explicitly.
+   */
+  excludeNoAuth?: boolean;
 }
 
 const DEFAULT_ROUTER_CONFIG: VisionBridgeRouterConfig = {
@@ -42,7 +83,13 @@ const DEFAULT_ROUTER_CONFIG: VisionBridgeRouterConfig = {
   selectionCacheTtlMs: 60_000, // 1 minute
   minLatencySamples: 5,
   excludedModels: [],
+  excludeNoAuth: true,
 };
+
+/** Candidate priority tiers — lower wins. Keyed connections beat everything. */
+const PRIORITY_KEYED = 30;
+const PRIORITY_UNKNOWN = 75; // credential store unreadable — fail open
+const PRIORITY_NOAUTH = 95; // only selectable when excludeNoAuth=false
 
 // In-memory latency tracker (would be Redis in production)
 const latencyStore = new Map<string, LatencyRecord[]>();
@@ -97,20 +144,141 @@ function calculateSuccessRate(modelId: string): number {
 }
 
 /**
- * Injectable dependencies for the router's credential-usability check.
- * Defaults to the real `hasUsableCredentialsForModel` (DB-backed). Tests can
- * inject a pure stub here instead of mocking the `@/lib/db/providers` module
- * boundary — this project's Node native test runner (`node:test`) has no
- * supported ESM module-mocking mechanism, so DI is the only way to exercise
- * the credential-exclusion branch under `npm run test:unit`.
+ * Injectable dependencies for the router's data sources.
+ * Defaults to the real DB-backed loaders. Tests inject pure stubs instead of
+ * mocking the `@/lib/db/providers` module boundary — this project's Node native
+ * test runner (`node:test`) has no supported ESM module-mocking mechanism, so
+ * DI is the only way to exercise the credential-exclusion branch under
+ * `npm run test:unit`.
  */
 export interface VisionBridgeRouterDeps {
   hasUsableCredentials?: (model: string) => Promise<boolean | null>;
+  classifyCredentials?: (model: string) => Promise<ModelCredentialVerdict>;
+  listConnections?: () => Promise<RouterConnectionLike[]>;
+  listProviderNodes?: () => Promise<RouterNodeLike[]>;
+  listModelsByConnection?: (providerId: string) => Promise<Record<string, RouterSyncedModelLike[]>>;
+  listCustomVisionOverrides?: () => Promise<RouterVisionOverrideMap>;
+}
+
+async function defaultListConnections(): Promise<RouterConnectionLike[]> {
+  try {
+    const { getProviderConnections } = await import("@/lib/db/providers");
+    const rows = await getProviderConnections({ isActive: true });
+    return Array.isArray(rows) ? (rows as RouterConnectionLike[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+async function defaultListProviderNodes(): Promise<RouterNodeLike[]> {
+  try {
+    const { getProviderNodes } = await import("@/lib/db/providers/nodes");
+    const rows = await getProviderNodes();
+    return Array.isArray(rows) ? (rows as RouterNodeLike[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+async function defaultListModelsByConnection(
+  providerId: string
+): Promise<Record<string, RouterSyncedModelLike[]>> {
+  try {
+    const { getSyncedAvailableModelsByConnection } = await import("@/lib/db/models");
+    const byConnection = await getSyncedAvailableModelsByConnection(providerId);
+    return (byConnection ?? {}) as unknown as Record<string, RouterSyncedModelLike[]>;
+  } catch {
+    return {};
+  }
+}
+
+async function defaultListCustomVisionOverrides(): Promise<RouterVisionOverrideMap> {
+  try {
+    const { listCustomModelVisionOverrides } = await import("@/lib/db/models");
+    return listCustomModelVisionOverrides();
+  } catch {
+    return new Map();
+  }
 }
 
 /**
- * Get all vision-capable models from the registry that also have a usable
- * active connection on this instance.
+ * Enumerate models on active connections that carry an EXPLICIT vision marker:
+ *   - the dashboard #9195 per-model override (`customModels` key_value row,
+ *     keyed by the connection's provider id);
+ *   - the synced catalog row's own `supportsVision` flag (captured at sync);
+ *   - the resolved capability chain (`getResolvedModelCapabilities`) for
+ *     registry/synced metadata.
+ * Nothing is inferred from the model name here — upstream naming is not ours
+ * to guess, so an unmarked model simply never becomes a candidate.
+ */
+async function getConnectionVisionModels(
+  deps: Required<
+    Pick<
+      VisionBridgeRouterDeps,
+      | "listConnections"
+      | "listProviderNodes"
+      | "listModelsByConnection"
+      | "listCustomVisionOverrides"
+    >
+  >
+): Promise<string[]> {
+  const [connections, nodes, overrides] = await Promise.all([
+    deps.listConnections().catch(() => [] as RouterConnectionLike[]),
+    deps.listProviderNodes().catch(() => [] as RouterNodeLike[]),
+    deps.listCustomVisionOverrides().catch(() => new Map() as RouterVisionOverrideMap),
+  ]);
+
+  // Public prefix for each connection's provider id: the operator-configured
+  // node prefix wins; static providers fall back to their registry alias.
+  const prefixByProvider = new Map<string, string>();
+  for (const node of nodes) {
+    const nodeId = typeof node?.id === "string" ? node.id : null;
+    const prefix = typeof node?.prefix === "string" ? node.prefix.trim() : "";
+    if (nodeId && prefix) prefixByProvider.set(nodeId, prefix);
+  }
+
+  const found = new Set<string>();
+  for (const connection of connections) {
+    if (connection?.isActive === false) continue;
+    const providerId = typeof connection?.provider === "string" ? connection.provider : null;
+    if (!providerId) continue;
+    const alias =
+      prefixByProvider.get(providerId) ?? PROVIDER_ID_TO_ALIAS[providerId] ?? providerId;
+
+    const modelIds = new Set<string>();
+
+    // 1. Dashboard #9195 explicit supportsVision overrides.
+    const overrideMap = overrides.get(providerId);
+    if (overrideMap) {
+      for (const [modelId, supportsVision] of overrideMap) {
+        if (supportsVision === true) modelIds.add(modelId);
+      }
+    }
+
+    // 2. Synced catalog rows with an explicit vision flag.
+    const byConnection = await deps.listModelsByConnection(providerId).catch(() => ({}));
+    for (const rows of Object.values(byConnection ?? {})) {
+      if (!Array.isArray(rows)) continue;
+      for (const row of rows) {
+        if (row?.id && row.supportsVision === true) modelIds.add(row.id);
+      }
+    }
+
+    for (const modelId of modelIds) {
+      const fullName = `${alias}/${modelId}`;
+      if (isVisionBridgeForcedModel(fullName)) continue;
+      if (found.has(fullName)) continue;
+      found.add(fullName);
+    }
+  }
+
+  return [...found];
+}
+
+/**
+ * Get all vision-capable models that also have a usable active connection on
+ * this instance: static-registry candidates PLUS operator-marked models on
+ * active connections.
  *
  * Without this credential check, a model with no working connection (e.g. the
  * hardcoded default `openai/gpt-4o-mini` on an instance with no `openai`
@@ -119,11 +287,46 @@ export interface VisionBridgeRouterDeps {
  * non-vision backend, which rejects it with an opaque upstream error.
  */
 async function getVisionCapableModels(
-  deps: VisionBridgeRouterDeps = {}
+  deps: VisionBridgeRouterDeps = {},
+  excludeNoAuth: boolean = true
 ): Promise<VisionModelCandidate[]> {
-  const checkCreds = deps.hasUsableCredentials ?? hasUsableCredentialsForModel;
+  const classify = deps.classifyCredentials ?? classifyModelCredentials;
   const candidates: VisionModelCandidate[] = [];
+  const seen = new Set<string>();
   const checks: Array<Promise<void>> = [];
+
+  const pushCandidate = (fullName: string, modelId: string, verdict: ModelCredentialVerdict) => {
+    if (seen.has(fullName)) return;
+    seen.add(fullName);
+    if (verdict === "unusable") return;
+    if (verdict === "noauth" && excludeNoAuth) return;
+    const priority =
+      verdict === "keyed"
+        ? PRIORITY_KEYED
+        : verdict === "noauth"
+          ? PRIORITY_NOAUTH
+          : PRIORITY_UNKNOWN;
+    candidates.push({
+      modelId,
+      fullName,
+      priority,
+      averageLatencyMs: calculateAverageLatency(fullName),
+      lastUsedAt: 0,
+      successRate: calculateSuccessRate(fullName),
+    });
+  };
+
+  const classifyWithFallback = async (fullName: string): Promise<ModelCredentialVerdict> => {
+    if (deps.classifyCredentials) return deps.classifyCredentials(fullName);
+    // Legacy boolean injection (existing tests): derive the verdict from it.
+    if (deps.hasUsableCredentials) {
+      const usable = await deps.hasUsableCredentials(fullName);
+      if (usable === true) return "keyed";
+      if (usable === false) return "unusable";
+      return "unknown";
+    }
+    return classify(fullName);
+  };
 
   for (const [providerAlias, models] of Object.entries(PROVIDER_MODELS)) {
     if (!Array.isArray(models)) continue;
@@ -136,35 +339,8 @@ async function getVisionCapableModels(
 
       if (caps.supportsVision === true && !isVisionBridgeForcedModel(fullModelId)) {
         checks.push(
-          checkCreds(fullModelId).then((usable) => {
-            // Only a confirmed `false` excludes a candidate — `null` (indeterminate,
-            // e.g. unit tests / early boot) fails open so existing behavior is preserved
-            // when the credential store can't be checked.
-            if (usable === false) return;
-
-            // Determine priority based on provider type (lower = better).
-            // Do NOT prefer opencode-* first: those catalog entries often resolve to a
-            // noauth connection and 401 "Missing API key", hijacking working providers
-            // (e.g. zai/glm-5.2 combo targets) when Vision Bridge auto-reroutes.
-            let priority = 100;
-            if (providerAlias === "openai" || providerAlias === "anthropic") {
-              priority = 50; // Major providers with real API keys
-            } else if (providerAlias === "vertex" || providerAlias === "gemini") {
-              priority = 55;
-            } else if (providerAlias.startsWith("opencode-")) {
-              priority = 95; // Free/catalog — only if nothing credentialed is available
-            } else {
-              priority = 75; // Other providers
-            }
-
-            candidates.push({
-              modelId: model.id,
-              fullName: fullModelId,
-              priority,
-              averageLatencyMs: calculateAverageLatency(fullModelId),
-              lastUsedAt: 0,
-              successRate: calculateSuccessRate(fullModelId),
-            });
+          classifyWithFallback(fullModelId).then((verdict) => {
+            pushCandidate(fullModelId, model.id, verdict);
           })
         );
       }
@@ -172,6 +348,22 @@ async function getVisionCapableModels(
   }
 
   await Promise.all(checks);
+
+  // Connection-backed candidates (operator-marked custom models, synced vision
+  // flags) — classified through the same credential verdict path.
+  const connectionDeps = {
+    listConnections: deps.listConnections ?? defaultListConnections,
+    listProviderNodes: deps.listProviderNodes ?? defaultListProviderNodes,
+    listModelsByConnection: deps.listModelsByConnection ?? defaultListModelsByConnection,
+    listCustomVisionOverrides: deps.listCustomVisionOverrides ?? defaultListCustomVisionOverrides,
+  };
+  const dynamicIds = await getConnectionVisionModels(connectionDeps);
+  const dynamicChecks = dynamicIds.map(async (fullName) => {
+    const verdict = await classifyWithFallback(fullName);
+    pushCandidate(fullName, fullName.split("/").slice(1).join("/"), verdict);
+  });
+  await Promise.all(dynamicChecks);
+
   return candidates;
 }
 
@@ -225,6 +417,9 @@ export async function getBestVisionModel(
   // (#8430) An unreachable fixedModel (e.g. the default "openai/gpt-4o-mini"
   // on an instance with no OpenAI connection/key) must not short-circuit the
   // credential check — fall through to auto-selection instead.
+  // (#8430) An unreachable fixedModel (e.g. the default "openai/gpt-4o-mini"
+  // on an instance with no OpenAI connection/key) must not short-circuit the
+  // credential check — fall through to auto-selection instead.
   if (fullConfig.fixedModel) {
     const checkCreds = deps.hasUsableCredentials ?? hasUsableCredentialsForModel;
     const usable = await checkCreds(fullConfig.fixedModel);
@@ -235,19 +430,20 @@ export async function getBestVisionModel(
     }
   }
 
-  // Check selection cache — key includes excluded models to prevent cache pollution
-  // across different configurations
+  // Check selection cache — key includes excluded models AND the no-auth
+  // policy to prevent cache pollution across different configurations
+  const excludeNoAuth = fullConfig.excludeNoAuth !== false;
   const cacheKey =
     fullConfig.excludedModels.length > 0
-      ? `excl:${[...fullConfig.excludedModels].sort().join(",")}`
-      : "default";
+      ? `excl:${[...fullConfig.excludedModels].sort().join(",")}|noauth:${excludeNoAuth}`
+      : `default|noauth:${excludeNoAuth}`;
   const cached = selectionCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) {
     return cached.modelId;
   }
 
   // Get all vision-capable candidates
-  const candidates = await getVisionCapableModels(deps);
+  const candidates = await getVisionCapableModels(deps, excludeNoAuth);
 
   // Select best model
   const best = selectBestModel(candidates, fullConfig);
@@ -275,7 +471,7 @@ export async function getFallbackModels(
   deps: VisionBridgeRouterDeps = {}
 ): Promise<string[]> {
   const fullConfig = { ...DEFAULT_ROUTER_CONFIG, ...config };
-  const candidates = await getVisionCapableModels(deps);
+  const candidates = await getVisionCapableModels(deps, fullConfig.excludeNoAuth !== false);
 
   const filtered = candidates.filter(
     (c) =>

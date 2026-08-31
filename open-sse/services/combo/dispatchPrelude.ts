@@ -17,6 +17,7 @@ import { getCircuitBreaker } from "../../../src/shared/utils/circuitBreaker";
 import { fisherYatesShuffle, getNextFromDeck } from "../../../src/shared/utils/shuffleDeck";
 import { handleFusionChat, type FusionTuning } from "../fusion.ts";
 import { getResolvedModelCapabilities } from "../modelCapabilities.ts";
+import { restoreVisionBridgeRawContainerForTarget } from "../../../src/lib/guardrails/visionBridgeHelpers";
 import { errorResponseWithComboDiagnostics } from "../../utils/error.ts";
 import { parseModel } from "../model.ts";
 import { handlePipelineChat, type PipelineStep } from "../pipeline.ts";
@@ -327,7 +328,7 @@ export async function tryPinnedModelDispatch(args: {
       // go literal from the second in-session request on. Target context comes
       // from the pinned model's resolved combo target when available.
       const pinnedTarget = comboTargets.find((t) => t.modelStr === pinnedModel);
-      const pinnedBody = expandComboSystemPromptIfPresent(body, combo, {
+      let pinnedBody = expandComboSystemPromptIfPresent(body, combo, {
         modelId: pinnedModel,
         providerId:
           pinnedTarget && pinnedTarget.provider !== "unknown" ? pinnedTarget.provider : "",
@@ -337,6 +338,14 @@ export async function tryPinnedModelDispatch(args: {
             : "",
         fingerprint: pinnedTarget ? (resolveTargetFingerprint(pinnedTarget) ?? "") : "",
       });
+      // (#vision-bridge-vcp P1) Pinned dispatch bypasses the main target loop —
+      // apply the same per-target vision restore here.
+      {
+        const restoredPinned = restoreVisionBridgeRawContainerForTarget(pinnedBody, pinnedModel);
+        if (restoredPinned) {
+          pinnedBody = restoredPinned as typeof pinnedBody;
+        }
+      }
       pinnedResult = await handleSingleModelWithTimeout(pinnedBody, pinnedModel, {
         modelPinned: true,
       } as SingleModelTarget);

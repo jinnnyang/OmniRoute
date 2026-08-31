@@ -417,3 +417,94 @@ test("callVisionModel propagates an external abort to fetch and stops before fal
     globalThis.fetch = originalFetch;
   }
 });
+
+// ── describe meta-response 防呆 (#vision-bridge-vcp ④) ──────────────────────
+//
+// A vision model that answers the describe prompt with narration instead of a
+// description ("I will analyze the image…", "Let me examine…") is USELESS as a
+// description: the bridge would splice that meta text into "[Image 1]: I will
+// analyze…" and the text-only downstream model hallucinates. A meta response
+// must be treated as a describe failure so the fallback chain runs and, when
+// nothing succeeds, the original image is preserved (#4012 semantics).
+
+const META_RESPONSES = [
+  "I will analyze the image and describe what I see.",
+  "I'm sorry, I can't do that.",
+  "Let me examine the image carefully.",
+  "Sure! Here is my analysis:",
+  "As an AI language model, I cannot view images.",
+  "To answer your question, I would need to see the picture.",
+];
+
+test("isMetaVisionDescription flags narration instead of description", async () => {
+  const { isMetaVisionDescription } = await import("@/lib/guardrails/visionBridgeHelpers");
+  for (const text of META_RESPONSES) {
+    assert.equal(isMetaVisionDescription(text), true, `should flag: ${text}`);
+  }
+  // Real descriptions must pass.
+  assert.equal(isMetaVisionDescription("A solid red square filling the frame"), false);
+  assert.equal(isMetaVisionDescription("红底白字的指示牌"), false);
+  assert.equal(isMetaVisionDescription("Two people at a desk with laptops"), false);
+  assert.equal(isMetaVisionDescription("Invoice #1234, total $58.20"), false);
+  assert.equal(isMetaVisionDescription(""), false, "empty handled elsewhere");
+});
+
+test("callVisionModel treats a meta response as failure and falls back", async () => {
+  const responses: string[] = [];
+  const fetchImpl: typeof fetch = async () =>
+    Response.json({ choices: [{ message: { content: responses.shift() ?? "" } }] });
+
+  // Primary model narrates (meta), fallback answers with a real description.
+  let callCount = 0;
+  const fallbackFetch: typeof fetch = async () => {
+    callCount += 1;
+    const content =
+      callCount === 1 ? "I will analyze the image and describe what I see." : "A red square";
+    return Response.json({ choices: [{ message: { content } }] });
+  };
+
+  const result = await callVisionModel(
+    "data:image/png;base64,iVBORw0KGgo",
+    {
+      model: "openai/gpt-4o-mini",
+      prompt: "Describe this image",
+      timeoutMs: 30000,
+      maxImages: 1,
+      fetchImpl: fallbackFetch,
+    },
+    undefined,
+    { maxFallbackAttempts: 2, excludeNoAuth: true }
+  );
+
+  assert.equal(result, "A red square", "fallback must replace the meta response");
+  void responses;
+  void fetchImpl;
+});
+
+test("callVisionModel throws when EVERY attempt returns a meta response", async () => {
+  const fetchImpl: typeof fetch = async () =>
+    Response.json({
+      choices: [{ message: { content: "I will analyze the image now." } }],
+    });
+
+  await assert.rejects(
+    callVisionModel(
+      "data:image/png;base64,iVBORw0KGgo",
+      {
+        model: "openai/gpt-4o-mini",
+        prompt: "Describe this image",
+        timeoutMs: 30000,
+        maxImages: 1,
+        fetchImpl,
+        routeThroughOmniRoute: true,
+      },
+      { maxFallbackAttempts: 1 }
+    ),
+    (error) => {
+      if (!/meta|analyze/i.test(error.message)) {
+        console.log("DEBUG thrown:", error.message, error.stack?.slice(0, 400));
+      }
+      return /meta|analyze/i.test(error.message);
+    }
+  );
+});

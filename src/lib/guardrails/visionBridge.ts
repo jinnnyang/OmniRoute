@@ -17,6 +17,7 @@ import {
   composeVisionPrompt,
   replaceImageParts,
   ensureBase64ImagesForClaudeWire,
+  stashVisionBridgeRawContainer,
 } from "./visionBridgeHelpers";
 import { fetch as undiciFetch } from "undici";
 import {
@@ -485,7 +486,16 @@ export class VisionBridgeGuardrail extends BaseGuardrail {
       }
     }
 
-    // 13. Replace image parts with text descriptions (null → keep original image)
+    // 13. Replace image parts with text descriptions (null → keep original image).
+    // (#vision-bridge-vcp P1) For a MIXED combo ("process"), snapshot the
+    // original container onto the body first: the combo dispatcher restores it
+    // for VISION-capable targets so they receive real pixels instead of the
+    // lossy description, while text-only targets keep the described version.
+    // The stash key is combo-internal — it is removed by the dispatcher's
+    // restore step and only ever set when a combo will consume it.
+    if (comboVisionBridgeDecision === "process") {
+      stashVisionBridgeRawContainer(body);
+    }
     const modifiedBody = replaceImageParts(
       body as Parameters<typeof replaceImageParts>[0],
       descriptions

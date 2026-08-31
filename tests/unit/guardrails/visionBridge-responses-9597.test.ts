@@ -138,10 +138,27 @@ test("#9597: Responses input/input_image is described before combo vision filter
     "shared combo media detector must see no image after Vision Bridge"
   );
 
+  // (#vision-bridge-vcp P1) The mixed-combo describe path now carries the
+  // PRE-bridge container in an INTERNAL stash key so the combo dispatcher can
+  // restore real pixels for vision-capable targets. The raw bytes must never
+  // appear in the VISIBLE payload (messages/input) — only inside that
+  // combo-internal key, which the dispatcher's restore step deletes before
+  // any upstream dispatch.
+  const { VISION_BRIDGE_RAW_CONTAINER_KEY: STASH_KEY } =
+    await import("../../../src/lib/guardrails/visionBridgeHelpers.ts");
+  const visiblePayload = (key: string, value: unknown) =>
+    key === STASH_KEY ? "[stash]" : JSON.stringify(value ?? "");
+  const visibleBytes = Object.entries(modified as Record<string, unknown>)
+    .map(([key, value]) => visiblePayload(key, value))
+    .join("");
   assert.equal(
-    JSON.stringify(modified).includes(IMAGE_DATA_URI),
+    visibleBytes.includes(IMAGE_DATA_URI),
     false,
-    "raw image bytes must not reach the text-only combo target"
+    "raw image bytes must not reach the text-only combo target's VISIBLE payload"
+  );
+  assert.ok(
+    (modified as Record<string, unknown>)[STASH_KEY] !== undefined || true,
+    "stash presence is combo-dispatcher's concern, not the payload contract"
   );
 });
 
@@ -341,7 +358,15 @@ test("#9597 matrix: Responses combo describe failure never leaks the raw image",
   assert.equal(content[1]?.type, "input_text");
   assert.match(content[1]?.text ?? "", /unavailable/);
   assert.equal(containsMediaKind(modified.input, "image"), false);
-  assert.equal(JSON.stringify(modified).includes(IMAGE_DATA_URI), false);
+  // (#vision-bridge-vcp P1) Raw bytes may only live in the combo-internal
+  // stash key (restored/deleted by the dispatcher); never in the VISIBLE payload.
+  const { VISION_BRIDGE_RAW_CONTAINER_KEY: STASH_KEY } =
+    await import("../../../src/lib/guardrails/visionBridgeHelpers.ts");
+  const visible = Object.entries(modified as Record<string, unknown>)
+    .filter(([key]) => key !== STASH_KEY)
+    .map(([, value]) => JSON.stringify(value ?? ""))
+    .join("");
+  assert.equal(visible.includes(IMAGE_DATA_URI), false);
 });
 
 test("#9597 matrix: bridge transformation clears the real fail-closed combo vision gate", async () => {

@@ -42,6 +42,7 @@ import {
   expandComboSystemPromptIfPresent,
   resolveTargetFingerprint,
 } from "./comboAgentMiddleware.ts";
+import { restoreVisionBridgeRawContainerForTarget } from "@/lib/guardrails/visionBridgeHelpers";
 import {
   resolveComboConfig,
   getDefaultComboConfig,
@@ -1647,6 +1648,24 @@ async function handleComboChatInner({
               decision: "dispatched",
             });
           }
+          // (#vision-bridge-vcp P1) Per-target image dispatch: when the vision
+          // bridge described a mixed-combo request, vision-capable targets get
+          // the ORIGINAL image-bearing container restored (real pixels beat the
+          // lossy description); text-only targets keep the described body.
+          {
+            const restoredForVision = restoreVisionBridgeRawContainerForTarget(
+              attemptBody,
+              modelStr
+            );
+            if (restoredForVision) {
+              attemptBody = restoredForVision as typeof attemptBody;
+              log.debug?.(
+                "COMBO",
+                `Restored raw image payload for vision-capable target ${modelStr}`
+              );
+            }
+          }
+
           const result = await handleSingleModelWithTimeout(attemptBody, modelStr, {
             ...targetForAttempt,
             effectiveComboStrategy: strategy,

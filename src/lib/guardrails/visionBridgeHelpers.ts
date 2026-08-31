@@ -7,6 +7,7 @@ import { fetchRemoteImage } from "@/shared/network/remoteImageFetch";
 import { getRuntimePorts } from "@/lib/runtime/ports";
 import { resolveSelfLoopBearer } from "@/shared/middleware/chatBodyAdmission";
 import { getBestVisionModel, getFallbackModels, recordLatency } from "./visionBridgeRouter";
+import { getResolvedModelCapabilities } from "@/lib/modelCapabilities";
 import { REGISTRY } from "@omniroute/open-sse/config/providers";
 import { fetch as undiciFetch } from "undici";
 /**
@@ -436,6 +437,17 @@ export async function callVisionModel(
         apiKey
       );
       recordLatency(currentModel, Date.now() - attemptStart, true);
+      // Meta-response guard: a narration/refusal ("I will analyze the image…")
+      // is NOT a description. Treating it as success would splice meta text into
+      // "[Image 1]: …" and poison every text-only downstream target — record
+      // the attempt as failed and continue down the fallback chain.
+      if (isMetaVisionDescription(result)) {
+        recordLatency(currentModel, Date.now() - attemptStart, false);
+        lastError = new Error(
+          `Vision model returned a meta response instead of a description: ${result.slice(0, 80)}`
+        );
+        continue;
+      }
       try {
         config.onModelUsed?.(currentModel);
       } catch {
@@ -622,6 +634,51 @@ async function readVisionResponseBody(response: Response): Promise<unknown> {
     throw new Error("Vision API returned empty or invalid response");
   }
   return parsed;
+}
+
+/**
+ * Detect a "meta" describe response: narration ABOUT the task instead of the
+ * image description itself ("I will analyze the image…", "Let me examine…",
+ * refusals, identity disclaimers). Observed live: a free-relay describer
+ * returned "I will analyze the image..." and the bridge spliced that into
+ * "[Image 1]: I will analyze…", so the text-only combo target hallucinated a
+ * tool call around a description that never existed.
+ *
+ * Conservative on purpose — a REAL description that merely contains one of
+ * these words deeper in the sentence is not flagged. Only leading-position
+ * narration patterns, pure refusal/identity statements, or responses too
+ * short to carry any visual content are rejected.
+ */
+const META_VISION_PATTERNS: readonly RegExp[] = [
+  /^(i\s+(will|'ll|would|am going to|cannot|can't|'m unable)\b)/i,
+  /^(let me\b)/i,
+  /^(sure!|sure\b[,!?]?)\s*(here|below|as)?/i,
+  /^(as an ai\b)/i,
+  /^(i'm sorry|i am sorry|sorry,? (i|but))/i,
+  /^(to (answer|describe|analyze|analyse|assess|evaluate)\b[^.]{0,80}\b(i|need|would|must)\b)/i,
+  /^(here (is|'s) (my|the) (analysis|description|answer))/i,
+];
+
+const MIN_DESCRIPTION_CHARS = 4;
+/** CJK characters carry ~3× the information density of Latin text — weight them. */
+const CJK_CHAR_WEIGHT = 3;
+
+function descriptionWeight(text: string): number {
+  let weight = 0;
+  for (const ch of text) {
+    weight += ch.codePointAt(0)! > 0x2e80 ? CJK_CHAR_WEIGHT : 1;
+  }
+  return weight;
+}
+
+export function isMetaVisionDescription(text: string | null | undefined): boolean {
+  if (typeof text !== "string") return false;
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+  // Strip a wrapping quote some models add around the whole answer.
+  const unwrapped = trimmed.replace(/^"(.*)"$/s, "$1").trim();
+  if (descriptionWeight(unwrapped) < MIN_DESCRIPTION_CHARS) return true;
+  return META_VISION_PATTERNS.some((pattern) => pattern.test(unwrapped));
 }
 
 /**
@@ -905,6 +962,85 @@ export interface RequestBody {
   messages?: RequestMessage[];
   input?: RequestMessage[];
   [key: string]: unknown;
+}
+
+/**
+// ── Per-target raw-container stash (#vision-bridge-vcp P1) ─────────────────
+
+/**
+ * Internal body key carrying the PRE-bridge container (`messages`/`input`).
+ * Set by the vision bridge when it describes a MIXED-combo request so the
+ * combo dispatcher can hand the ORIGINAL image-bearing container to targets
+ * with proven vision capability while text-only targets keep the described
+ * version. Never serialized upstream — the restore step deletes the key.
+ */
+export const VISION_BRIDGE_RAW_CONTAINER_KEY = "_omnirouteVisionBridgeRawContainer";
+
+/**
+ * Snapshot the original request container (whichever of `messages`/`input`
+ * exists) onto the body before the bridge rewrites it. Idempotent: an
+ * existing stash is never overwritten (the first snapshot is the real
+ * client-owned payload).
+ */
+export function stashVisionBridgeRawContainer(body: unknown): void {
+  if (!body || typeof body !== "object") return;
+  const record = body as Record<string, unknown>;
+  if (record[VISION_BRIDGE_RAW_CONTAINER_KEY] !== undefined) return;
+  const container = Array.isArray(record.messages)
+    ? record.messages
+    : Array.isArray(record.input)
+      ? record.input
+      : null;
+  if (!container) return;
+  try {
+    record[VISION_BRIDGE_RAW_CONTAINER_KEY] = structuredClone(container);
+  } catch {
+    // structuredClone can fail on exotic part shapes — the described path
+    // stays fully functional without a stash.
+  }
+}
+
+/**
+ * Restore the stashed pre-bridge container for a combo dispatch target.
+ * Returns a NEW body object (input untouched) when the target has an EXPLICIT
+ * vision verdict (`getResolvedModelCapabilities().supportsVision === true`),
+ * or `null` when the target should keep the described body — including every
+ * indeterminate/unknown case, because the described fallback is the safe
+ * default for unproven models.
+ */
+export function restoreVisionBridgeRawContainerForTarget(
+  body: unknown,
+  targetModel: string
+): Record<string, unknown> | null {
+  if (!body || typeof body !== "object") return null;
+  const record = body as Record<string, unknown>;
+  const stash = record[VISION_BRIDGE_RAW_CONTAINER_KEY];
+  if (!Array.isArray(stash)) return null;
+  if (typeof targetModel !== "string" || targetModel.length === 0) return null;
+
+  // The capability chain (modelCapabilities) is the single source of truth:
+  // DB override > synced > registry > spec — no name guessing.
+  let supportsVision = false;
+  try {
+    const caps = getResolvedModelCapabilities(targetModel);
+    if (caps.supportsVision === true) supportsVision = true;
+  } catch {
+    // Resolution failure = unproven = keep the described body.
+  }
+  if (!supportsVision) return null;
+
+  const { [VISION_BRIDGE_RAW_CONTAINER_KEY]: _removed, ...rest } = record;
+  void _removed;
+  const restored = { ...rest };
+  if (Array.isArray(restored.messages)) {
+    restored.messages = structuredClone(stash);
+  } else if (Array.isArray(restored.input)) {
+    restored.input = structuredClone(stash);
+  } else {
+    // Body no longer carries a container — nothing to restore.
+    return null;
+  }
+  return restored;
 }
 
 /**

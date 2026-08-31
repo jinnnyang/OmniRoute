@@ -65,27 +65,21 @@ test("getBestVisionModel — should exclude specified models", async () => {
 test("getBestVisionModel — excludes a candidate with no usable active connection", async () => {
   // Every candidate reports a confirmed-unusable connection (`false`) ->
   // no candidate survives -> returns null instead of an unreachable default.
-  const model = await getBestVisionModel(
-    {},
-    { hasUsableCredentials: async () => false }
-  );
+  const model = await getBestVisionModel({}, { hasUsableCredentials: async () => false });
   assert.equal(model, null);
 });
 
-test(
-  "getBestVisionModel — selects a credentialed candidate over an uncredentialed higher-priority one",
-  async () => {
-    // openai (priority 50, would normally win) has no usable connection;
-    // every other vision-capable provider does.
-    const model = await getBestVisionModel(
-      {},
-      {
-        hasUsableCredentials: async (fullModelId) => fullModelId.split("/")[0] !== "openai",
-      }
-    );
-    assert.equal(model.startsWith("openai/"), false);
-  }
-);
+test("getBestVisionModel — selects a credentialed candidate over an uncredentialed higher-priority one", async () => {
+  // openai (priority 50, would normally win) has no usable connection;
+  // every other vision-capable provider does.
+  const model = await getBestVisionModel(
+    {},
+    {
+      hasUsableCredentials: async (fullModelId) => fullModelId.split("/")[0] !== "openai",
+    }
+  );
+  assert.equal(model.startsWith("openai/"), false);
+});
 
 // ── getFallbackModels ───────────────────────────────────────────────────────
 
@@ -105,17 +99,14 @@ test("getFallbackModels — should respect max fallback attempts", async () => {
   assert.ok(fallbacks.length <= 2);
 });
 
-test(
-  "getFallbackModels — does not include candidates with a confirmed-unusable connection",
-  async () => {
-    const fallbacks = await getFallbackModels(
-      "openai/gpt-4o-mini",
-      {},
-      { hasUsableCredentials: async (fullModelId) => fullModelId.split("/")[0] !== "anthropic" }
-    );
-    assert.ok(!fallbacks.some((m) => m.startsWith("anthropic/")));
-  }
-);
+test("getFallbackModels — does not include candidates with a confirmed-unusable connection", async () => {
+  const fallbacks = await getFallbackModels(
+    "openai/gpt-4o-mini",
+    {},
+    { hasUsableCredentials: async (fullModelId) => fullModelId.split("/")[0] !== "anthropic" }
+  );
+  assert.ok(!fallbacks.some((m) => m.startsWith("anthropic/")));
+});
 
 // ── recordLatency / getLatencyStats ─────────────────────────────────────────
 
@@ -139,4 +130,149 @@ test("getLatencyStats — should return latency statistics", () => {
   assert.ok(stats["model-b"]);
   assert.equal(stats["model-a"].avg, 110);
   assert.equal(stats["model-a"].successRate, 1);
+});
+
+// ── reliability-based selection (#vision-bridge-vcp) ────────────────────────
+//
+// The old auto-router scored candidates by hardcoded provider-name priority
+// (openai=50, opencode-*=95, other=75) and only enumerated the static
+// PROVIDER_MODELS registry. Operator-marked models on custom compatible
+// connections (e.g. `vcp/kimi-k2.7-code`) were invisible to auto-selection,
+// and no-auth free relays (cfp) could win. The router now:
+//   * classifies candidates by real credentials (keyed > unknown, noauth
+//     excluded by default via `excludeNoAuth`),
+//   * additionally enumerates active connections' models that carry an
+//     explicit vision marker (synced row flag or #9195 dashboard override).
+
+test("no-auth candidates are excluded by default (excludeNoAuth)", async () => {
+  // cloudflare-playground (cfp) is a no-auth provider in the static registry;
+  // with no injection the router classifies via classifyModelCredentials —
+  // here we inject a classify stub to make the scenario deterministic.
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) =>
+        id.startsWith("cfp/") || id.startsWith("cloudflare-playground/")
+          ? "noauth"
+          : id.startsWith("openai/")
+            ? "keyed"
+            : "unusable",
+    }
+  );
+  assert.ok(model, "a keyed candidate must exist in the static registry");
+  assert.equal(model.startsWith("cfp/"), false);
+  assert.equal(model.startsWith("cloudflare-playground/"), false);
+});
+
+test("excludeNoAuth:false keeps no-auth candidates as last resort", async () => {
+  const model = await getBestVisionModel(
+    { excludeNoAuth: false },
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "unusable" : "noauth"),
+    }
+  );
+  assert.ok(model, "noauth candidate must be selectable when nothing keyed exists");
+});
+
+test("keyed candidates outrank indeterminate ones regardless of provider name", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      // openai is indeterminate (credential store unreadable), everything else keyed.
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "unknown" : "keyed"),
+    }
+  );
+  assert.ok(model);
+  assert.equal(model.startsWith("openai/"), false, "keyed must beat unknown");
+});
+
+test("connection-backed custom models are enumerated as candidates", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id === "vcp/kimi-k2.7-code" ? "keyed" : "unusable"),
+      listConnections: async () => [
+        { id: "conn-1", provider: "node-vcp", isActive: true, authType: "apikey", apiKey: "k" },
+      ],
+      listProviderNodes: async () => [
+        { id: "node-vcp", name: "Volcengine Coding", prefix: "vcp", type: "openai-compatible" },
+      ],
+      listModelsByConnection: async () => ({
+        "conn-1": [
+          { id: "kimi-k2.7-code", name: "Kimi", source: "imported", supportsVision: true },
+        ],
+      }),
+      listCustomVisionOverrides: async () => new Map(),
+    }
+  );
+  assert.equal(model, "vcp/kimi-k2.7-code");
+});
+
+test("dashboard #9195 vision overrides are enumerated as candidates", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id === "vcp/glm-5.3-flash" ? "keyed" : "unusable"),
+      listConnections: async () => [
+        { id: "conn-1", provider: "node-vcp", isActive: true, authType: "apikey", apiKey: "k" },
+      ],
+      listProviderNodes: async () => [
+        { id: "node-vcp", name: "Volcengine Coding", prefix: "vcp", type: "openai-compatible" },
+      ],
+      listModelsByConnection: async () => ({ "conn-1": [] }),
+      listCustomVisionOverrides: async () =>
+        new Map([["node-vcp", new Map([["glm-5.3-flash", true]])]]),
+    }
+  );
+  assert.equal(model, "vcp/glm-5.3-flash");
+});
+
+test("custom models without an explicit vision marker are not auto-selected", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      // deepseek-v4-flash has no vision marker anywhere — the operator's own
+      // naming/registry cannot be guessed. Everything static is unusable too.
+      classifyCredentials: async () => "keyed",
+      listConnections: async () => [
+        { id: "conn-1", provider: "node-vcp", isActive: true, authType: "apikey", apiKey: "k" },
+      ],
+      listProviderNodes: async () => [
+        { id: "node-vcp", name: "Volcengine Coding", prefix: "vcp", type: "openai-compatible" },
+      ],
+      listModelsByConnection: async () => ({
+        "conn-1": [
+          { id: "deepseek-v4-flash", name: "DS", source: "imported", supportsVision: false },
+        ],
+      }),
+      listCustomVisionOverrides: async () => new Map(),
+    }
+  );
+  // No static registry candidate may leak in here either: the stub says every
+  // static model is keyed, but this assertion only holds if NO dynamic
+  // unmarked model got selected. A dynamic unmarked model must not appear.
+  assert.notEqual(model, "vcp/deepseek-v4-flash");
+});
+
+test("forced bridge models never become the auto-selected describer", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      // A static opencode-go connection exposes deepseek-v4-flash with a synced
+      // vision flag — but opencode-go backends have no native vision, so the
+      // forced list must keep it out of the describer seat.
+      classifyCredentials: async (id) => (id.startsWith("opencode-go/") ? "keyed" : "unusable"),
+      listConnections: async () => [
+        { id: "conn-1", provider: "opencode-go", isActive: true, authType: "apikey", apiKey: "k" },
+      ],
+      listProviderNodes: async () => [],
+      listModelsByConnection: async () => ({
+        "conn-1": [
+          { id: "deepseek-v4-flash", name: "DS", source: "imported", supportsVision: true },
+        ],
+      }),
+      listCustomVisionOverrides: async () => new Map(),
+    }
+  );
+  assert.notEqual(model, "opencode-go/deepseek-v4-flash");
 });
