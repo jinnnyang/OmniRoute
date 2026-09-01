@@ -104,7 +104,7 @@ test("callVisionModel falls through to next model when primary fails", async () 
 test("callVisionModel throws when ALL models fail", async () => {
   let fetchCallCount = 0;
 
-  globalThis.fetch = async () => {
+  globalThis.fetch = async (_url: RequestInfo | URL, _init?: RequestInit) => {
     fetchCallCount++;
     throw new Error(`mock: model-${fetchCallCount} unavailable`);
   };
@@ -159,17 +159,20 @@ test("callVisionModel persists success AND failure attempts via persistUsage", a
   }> = [];
 
   let fetchCallCount = 0;
-  globalThis.fetch = async () => {
+  globalThis.fetch = async (_url: RequestInfo | URL, init?: RequestInit) => {
     fetchCallCount++;
     if (fetchCallCount === 1) throw new Error("mock: primary flaked");
-    return new Response(
-      JSON.stringify({
-        // The fallback candidate is an Anthropic-wire model (claude-*) — the
-        // /v1/messages answer shape is what callVisionModelSingle parses.
-        content: [{ type: "text", text: "A convincing detailed image description." }],
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+    const request = JSON.parse(String(init?.body ?? "{}"));
+    const answer = "A convincing detailed image description.";
+    // Respond with the wire shape for WHICHEVER fallback candidate asks, so the
+    // test is order-independent (fallback ranking may change with scoring).
+    const body = request.model.startsWith("claude")
+      ? { content: [{ type: "text", text: answer }] }
+      : { choices: [{ message: { content: answer } }] };
+    return new Response(JSON.stringify(body), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   const result = await callVisionModel2(
