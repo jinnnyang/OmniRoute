@@ -7,7 +7,8 @@
 
 import { resolveProviderId } from "@/shared/constants/providers";
 import { isNoAuthProviderKey } from "@/shared/utils/noAuthProviders";
-
+import { getCircuitBreaker } from "@/shared/utils/circuitBreaker";
+import { providerConnectionsDurablyUnhealthy } from "@/shared/utils/connectionHealth";
 /**
  * True when a provider connection can actually authenticate upstream.
  * `noauth` with no real API key is NOT usable (opencode-zen free tier often
@@ -199,4 +200,56 @@ export async function hasUsableCredentialsForModel(
   if (verdict === "keyed" || verdict === "noauth") return true;
   if (verdict === "unusable") return false;
   return null;
+}
+
+/**
+ * True when EVERY candidate provider id for `model` is DURABLY down:
+ * circuit breaker OPEN, terminal connection statuses
+ * (credits_exhausted / banned / expired), accumulated backoff
+ * (`backoffLevel >= 2` ≈ consecutive failures), or a rate-limit beyond the
+ * transient grace window — the same verdict the context-cache pin uses before
+ * honoring a pinned dispatch (Fix #679, extracted to
+ * `@/shared/utils/connectionHealth`).
+ *
+ * The Vision Bridge must not be built on top of guaranteed failure (#vision-bridge-health):
+ * a candidate whose provider is disabled, quota-drained, or circuit-open would
+ * turn every describe call into a guaranteed timeout/error chain. Fails OPEN
+ * (returns `false`) on any lookup error so a transient DB/breaker hiccup never
+ * silently removes candidates — the describe call itself remains the final
+ * arbiter and already records failures into the router's success-rate stats.
+ */
+export async function isModelProviderDurablyUnhealthy(
+  model: string,
+  prefixIndex?: PrefixNodeIndexLike | null
+): Promise<boolean> {
+  try {
+    const rawProvider = typeof model === "string" ? model.split("/")[0]?.trim() : "";
+    if (!rawProvider) return false;
+    const provider = resolveProviderId(rawProvider);
+    const { getProviderConnections } = await loadProvidersModule();
+    const index = prefixIndex === undefined ? await loadPrefixNodeIndex() : prefixIndex;
+    const providerIds = resolveProviderIdsForModelPrefix(rawProvider, provider, index);
+    if (providerIds.length === 0) return false;
+    for (const providerId of providerIds) {
+      let circuitState: string | undefined;
+      try {
+        circuitState = getCircuitBreaker(providerId)?.getStatus?.()?.state;
+      } catch {
+        circuitState = undefined;
+      }
+      let connections: ProviderConnectionLike[];
+      try {
+        const rows = await getProviderConnections({ provider: providerId, isActive: true });
+        connections = Array.isArray(rows) ? (rows as ProviderConnectionLike[]) : [];
+      } catch {
+        return false; // fail open — connection store unreadable
+      }
+      if (!providerConnectionsDurablyUnhealthy(circuitState, connections, Date.now())) {
+        return false; // at least one candidate provider is healthy
+      }
+    }
+    return true; // every candidate provider is durably down
+  } catch {
+    return false;
+  }
 }

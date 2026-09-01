@@ -14,8 +14,10 @@
  */
 import { getCachedProviderConnections } from "../../../src/lib/db/readCache";
 import { getCircuitBreaker } from "../../../src/shared/utils/circuitBreaker";
-import { fisherYatesShuffle, getNextFromDeck } from "../../../src/shared/utils/shuffleDeck";
+import { providerConnectionsDurablyUnhealthy as pinIsDurablyUnhealthy } from "../../../src/shared/utils/connectionHealth";
 import { handleFusionChat, type FusionTuning } from "../fusion.ts";
+export { pinIsDurablyUnhealthy };
+import { fisherYatesShuffle, getNextFromDeck } from "../../../src/shared/utils/shuffleDeck";
 import { getResolvedModelCapabilities } from "../modelCapabilities.ts";
 import { restoreVisionBridgeRawContainerForTarget } from "../../../src/lib/guardrails/visionBridgeHelpers";
 import { errorResponseWithComboDiagnostics } from "../../utils/error.ts";
@@ -123,47 +125,12 @@ function buildBaseOptions(a: PreludeBaseOptionArgs): HandleComboChatOptions {
   };
 }
 
-const TERMINAL_PIN_STATUSES = new Set(["credits_exhausted", "banned", "expired"]);
-
 /**
- * Pure decision: should a context-cache pin be DROPPED because its provider has
- * DURABLY fallen? A ccp pin keeps the prompt cache warm by bypassing the combo
- * strategy — but if the pinned provider is dead (credits exhausted / banned /
- * expired, circuit-open, repeated failures, or a long rate-limit) honoring the
- * pin pounds a dead account forever with no failover (laila throttle + credits
- * incidents, 2026-06-22). A brief transient cooldown is tolerated (pin kept) so
- * an unstable provider does not churn the pin every turn. Connection-level
- * `backoffLevel` already resets on success, so `backoffLevel >= K` ≈ K
- * consecutive failures — no per-session counter needed.
- *
- * Returns true ⇒ drop the pin and use the strategy. Pure + unit-testable.
+ * Re-exported from src/shared/utils/connectionHealth.ts: the pure
+ * "durably unhealthy provider" predicate shared with the Vision Bridge router
+ * (see that module for the extraction rationale — an import of THIS module
+ * from the bridge would cycle through visionBridgeHelpers).
  */
-export function pinIsDurablyUnhealthy(
-  circuitState: string | undefined,
-  connections: Array<{
-    testStatus?: string | null;
-    backoffLevel?: number | null;
-    rateLimitedUntil?: string | null;
-  }>,
-  now: number,
-  opts: { backoffLevel?: number; graceMs?: number } = {}
-): boolean {
-  if (circuitState === "OPEN") return true;
-  if (!Array.isArray(connections) || connections.length === 0) return true;
-  const backoffThreshold = opts.backoffLevel ?? Number(process.env.PIN_DROP_BACKOFF_LEVEL || "2");
-  const graceMs = opts.graceMs ?? Number(process.env.PIN_DROP_GRACE_MS || "20000");
-  // The pin survives as long as AT LEAST ONE connection is healthy or only
-  // briefly cooling down — failover only when every connection is durably down.
-  const anyUsable = connections.some((c) => {
-    const status = typeof c.testStatus === "string" ? c.testStatus : "";
-    if (TERMINAL_PIN_STATUSES.has(status)) return false;
-    if (Number(c.backoffLevel ?? 0) >= backoffThreshold) return false;
-    const rl = c.rateLimitedUntil ? new Date(String(c.rateLimitedUntil)).getTime() : 0;
-    if (Number.isFinite(rl) && rl - now > graceMs) return false;
-    return true;
-  });
-  return !anyUsable;
-}
 
 /**
  * Async wrapper: resolve the pinned model's provider, read its circuit state and

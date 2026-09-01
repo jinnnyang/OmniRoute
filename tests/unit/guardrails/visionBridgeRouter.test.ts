@@ -276,3 +276,120 @@ test("forced bridge models never become the auto-selected describer", async () =
   );
   assert.notEqual(model, "opencode-go/deepseek-v4-flash");
 });
+
+// ── provider health gate (#vision-bridge-health) ────────────────────────────
+//
+// The bridge must not be built on top of guaranteed failure: a candidate whose
+// provider is durably down (circuit OPEN, terminal statuses, repeated backoff,
+// long rate-limit) is excluded before it can win selection — same verdict the
+// context-cache pin uses (Fix #679, shared via src/shared/utils/connectionHealth).
+
+const { scoreCandidate } = await import("../../../src/lib/guardrails/visionBridgeRouter.ts");
+
+test("candidates whose provider is durably down are excluded from selection", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async (id) => id.startsWith("openai/"),
+    }
+  );
+  assert.equal(model, null, "no candidate may survive when every keyed provider is down");
+});
+
+test("health gate keeps healthy candidates and drops only the unhealthy one", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async (id) => id === "openai/gpt-4o-mini",
+    }
+  );
+  assert.notEqual(model, "openai/gpt-4o-mini");
+  assert.ok(model, "another keyed candidate must take over");
+});
+
+test("health-lookup errors fail open (candidate kept)", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async () => {
+        throw new Error("breaker store unavailable");
+      },
+    }
+  );
+  assert.ok(model, "a keyed candidate must survive a health-lookup error");
+});
+
+test("getFallbackModels also excludes durably-down providers", async () => {
+  const fallbacks = await getFallbackModels(
+    "openai/gpt-4o",
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async (id) => id === "openai/gpt-4o-mini",
+    }
+  );
+  assert.ok(!fallbacks.includes("openai/gpt-4o-mini"));
+});
+
+// ── reliability-dominant scoring ─────────────────────────────────────────────
+//
+// Score = (1 - successRate) * 10_000 + min(latencyMs, 10_000) / 10 + priority * 2.
+// Success rate (including bridge describe failures) must outweigh latency and
+// credential tier; priority is only a final tie-breaker.
+
+const baseCandidate = {
+  modelId: "m",
+  fullName: "p/m",
+  lastUsedAt: 0,
+};
+
+test("scoreCandidate — a 10% failure rate outweighs a large latency and tier advantage", () => {
+  const flakyKeyed = {
+    ...baseCandidate,
+    priority: 30,
+    averageLatencyMs: 10,
+    successRate: 0.9,
+  };
+  const cleanUntested = {
+    ...baseCandidate,
+    priority: 95,
+    averageLatencyMs: 8_000,
+    successRate: 1,
+  };
+  // flaky: 1000 + 1 + 60 = 1061; clean: 0 + 800 + 190 = 990
+  assert.ok(
+    scoreCandidate(flakyKeyed) > scoreCandidate(cleanUntested),
+    "reliability must dominate latency + tier"
+  );
+});
+
+test("scoreCandidate — no-data latency cap (Infinity) equals the 10s ceiling", () => {
+  const noData = { ...baseCandidate, priority: 30, averageLatencyMs: Infinity, successRate: 1 };
+  const tenSeconds = { ...baseCandidate, priority: 30, averageLatencyMs: 10_000, successRate: 1 };
+  assert.equal(scoreCandidate(noData), scoreCandidate(tenSeconds));
+});
+
+test("scoreCandidate — priority breaks ties among equally reliable candidates", () => {
+  const keyed = { ...baseCandidate, priority: 30, averageLatencyMs: 500, successRate: 1 };
+  const unknown = { ...baseCandidate, priority: 75, averageLatencyMs: 500, successRate: 1 };
+  assert.ok(scoreCandidate(keyed) < scoreCandidate(unknown));
+});
+
+test("selection prefers a proven candidate over one with heavy recent failures", async () => {
+  // openai/gpt-4o-mini: 87.5% success over 40 describe attempts.
+  for (let i = 0; i < 40; i++) recordLatency("openai/gpt-4o-mini", 50, i < 35);
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async () => false,
+    }
+  );
+  assert.ok(model);
+  // gpt-4o-mini: (1-0.875)*10000 + 5 + 60 = 1315; every other openai model is
+  // clean with no latency data: 0 + 1000 + 60 = 1060 → must lose to them.
+  assert.notEqual(model, "openai/gpt-4o-mini");
+});

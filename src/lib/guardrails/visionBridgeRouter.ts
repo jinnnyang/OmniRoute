@@ -20,6 +20,7 @@ import { PROVIDER_MODELS, PROVIDER_ID_TO_ALIAS } from "@omniroute/open-sse/confi
 import {
   classifyModelCredentials,
   hasUsableCredentialsForModel,
+  isModelProviderDurablyUnhealthy,
   type ModelCredentialVerdict,
 } from "./visionBridgeCredentials";
 import { isVisionBridgeForcedModel } from "@/shared/constants/visionBridgeDefaults";
@@ -154,6 +155,14 @@ function calculateSuccessRate(modelId: string): number {
 export interface VisionBridgeRouterDeps {
   hasUsableCredentials?: (model: string) => Promise<boolean | null>;
   classifyCredentials?: (model: string) => Promise<ModelCredentialVerdict>;
+  /**
+   * Provider health gate (#vision-bridge-health): return true when the
+   * candidate's provider is DURABLY down (circuit OPEN, terminal statuses,
+   * repeated backoff, long rate-limit). Active on the real (dep-free) path;
+   * hermetic unit tests that inject other deps skip it unless they provide
+   * this stub too.
+   */
+  isProviderUnhealthy?: (model: string) => Promise<boolean>;
   listConnections?: () => Promise<RouterConnectionLike[]>;
   listProviderNodes?: () => Promise<RouterNodeLike[]>;
   listModelsByConnection?: (providerId: string) => Promise<Record<string, RouterSyncedModelLike[]>>;
@@ -295,11 +304,35 @@ async function getVisionCapableModels(
   const seen = new Set<string>();
   const checks: Array<Promise<void>> = [];
 
-  const pushCandidate = (fullName: string, modelId: string, verdict: ModelCredentialVerdict) => {
+  // Health gate (#vision-bridge-health): drop candidates whose provider is
+  // durably down (circuit OPEN, terminal statuses, repeated backoff, long
+  // rate-limit) — the bridge must not be built on top of guaranteed failure.
+  // Skipped when a test injects other deps WITHOUT a health stub (hermetic
+  // unit tests have no DB); active on the real dep-free path.
+  const healthCheck =
+    deps.isProviderUnhealthy ??
+    (deps.classifyCredentials || deps.hasUsableCredentials
+      ? null
+      : isModelProviderDurablyUnhealthy);
+
+  const pushCandidate = async (
+    fullName: string,
+    modelId: string,
+    verdict: ModelCredentialVerdict
+  ) => {
     if (seen.has(fullName)) return;
     seen.add(fullName);
     if (verdict === "unusable") return;
     if (verdict === "noauth" && excludeNoAuth) return;
+    if (healthCheck) {
+      let unhealthy = false;
+      try {
+        unhealthy = await healthCheck(fullName);
+      } catch {
+        unhealthy = false; // fail open on health-lookup errors
+      }
+      if (unhealthy) return;
+    }
     const priority =
       verdict === "keyed"
         ? PRIORITY_KEYED
@@ -368,7 +401,26 @@ async function getVisionCapableModels(
 }
 
 /**
- * Select the best vision model based on latency, priority, and success rate.
+ * Candidate score — lower is better.
+ *
+ * Reliability dominates (#vision-bridge-health): the describe call is the
+ * foundation the bridge is built on, so a candidate's recent success rate
+ * (last 50 describe attempts, including bridge failures recorded via
+ * recordLatency) must outweigh latency and credential-tier preferences:
+ *   * every 1% of failure rate costs 100 points (total failure = 10_000);
+ *   * latency contributes at most 1_000 points (10s+ ≈ a 10% failure rate);
+ *   * credential priority (keyed 30 / unknown 75 / noauth 95) is only a
+ *     final tie-breaker (~130-point spread).
+ */
+const RELIABILITY_WEIGHT = 10_000;
+const LATENCY_SCORE_CAP = 1_000;
+export function scoreCandidate(c: VisionModelCandidate): number {
+  const latencyScore = Math.min(c.averageLatencyMs / 10, LATENCY_SCORE_CAP);
+  return (1 - c.successRate) * RELIABILITY_WEIGHT + latencyScore + c.priority * 2;
+}
+
+/**
+ * Select the best vision model based on success rate, latency, and priority.
  */
 function selectBestModel(
   candidates: VisionModelCandidate[],
@@ -387,13 +439,7 @@ function selectBestModel(
 
   if (filtered.length === 0) return null;
 
-  // Score each candidate: lower is better
-  // Score = priority * 1000 + averageLatencyMs
-  // This prioritizes local models, then fastest latency
-  const scored = filtered.map((c) => ({
-    ...c,
-    score: c.priority * 1000 + (c.averageLatencyMs === Infinity ? 10000 : c.averageLatencyMs),
-  }));
+  const scored = filtered.map((c) => ({ ...c, score: scoreCandidate(c) }));
 
   scored.sort((a, b) => a.score - b.score);
 
@@ -480,11 +526,8 @@ export async function getFallbackModels(
       c.successRate >= 0.5
   );
 
-  // Sort by score
-  const scored = filtered.map((c) => ({
-    ...c,
-    score: c.priority * 1000 + (c.averageLatencyMs === Infinity ? 10000 : c.averageLatencyMs),
-  }));
+  // Same reliability-dominant ordering as selectBestModel (#vision-bridge-health)
+  const scored = filtered.map((c) => ({ ...c, score: scoreCandidate(c) }));
 
   scored.sort((a, b) => a.score - b.score);
 
