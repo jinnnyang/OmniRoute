@@ -122,6 +122,21 @@ RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,targe
   && node node_modules/tls-client-node/scripts/postinstall.js \
   && (test -n "$(find node_modules/tls-client-node/bin -mindepth 1 -print -quit 2>/dev/null)" \
       || (echo "tls-client-node native binary missing after postinstall — GitHub API fetch likely rate-limited or failed (#7802)" >&2 && exit 1))
+#
+# npm>=12 regression: `npm ci` installs sharp's FIRST-level optional deps
+# (the @img/sharp-* bindings) but silently skips the SECOND-level ones
+# (@img/sharp-libvips-* — the libvips .so runtimes the bindings dlopen).
+# Observed 2026-09-01, npm 12.x on linux-x64: node_modules/@img ended up with
+# sharp-linux-x64 + sharp-linuxmusl-x64 + colour but NO sharp-libvips-* package,
+# so the first `next build` page-data import of sharp died with
+# "ERR_DLOPEN_FAILED: libvips-cpp.so.8.18.3: cannot open shared object file".
+# Reconcile explicitly. Versions are read from the lockfile so they always
+# match the pinned sharp line; the smoke require fails the BUILD loudly if the
+# native chain is still broken instead of shipping a broken image.
+RUN LIBVIPS_X64=$(node -p "require('./package-lock.json').packages['node_modules/@img/sharp-libvips-linux-x64'].version") \
+  && npm install --no-save --no-audit --no-fund --ignore-scripts \
+    "@img/sharp-libvips-linux-x64@${LIBVIPS_X64}" \
+  && node -e "const sharp = require('sharp'); console.log('sharp native chain ok, libvips', sharp.versions.vips)"
 
 # Build with Turbopack (stable in Next 16, the repo default). The v3.8.27-era
 # TurbopackInternalError panic ("entered unreachable code: there must be a path to a
@@ -214,6 +229,14 @@ RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-next-cache,targ
   mkdir -p /app/data \
   && npm run build \
   && node --input-type=module -e "import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; const standaloneRoot = '/app/.build/next/standalone/node_modules/'; const require = createRequire('/app/.build/next/standalone/package.json'); const resolved = require.resolve('js-tiktoken'); if (!resolved.startsWith(standaloneRoot)) throw new Error('js-tiktoken resolved outside standalone: ' + resolved); await import(pathToFileURL(resolved).href);"
+# Standalone smoke for the sharp native chain (the #17 postmortem class —
+# "source tests green, artifact broken"): sharp is NOT explicitly COPY'd into
+# the runner stage (unlike better-sqlite3), so it must survive Next's tracing
+# into .build/next/standalone/node_modules TOGETHER with its @img/sharp-libvips-*
+# runtime. The builder-node_modules require above cannot catch a tracing gap;
+# resolving sharp from the standalone root can — and it fails the BUILD loudly
+# instead of the first image request (ERR_DLOPEN_FAILED at runtime).
+RUN node -e "const { createRequire } = require('node:module'); const standaloneRoot = '/app/.build/next/standalone/'; const req = createRequire(standaloneRoot + 'package.json'); const resolved = req.resolve('sharp'); if (!resolved.startsWith(standaloneRoot)) throw new Error('sharp resolved outside standalone: ' + resolved); const sharp = require(resolved); if (!sharp.versions || !sharp.versions.vips) throw new Error('sharp loaded but libvips .so missing: ' + JSON.stringify(sharp.versions || {})); console.log('standalone sharp ok, libvips', sharp.versions.vips);"
 
 # ── Runner base ────────────────────────────────────────────────────────────
 FROM base AS runner-base
