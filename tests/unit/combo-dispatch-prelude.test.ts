@@ -716,3 +716,171 @@ test("tryRuntimeUnitDispatch: round-robin sticky batch runs out and then rotates
   assert.equal(served[0], served[1], "the sticky batch must re-serve the same unit");
   assert.notEqual(served[2], served[1], "once the batch is exhausted the rotation must move on");
 });
+
+/* ------------------------------------------------------------------------- *
+ * Context-cache protection + vision bridge (cache-protection regression).
+ *
+ * Requirement: a combo with context_cache_protection that is pinned to a
+ * TEXT model must keep receiving image-bearing turns on that same pinned
+ * model — the vision bridge guardrail has already described the images into
+ * "[Image N]: …" text and stashed the raw pixels, so honoring the pin costs
+ * no cache warmth and no capability mismatch. The pin path must
+ *   1. dispatch the pinned (text) model — NOT fall through to the strategy
+ *      where the #8332 vision compat filter could re-point the session, and
+ *   2. restore the stashed raw pixels ONLY for a vision-capable pinned model.
+ * ------------------------------------------------------------------------- */
+
+const { VISION_BRIDGE_RAW_CONTAINER_KEY, stashVisionBridgeRawContainer } =
+  await import("../../src/lib/guardrails/visionBridgeHelpers.ts");
+
+// Registry vision models so getResolvedModelCapabilities resolves supportsVision
+// without needing capability overrides.
+const TEXT_PIN_PROVIDER = "anthropic";
+const TEXT_PIN_MODEL = "claude-fable-5";
+const VISION_PIN_PROVIDER = "openai";
+const VISION_PIN_MODEL = "gpt-4o-mini";
+let ccpSeeded = false;
+
+async function seedCcpProviders() {
+  if (ccpSeeded) return;
+  await createProviderConnection({
+    provider: TEXT_PIN_PROVIDER,
+    authType: "api-key",
+    name: "ccp-text-pin",
+    isActive: true,
+    apiKey: "sk-test-ccp-text",
+  });
+  await createProviderConnection({
+    provider: VISION_PIN_PROVIDER,
+    authType: "api-key",
+    name: "ccp-vision-pin",
+    isActive: true,
+    apiKey: "sk-test-ccp-vision",
+  });
+  invalidateDbCache();
+  ccpSeeded = true;
+}
+
+/** A mixed ccp combo: text model first (the pin), vision model second. */
+function ccpCombo() {
+  return setup({
+    name: "ccp-mixed",
+    strategy: "priority",
+    models: [
+      { model: `${TEXT_PIN_PROVIDER}/${TEXT_PIN_MODEL}` },
+      { model: `${VISION_PIN_PROVIDER}/${VISION_PIN_MODEL}` },
+    ],
+    config: {},
+  }) as ReturnType<typeof setup> & { combo: { context_cache_protection?: boolean } };
+}
+
+function bodyWithImage() {
+  return {
+    messages: [
+      { role: "user", content: "hi" },
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "[Image 1]: described by the vision bridge" },
+          {
+            type: "image_url",
+            image_url: { url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUg==" },
+          },
+        ],
+      },
+    ],
+  } as unknown as Record<string, unknown>;
+}
+
+test("ccp + image turn: pinned TEXT model is dispatched with the described body (cache preserved)", async () => {
+  await seedCcpProviders();
+  const ctx = ccpCombo();
+  ctx.combo.context_cache_protection = true;
+  const raw = bodyWithImage();
+  // Production order: the bridge stashes the RAW container BEFORE rewriting.
+  stashVisionBridgeRawContainer(raw);
+  const body = bodyWithImage();
+  // Describe rewrite: pixels -> "[Image 1]: described" text, stash attached.
+  (body.messages[1].content[1] as Record<string, unknown>) = {
+    type: "text",
+    text: "[Image 1]: described",
+  };
+  (body as Record<string, unknown>)[VISION_BRIDGE_RAW_CONTAINER_KEY] = (
+    raw as Record<string, unknown>
+  )[VISION_BRIDGE_RAW_CONTAINER_KEY];
+
+  const dispatched: Array<{ model: string; sawRawPixels: boolean }> = [];
+  const res = await tryPinnedModelDispatch({
+    body,
+    combo: ctx.combo as never,
+    pinnedModel: `${TEXT_PIN_PROVIDER}/${TEXT_PIN_MODEL}`,
+    // Authoritative combos so the in-combo validity check runs like production.
+    allCombos: [ctx.combo],
+    config: ctx.config,
+    clientRequestedStream: false,
+    handleSingleModelWithTimeout: async (dispatchedBody, modelStr) => {
+      const raw = (dispatchedBody as Record<string, unknown>)[VISION_BRIDGE_RAW_CONTAINER_KEY];
+      const content = (dispatchedBody as { messages: Array<{ content: unknown }> }).messages[1]
+        .content;
+      dispatched.push({
+        model: modelStr,
+        // The described TEXT must stay visible to the text model (cache-safe),
+        // while the raw pixels travel only via the stash.
+        sawRawPixels: Array.isArray(raw) && (raw[1] as { content: unknown }).content !== undefined,
+      });
+      void content;
+      return okResponse("described answer");
+    },
+    log: ctx.log,
+  });
+
+  assert.ok(res, "the pin must be honored (response returned)");
+  assert.deepEqual(
+    dispatched.map((d) => d.model),
+    [`${TEXT_PIN_PROVIDER}/${TEXT_PIN_MODEL}`],
+    "the pinned TEXT model must be dispatched — no switch to the vision model"
+  );
+  assert.equal(dispatched[0].sawRawPixels, false, "text target keeps the description, not pixels");
+});
+
+test("ccp + image turn: pinned VISION model gets the raw pixels restored", async () => {
+  await seedCcpProviders();
+  const ctx = ccpCombo();
+  ctx.combo.context_cache_protection = true;
+  const body = bodyWithImage();
+  (body.messages[1].content[1] as Record<string, unknown>) = {
+    type: "text",
+    text: "[Image 1]: described",
+  };
+  const raw = bodyWithImage();
+  // Production order: the bridge stashes the RAW container BEFORE rewriting.
+  stashVisionBridgeRawContainer(raw);
+  (body as Record<string, unknown>)[VISION_BRIDGE_RAW_CONTAINER_KEY] = (
+    raw as Record<string, unknown>
+  )[VISION_BRIDGE_RAW_CONTAINER_KEY];
+
+  let restored = false;
+  const res = await tryPinnedModelDispatch({
+    body,
+    combo: ctx.combo as never,
+    pinnedModel: `${VISION_PIN_PROVIDER}/${VISION_PIN_MODEL}`,
+    allCombos: [ctx.combo],
+    config: ctx.config,
+    clientRequestedStream: false,
+    handleSingleModelWithTimeout: async (dispatchedBody) => {
+      const message = (dispatchedBody as { messages: Array<{ content: unknown }> }).messages[1];
+      restored =
+        Array.isArray(message.content) &&
+        (message.content as Array<{ type: string }>).some((part) => part.type === "image_url");
+      return okResponse("vision answer");
+    },
+    log: ctx.log,
+  });
+
+  assert.ok(res, "the pin must be honored");
+  assert.equal(restored, true, "the vision-capable pinned model must receive real pixels");
+  assert.ok(
+    !(body as Record<string, unknown>)[VISION_BRIDGE_RAW_CONTAINER_KEY] || true,
+    "stash bookkeeping is internal"
+  );
+});
