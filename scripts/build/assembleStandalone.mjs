@@ -302,6 +302,57 @@ const EXTRA_MODULE_ENTRIES = [
     src: ["node_modules", "base64-js"],
     dest: ["node_modules", "base64-js"],
   },
+  {
+    // sharp is server-external and its loader resolves the @img/sharp-<platform>
+    // binding and @img/sharp-libvips-<platform> runtime by string-concatenating
+    // the platform name at RUNTIME (require("@img/sharp-" + platform + ...)) —
+    // invisible to the static tracer, the same Next.js #88844 class as the
+    // sqlite-vec platform packages above. Without this overlay the standalone
+    // bundle would ship sharp + @img/colour but none of the platform packages,
+    // and the first image/video route in the container dies with
+    // ERR_DLOPEN_FAILED (libvips-cpp.so not found). List every platform variant
+    // npm may have installed so cross-platform standalone artifacts stay whole;
+    // absent ones are skipped gracefully by syncExtraModulesToDir.
+    label: "sharp (server-external native image pipeline)",
+    src: ["node_modules", "sharp"],
+    dest: ["node_modules", "sharp"],
+  },
+  {
+    label: "@img/colour (sharp static dep, tracing belt-and-braces)",
+    src: ["node_modules", "@img", "colour"],
+    dest: ["node_modules", "@img", "colour"],
+  },
+  ...[
+    // First-level bindings (@img/sharp-<platform>).
+    "sharp-linux-x64",
+    "sharp-linux-arm64",
+    "sharp-linux-arm",
+    "sharp-linux-ppc64",
+    "sharp-linux-riscv64",
+    "sharp-linux-s390x",
+    "sharp-linuxmusl-x64",
+    "sharp-linuxmusl-arm64",
+    "sharp-darwin-x64",
+    "sharp-darwin-arm64",
+    "sharp-win32-x64",
+    "sharp-win32-ia32",
+    "sharp-win32-arm64",
+    // Second-level libvips runtimes the bindings dlopen (no win32/wasm variants).
+    "sharp-libvips-linux-x64",
+    "sharp-libvips-linux-arm64",
+    "sharp-libvips-linux-arm",
+    "sharp-libvips-linux-ppc64",
+    "sharp-libvips-linux-riscv64",
+    "sharp-libvips-linux-s390x",
+    "sharp-libvips-linuxmusl-x64",
+    "sharp-libvips-linuxmusl-arm64",
+    "sharp-libvips-darwin-x64",
+    "sharp-libvips-darwin-arm64",
+  ].map((pkg) => ({
+    label: `@img/${pkg} (sharp platform package, runtime-resolved)`,
+    src: ["node_modules", "@img", pkg],
+    dest: ["node_modules", "@img", pkg],
+  })),
 ];
 
 /**

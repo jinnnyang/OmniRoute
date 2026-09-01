@@ -260,6 +260,55 @@ test("the runtime-required js-tiktoken closure is shipped into the standalone bu
   }
 });
 
+// Regression guard (Docker build 2026-09-01): sharp is server-external and its
+// loader resolves the @img/sharp-<platform> binding + @img/sharp-libvips-<platform>
+// runtime via string-concatenated runtime requires — invisible to Turbopack/NFT
+// tracing (the same Next.js #88844 class as the sqlite-vec platform packages). The
+// Dockerfile reconciles the libvips package in the BUILDER node_modules, but the
+// standalone bundle must ALSO carry every @img platform package npm actually
+// installed, or the first image/video route in the container dies with
+// ERR_DLOPEN_FAILED (libvips-cpp.so not found).
+test("sharp and its runtime-resolved @img platform packages ship into the standalone bundle", async () => {
+  const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "assemble-sharp-"));
+  try {
+    await syncStandaloneExtraModules(repoRoot, fs.promises, { log() {} }, tmp);
+    assert.ok(
+      fs.existsSync(path.join(tmp, "node_modules/sharp/package.json")),
+      "sharp must be shipped into the standalone bundle (server-external native image pipeline)"
+    );
+    // Every @img package npm actually installed on this platform must ride along.
+    // Asserted dynamically (instead of hardcoding linux-x64) so the guard holds on
+    // macOS/Windows dev machines and linux CI alike.
+    const imgDir = path.join(repoRoot, "node_modules", "@img");
+    const installed = fs.existsSync(imgDir) ? fs.readdirSync(imgDir) : [];
+    assert.ok(installed.length > 0, "precondition: at least one @img package is installed");
+    for (const pkg of installed) {
+      assert.ok(
+        fs.existsSync(path.join(tmp, "node_modules", "@img", pkg, "package.json")),
+        `@img/${pkg} must be shipped into the standalone bundle (sharp resolves it at runtime)`
+      );
+    }
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+
+  // The platform list must cover the libvips runtimes, not just the bindings —
+  // npm >= 12 skips the second-level optionals during `npm ci` (see the Dockerfile
+  // reconcile step), so a dynamically-derived list here would miss the gap.
+  const src = fs.readFileSync(path.join(repoRoot, "scripts/build/assembleStandalone.mjs"), "utf8");
+  for (const pkg of [
+    "sharp-linux-x64",
+    "sharp-libvips-linux-x64",
+    "sharp-linuxmusl-x64",
+    "sharp-libvips-linuxmusl-x64",
+    "sharp-darwin-x64",
+    "sharp-libvips-darwin-x64",
+  ]) {
+    assert.ok(src.includes(`"${pkg}"`), `EXTRA_MODULE_ENTRIES must list @img/${pkg}`);
+  }
+});
 // Regression guard (deploy 2026-08-19): under heavy concurrent build I/O the bulk
 // "standalone -> outDir" tree copy can already have carried a prior pass's result into
 // an EXTRA_MODULE_ENTRIES/NATIVE_ASSET_ENTRIES `dest` BEFORE that entry's own copy runs
