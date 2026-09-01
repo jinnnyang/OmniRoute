@@ -285,6 +285,23 @@ const EXTRA_MODULE_ENTRIES = [
     "sqlite-vec-darwin-arm64",
     "sqlite-vec-windows-x64",
   ].map((pkg) => ({ label: pkg, src: ["node_modules", pkg], dest: ["node_modules", pkg] })),
+  {
+    // tiktokenCounter.ts resolves js-tiktoken via createRequire() at runtime
+    // (invisible to Turbopack tracing). It used to reach the standalone bundle only
+    // as a passenger of colocate-standalone.mjs's LLMLingua closure; the LLMLingua
+    // SLM engine removal (a4933e379) emptied that closure and the Dockerfile's
+    // js-tiktoken standalone guard went red. Ship the closure directly, like the
+    // other runtime-dynamic requires above.
+    label: "js-tiktoken (tiktokenCounter createRequire runtime dep)",
+    src: ["node_modules", "js-tiktoken"],
+    dest: ["node_modules", "js-tiktoken"],
+  },
+  {
+    // js-tiktoken's only runtime dependency (dist/index.cjs requires it).
+    label: "base64-js (js-tiktoken runtime dep)",
+    src: ["node_modules", "base64-js"],
+    dest: ["node_modules", "base64-js"],
+  },
 ];
 
 /**
@@ -902,7 +919,6 @@ export function assembleStandalone({
         );
       }
     }
-
   }
 
   // 7. Optionally dereference Turbopack hashed-module symlinks so the bundle is

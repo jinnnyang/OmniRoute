@@ -217,6 +217,49 @@ test("every relative import of standalone-server-ws.mjs is shipped into the bund
   fs.rmSync(tmp, { recursive: true, force: true });
 });
 
+// Regression guard (Docker build 2026-09-01): js-tiktoken is resolved at runtime
+// through createRequire() in src/shared/utils/tiktokenCounter.ts — invisible to
+// Turbopack static tracing. It used to reach the standalone bundle only as a passenger
+// of colocate-standalone.mjs's "SLM optionals" closure; the LLMLingua SLM engine removal
+// (a4933e379) took @atjsh/llmlingua-2 out of the tree, which made that co-location skip
+// entirely and left the Dockerfile's js-tiktoken standalone guard red. The closure must
+// ship via EXTRA_MODULE_ENTRIES directly, like the other runtime-dynamic requires.
+test("the runtime-required js-tiktoken closure is shipped into the standalone bundle", async () => {
+  const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
+  const counterSrc = fs.readFileSync(
+    path.join(repoRoot, "src/shared/utils/tiktokenCounter.ts"),
+    "utf8"
+  );
+  const dynRequires = [...counterSrc.matchAll(/_require\("([^"]+)"\)/g)].map((m) => m[1]);
+  assert.ok(
+    dynRequires.includes("js-tiktoken"),
+    "precondition: tiktokenCounter resolves js-tiktoken via createRequire at runtime"
+  );
+
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "assemble-tiktoken-"));
+  try {
+    await syncStandaloneExtraModules(repoRoot, fs.promises, { log() {} }, tmp);
+    assert.ok(
+      fs.existsSync(path.join(tmp, "node_modules/js-tiktoken/dist/index.cjs")),
+      "js-tiktoken must be shipped into the standalone bundle (createRequire resolves it at runtime)"
+    );
+
+    // Every runtime dependency of js-tiktoken must ride along — js-tiktoken's own
+    // dist/index.cjs requires them, and tracing does not cover them either.
+    const jsTiktokenPkg = JSON.parse(
+      fs.readFileSync(path.join(repoRoot, "node_modules/js-tiktoken/package.json"), "utf8")
+    );
+    for (const dep of Object.keys(jsTiktokenPkg.dependencies ?? {})) {
+      assert.ok(
+        fs.existsSync(path.join(tmp, "node_modules", dep)),
+        `js-tiktoken dependency ${dep} must also be shipped into the standalone bundle`
+      );
+    }
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
 // Regression guard (deploy 2026-08-19): under heavy concurrent build I/O the bulk
 // "standalone -> outDir" tree copy can already have carried a prior pass's result into
 // an EXTRA_MODULE_ENTRIES/NATIVE_ASSET_ENTRIES `dest` BEFORE that entry's own copy runs
