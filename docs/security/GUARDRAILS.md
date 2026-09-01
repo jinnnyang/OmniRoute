@@ -126,6 +126,29 @@ untouched — `0` is a valid Zod value in its own right
 (`z.union([z.literal(0), z.number().int().min(100).max(50000)])`), not merely
 the "unset" default.
 
+#### Describer selection: health gate + reliability-dominant scoring (#vision-bridge-health)
+
+When no fixed model is configured, `getBestVisionModel()`
+(`visionBridgeRouter.ts`) auto-selects the describer. Two gates protect it
+from building the bridge on top of guaranteed failure:
+
+* **Health gate** — a candidate whose provider is DURABLY down is excluded
+  before it can win: circuit breaker `OPEN`, terminal connection statuses
+  (`credits_exhausted` / `banned` / `expired`), accumulated backoff
+  (`backoffLevel >= 2` ≈ consecutive failures), or a rate-limit beyond the
+  transient grace window. The verdict reuses the context-cache pin predicate
+  (`providerConnectionsDurablyUnhealthy()` in
+  `src/shared/utils/connectionHealth.ts`) and fails OPEN on lookup errors —
+  the describe call itself remains the final arbiter.
+* **Reliability-dominant scoring** — candidates rank by
+  `(1 - successRate) × 10 000 + min(latencyMs/10, 1 000) + priority × 2`: every
+  1% of failure rate outweighs the whole latency contribution, and credential
+  tier (keyed/unknown/noauth) is only a final tie-breaker. The success rate
+  counts the last 50 describe attempts **including bridge failures**, which
+  are now also persisted to `usage_history` (endpoint `vision-bridge`,
+  provider stored canonically) so the signal survives restarts and feeds the
+  auto-combo `reliability` factor (see `docs/routing/AUTO-COMBO.md`).
+
 #### Describe cache (`modalityBridge/bridgeCache.ts`)
 
 In-memory LRU + TTL cache for describe outputs, shared process-wide.

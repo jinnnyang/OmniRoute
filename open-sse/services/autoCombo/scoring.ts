@@ -74,7 +74,7 @@ export const DEFAULT_WEIGHTS: ScoringWeights = {
   sessionAvailability: 0.0476,
   resetWindowAffinity: 0,
   connectionDensity: 0.0476,
-  // Shifted from `health` (0.1905 → 0.1605 → 0.14): availability stays a top
+  // Shifted from `health` (0.1905 → 0.1605 → 0.09): availability stays a top
   // signal, and the new quality signal gets a real, if smaller, vote.
   quality: 0.03,
   // (#vision-bridge-health) Observed-request reliability — 1 - errorRate from
@@ -176,8 +176,6 @@ export function calculateScore(factors: ScoringFactors, weights: ScoringWeights)
       (weights.sessionAvailability ?? 0) * (factors.sessionAvailability ?? 1) +
       (weights.resetWindowAffinity ?? 0) * factors.resetWindowAffinity +
       (weights.connectionDensity ?? 0) * factors.connectionDensity +
-      // Missing quality factor → neutral 0.5: a cold candidate is neither boosted
-      // (which would let optimistic initialization dominate) nor penalized.
       // Missing quality factor → neutral 0.5: a cold candidate is neither boosted
       // (which would let optimistic initialization dominate) nor penalized.
       (weights.quality ?? 0) * (factors.quality ?? 0.5) +
