@@ -17,6 +17,7 @@ import {
   calculateFactors,
   DEFAULT_WEIGHTS,
   normalizeScoringWeights,
+  validateWeights,
 } from "../../open-sse/services/autoCombo/scoring.ts";
 import type {
   ScoringFactors,
@@ -37,6 +38,7 @@ const ONES: ScoringFactors = {
   resetWindowAffinity: 1,
   connectionDensity: 1,
   quality: 1,
+  reliability: 1,
 };
 
 function candidate(partial: Partial<ProviderCandidate> = {}): ProviderCandidate {
@@ -144,4 +146,41 @@ test("calculateFactors — connectionDensity is clamped to [0,1] and NaN-safe", 
     Number.isFinite(nan.connectionDensity),
     `connectionDensity must be finite (clamp01 maps NaN→0), got ${nan.connectionDensity}`
   );
+});
+
+// ── reliability factor (#vision-bridge-health) ──────────────────────────────
+//
+// "A candidate's score should heavily depend on its request success rate":
+// the reliability factor (1 - errorRate from usage_history rolling stats,
+// including persisted vision-bridge describe failures) gives observed request
+// success a first-class vote in candidate ranking, alongside the breaker-state
+// health factor that only expresses short-term circuit state.
+
+test("calculateFactors — reliability = 1 - errorRate", () => {
+  const c = candidate({ errorRate: 0.3 });
+  const f = calculateFactors(c, [c], "default", () => 0.5);
+  assert.ok(Math.abs(f.reliability - 0.7) < 1e-9, `reliability must be 0.7, got ${f.reliability}`);
+});
+
+test("calculateFactors — errorRate is clamped, reliability stays in [0,1]", () => {
+  const c = candidate({ errorRate: 1.7 });
+  const f = calculateFactors(c, [c], "default", () => 0.5);
+  assert.equal(f.reliability, 0, "reliability clamps at 0 for errorRate > 1");
+});
+
+test("calculateScore — a flaky candidate scores below an identical reliable one", () => {
+  const flakyFactors = calculateFactors(candidate({ errorRate: 0.25 }), [], "default", () => 0.5);
+  const cleanFactors = calculateFactors(candidate({ errorRate: 0 }), [], "default", () => 0.5);
+  const flaky = calculateScore(flakyFactors, DEFAULT_WEIGHTS);
+  const clean = calculateScore(cleanFactors, DEFAULT_WEIGHTS);
+  assert.ok(clean > flaky, `clean (${clean}) must outrank flaky (${flaky})`);
+  // 25pp of failure rate × 0.0705 weight ≈ 0.0176 score gap
+  assert.ok(Math.abs(clean - flaky - 0.25 * 0.0705) < 1e-9);
+});
+
+test("calculateScore — weights remain a valid distribution after adding reliability", () => {
+  assert.ok(validateWeights(DEFAULT_WEIGHTS), "DEFAULT_WEIGHTS must sum to ~1.0");
+  const normalized = normalizeScoringWeights({ health: 1, reliability: 1 });
+  const score = calculateScore({ ...ONES }, normalized);
+  assert.ok(Math.abs(score - 1) < 1e-6, "normalized all-ones weights × all-ones factors ≈ 1");
 });

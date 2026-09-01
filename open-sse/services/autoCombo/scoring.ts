@@ -29,6 +29,13 @@ export interface ScoringFactors {
    * observed events default to neutral (0.5) and are never penalized.
    */
   quality?: number;
+  /**
+   * Observed-request reliability [0,1] = 1 - errorRate (#vision-bridge-health).
+   * Sourced from the candidate's errorRate (usage_history rolling stats,
+   * including persisted vision-bridge describe failures). Optional so cold
+   * candidates default to neutral (0.95) instead of being penalized.
+   */
+  reliability?: number;
 }
 
 export interface ScoringWeights {
@@ -48,11 +55,13 @@ export interface ScoringWeights {
   connectionDensity: number;
   /** Weight for the feedback-driven quality factor (#feedback-foundation). */
   quality?: number;
+  /** Weight for the observed-request reliability factor (1 - errorRate). */
+  reliability?: number;
 }
 
 export const DEFAULT_WEIGHTS: ScoringWeights = {
   quota: 0.1429,
-  health: 0.1605,
+  health: 0.09,
   costInv: 0.1429,
   latencyInv: 0.1143,
   taskFit: 0.0762,
@@ -65,10 +74,17 @@ export const DEFAULT_WEIGHTS: ScoringWeights = {
   sessionAvailability: 0.0476,
   resetWindowAffinity: 0,
   connectionDensity: 0.0476,
-  // Shifted from `health` (0.1905 → 0.1605): availability stays dominant, and
-  // the new quality signal (observed output quality over time) gets a real,
-  // if smaller, vote. Sum remains exactly 1.0.
+  // Shifted from `health` (0.1905 → 0.1605 → 0.14): availability stays a top
+  // signal, and the new quality signal gets a real, if smaller, vote.
   quality: 0.03,
+  // (#vision-bridge-health) Observed-request reliability — 1 - errorRate from
+  // the usage_history rolling stats (now including persisted vision-bridge
+  // describe failures). "A candidate's score should heavily depend on its
+  // request success rate": this is the assignment-side expression of that
+  // requirement, complementing the bridge's own reliability-dominant scoring.
+  // Shifted from `health` (0.1605 → 0.09); the breaker factor stays for the
+  // circuit-state signal that errorRate cannot express in the short term.
+  reliability: 0.0705,
 };
 
 /** Normalize independently configured UI weights into a scoring distribution. */
@@ -162,7 +178,12 @@ export function calculateScore(factors: ScoringFactors, weights: ScoringWeights)
       (weights.connectionDensity ?? 0) * factors.connectionDensity +
       // Missing quality factor → neutral 0.5: a cold candidate is neither boosted
       // (which would let optimistic initialization dominate) nor penalized.
-      (weights.quality ?? 0) * (factors.quality ?? 0.5)
+      // Missing quality factor → neutral 0.5: a cold candidate is neither boosted
+      // (which would let optimistic initialization dominate) nor penalized.
+      (weights.quality ?? 0) * (factors.quality ?? 0.5) +
+      // Missing reliability → neutral 0.95: no observed failures is closer to
+      // the truth for a cold candidate than a pessimistic 0.5.
+      (weights.reliability ?? 0) * (factors.reliability ?? 0.95)
   );
 }
 
@@ -292,6 +313,10 @@ export function calculateFactors(
     // Feedback quality signal; neutral 0.5 when the tracker has no data yet
     // (cold providers are neither boosted nor unfairly penalized).
     quality: clamp01(candidate.quality ?? 0.5),
+    // Observed-request reliability (1 - errorRate); the rolling usage_history
+    // stats behind errorRate include persisted vision-bridge describe failures
+    // (#vision-bridge-health). Neutral 0.95 for cold candidates.
+    reliability: clamp01(1 - candidate.errorRate),
   };
 }
 
