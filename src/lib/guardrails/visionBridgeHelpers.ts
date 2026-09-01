@@ -6,6 +6,7 @@ import { normalizeDataUri } from "@omniroute/open-sse/utils/imageNormalize";
 import { fetchRemoteImage } from "@/shared/network/remoteImageFetch";
 import { getRuntimePorts } from "@/lib/runtime/ports";
 import { resolveSelfLoopBearer } from "@/shared/middleware/chatBodyAdmission";
+import { resolveProviderId } from "@/shared/constants/providers";
 import { getBestVisionModel, getFallbackModels, recordLatency } from "./visionBridgeRouter";
 import { getResolvedModelCapabilities } from "@/lib/modelCapabilities";
 import { REGISTRY } from "@omniroute/open-sse/config/providers";
@@ -371,6 +372,24 @@ export interface VisionModelConfig {
   fetchImpl?: typeof fetch;
   /** Receives the actual successful model while the public return value remains a string. */
   onModelUsed?: (model: string) => void;
+  /**
+   * Persist one describe attempt into usage_history (#vision-bridge-health).
+   * Defaults to saveRequestUsage so bridge failures land in the same rolling
+   * stats (getModelLatencyStats) auto-combo routing consumes; tests inject a
+   * collector. Failures of the writer itself are swallowed by the default.
+   */
+  persistUsage?: (entry: VisionBridgeUsageEntry) => Promise<void> | void;
+}
+
+/** One persisted vision-bridge describe attempt (usage_history row shape). */
+export interface VisionBridgeUsageEntry {
+  /** Canonical provider id (public prefix resolved via resolveProviderId). */
+  provider: string;
+  /** Model name without the provider prefix. */
+  model: string;
+  latencyMs: number;
+  success: boolean;
+  errorCode?: string | null;
 }
 
 /** Task-aware focus hint (codex-vision-proxy pattern): steer the description
@@ -391,6 +410,30 @@ export function composeVisionPrompt(
  * Supports both OpenAI-compatible and Anthropic API formats.
  * Uses auto-routing to select the fastest available model.
  */
+/**
+ * Default usage_history writer for bridge describe attempts
+ * (#vision-bridge-health): provider is stored CANONICALLY (vecp ->
+ * volcengine-coding-plan) so the rows join the same `${provider}/${model}`
+ * keys getModelLatencyStats aggregates for auto-combo routing. Best-effort:
+ * a persistence failure must never fail (or slow down) a describe result.
+ */
+async function defaultPersistVisionBridgeUsage(entry: VisionBridgeUsageEntry): Promise<void> {
+  try {
+    const { saveRequestUsage } = await import("@/lib/usage/usageHistory");
+    await saveRequestUsage({
+      provider: entry.provider,
+      model: entry.model,
+      success: entry.success,
+      latencyMs: entry.latencyMs,
+      errorCode: entry.errorCode ?? null,
+      status: entry.success ? "vision_bridge" : "error",
+      endpoint: "vision-bridge",
+    });
+  } catch {
+    // Observability only — never propagate.
+  }
+}
+
 export async function callVisionModel(
   imageDataUri: string,
   config: VisionModelConfig,
@@ -401,7 +444,21 @@ export async function callVisionModel(
   if (config.signal?.aborted) {
     throw new Error("Vision model call aborted");
   }
-
+  const persistUsage = config.persistUsage ?? defaultPersistVisionBridgeUsage;
+  const persist = (model: string, latencyMs: number, success: boolean, errorCode?: string) => {
+    const sep = model.indexOf("/");
+    void Promise.resolve(
+      persistUsage({
+        provider: sep > 0 ? resolveProviderId(model.slice(0, sep)) : model,
+        model: sep > 0 ? model.slice(sep + 1) : model,
+        latencyMs,
+        success,
+        errorCode: errorCode ?? null,
+      })
+    ).catch(() => {
+      // The injected/default writer already guards; this is belt-and-braces.
+    });
+  };
   // Auto-select the best vision model. `deps` is the router's existing
   // injectable credential-check seam — without forwarding it, tests (and any
   // embedder) cannot keep model selection away from the live connections DB.
@@ -436,18 +493,22 @@ export async function callVisionModel(
         { ...config, model: currentModel },
         apiKey
       );
-      recordLatency(currentModel, Date.now() - attemptStart, true);
+      const successLatency = Date.now() - attemptStart;
+      recordLatency(currentModel, successLatency, true);
       // Meta-response guard: a narration/refusal ("I will analyze the image…")
       // is NOT a description. Treating it as success would splice meta text into
       // "[Image 1]: …" and poison every text-only downstream target — record
       // the attempt as failed and continue down the fallback chain.
       if (isMetaVisionDescription(result)) {
-        recordLatency(currentModel, Date.now() - attemptStart, false);
+        const metaLatency = Date.now() - attemptStart;
+        recordLatency(currentModel, metaLatency, false);
+        persist(currentModel, metaLatency, false, "vision_bridge_meta_response");
         lastError = new Error(
           `Vision model returned a meta response instead of a description: ${result.slice(0, 80)}`
         );
         continue;
       }
+      persist(currentModel, successLatency, true);
       try {
         config.onModelUsed?.(currentModel);
       } catch {
@@ -455,7 +516,10 @@ export async function callVisionModel(
       }
       return result;
     } catch (error) {
-      recordLatency(currentModel, Date.now() - attemptStart, false);
+      const failureLatency = Date.now() - attemptStart;
+      recordLatency(currentModel, failureLatency, false);
+      const message = error instanceof Error ? error.message : String(error);
+      persist(currentModel, failureLatency, false, message.slice(0, 120));
       lastError = error instanceof Error ? error : new Error(String(error));
       if (config.signal?.aborted) {
         throw lastError;
