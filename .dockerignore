@@ -55,7 +55,6 @@ reports/mutation
 .artifacts
 .eslintcache*
 .fakebin-*
-MAX
 quality-ratchet/
 
 # Documentation

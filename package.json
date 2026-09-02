@@ -39,7 +39,6 @@
     "scripts/build/build-tproxy-native.mjs",
     "scripts/build/native-binary-compat.mjs",
     "scripts/build/build-next-isolated.mjs",
-    "scripts/build/runtime-env.mjs",
     "scripts/packs/optionalPackManifest.mjs",
     "scripts/packs/optionalPackInstaller.mjs",
     "README.md",
