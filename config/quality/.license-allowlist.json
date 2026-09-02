@@ -45,6 +45,12 @@
       "risk": "low",
       "reviewAt": "v4.0.0"
     },
+    "@img/sharp-win32-x64": {
+      "license": "Apache-2.0 AND LGPL-3.0-or-later",
+      "justification": "Windows variant of the prebuilt sharp native binary (libvips DLL), same prebuilt-shared-library rationale as @img/sharp-libvips-linux-x64: dynamically linked, not modified, not statically bundled. Windows-only optional platform artifact — present on Windows dev machines, not pulled in Linux CI builds.",
+      "risk": "low",
+      "reviewAt": "v4.0.0"
+    },
     "lightningcss": {
       "license": "MPL-2.0",
       "justification": "MPL-2.0 is a weak, file-level copyleft: only modifications to MPL-licensed files must be released under MPL. OmniRoute does not modify lightningcss source. It is pulled in transitively as a runtime dep of vite (via monaco-editor, a production dep). MPL-2.0 is explicitly compatible with Apache/MIT combinations per the Mozilla FAQ and is routinely used in Node.js production stacks. The OmniRoute codebase remains MIT.",
@@ -65,7 +71,7 @@
     },
     "dompurify": {
       "license": "(MPL-2.0 OR Apache-2.0)",
-      "justification": "dompurify is dual-licensed: MPL-2.0 OR Apache-2.0. The Apache-2.0 option is permissive and compatible with MIT. OmniRoute uses it indirectly via monaco-editor and mermaid (UI rendering). The gate expression matcher already accepts (MPL-2.0 OR Apache-2.0) as an allowed expression, but this exception is kept for explicitness and audit trail.",
+      "justification": "dompurify is dual-licensed: MPL-2.0 OR Apache-2.0. The Apache-2.0 option is permissive and compatible with MIT. OmniRoute uses it indirectly via monaco-editor (UI rendering). The gate expression matcher already accepts (MPL-2.0 OR Apache-2.0) as an allowed expression, but this exception is kept for explicitness and audit trail.",
       "risk": "none",
       "reviewAt": "v4.0.0"
     },
