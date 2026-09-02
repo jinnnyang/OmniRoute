@@ -67,6 +67,12 @@ x-common: &common
 
 services:
   # ── Redis (Rate Limiter Backend) ──────────────────────────────────
+  # NOTE: intentionally has NO `profiles:` tag — unlike every other service
+  # below, Redis starts with ANY profile (including `base`). The app reads
+  # REDIS_URL (set in x-common) and prefers Redis for the circuit-breaker
+  # store, falling back to SQLite at runtime when unreachable, so Redis is
+  # an optimization, not a hard dependency. Add a `profiles: [base]` tag if
+  # you want a truly minimal single-container deployment.
   redis:
     image: docker.io/library/redis:8.6.5-alpine
     container_name: omniroute-redis
