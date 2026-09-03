@@ -1,0 +1,1 @@
+- **fix(kimi-web):** align health probe with executor domain ([#11521](https://github.com/diegosouzapw/OmniRoute/pull/11521))

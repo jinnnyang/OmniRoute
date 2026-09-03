@@ -1,0 +1,1 @@
+- **fix(combo):** enable genuine quota-aware routing for generic providers (antigravity, claude, etc.) ([#11411](https://github.com/diegosouzapw/OmniRoute/pull/11411))

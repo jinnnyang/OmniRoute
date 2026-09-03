@@ -1,0 +1,1 @@
+- **fix(sse):** scope credential health to exact key ([#11628](https://github.com/diegosouzapw/OmniRoute/pull/11628))

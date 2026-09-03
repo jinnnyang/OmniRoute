@@ -1,0 +1,1 @@
+- **fix(responses-continuation):** fail closed on a log-truncated stored input/output array ([#11473](https://github.com/diegosouzapw/OmniRoute/pull/11473))

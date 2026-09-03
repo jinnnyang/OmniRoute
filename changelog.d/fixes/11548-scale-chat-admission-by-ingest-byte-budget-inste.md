@@ -1,0 +1,1 @@
+- **fix(sse):** scale chat admission by ingest byte budget instead of a fixed request count ([#11548](https://github.com/diegosouzapw/OmniRoute/pull/11548))

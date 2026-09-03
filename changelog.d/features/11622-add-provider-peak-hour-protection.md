@@ -1,0 +1,1 @@
+- **feat(resilience):** add provider peak-hour protection ([#11622](https://github.com/diegosouzapw/OmniRoute/pull/11622))

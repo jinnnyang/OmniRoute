@@ -1,0 +1,1 @@
+- **fix(docker):** ship js-tiktoken closure via EXTRA_MODULE_ENTRIES

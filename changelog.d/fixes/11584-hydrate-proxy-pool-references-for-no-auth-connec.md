@@ -1,0 +1,1 @@
+- **fix(opencode):** hydrate Proxy Pool references for no-auth connections ([#11584](https://github.com/diegosouzapw/OmniRoute/pull/11584))

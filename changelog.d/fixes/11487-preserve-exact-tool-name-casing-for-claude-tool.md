@@ -1,0 +1,1 @@
+- **fix(translator):** preserve exact tool name casing for Claude tool_use payloads (#11487) ([#11487](https://github.com/diegosouzapw/OmniRoute/pull/11487) [#11520](https://github.com/diegosouzapw/OmniRoute/pull/11520))

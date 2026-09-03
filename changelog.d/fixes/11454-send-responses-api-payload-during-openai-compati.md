@@ -1,0 +1,1 @@
+- **fix(providers):** send Responses API payload during OpenAI-compatible validation ([#11454](https://github.com/diegosouzapw/OmniRoute/pull/11454))

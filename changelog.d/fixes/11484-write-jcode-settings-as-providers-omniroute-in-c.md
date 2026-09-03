@@ -1,0 +1,1 @@
+- **fix(cli):** write jcode settings as [providers.omniroute] in config.toml ([#11484](https://github.com/diegosouzapw/OmniRoute/pull/11484))

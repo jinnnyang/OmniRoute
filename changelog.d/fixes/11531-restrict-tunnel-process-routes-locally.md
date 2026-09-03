@@ -1,0 +1,1 @@
+- **fix(authz):** restrict tunnel process routes locally ([#11531](https://github.com/diegosouzapw/OmniRoute/pull/11531))

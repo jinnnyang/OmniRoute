@@ -1,0 +1,1 @@
+- **feat(guardrails):** provider health gate and reliability-dominant scoring for vision bridge candidates

@@ -1,0 +1,1 @@
+- **fix(ui):** wrap quota card footer action buttons to prevent clipping Refresh button on narrow cards ([#11464](https://github.com/diegosouzapw/OmniRoute/pull/11464))

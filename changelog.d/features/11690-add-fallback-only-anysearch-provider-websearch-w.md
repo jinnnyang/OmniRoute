@@ -1,0 +1,1 @@
+- **feat(search):** add fallback-only AnySearch provider (webSearch + webFetch) ([#11690](https://github.com/diegosouzapw/OmniRoute/pull/11690))

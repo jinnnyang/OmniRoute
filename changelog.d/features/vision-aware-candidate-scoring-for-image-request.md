@@ -1,0 +1,1 @@
+- **feat(auto-combo):** vision-aware candidate scoring for image requests

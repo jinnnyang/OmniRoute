@@ -1,0 +1,1 @@
+- Only advertise verified-working connections by default ([#11448](https://github.com/diegosouzapw/OmniRoute/pull/11448))

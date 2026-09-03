@@ -1,0 +1,1 @@
+- **fix(db):** fallback load STORAGE_ENCRYPTION_KEY from env files ([#11614](https://github.com/diegosouzapw/OmniRoute/pull/11614))

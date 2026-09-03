@@ -1,0 +1,1 @@
+- **fix(command-code):** fallback to /alpha/generate for Go plan without Provider API access ([#11455](https://github.com/diegosouzapw/OmniRoute/pull/11455))

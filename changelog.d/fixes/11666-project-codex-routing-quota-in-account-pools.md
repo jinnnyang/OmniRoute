@@ -1,0 +1,1 @@
+- **fix(dashboard):** project Codex routing quota in account pools ([#11666](https://github.com/diegosouzapw/OmniRoute/pull/11666))

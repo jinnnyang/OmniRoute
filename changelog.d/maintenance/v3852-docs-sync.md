@@ -1,0 +1,8 @@
+- **docs:** sync 16-factor scoring, regenerate provider catalog, and note reliability in mode packs (local fork)
+- **docs:** rewrite agent guides for the independent fork (local fork)
+- **docs:** add GitNexus code-intelligence section to agent guides (local fork)
+- **docs(compose):** explain why the redis service has no profiles tag (local fork)
+- **docs(agents):** sync pinned Bun version 1.3.14 -> 1.4.0 (local fork)
+- **docs(skills):** sync omni-inference search fallback (local fork)
+- **docs:** sync provider catalog count (local fork)
+- **docs:** real PR links for merged changelog fragments; fix stale quality comment ([#11553](https://github.com/diegosouzapw/OmniRoute/pull/11553))

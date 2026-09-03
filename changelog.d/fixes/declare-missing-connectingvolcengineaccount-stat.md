@@ -1,0 +1,1 @@
+- **fix(dashboard):** declare missing connectingVolcengineAccount state

@@ -1,0 +1,1 @@
+- **fix(idempotency):** fingerprint Responses request semantics ([#11532](https://github.com/diegosouzapw/OmniRoute/pull/11532))

@@ -1,0 +1,1 @@
+- **fix(types):** clear the two type regressions red on release/v3.8.51 ([#11640](https://github.com/diegosouzapw/OmniRoute/pull/11640))

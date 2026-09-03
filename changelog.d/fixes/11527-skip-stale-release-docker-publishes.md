@@ -1,0 +1,1 @@
+- **fix(ci):** skip stale release Docker publishes ([#11527](https://github.com/diegosouzapw/OmniRoute/pull/11527))

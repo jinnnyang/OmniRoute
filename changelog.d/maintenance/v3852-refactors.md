@@ -1,0 +1,5 @@
+- **refactor(providers):** remove OAuth machinery — API-key only (local fork)
+- **refactor(providers):** drop OAuth catalog + dashboard OAuth surface (local fork)
+- **refactor(providers):** trim to API-key only (drop free-rankings, web-cookie, OAuth/IDE) (local fork)
+- **refactor(compression):** remove LLMLingua SLM engine (#less-trim) (local fork)
+- **refactor(local-corpus):** implement dynamic root resolution and LRU cache ([#11491](https://github.com/diegosouzapw/OmniRoute/pull/11491))

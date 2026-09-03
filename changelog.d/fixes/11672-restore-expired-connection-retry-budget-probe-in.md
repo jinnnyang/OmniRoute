@@ -1,0 +1,1 @@
+- **fix(resilience):** restore expired-connection retry-budget probe in health sweep ([#11672](https://github.com/diegosouzapw/OmniRoute/pull/11672))

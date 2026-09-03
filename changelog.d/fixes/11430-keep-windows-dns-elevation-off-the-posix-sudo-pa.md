@@ -1,0 +1,1 @@
+- **fix(mitm):** keep Windows DNS elevation off the POSIX sudo path (#11430) ([#11430](https://github.com/diegosouzapw/OmniRoute/pull/11430) [#11542](https://github.com/diegosouzapw/OmniRoute/pull/11542))

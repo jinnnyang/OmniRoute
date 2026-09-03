@@ -1,0 +1,4 @@
+- **deps:** bump the development group across 1 directory with 8 updates ([#11428](https://github.com/diegosouzapw/OmniRoute/pull/11428))
+- **deps:** bump the production group across 1 directory with 11 updates ([#11440](https://github.com/diegosouzapw/OmniRoute/pull/11440))
+- **deps:** bump electron from 43.4.0 to 43.4.1 in /electron ([#11426](https://github.com/diegosouzapw/OmniRoute/pull/11426))
+- **deps:** realign onnxruntime-node pin to @huggingface/transformers lockstep ([#11633](https://github.com/diegosouzapw/OmniRoute/pull/11633))

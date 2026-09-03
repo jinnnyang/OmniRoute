@@ -1,0 +1,1 @@
+- **fix(kiro):** add runtime.us-east-1.kiro.dev as first-attempt endpoint ([#11517](https://github.com/diegosouzapw/OmniRoute/pull/11517))

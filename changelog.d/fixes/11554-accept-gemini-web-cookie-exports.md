@@ -1,0 +1,1 @@
+- **fix:** accept Gemini Web cookie exports ([#11554](https://github.com/diegosouzapw/OmniRoute/pull/11554))

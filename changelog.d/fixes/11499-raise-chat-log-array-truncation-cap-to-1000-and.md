@@ -1,0 +1,1 @@
+- **fix(logging):** raise chat-log array truncation cap to 1000 and unify duplicate implementations ([#11499](https://github.com/diegosouzapw/OmniRoute/pull/11499))

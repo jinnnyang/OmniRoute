@@ -1,0 +1,1 @@
+- **fix(install):** guard prepare script against missing husky ([#11634](https://github.com/diegosouzapw/OmniRoute/pull/11634))
