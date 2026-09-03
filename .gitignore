@@ -293,3 +293,10 @@ docker-compose.yml.bak
 # Ad-hoc test sandboxes (never tracked — may contain local DBs)
 /.sandbox/
 .aider*
+.local/agent-work/
+/.tmp-test/
+
+# Ad-hoc script run artifacts (screenshots / server logs) — never tracked
+scripts/ad-hoc/*.log
+scripts/ad-hoc/*.png
+scripts/ad-hoc/*.yml

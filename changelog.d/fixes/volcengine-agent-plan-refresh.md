@@ -1,0 +1,1 @@
+- **fix(providers):** refresh Volcengine Agent Plan model catalog — unpin date-suffixed IDs to stable family names, add GLM-5.3 / GLM-5.3-Flash, drop retired minimax-m2.7 and kimi-k2.6
