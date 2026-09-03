@@ -1,1 +1,0 @@
-- **fix(cli):** preserve existing admin password during setup ([#11522](https://github.com/diegosouzapw/OmniRoute/pull/11522))

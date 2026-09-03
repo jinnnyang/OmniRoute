@@ -1,1 +1,0 @@
-- **fix(sse):** import httpClientAbortGuard with explicit .mjs extension ([#11671](https://github.com/diegosouzapw/OmniRoute/pull/11671))

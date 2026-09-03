@@ -1,1 +1,0 @@
-- **fix(i18n):** complete Brazilian Portuguese translations ([#11558](https://github.com/diegosouzapw/OmniRoute/pull/11558))

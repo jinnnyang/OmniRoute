@@ -1,1 +1,0 @@
-- **fix(sse):** exact-domain cookie match and origin-equality URL assertions ([#11452](https://github.com/diegosouzapw/OmniRoute/pull/11452))

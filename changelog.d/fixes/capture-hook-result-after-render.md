@@ -1,1 +1,0 @@
-- **fix(test):** capture hook result after render

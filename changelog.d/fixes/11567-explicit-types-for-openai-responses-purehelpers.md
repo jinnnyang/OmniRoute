@@ -1,1 +1,0 @@
-- **fix(sse):** explicit types for openai-responses pureHelpers — clears last failing core typecheck gate ([#11567](https://github.com/diegosouzapw/OmniRoute/pull/11567))

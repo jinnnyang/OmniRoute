@@ -1,1 +1,0 @@
-- **fix(security):** redact NVIDIA_API_KEY at the log sink in the ad-hoc diag script ([#11639](https://github.com/diegosouzapw/OmniRoute/pull/11639))

@@ -1,8 +1,0 @@
-- **chore(i18n, docs):** remove stale LLMLingua/SLM keys and references (local fork)
-- **chore(deps):** sync lockfile after dropping onnx runtime deps (local fork)
-- **chore(quality):** rebaseline measured CLI bundle growth (local fork)
-- **chore(lint):** prune two stale base suppressions (local fork)
-- **chore(ci):** unblock quality gates — env-doc sync + stryker tap.testFiles registration ([#9282](https://github.com/diegosouzapw/OmniRoute/pull/9282) [#11609](https://github.com/diegosouzapw/OmniRoute/pull/11609))
-- **chore(search):** drop unreachable credential sweep after #11642 ([#11687](https://github.com/diegosouzapw/OmniRoute/pull/11687))
-- **chore(quality):** prune stale eslint-suppressions entries ([#11596](https://github.com/diegosouzapw/OmniRoute/pull/11596))
-- **chore(release):** restore the living [3.8.51] CHANGELOG section (local fork)

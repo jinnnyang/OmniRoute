@@ -1,1 +1,0 @@
-- **fix(ddgw):** normaliza system no upstream da release v3.8.51 ([#11692](https://github.com/diegosouzapw/OmniRoute/pull/11692))

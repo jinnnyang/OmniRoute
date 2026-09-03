@@ -1,4 +1,0 @@
-- **build:** remove duplicate files[] entry and stale .dockerignore rule (local fork)
-- **build(deps):** drop unused express and http-proxy-middleware from root manifest (local fork)
-- **build(deps):** drop dead mermaid dependency (82 MB) and stale allowlist entries (local fork)
-- **build(docker):** drop onnx/llmlingua runtime deps for slimmer image (local fork)

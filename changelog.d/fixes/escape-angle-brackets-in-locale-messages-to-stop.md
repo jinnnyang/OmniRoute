@@ -1,1 +1,0 @@
-- **fix(i18n):** escape angle brackets in locale messages to stop UNCLOSED_TAG

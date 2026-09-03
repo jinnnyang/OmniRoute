@@ -1,1 +1,0 @@
-- **fix(responses):** preserve json_object response format ([#11529](https://github.com/diegosouzapw/OmniRoute/pull/11529))

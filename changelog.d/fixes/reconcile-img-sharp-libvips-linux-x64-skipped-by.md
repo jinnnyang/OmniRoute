@@ -1,1 +1,0 @@
-- **fix(docker):** reconcile @img/sharp-libvips-linux-x64 skipped by npm>=12

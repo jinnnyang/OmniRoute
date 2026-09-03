@@ -1,1 +1,0 @@
-- **fix:** restore live websocket URL helpers ([#11509](https://github.com/diegosouzapw/OmniRoute/pull/11509))

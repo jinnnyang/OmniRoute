@@ -1,1 +1,0 @@
-- **fix(models):** gate the Codex-native catalog loop on prefix mode (#11632) ([#11632](https://github.com/diegosouzapw/OmniRoute/pull/11632) [#11662](https://github.com/diegosouzapw/OmniRoute/pull/11662))

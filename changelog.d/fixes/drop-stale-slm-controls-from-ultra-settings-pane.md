@@ -1,1 +1,0 @@
-- **fix(compression):** drop stale SLM controls from Ultra settings panel

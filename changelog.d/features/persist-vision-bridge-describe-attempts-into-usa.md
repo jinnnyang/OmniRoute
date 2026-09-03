@@ -1,1 +1,0 @@
-- **feat(guardrails):** persist vision-bridge describe attempts into usage_history

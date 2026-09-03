@@ -1,1 +1,0 @@
-- **fix(router):** preserve selected connection identity ([#11530](https://github.com/diegosouzapw/OmniRoute/pull/11530))

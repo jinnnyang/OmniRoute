@@ -1,1 +1,0 @@
-- **fix:** pass tool result content through as string in OpenAI/Claude -> Gemini translation ([#11624](https://github.com/diegosouzapw/OmniRoute/pull/11624))

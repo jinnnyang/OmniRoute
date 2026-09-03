@@ -1,1 +1,0 @@
-- **fix(tailscale):** validate ports and quote MSI paths ([#11534](https://github.com/diegosouzapw/OmniRoute/pull/11534))

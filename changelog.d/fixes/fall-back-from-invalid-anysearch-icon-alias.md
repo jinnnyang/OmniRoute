@@ -1,1 +1,0 @@
-- **fix(ui):** fall back from invalid AnySearch icon alias

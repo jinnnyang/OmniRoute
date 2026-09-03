@@ -1,1 +1,0 @@
-- **feat(logs):** add copy-all button to request detail modal ([#11083](https://github.com/diegosouzapw/OmniRoute/pull/11083))

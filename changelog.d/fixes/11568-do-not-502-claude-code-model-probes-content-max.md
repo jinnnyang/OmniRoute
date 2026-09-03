@@ -1,1 +1,0 @@
-- **fix(sse):** do not 502 Claude Code /model probes (content:[] + max_tokens) ([#11568](https://github.com/diegosouzapw/OmniRoute/pull/11568))

@@ -1,1 +1,0 @@
-- **fix(providers):** mark Brave Search as no longer having a free tier ([#11621](https://github.com/diegosouzapw/OmniRoute/pull/11621))

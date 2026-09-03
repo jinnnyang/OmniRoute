@@ -1,1 +1,0 @@
-- **perf(core):** eliminate async waterfalls across home, cache, and db operations (#11396) ([#11396](https://github.com/diegosouzapw/OmniRoute/pull/11396) [#11512](https://github.com/diegosouzapw/OmniRoute/pull/11512))

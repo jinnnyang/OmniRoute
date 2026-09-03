@@ -1,1 +1,0 @@
-- **fix(relay):** strip unsafe forwarded headers ([#11533](https://github.com/diegosouzapw/OmniRoute/pull/11533))

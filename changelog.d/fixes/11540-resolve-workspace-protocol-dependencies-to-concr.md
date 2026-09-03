@@ -1,1 +1,0 @@
-- **fix(build):** resolve workspace: protocol dependencies to concrete semver versions during prepublish (#11540) ([#11540](https://github.com/diegosouzapw/OmniRoute/pull/11540) [#11641](https://github.com/diegosouzapw/OmniRoute/pull/11641))

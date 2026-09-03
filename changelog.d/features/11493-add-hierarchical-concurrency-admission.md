@@ -1,1 +1,0 @@
-- **feat(resilience):** add hierarchical concurrency admission ([#11493](https://github.com/diegosouzapw/OmniRoute/pull/11493))

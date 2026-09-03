@@ -1,1 +1,0 @@
-- **fix(sessions):** preserve legacy data when exclusive projection fails ([#11469](https://github.com/diegosouzapw/OmniRoute/pull/11469))

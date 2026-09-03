@@ -1,1 +1,0 @@
-- **feat(providers):** derive + surface expiry for JWT-bearing web cookies (#11497) ([#11497](https://github.com/diegosouzapw/OmniRoute/pull/11497) [#11505](https://github.com/diegosouzapw/OmniRoute/pull/11505))

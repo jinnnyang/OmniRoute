@@ -1,1 +1,0 @@
-- **fix(security):** compare the OIDC state cookie in constant time ([#11646](https://github.com/diegosouzapw/OmniRoute/pull/11646))

@@ -1,1 +1,0 @@
-- **fix(authz):** trust cf-connecting-ip for via-proxy detection when peer is Cloudflare edge (#11514) ([#11514](https://github.com/diegosouzapw/OmniRoute/pull/11514) [#11643](https://github.com/diegosouzapw/OmniRoute/pull/11643))
