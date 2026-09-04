@@ -42,6 +42,28 @@ export function isClientAbortError(err) {
   const e = /** @type {NodeJS.ErrnoException} */ (err);
   // Node emits `Error: aborted` (no code) from http.Server#abortIncoming.
   if (e.message === "aborted" || e.message === "Aborted") return true;
+  // Node wraps a non-Error abort() reason as `Error [AbortError]: <reason>`
+  // (see rateLimitManager's onAbort construction). An AbortError is the loser
+  // of an abort race — a coordination signal, benign unless its cause chains
+  // down to a genuine error.
+  if (e.name === "AbortError") {
+    const abortCause = /** @type {{ cause?: unknown }} */ (err).cause;
+    if (abortCause == null || typeof abortCause === "string") return true;
+    return isClientAbortError(abortCause);
+  }
+  // Internal abort-coordination reasons propagate as plain string causes
+  // (e.g. combo hedge cancellation — open-sse/services/combo/comboAbortReasons.ts).
+  // Literals kept inline: this module is dependency-free by design.
+  const cause = /** @type {{ cause?: unknown }} */ (err).cause;
+  if (
+    typeof cause === "string" &&
+    (cause === "hedge-cancelled" ||
+      cause === "combo-per-model-timeout" ||
+      cause === "client_closed" ||
+      cause === "cancelled")
+  ) {
+    return true;
+  }
   switch (e.code) {
     case "ERR_STREAM_PREMATURE_CLOSE":
     case "ECONNRESET":

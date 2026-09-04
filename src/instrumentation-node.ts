@@ -7,6 +7,7 @@
  */
 
 import { markServerReady, markServerStarting } from "@/lib/serverLifecycle";
+import { installProcessCrashGuard } from "@/shared/utils/httpClientAbortGuard.mjs";
 import { normalizeBootError } from "@/lib/instrumentationBootError";
 
 function getRandomBytes(byteLength: number): Uint8Array {
@@ -314,6 +315,14 @@ export async function registerQuotaFetchers(): Promise<void> {
 export async function registerNodejs(): Promise<void> {
   markServerStarting();
 
+  // Incident 2026-09-04 (production exit-7 crash loop): the guard was only
+  // installed by apiBridgeServer/liveServer/embedWsProxy, so the MAIN Next
+  // server process handled client-abort / hedge-cancel / rate-limit-expiry
+  // uncaughtExceptions with no safety net — 174 uncaught exceptions == 175
+  // container restarts. Install it first so every later boot step (and all
+  // request paths) are covered; idempotent with the other install sites.
+  installProcessCrashGuard();
+
   // Rename the process title so OmniRoute is identifiable in ps/htop instead
   // of the generic "next-server" standalone server name.
   process.title = renameProcessTitle(process.title);
@@ -614,12 +623,14 @@ export async function registerNodejs(): Promise<void> {
 
       // Conductor bridge (PRD Conductor RF1): mirrors OmniConductor hub tasks into the
       // A2A TaskManager via the hub SSE. Opt-in — self-gated on CONDUCTOR_HUB_URL.
-      import("@/lib/conductor/boot").then((m) => {
-        if (m.initConductorBridge()) console.log("[STARTUP] Conductor bridge started");
-      }).catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn("[STARTUP] Conductor bridge failed to start (non-fatal):", msg);
-      }),
+      import("@/lib/conductor/boot")
+        .then((m) => {
+          if (m.initConductorBridge()) console.log("[STARTUP] Conductor bridge started");
+        })
+        .catch((err: unknown) => {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn("[STARTUP] Conductor bridge failed to start (non-fatal):", msg);
+        }),
 
       // Proactive connection-cooldown recovery (#8): re-validate connections whose
       // transient `rate_limited_until` window has elapsed OUTSIDE the request hot path,

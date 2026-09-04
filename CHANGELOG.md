@@ -16,6 +16,23 @@
 
 ---
 
+## [3.8.53] — 2026-09-04
+
+### 🐛 Bug Fixes
+
+- **fix(resilience):** stop the exit-7 crash loop from benign coordination uncaughtExceptions
+  (incident 2026-09-04 on the AptAPI deployment: 174 process deaths == 175 container restarts,
+  1:1). The Bottleneck doExpire patch now skips expiration for jobs no longer in
+  RUNNING/EXECUTING (extracted `buildFixedDoExpire`, exported for direct unit tests) instead of
+  letting `_assertStatus("EXECUTING")` throw inside a setTimeout callback; the process crash
+  guard recognizes `Error [AbortError]: <reason>` shapes and internal string causes
+  (hedge-cancelled, combo-per-model-timeout, client_closed); combo per-target timeout and hedge
+  cancellation abort() sites are guarded against throwing sibling listeners; and the crash guard
+  is now installed in the main Next server process via `registerNodejs()` (previously only
+  apiBridgeServer/liveServer/embedWsProxy). Versions synced to 3.8.53 across package.json and
+  open-sse/package.json.
+
+---
 ## [3.8.52] — 2026-09-04
 
 _Living section — cycle opened at the v3.8.51 freeze (parallel-cycle model). Bullets are aggregated from `changelog.d/` fragments at each `/generate-release` phase._

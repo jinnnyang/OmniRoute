@@ -143,7 +143,17 @@ export function buildTargetTimeoutRunner(deps: {
           "COMBO",
           `Model ${modelStr} exceeded ${effectiveTimeoutMs}ms timeout — falling back`
         );
-        timeoutController.abort(abortErr);
+        // Timer-context abort: a throwing sibling listener on the child signal
+        // would otherwise propagate out of the setTimeout callback as an
+        // uncaughtException and kill the process (incident 2026-09-04, exit 7).
+        try {
+          timeoutController.abort(abortErr);
+        } catch (abortErr2) {
+          log.error?.(
+            "COMBO",
+            `abort dispatch error after per-model timeout for ${modelStr}: ${abortErr2?.message ?? abortErr2}`
+          );
+        }
         // HTTP 504 (not proprietary 524): this is OmniRoute's own per-target timer.
         // Typed as combo_target_timeout so request-scoped classification can keep the
         // connection eligible for fallback instead of treating it like Cloudflare 524
@@ -171,12 +181,23 @@ export function buildTargetTimeoutRunner(deps: {
     const parentHedgeSignal = target?.modelAbortSignal ?? null;
     let onParentHedgeAbort: (() => void) | null = null;
     if (parentHedgeSignal) {
-      if (parentHedgeSignal.aborted) {
-        timeoutController.abort(new Error(COMBO_HEDGE_CANCELLED_REASON));
-      } else {
-        onParentHedgeAbort = () => {
+      const safeHedgeAbort = () => {
+        // Same timer/abort-context concern as the per-model timeout above: a
+        // throwing sibling listener must never escape through abort() into
+        // the parent signal's dispatch chain.
+        try {
           timeoutController.abort(new Error(COMBO_HEDGE_CANCELLED_REASON));
-        };
+        } catch (err) {
+          log.error?.(
+            "COMBO",
+            `abort dispatch error during hedge cancellation for ${modelStr}: ${err?.message ?? err}`
+          );
+        }
+      };
+      if (parentHedgeSignal.aborted) {
+        safeHedgeAbort();
+      } else {
+        onParentHedgeAbort = safeHedgeAbort;
         parentHedgeSignal.addEventListener("abort", onParentHedgeAbort, { once: true });
       }
     }
@@ -203,7 +224,10 @@ export function buildTargetTimeoutRunner(deps: {
         // Defensive: should never fire — both race branches always resolve.
         // Include the error message so the root cause is not masked.
         const detail = raceErr instanceof Error ? raceErr.message : String(raceErr);
-        log.error?.("COMBO", `Unexpected rejection in combo timeout race for ${modelStr}: ${detail}`);
+        log.error?.(
+          "COMBO",
+          `Unexpected rejection in combo timeout race for ${modelStr}: ${detail}`
+        );
         return errorResponse(502, `Combo timeout dispatch error: ${detail}`);
       });
     } finally {

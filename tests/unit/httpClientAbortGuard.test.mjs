@@ -101,7 +101,10 @@ test("shouldSwallowUncaught absorbs the real 'aborted' uncaughtException signatu
   assert.equal(shouldSwallowUncaught(abortErr, "uncaughtException"), true);
   assert.equal(shouldSwallowUncaught(abortErr, undefined), true);
   assert.equal(
-    shouldSwallowUncaught(Object.assign(new Error("ECONNRESET"), { code: "ECONNRESET" }), "uncaughtException"),
+    shouldSwallowUncaught(
+      Object.assign(new Error("ECONNRESET"), { code: "ECONNRESET" }),
+      "uncaughtException"
+    ),
     true
   );
 });
@@ -116,4 +119,48 @@ test("shouldSwallowUncaught preserves crash semantics for genuine errors", () =>
 test("installProcessCrashGuard does not throw on import and is idempotent", () => {
   assert.doesNotThrow(() => installProcessCrashGuard(() => {}));
   assert.doesNotThrow(() => installProcessCrashGuard(() => {}));
+});
+
+// Incident 2026-09-04 (production exit-7 crash loop): combo hedge cancellation
+// and per-target timeout aborts surface at process level as
+// `Error [AbortError]: <reason>` with a string `cause`, e.g.
+//   Error [AbortError]: hedge-cancelled { [cause]: 'hedge-cancelled' }
+// These are race-losers of internal coordination — benign by the same
+// rationale as client aborts — yet the old allowlist missed them and the
+// process died 174 times (175 restarts).
+test("isClientAbortError matches the hedge-cancelled production crash signature", () => {
+  const hedgeAbort = Object.assign(new Error("hedge-cancelled"), {
+    name: "AbortError",
+    cause: "hedge-cancelled",
+  });
+  assert.equal(sharedGuard.isClientAbortError(hedgeAbort), true);
+  assert.equal(shouldSwallowUncaught(hedgeAbort, "uncaughtException"), true);
+
+  // Plain Error carrying a benign coordination reason as string cause.
+  const causeOnly = Object.assign(new Error("dispatch failed"), {
+    cause: "hedge-cancelled",
+  });
+  assert.equal(sharedGuard.isClientAbortError(causeOnly), true);
+
+  // AbortError without a cause (DOMException-style abort).
+  const plainAbort = Object.assign(new Error("This operation was aborted"), {
+    name: "AbortError",
+  });
+  assert.equal(sharedGuard.isClientAbortError(plainAbort), true);
+
+  // AbortError chaining down to a genuine client-abort error stays benign.
+  const chained = Object.assign(new Error("aborted"), {
+    name: "AbortError",
+    cause: Object.assign(new Error("aborted"), {}),
+  });
+  assert.equal(sharedGuard.isClientAbortError(chained), true);
+
+  // Genuine faults must still surface: AbortError with a real Error cause that
+  // is itself not abort-like, and plain non-abort errors.
+  const genuine = Object.assign(new Error("boom"), {
+    name: "AbortError",
+    cause: new Error("db corrupt"),
+  });
+  assert.equal(sharedGuard.isClientAbortError(genuine), false);
+  assert.equal(sharedGuard.isClientAbortError(new Error("boom")), false);
 });

@@ -95,6 +95,50 @@ interface BottleneckJob {
 
 let patched = false;
 
+type DoExpireFn = (clearGlobalState: () => void, run: () => void, free: () => void) => void;
+
+/**
+ * Build the crash-safe doExpire wrapper for a single job.
+ *
+ * Incident 2026-09-04 (production exit-7 crash loop, RestartCount 175): when a
+ * job is no longer expirable (DONE, or its state was already removed so
+ * `jobStatus` returns null) but its expiration timer still fires, the original
+ * `Job#doExpire` runs `_assertStatus("EXECUTING")` INSIDE the setTimeout
+ * callback. A throw there is an uncaughtException and kills the whole process
+ * (174 uncaught exceptions == 175 container restarts, 1:1). There is nothing
+ * left to expire for such a job, so the wrapper bails out safely instead.
+ *
+ * Exported (pure, log-injectable) so the state machine paths can be unit-tested
+ * directly — the interleaving that leaves a stale timer on a finished job is
+ * not deterministically reproducible through the public Bottleneck API.
+ */
+export function buildFixedDoExpire(
+  jobId: string,
+  states: BottleneckJob["_states"] | undefined | null,
+  originalDoExpire: DoExpireFn,
+  log: (message: string) => void = (message) => console.warn(message)
+): DoExpireFn {
+  return function fixedDoExpire(clearGlobalState: () => void, run: () => void, free: () => void) {
+    // Fix: check job status, not compare ID to string "RUNNING"
+    const currentStatus = states?.jobStatus?.(jobId);
+    if (currentStatus === "RUNNING") {
+      states?.next?.(jobId);
+      log(
+        `[bottleneck-patch] doExpire bug triggered: job ${jobId} stuck in RUNNING, ` +
+          `advanced to EXECUTING before expiry. This is the Bottleneck v2.19.5 capacity leak.`
+      );
+    } else if (currentStatus !== "EXECUTING") {
+      log(
+        `[bottleneck-patch] doExpire skipped: job ${jobId} is ${currentStatus ?? "unknown"} ` +
+          `when its expiration timer fired (finished/aborted before the deadline) — ` +
+          `nothing left to expire; skipping would-be _assertStatus throw.`
+      );
+      return;
+    }
+    return originalDoExpire(clearGlobalState, run, free);
+  };
+}
+
 export function applyBottleneckDoExpirePatch(): void {
   if (patched) return;
   patched = true;
@@ -115,7 +159,10 @@ export function applyBottleneckDoExpirePatch(): void {
     // Guard: _run is called twice for jobs with wait > 0 (first with the delay,
     // then with wait=0 when the timer fires). Without the flag, fixedDoExpire
     // would wrap itself recursively on the second call.
-    if (typeof job?.doExpire === "function" && !(job as unknown as Record<string, unknown>)._doExpirePatched) {
+    if (
+      typeof job?.doExpire === "function" &&
+      !(job as unknown as Record<string, unknown>)._doExpirePatched
+    ) {
       (job as unknown as Record<string, unknown>)._doExpirePatched = true;
       const originalDoExpire = job.doExpire.bind(job);
       // Bottleneck registers the job in _states under options.id (Job.js
@@ -124,23 +171,7 @@ export function applyBottleneckDoExpirePatch(): void {
       // stable on the job and is the key the state machine uses.
       const jobId = job.options.id;
 
-      job.doExpire = function fixedDoExpire(
-        clearGlobalState: () => void,
-        run: () => void,
-        free: () => void
-      ) {
-        // Fix: check job status, not compare ID to string "RUNNING"
-        const states = job._states;
-        const currentStatus = states?.jobStatus?.(jobId);
-        if (currentStatus === "RUNNING") {
-          states?.next?.(jobId);
-          console.warn(
-            `[bottleneck-patch] doExpire bug triggered: job ${jobId} stuck in RUNNING, ` +
-              `advanced to EXECUTING before expiry. This is the Bottleneck v2.19.5 capacity leak.`
-          );
-        }
-        return originalDoExpire(clearGlobalState, run, free);
-      };
+      job.doExpire = buildFixedDoExpire(jobId, job._states, originalDoExpire);
     }
 
     // Now call original _run which captures the (now-patched) job.doExpire.
