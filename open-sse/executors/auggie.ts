@@ -95,7 +95,11 @@ export async function initAuggieModels(
   const child = spawn(bin, ["model", "list"], {
     env: process.env,
     stdio: ["ignore", "pipe", "pipe"],
-    shell: false,
+    // win32 needs shell for the npm `.cmd` shim (same CVE-2024-27980 rationale
+    // as buildAuggieSpawnOptions) — a shell:false spawn of a .cmd throws EINVAL
+    // on modern Node, silently killing model auto-discovery on Windows.
+    // argv is the fixed literal ["model", "list"] — no injection surface.
+    shell: process.platform === "win32",
     windowsHide: true,
   });
   const fragments: string[] = [];
@@ -292,6 +296,20 @@ export function buildAuggiePrompt(messages: OpenAIMsg[]): string {
 
 function isEnoentLike(message: string): boolean {
   return message.includes("ENOENT") || message.includes("not found");
+}
+
+/**
+ * On win32 the CLI spawns through cmd.exe (shell: true), so a missing binary
+ * never surfaces as a spawn ENOENT — cmd.exe itself reports
+ * "'<bin>' is not recognized as an internal or external command" on stderr and
+ * exits 9009. Classify that tail as CLI-not-found so Windows users get the
+ * actionable install hint instead of a bare "exited with code 9009".
+ */
+function isCmdNotFoundLike(stderrTail: string): boolean {
+  return (
+    stderrTail.includes("is not recognized as an internal or external command") ||
+    stderrTail.includes("\u4e0d\u662f\u5185\u90e8\u6216\u5916\u90e8\u547d\u4ee4")
+  );
 }
 
 export type AuggieCliVersionCheck = { ok: boolean; version?: string; error?: string };
@@ -579,6 +597,11 @@ export class AuggieExecutor extends BaseExecutor {
         child.on("close", (code) => {
           if (finished) return;
           if (code !== 0) {
+            // 9009 = cmd.exe command-not-found exit code (locale-independent).
+            if (code === 9009 || isCmdNotFoundLike(stderrTail)) {
+              emitError(cliNotFoundMessage(auggieBin));
+              return;
+            }
             emitError(
               sanitizeErrorMessage(
                 `Auggie CLI exited with code ${code}${stderrTail ? `: ${stderrTail}` : ""}`
@@ -662,6 +685,11 @@ export class AuggieExecutor extends BaseExecutor {
 
       child.on("close", (code) => {
         if (code !== 0) {
+          // 9009 = cmd.exe command-not-found exit code (locale-independent).
+          if (code === 9009 || isCmdNotFoundLike(stderrTail)) {
+            settle(buildAuggieErrorResponse(cliNotFoundMessage(auggieBin)));
+            return;
+          }
           settle(
             buildAuggieErrorResponse(
               sanitizeErrorMessage(
