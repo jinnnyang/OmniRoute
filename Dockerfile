@@ -83,6 +83,7 @@ COPY open-sse/package.json ./open-sse/package.json
 COPY scripts/build/postinstall.mjs ./scripts/build/postinstall.mjs
 COPY scripts/build/postinstallSupport.mjs ./scripts/build/postinstallSupport.mjs
 COPY scripts/build/native-binary-compat.mjs ./scripts/build/native-binary-compat.mjs
+COPY scripts/build/tls-client-fetch.mjs ./scripts/build/tls-client-fetch.mjs
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
 # --ignore-scripts blocks broad dependency install/postinstall hooks, closing
 # the supply-chain attack surface where a transitive dep can run arbitrary code
@@ -119,7 +120,7 @@ RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,targe
   && (cd node_modules/better-sqlite3 \
       && node /usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js rebuild) \
   && node -e "require('better-sqlite3')(':memory:').close()" \
-  && node node_modules/tls-client-node/scripts/postinstall.js \
+  && node scripts/build/tls-client-fetch.mjs \
   && (test -n "$(find node_modules/tls-client-node/bin -mindepth 1 -print -quit 2>/dev/null)" \
       || (echo "tls-client-node native binary missing after postinstall — GitHub API fetch likely rate-limited or failed (#7802)" >&2 && exit 1))
 #
