@@ -392,6 +392,22 @@ export async function fetchVolcPlanModels(
   return discovered.map(enrichModel);
 }
 
+/**
+ * True when the connection's providerSpecificData carries a live console
+ * session (cookie + csrf captured at "Connect Volcano Account" time).
+ *
+ * Incident 2026-09-05: the previous inline gate compared
+ * `toNonEmptyString(x) !== ""`, but toNonEmptyString returns **null** for a
+ * missing field, and null !== "" is true — so connections with NO console
+ * session at all passed the gate and model import crashed with
+ * "Volcano console cookie or csrfToken is missing — re-bind the plan".
+ * Extracted here as a pure, unit-tested predicate.
+ */
+export function hasVolcConsoleSession(psd: unknown): boolean {
+  const data = record(psd);
+  return stringField(data.volcConsoleCookie) !== "" && stringField(data.volcCsrfToken) !== "";
+}
+
 export function providerToVolcPlanKind(providerId: string): VolcPlanKind | null {
   const id = providerId.trim().toLowerCase();
   if (id === "volcengine-agent-plan") return "agent";

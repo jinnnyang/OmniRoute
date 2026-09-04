@@ -23,6 +23,7 @@ import { autoSyncClaudeProfilesFromLiveCatalog } from "@/lib/cli-helper/claudePr
 import { providerUsesCuratedModelsOnly } from "@/lib/providers/modelListingCapability";
 import {
   fetchVolcPlanModels,
+  hasVolcConsoleSession,
   providerToVolcPlanKind,
 } from "@/lib/providers/volcenginePlanModelDiscovery";
 import { replaceSyncedAvailableModelsForConnection } from "@/lib/db/models";
@@ -442,9 +443,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       connection.providerSpecificData && typeof connection.providerSpecificData === "object"
         ? (connection.providerSpecificData as JsonRecord)
         : {};
-    const volcPlanHasConsoleSession =
-      toNonEmptyString(volcPlanPsd.volcConsoleCookie) !== "" &&
-      toNonEmptyString(volcPlanPsd.volcCsrfToken) !== "";
+    const volcPlanHasConsoleSession = hasVolcConsoleSession(volcPlanPsd);
     if (volcPlanKind && volcPlanHasConsoleSession) {
       const cookie = toNonEmptyString(volcPlanPsd.volcConsoleCookie) || "";
       const csrf = toNonEmptyString(volcPlanPsd.volcCsrfToken) || "";
