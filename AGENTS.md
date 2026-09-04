@@ -405,37 +405,38 @@ Documentation must describe verified behavior, not plausible behavior.
 
 For any non-trivial change, read the matching deep-dive first:
 
-| Area                                          | Doc                                                     |
-| --------------------------------------------- | ------------------------------------------------------- |
-| Repo navigation                               | `docs/architecture/REPOSITORY_MAP.md`                   |
-| Architecture                                  | `docs/architecture/ARCHITECTURE.md`                     |
-| Engineering reference                         | `docs/architecture/CODEBASE_DOCUMENTATION.md`           |
-| Auto-Combo (16-factor scoring, 19 strategies) | `docs/routing/AUTO-COMBO.md`                            |
-| Resilience (3 mechanisms)                     | `docs/architecture/RESILIENCE_GUIDE.md`                 |
-| Reasoning replay                              | `docs/routing/REASONING_REPLAY.md`                      |
-| Skills framework                              | `docs/frameworks/SKILLS.md`                             |
-| Radar (free-model catalog overlay)            | `docs/frameworks/RADAR.md`                              |
-| Memory system (FTS5 + Qdrant)                 | `docs/frameworks/MEMORY.md`                             |
-| Cloud agents                                  | `docs/frameworks/CLOUD_AGENT.md`                        |
-| Guardrails (PII / injection / vision)         | `docs/security/GUARDRAILS.md`                           |
-| Public upstream credentials (Gemini/etc.)     | `docs/security/PUBLIC_CREDS.md`                         |
-| Error message sanitization                    | `docs/security/ERROR_SANITIZATION.md`                   |
-| Evals                                         | `docs/frameworks/EVALS.md`                              |
-| Compliance / audit                            | `docs/security/COMPLIANCE.md`                           |
-| Webhooks                                      | `docs/frameworks/WEBHOOKS.md`                           |
-| Authorization pipeline                        | `docs/architecture/AUTHZ_GUIDE.md`                      |
-| Stealth (TLS / fingerprint)                   | `docs/security/STEALTH_GUIDE.md`                        |
-| Agent protocols (A2A / ACP / Cloud)           | `docs/frameworks/AGENT_PROTOCOLS_GUIDE.md`              |
-| MCP server                                    | `docs/frameworks/MCP-SERVER.md`                         |
-| A2A server                                    | `docs/frameworks/A2A-SERVER.md`                         |
-| API reference + OpenAPI                       | `docs/reference/API_REFERENCE.md` + `docs/openapi.yaml` |
-| Provider catalog (auto-generated)             | `docs/reference/PROVIDER_REFERENCE.md`                  |
-| Tunnels                                       | `docs/ops/TUNNELS_GUIDE.md`                             |
-| Electron desktop app                          | `docs/guides/ELECTRON_GUIDE.md`                         |
-| VS Code Copilot Chat (OmniCopilot extension)  | `docs/guides/VSCODE-COPILOT.md`                         |
-| Release flow                                  | `docs/ops/RELEASE_CHECKLIST.md`                         |
-| Embedded services                             | `docs/frameworks/EMBEDDED-SERVICES.md`                  |
-| Quality gates (~80 scripts, allowlist policy) | `docs/architecture/QUALITY_GATES.md`                    |
+| Area                                          | Doc                                                                                               |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Repo navigation                               | `docs/architecture/REPOSITORY_MAP.md`                                                             |
+| Architecture                                  | `docs/architecture/ARCHITECTURE.md`                                                               |
+| Engineering reference                         | `docs/architecture/CODEBASE_DOCUMENTATION.md`                                                     |
+| Auto-Combo (16-factor scoring, 19 strategies) | `docs/routing/AUTO-COMBO.md`                                                                      |
+| Resilience (3 mechanisms)                     | `docs/architecture/RESILIENCE_GUIDE.md`                                                           |
+| Reasoning replay                              | `docs/routing/REASONING_REPLAY.md`                                                                |
+| Skills framework                              | `docs/frameworks/SKILLS.md`                                                                       |
+| Radar (free-model catalog overlay)            | `docs/frameworks/RADAR.md`                                                                        |
+| Memory system (FTS5 + Qdrant)                 | `docs/frameworks/MEMORY.md`                                                                       |
+| Cloud agents                                  | `docs/frameworks/CLOUD_AGENT.md`                                                                  |
+| Guardrails (PII / injection / vision)         | `docs/security/GUARDRAILS.md`                                                                     |
+| Public upstream credentials (Gemini/etc.)     | `docs/security/PUBLIC_CREDS.md`                                                                   |
+| Error message sanitization                    | `docs/security/ERROR_SANITIZATION.md`                                                             |
+| Evals                                         | `docs/frameworks/EVALS.md`                                                                        |
+| Compliance / audit                            | `docs/security/COMPLIANCE.md`                                                                     |
+| Webhooks                                      | `docs/frameworks/WEBHOOKS.md`                                                                     |
+| Authorization pipeline                        | `docs/architecture/AUTHZ_GUIDE.md`                                                                |
+| Stealth (TLS / fingerprint)                   | `docs/security/STEALTH_GUIDE.md`                                                                  |
+| Agent protocols (A2A / ACP / Cloud)           | `docs/frameworks/AGENT_PROTOCOLS_GUIDE.md`                                                        |
+| MCP server                                    | `docs/frameworks/MCP-SERVER.md`                                                                   |
+| A2A server                                    | `docs/frameworks/A2A-SERVER.md`                                                                   |
+| API reference + OpenAPI                       | `docs/reference/API_REFERENCE.md` + `docs/openapi.yaml`                                           |
+| Provider catalog (auto-generated)             | `docs/reference/PROVIDER_REFERENCE.md`                                                            |
+| Tunnels                                       | `docs/ops/TUNNELS_GUIDE.md`                                                                       |
+| Electron desktop app                          | `docs/guides/ELECTRON_GUIDE.md`                                                                   |
+| VS Code Copilot Chat (OmniCopilot extension)  | `docs/guides/VSCODE-COPILOT.md`                                                                   |
+| Release flow                                  | `docs/ops/RELEASE_CHECKLIST.md`                                                                   |
+| Data backup / restore (server rebuild)        | [docs/ops/DATA_BACKUP_RESTORE.md](docs/ops/DATA_BACKUP_RESTORE.md) + `scripts/ops/backup-data.sh` |
+| Embedded services                             | `docs/frameworks/EMBEDDED-SERVICES.md`                                                            |
+| Quality gates (~80 scripts, allowlist policy) | `docs/architecture/QUALITY_GATES.md`                                                              |
 
 ---
 
