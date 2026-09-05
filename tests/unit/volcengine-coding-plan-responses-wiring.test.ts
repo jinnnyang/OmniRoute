@@ -37,7 +37,6 @@ test("registry: volcengine-coding-plan carries responsesBaseUrl + liveCatalogAut
   assert.equal(entry.baseUrl, CHAT_URL);
   assert.equal(entry.responsesBaseUrl, RESPONSES_URL);
   assert.equal(entry.liveCatalogAuthoritative, false);
-  assert.equal(entry.alias, "vecp");
   // Models the noisy live /models catalog omits must exist statically (the
   // whole point of liveCatalogAuthoritative:false).
   const ids = entry.models.map((m: { id: string }) => m.id);

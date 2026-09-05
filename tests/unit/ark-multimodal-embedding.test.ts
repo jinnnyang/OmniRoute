@@ -129,7 +129,4 @@ test("registry: volcengine-coding-plan resolves (incl. vecp alias) with the live
   assert.ok(vision, "doubao-embedding-vision-250615 must be listed");
   assert.equal(vision.dimensions, 2048, "dims verified live on 2026-08-31");
   assert.ok(vision.modalities?.includes("image"));
-  // vecp alias (the builtin chat provider prefix) resolves to the same entry.
-  const aliased = registry.getEmbeddingProvider("vecp");
-  assert.equal(aliased?.id, provider.id);
 });

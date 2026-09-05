@@ -201,7 +201,6 @@ export const APIKEY_PROVIDERS_REGIONAL = {
   },
   "volcengine-agent-plan": {
     id: "volcengine-agent-plan",
-    alias: "veap",
     name: "Volcengine Agent",
     icon: "local_fire_department",
     color: "#DC2626",
@@ -211,7 +210,6 @@ export const APIKEY_PROVIDERS_REGIONAL = {
   },
   "volcengine-coding-plan": {
     id: "volcengine-coding-plan",
-    alias: "vecp",
     name: "Volcengine Coding",
     icon: "code",
     color: "#FF6A00",

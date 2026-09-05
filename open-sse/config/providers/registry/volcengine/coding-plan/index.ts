@@ -112,7 +112,6 @@ export const VOLCENGINE_CODING_PLAN_MODELS: RegistryModel[] = [
 
 export const volcengine_coding_planProvider: RegistryEntry = {
   id: "volcengine-coding-plan",
-  alias: "vecp",
   format: "openai",
   executor: "default",
   baseUrl: "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions",
