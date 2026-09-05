@@ -42,6 +42,13 @@ export const requestQueueSettingsSchema = z
     requestsPerMinute: z.number().int().min(1).optional(),
     minTimeBetweenRequestsMs: z.number().int().min(0).optional(),
     concurrentRequests: z.number().int().min(1).optional(),
+    // #11493 parity: the whole-process concurrency gate is part of the
+    // RequestQueueSettings shape that GET /api/resilience returns and the
+    // dashboard's RequestQueueCard round-trips verbatim. Omitting it here made
+    // this `.strict()` object reject every save from that card with
+    // `Unrecognized key: "globalConcurrentRequests"` (400 `Invalid request`).
+    // Bounds mirror normalizeRequestQueueSettings (0-100000, 0 = disabled).
+    globalConcurrentRequests: z.number().int().min(0).max(100_000).optional(),
     maxWaitMs: z.number().int().min(1).optional(),
     maxQueueDepth: z.number().int().min(0).max(100_000).optional(),
   })
@@ -91,11 +98,15 @@ export const waitForCooldownSettingsSchema = z
   .strict();
 
 // Quota-share combo cooldown-aware retry (Variante A). Bounds mirror
-// normalizeComboCooldownWaitSettings: a single wait <= 30s, <= 10 attempts.
+// normalizeComboCooldownWaitSettings: a single wait <= 5min, <= 10 attempts.
+// The 300000 ceiling tracks the #7360 follow-up that raised the normalizer from
+// 90s (default is now 90000, which the stale 30000 cap here rejected outright —
+// every save from the dashboard's ComboCooldownWaitCard returned 400 on the
+// value it had just been handed by GET).
 export const comboCooldownWaitSettingsSchema = z
   .object({
     enabled: z.boolean().optional(),
-    maxWaitMs: z.number().int().min(0).max(30000).optional(),
+    maxWaitMs: z.number().int().min(0).max(300000).optional(),
     maxAttempts: z.number().int().min(0).max(10).optional(),
     budgetMs: z.number().int().min(0).max(300000).optional(),
   })

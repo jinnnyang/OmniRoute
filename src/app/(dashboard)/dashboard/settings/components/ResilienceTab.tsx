@@ -83,6 +83,37 @@ function toResilienceResponse(json: ResilienceResponse): ResilienceResponse {
   };
 }
 
+/**
+ * Build a user-facing message from the API's error envelope.
+ *
+ * PATCH /api/resilience answers a failed Zod parse with
+ * `{ error: { message: "Invalid request", details: [{ field, message }] } }`.
+ * Rendering only `message` turned every validation failure into an
+ * undiagnosable "Invalid request" toast — the incident that hid a schema/GET
+ * shape mismatch (`Unrecognized key: "globalConcurrentRequests"`) for a full
+ * release cycle, because the offending field name was in `details` all along.
+ * Always surface the field-level detail when the server sends one.
+ */
+export function formatSaveError(json: unknown, status: number): string {
+  const error = (json as { error?: unknown } | null | undefined)?.error;
+  if (typeof error === "string" && error) return error;
+  const envelope = error as { message?: unknown; details?: unknown } | null | undefined;
+  const message = typeof envelope?.message === "string" ? envelope.message : "";
+  const details = Array.isArray(envelope?.details) ? envelope.details : [];
+  const fieldMessages = details
+    .map((detail) => {
+      const { field, message: detailMessage } =
+        (detail as { field?: unknown; message?: unknown }) ?? {};
+      if (typeof detailMessage !== "string" || !detailMessage) return "";
+      return typeof field === "string" && field ? `${field}: ${detailMessage}` : detailMessage;
+    })
+    .filter(Boolean);
+  if (fieldMessages.length > 0) {
+    return message ? `${message} — ${fieldMessages.join("; ")}` : fieldMessages.join("; ");
+  }
+  return message || `HTTP ${status}`;
+}
+
 function formatMs(value: number | null | undefined) {
   if (typeof value !== "number") return "—";
   return `${value}ms`;
@@ -1046,7 +1077,7 @@ export default function ResilienceTab() {
       });
       const json = await response.json();
       if (!response.ok) {
-        throw new Error(json?.error?.message || json?.error || `HTTP ${response.status}`);
+        throw new Error(formatSaveError(json, response.status));
       }
       setData(toResilienceResponse(json));
       notify.success(tx("savedSuccessfully", "Resilience settings updated."));
