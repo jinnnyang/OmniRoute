@@ -11,6 +11,7 @@
 
 export {
   isClientAbortError,
+  isLocalRateLimitTimeoutError,
   shouldSwallowUncaught,
   attachRequestStreamGuards,
   installProcessCrashGuard,

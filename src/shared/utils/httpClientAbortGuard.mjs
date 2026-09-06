@@ -79,6 +79,55 @@ export function isClientAbortError(err) {
 }
 
 /**
+ * Recognise an OmniRoute-generated *local rate-limit* failure.
+ *
+ * Incident 2026-09-05 (production, new server): the omniroute container was
+ * killed 6 times in 9 minutes by an uncaughtException whose message was
+ *   "Request exceeded OmniRoute's local rate-limit execution expiration
+ *    (legacy resilienceSettings.requestQueue.maxWaitMs=15000ms) for ..."
+ * with `code: 'RATE_LIMIT_EXECUTION_TIMEOUT', status: 504` and a `[cause]` of
+ * Bottleneck's `This job timed out after 15000 ms.`
+ *
+ * Mechanism: Bottleneck's per-job `expiration` timer fires inside a bare
+ * `setTimeout` (Job#doExpire -> _onFailure -> `this._reject(error)`), so the
+ * rejection lands on the `limiter.schedule()` promise. `withRateLimit` catches
+ * that BottleneckError and rethrows it branded with the code above. When the
+ * awaiting caller has ALREADY walked away — combo hedge cancellation, a
+ * per-target timeout, or the client closing the stream — nobody is left to
+ * await that promise, so Node raises it as an unhandledRejection and the crash
+ * guard rethrew it, taking the whole process down.
+ *
+ * These are *business outcomes*, not server faults: the request rightly fails
+ * with HTTP 504 and the caller (or combo fallback) handles it. An orphaned copy
+ * of that same outcome must never kill the process. Raising the configured
+ * maxWaitMs only lowers the frequency; it cannot remove the race — which is why
+ * this is fixed here rather than in configuration.
+ *
+ * Deliberately narrow: matched on the branded `code` **plus** corroborating
+ * evidence (the stamped 504/429/503 status, or the Bottleneck expiry `cause`),
+ * so an arbitrary upstream error that merely borrows the string cannot silence
+ * a genuine crash.
+ *
+ * @param {unknown} err
+ * @returns {boolean}
+ */
+export function isLocalRateLimitTimeoutError(err) {
+  if (!err || typeof err !== "object") return false;
+  const e = /** @type {{ code?: unknown; status?: unknown; cause?: unknown }} */ (err);
+  if (e.code !== "RATE_LIMIT_EXECUTION_TIMEOUT") return false;
+  // Corroboration #1: the status markLocalRateLimitError() stamps alongside it.
+  if (e.status === 504 || e.status === 429 || e.status === 503) return true;
+  // Corroboration #2: the Bottleneck expiry error preserved as `cause`.
+  const cause = e.cause;
+  if (cause && typeof cause === "object") {
+    const message = /** @type {{ message?: unknown }} */ (cause).message;
+    if (typeof message === "string" && /^This job timed out after \d+ ms\.$/.test(message)) {
+      return true;
+    }
+  }
+  return false;
+}
+/**
  * Decide whether a process-level uncaughtException/unhandledRejection should be
  * swallowed (benign client-abort) or allowed to surface (genuine bug).
  *
@@ -90,7 +139,10 @@ export function isClientAbortError(err) {
  * @returns {boolean} true => swallow (log only), false => re-throw / let crash.
  */
 export function shouldSwallowUncaught(err, origin) {
-  if (!isClientAbortError(err)) return false;
+  // Benign client aborts AND OmniRoute's own local rate-limit expiry (a 504
+  // business outcome whose awaiting caller may already be gone — see
+  // isLocalRateLimitTimeoutError for the incident that required this).
+  if (!isClientAbortError(err) && !isLocalRateLimitTimeoutError(err)) return false;
   // Only swallow when the origin matches what the guard installed for. If some
   // other subsystem raised it (e.g. a deliberate `throw` in a domain), keep the
   // existing crash semantics.

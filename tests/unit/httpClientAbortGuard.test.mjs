@@ -164,3 +164,112 @@ test("isClientAbortError matches the hedge-cancelled production crash signature"
   assert.equal(sharedGuard.isClientAbortError(genuine), false);
   assert.equal(sharedGuard.isClientAbortError(new Error("boom")), false);
 });
+
+// ---------------------------------------------------------------------------
+// Incident 2026-09-05 (production new server): omniroute was killed 6 times in
+// 9 minutes, then twice more after the operator raised maxWaitMs 15s -> 60s.
+// Every crash carried the SAME signature:
+//
+//   Error: Request exceeded OmniRoute's local rate-limit execution expiration
+//          (legacy resilienceSettings.requestQueue.maxWaitMs=15000ms) for
+//          volcengine-coding-plan/glm-5.3-flash
+//     code: 'RATE_LIMIT_EXECUTION_TIMEOUT', status: 504
+//     [cause]: Error: This job timed out after 15000 ms.
+//         at doExpire ... at listOnTimeout
+//
+// Bottleneck rejects the scheduled promise from a bare setTimeout; when the
+// awaiting caller already walked away (combo hedge cancel / per-target timeout
+// / client disconnect) the rejection is orphaned -> unhandledRejection -> the
+// guard rethrew it -> process death. That the crashes CONTINUED after the
+// config change is the proof this must be fixed in code, not configuration.
+// ---------------------------------------------------------------------------
+
+/** Rebuild the exact production error object, expiry value configurable. */
+function makeRateLimitExpiryError(maxWaitMs = 15000) {
+  return Object.assign(
+    new Error(
+      `Request exceeded OmniRoute's local rate-limit execution expiration ` +
+        `(legacy resilienceSettings.requestQueue.maxWaitMs=${maxWaitMs}ms) for ` +
+        `volcengine-coding-plan/glm-5.3-flash. Bottleneck applies this deadline only ` +
+        `after dispatch; it does not bound queue wait and is not an upstream-generated timeout.`
+    ),
+    {
+      code: "RATE_LIMIT_EXECUTION_TIMEOUT",
+      status: 504,
+      cause: Object.assign(new Error(`This job timed out after ${maxWaitMs} ms.`), {}),
+    }
+  );
+}
+
+test("orphaned local rate-limit expiry must NOT kill the process (2026-09-05 incident)", () => {
+  const err = makeRateLimitExpiryError(15000);
+
+  assert.equal(
+    sharedGuard.isLocalRateLimitTimeoutError(err),
+    true,
+    "the production crash signature must be recognised"
+  );
+  assert.equal(
+    shouldSwallowUncaught(err, "unhandledRejection"),
+    true,
+    "an orphaned 504 business outcome must be swallowed, not rethrown"
+  );
+  assert.equal(shouldSwallowUncaught(err, "uncaughtException"), true);
+
+  // Raising maxWaitMs (the operator's stop-gap) changes nothing about the race.
+  assert.equal(shouldSwallowUncaught(makeRateLimitExpiryError(60000), "unhandledRejection"), true);
+
+  // It is NOT a client abort — the two categories stay distinct.
+  assert.equal(
+    sharedGuard.isClientAbortError(err),
+    false,
+    "a rate-limit expiry is a business outcome, not a client abort"
+  );
+});
+
+test("local rate-limit recognition is corroborated, not code-string-only", () => {
+  // Status alone (as stamped by markLocalRateLimitError) corroborates.
+  assert.equal(
+    sharedGuard.isLocalRateLimitTimeoutError(
+      Object.assign(new Error("x"), { code: "RATE_LIMIT_EXECUTION_TIMEOUT", status: 504 })
+    ),
+    true
+  );
+
+  // A bare code with NO corroboration must not be able to silence a crash —
+  // provider-controlled error bodies must never buy immortality.
+  assert.equal(
+    sharedGuard.isLocalRateLimitTimeoutError(
+      Object.assign(new Error("upstream said boom"), { code: "RATE_LIMIT_EXECUTION_TIMEOUT" })
+    ),
+    false,
+    "code alone, with no status and no Bottleneck cause, must not be swallowed"
+  );
+
+  // Wrong code entirely -> never matched.
+  assert.equal(
+    sharedGuard.isLocalRateLimitTimeoutError(
+      Object.assign(new Error("This job timed out after 15000 ms."), { status: 504 })
+    ),
+    false
+  );
+
+  // Non-objects and nullish inputs are safe.
+  for (const junk of [null, undefined, "RATE_LIMIT_EXECUTION_TIMEOUT", 42]) {
+    assert.equal(sharedGuard.isLocalRateLimitTimeoutError(junk), false);
+  }
+});
+
+test("genuine faults still crash the process after the rate-limit carve-out", () => {
+  // The sibling local-limit codes are deliberately NOT swallowed here: only the
+  // execution-expiry path is known to orphan itself.
+  for (const code of ["RATE_LIMIT_QUEUE_FULL", "RATE_LIMIT_QUEUE_WEDGED", "SQLITE_CORRUPT"]) {
+    const err = Object.assign(new Error(code), { code, status: 500 });
+    assert.equal(
+      shouldSwallowUncaught(err, "uncaughtException"),
+      false,
+      `${code} must keep its crash semantics`
+    );
+  }
+  assert.equal(shouldSwallowUncaught(new Error("genuine failure"), "uncaughtException"), false);
+});
