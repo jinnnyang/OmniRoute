@@ -312,25 +312,39 @@ test("getStatus() return includes transitionHistory after the modification", asy
   assert.ok(status.transitionHistory.length >= 1, "should record the failure transition");
 });
 
-// --- Alias join ---------------------------------------------------------------------
-
-test("alias join: connection provider=cx matches breaker name=codex via resolveProviderId", async () => {
+test("breaker join: connection provider=codex matches breaker registered under canonical id", async () => {
   const id1 = await seedConnection({
-    provider: "cx",
+    provider: "codex",
     authType: "apikey",
     name: "acc1",
     priority: 1,
   });
-  // Breaker registered under canonical "codex" name; connection uses alias "cx"
   const cb = getCircuitBreaker("codex", { failureThreshold: 1 });
   cb._onFailure(); // trip to OPEN
-  const body = await json(await GET(makeReq("?provider=cx")));
+  const body = await json(await GET(makeReq("?provider=codex")));
   const c1 = findConn(body, id1);
   assert.ok(c1, "connection should exist");
-  assert.ok(c1.breaker !== null, "breaker should be found via alias resolution");
+  assert.ok(c1.breaker !== null, "breaker should be found via canonical id join");
   assert.equal(c1.breaker.state, "OPEN");
 });
 
+test("breaker join: legacy alias with no provider definition degrades to breaker=null", async () => {
+  // v3.8.36 (a7ae9550b) removed the codex OAuth provider and its "cx" alias.
+  // resolveProviderId("cx") no longer maps to "codex", so the join must yield
+  // null WITHOUT crashing the route -- this pins that graceful degradation.
+  const id1 = await seedConnection({
+    provider: "cx",
+    authType: "apikey",
+    name: "acc-legacy-alias",
+    priority: 1,
+  });
+  const cb = getCircuitBreaker("codex", { failureThreshold: 1 });
+  cb._onFailure(); // OPEN, but must NOT be joined to the legacy-alias connection
+  const body = await json(await GET(makeReq("?provider=cx")));
+  const c1 = findConn(body, id1);
+  assert.ok(c1, "connection should exist");
+  assert.equal(c1.breaker, null, "unknown legacy alias must not resolve to the codex breaker");
+});
 // --- Static guard -------------------------------------------------------------------
 
 test("CONNECTION_COLUMNS every column exists in PROVIDER_CONNECTIONS_COLUMNS (no typos)", async () => {
