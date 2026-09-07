@@ -6,6 +6,34 @@
 
 ## [3.8.31] — 2026-06-20
 
+## [3.8.54] — 2026-09-07
+
+### ✨ New Features
+
+- **feat(sse): STRICT_ZERO_COST** — opt-in, off-by-default `freeAccessPolicy: "strict"` setting
+  that hard-verifies every auto-combo candidate against live quota state and per-connection
+  economic safety before it can be dispatched, going beyond `hidePaidModels`'s static catalog
+  check. Adds curated `hardStopGuaranteed` metadata to `FREE_MODEL_BUDGETS`, a short-TTL quota
+  cache reusing `getUsageForProvider()`, and a connection-safety guarantee: a candidate backed
+  by multiple accounts has its `allowedConnectionIds` narrowed to exactly the connections
+  independently verified `SAFE`, so dispatch can never use an unverified account. An
+  `excludeTosAvoid` guard (default `false`) is available separately for contractual risk. See
+  `docs/routing/STRICT_ZERO_COST.md`.
+
+### 🐛 Bug Fixes
+
+- **fix(resilience):** an expired local rate-limit slot no longer kills the whole server process. When Bottleneck's per-job `expiration` fires, `withRateLimit` rejects with `RATE_LIMIT_EXECUTION_TIMEOUT` (HTTP 504) — but if the awaiting caller had already walked away (combo hedge cancellation, per-target timeout, client disconnect) nobody was left to handle that rejection, so Node raised an `unhandledRejection` and the crash guard rethrew it, restarting the container. Production saw 6 kills in 9 minutes; raising `requestQueue.maxWaitMs` only reduced the rate because the race is structural. The process crash guard now recognises this branded, corroborated business outcome and absorbs orphaned copies, while genuine faults (and uncorroborated look-alikes) keep their crash semantics.
+- **fix(resilience):** the Request Queue and Combo Cooldown Wait cards on `/dashboard/settings/resilience` can be saved again — `PATCH /api/resilience` rejected the very payload `GET /api/resilience` had just served (`Unrecognized key: "globalConcurrentRequests"` after #11493, and `comboCooldownWait.maxWaitMs` failing its own 90s default against a stale 30s schema ceiling after #7360), so both cards answered a bare `400 Invalid request` for every value. Validation failures now also surface the offending field instead of a generic toast.
+- **fix(types):** clear the P0 strictNullChecks findings in admission, routing, and GigaChat auth. `chatBodyAdmission` re-reads the lease through an explicit `activeLease()` accessor so TS control-flow no longer narrows closure-assigned `lease` to `null` and flags `lease?.release()` as `never`; `reasoningRouting/policy` falls back to `sourceModel` when a combo row has no usable `name` instead of propagating `string|null`; and `gigachatAuth` guards the fresh-cache return with a truthy check.
+- **fix(v1beta):** pin `/v1beta/models` requests to the OpenAI format so Gemini `v1beta` endpoints are not mis-detected as a different protocol.
+
+### 📝 Maintenance
+
+- **docs:** refresh the GitNexus index metadata in the in-repo agent guides.
+
+---
+
+
 ## [3.8.53] — 2026-09-04
 
 ### 🐛 Bug Fixes
