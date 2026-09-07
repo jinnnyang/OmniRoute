@@ -59,7 +59,7 @@ export async function getGigachatAccessToken(
   const cacheKey = getCacheKey(credentials, authUrl, scope);
 
   const cached = tokenCache.get(cacheKey);
-  if (isFreshToken(cached)) {
+  if (cached && isFreshToken(cached)) {
     return cached;
   }
 

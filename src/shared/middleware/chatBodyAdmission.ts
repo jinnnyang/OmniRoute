@@ -1021,6 +1021,12 @@ export async function admitChatRequest(
 
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
+  // TS control-flow can't see `reserve`'s closure assignment to `lease` above
+  // (the pre-declared contentLength path may have reserved), so re-read it
+  // explicitly: reading a `let` captured-and-mutated by a closure yields the
+  // live value and defeats the bogus `null` narrowing that turned
+  // `lease?.release()` into `never` below.
+  const activeLease = (): ChatAdmissionLease | null => lease;
   try {
     while (true) {
       const { done, value } = await reader.read();
@@ -1028,13 +1034,13 @@ export async function admitChatRequest(
       totalBytes += value.byteLength;
       if (totalBytes > hardMaxBytes) {
         await reader.cancel("chat request exceeds hard body limit").catch(() => undefined);
-        lease?.release();
+        activeLease()?.release();
         return { admit: false, response: chatAdmissionRejectionResponse(413, hardMaxBytes) };
       }
       if (totalBytes >= largeBodyBytes && !controller.canFitBudget(totalBytes)) {
         controller.recordShed("body_exceeds_budget", sessionId);
         await reader.cancel("chat request exceeds ingest budget").catch(() => undefined);
-        lease?.release();
+        activeLease()?.release();
         return { admit: false, response: bodyExceedsBudgetResponse(controller.maxInflightBytes) };
       }
       if (totalBytes >= largeBodyBytes && !(await reserve(totalBytes))) {
@@ -1044,7 +1050,7 @@ export async function admitChatRequest(
       chunks.push(value);
     }
   } catch (error) {
-    lease?.release();
+    activeLease()?.release();
     throw error;
   } finally {
     reader.releaseLock();

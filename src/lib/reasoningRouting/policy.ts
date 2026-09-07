@@ -329,8 +329,11 @@ function resolveTargetModel(
   rule: ReasoningRoutingRule,
   sourceModel: string,
   combo: JsonRecord | null
-) {
-  if (combo) return typeof combo.name === "string" ? combo.name : rule.targetComboId;
+): string {
+  // A combo record without a usable name (corrupt/legacy row) falls back to
+  // the source model rather than propagating null into capability checks —
+  // the decision contract types `targetModel` as string for a reason.
+  if (combo) return typeof combo.name === "string" && combo.name ? combo.name : sourceModel;
   return rule.targetKind === "model" && rule.targetModel ? rule.targetModel : sourceModel;
 }
 
