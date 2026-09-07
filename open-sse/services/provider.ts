@@ -129,6 +129,17 @@ export function detectFormatFromEndpoint(body, endpointPath = "") {
     return "openai";
   }
 
+  // Gemini v1beta generateContent endpoint: the route (src/app/api/v1beta/models)
+  // pre-converts the request Gemini→OpenAI before calling chatCore and converts
+  // the OpenAI response back to Gemini itself — so the pipeline must treat both
+  // sides as plain OpenAI. Without this, body-sniffing the converted request
+  // trips the `max_tokens → claude` heuristic (any generationConfig.maxOutputTokens
+  // becomes max_tokens), and the client receives Claude-shaped JSON (non-stream)
+  // or an empty stream (the Gemini SSE transformer can't map Claude events).
+  if (/\/v1beta\/models\//i.test(path) || /^v1beta\/models\//i.test(path)) {
+    return "openai";
+  }
+
   return detectFormat(body);
 }
 
