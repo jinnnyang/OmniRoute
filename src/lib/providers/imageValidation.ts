@@ -121,9 +121,9 @@ export async function validateImageProviderApiKey({
   providerSpecificData = {},
 }: any) {
   const imageProvider = getImageProvider(provider);
-  const validationConfig =
-    IMAGE_PROVIDER_VALIDATION_ENDPOINTS[imageProvider?.id] ||
-    IMAGE_PROVIDER_VALIDATION_ENDPOINTS[provider];
+  const validationConfig = imageProvider?.id
+    ? IMAGE_PROVIDER_VALIDATION_ENDPOINTS[imageProvider.id]
+    : IMAGE_PROVIDER_VALIDATION_ENDPOINTS[provider];
 
   if (!imageProvider || !validationConfig) {
     return { valid: false, error: "Provider validation not supported", unsupported: true };

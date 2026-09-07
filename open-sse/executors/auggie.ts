@@ -562,10 +562,15 @@ export class AuggieExecutor extends BaseExecutor {
 
         // Async EPIPE lands as an 'error' event on stdin, not a sync throw (see
         // spawnAuggie) — handle it so a fast-exiting CLI can't crash the stream.
-        child.stdin.on("error", () => {});
+        const stdin = child.stdin;
+        if (!stdin) {
+          emitError("auggie subprocess has no stdin");
+          return;
+        }
+        stdin.on("error", () => {});
         try {
-          child.stdin.write(promptText);
-          child.stdin.end();
+          stdin.write(promptText);
+          stdin.end();
         } catch {
           /* ignore — error/close handlers below surface failures */
         }

@@ -151,5 +151,5 @@ export function createSseHeartbeatTransform({
     cancel() {
       stop();
     },
-  });
+  } as Transformer<Uint8Array, Uint8Array> & { cancel?: () => void });
 }

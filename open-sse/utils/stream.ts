@@ -179,11 +179,11 @@ type StreamOptions = {
   requestToolIdentityMap?: Map<string, { namespace: string; name: string }> | null;
 };
 
-type TranslateState = ReturnType<typeof initState> & {
+type TranslateState = Omit<ReturnType<typeof initState>, "usage"> & {
   provider?: string | null;
   toolNameMap?: unknown;
   signatureNamespace?: string | null;
-  usage?: unknown;
+  usage?: UsageLike | null | undefined;
   finishReason?: unknown;
   copilotCompatibleReasoning?: boolean;
   /** Suppress the `</think>` close marker for clients that render it verbatim (#5245). */
@@ -734,7 +734,7 @@ export function createSSEStream(options: StreamOptions = {}) {
   let passthroughToolCallSeq = 0;
   const allowedToolNames = extractAllowedToolNames(body);
   let skipPassthroughEvent = false;
-  const thinkState = initThinkState(mode === STREAM_MODE.PASSTHROUGH, provider, model);
+  const thinkState = initThinkState(mode === STREAM_MODE.PASSTHROUGH, provider, model ?? undefined);
 
   // State for translate mode (accumulatedContent for call log response body)
   const state: TranslateState | null =
@@ -981,7 +981,7 @@ export function createSSEStream(options: StreamOptions = {}) {
   const clearPendingRequestFromStream = () => {
     if (pendingRequestClearedByStream) return;
     pendingRequestClearedByStream = true;
-    trackPendingRequest(model, provider, connectionId, false);
+    trackPendingRequest(model ?? "", provider ?? "", connectionId, false);
   };
 
   const emitClaudeEmptyStreamErrorAndAbort = (
@@ -1024,7 +1024,7 @@ export function createSSEStream(options: StreamOptions = {}) {
       itemSanitized = sanitizeStreamingChunk(itemSanitized) as Record<string, unknown>;
     }
 
-    if (!hasValuableContent(itemSanitized, sourceFormat)) {
+    if (!hasValuableContent(itemSanitized, sourceFormat ?? FORMATS.OPENAI)) {
       return;
     }
 
@@ -1036,12 +1036,12 @@ export function createSSEStream(options: StreamOptions = {}) {
       !hasValidUsage(itemSanitized.usage as UsageLike) &&
       totalContentLength > 0
     ) {
-      const estimated = estimateUsage(body, totalContentLength, sourceFormat);
-      itemSanitized.usage = filterUsageForFormat(estimated, sourceFormat);
-      state.usage = estimated;
+      const estimated = estimateUsage(body, totalContentLength, sourceFormat ?? FORMATS.OPENAI);
+      itemSanitized.usage = filterUsageForFormat(estimated, sourceFormat ?? FORMATS.OPENAI);
+      state!.usage = estimated;
     } else if (state?.finishReason && isFinishChunk && state.usage) {
       const buffered = addBufferToUsage(state.usage);
-      itemSanitized.usage = filterUsageForFormat(buffered, sourceFormat);
+      itemSanitized.usage = filterUsageForFormat(buffered, sourceFormat ?? FORMATS.OPENAI);
     }
 
     if (
@@ -1056,7 +1056,7 @@ export function createSSEStream(options: StreamOptions = {}) {
       updateClaudeEmptyResponseLifecycle(claudeEmptyResponseLifecycle, itemSanitized);
     }
 
-    const output = formatSSE(itemSanitized, sourceFormat);
+    const output = formatSSE(itemSanitized, sourceFormat ?? FORMATS.OPENAI);
     clientPayloadCollector.push(itemSanitized);
     reqLogger?.appendConvertedChunk?.(output);
     forwardedValuableChunk = true;
@@ -1073,7 +1073,7 @@ export function createSSEStream(options: StreamOptions = {}) {
     if (!sseCommentsEnabled()) return;
 
     const costUsd = finalUsage
-      ? await calculateCost(provider, model, normalizeTokenUsage(finalUsage))
+      ? await calculateCost(provider ?? "", model ?? "", normalizeTokenUsage(finalUsage))
       : 0;
     const comment = buildOmniRouteSseMetadataComment({
       provider,
@@ -1206,9 +1206,9 @@ export function createSSEStream(options: StreamOptions = {}) {
                 clearPendingRequestFromStream();
               }
               appendRequestLog({
-                model,
-                provider,
-                connectionId,
+                model: model ?? undefined,
+                provider: provider ?? undefined,
+                connectionId: connectionId ?? undefined,
                 status: `FAILED ${HTTP_STATUS.GATEWAY_TIMEOUT}`,
               }).catch(() => {});
               const timeoutError = new Error(timeoutMsg);
@@ -1236,7 +1236,7 @@ export function createSSEStream(options: StreamOptions = {}) {
 
           // Passthrough mode: normalize and forward
           if (mode === STREAM_MODE.PASSTHROUGH) {
-            let output: string;
+            let output = "";
             let injectedUsage = false;
             let clientPayload: unknown = null;
             let failurePayload: StreamFailurePayload | null = null;
@@ -1641,10 +1641,7 @@ export function createSSEStream(options: StreamOptions = {}) {
                         isResponsesCommentaryMessageItem
                       ).items
                     : passthroughResponsesOutputItems;
-                  const backfilled = backfillResponsesCompletedOutput(
-                    parsed,
-                    backfillCandidates
-                  );
+                  const backfilled = backfillResponsesCompletedOutput(parsed, backfillCandidates);
                   const usageNormalized = normalizeUsage(parsed);
                   if (
                     stripped ||
@@ -1765,7 +1762,7 @@ export function createSSEStream(options: StreamOptions = {}) {
                         const pt = emptyChoicesUsage.prompt_tokens ?? 0;
                         if (pt === 0) {
                           const estimated = estimateUsage(body, totalContentLength, FORMATS.OPENAI);
-                          if (estimated?.prompt_tokens > 0) {
+                          if (estimated?.prompt_tokens && estimated.prompt_tokens > 0) {
                             emptyChoicesUsage.prompt_tokens = estimated.prompt_tokens;
                             emptyChoicesUsage.total_tokens =
                               (emptyChoicesUsage.total_tokens ?? 0) + estimated.prompt_tokens;
@@ -1986,7 +1983,7 @@ export function createSSEStream(options: StreamOptions = {}) {
                     const estimated = estimateUsage(body, totalContentLength, FORMATS.OPENAI);
                     parsed.usage = filterUsageForFormat(estimated, FORMATS.OPENAI);
                     output = `data: ${JSON.stringify(parsed)}\n\n`;
-                    usage = estimated;
+                    usage = estimated ?? null;
                     injectedUsage = true;
                   } else if (isFinishChunk && usage) {
                     const buffered = addBufferToUsage(usage);
@@ -2109,7 +2106,7 @@ export function createSSEStream(options: StreamOptions = {}) {
           // Do this before translation so we capture content regardless of translator output shape
 
           // Claude format
-          const claudeDelta = collectClaudeDelta(parsed.delta, state);
+          const claudeDelta = collectClaudeDelta(parsed.delta, state ?? undefined);
           totalContentLength += claudeDelta.contentLength;
 
           // OpenAI format
@@ -2146,10 +2143,11 @@ export function createSSEStream(options: StreamOptions = {}) {
           if (!openAiReasoning) {
             const delta = openAiDelta;
             const r = getUnsupportedReasoningValue(delta);
-            if (typeof r === "string" && r.length > 0) {
-              parsed.choices[0].delta.reasoning_content = r;
-              delete parsed.choices[0].delta.thinking;
-              delete parsed.choices[0].delta.thought;
+            const firstChoice = parsed.choices?.[0];
+            if (typeof r === "string" && r.length > 0 && firstChoice?.delta) {
+              firstChoice.delta.reasoning_content = r;
+              delete firstChoice.delta.thinking;
+              delete firstChoice.delta.thought;
               totalContentLength += r.length;
               if (state?.accumulatedReasoning !== undefined)
                 state.accumulatedReasoning = appendBoundedText(state.accumulatedReasoning, r);
@@ -2213,7 +2211,7 @@ export function createSSEStream(options: StreamOptions = {}) {
 
           // Extract usage
           const extracted = extractUsage(parsed);
-          if (extracted) {
+          if (extracted && state) {
             if (!state.usage) {
               state.usage = extracted;
             } else {
@@ -2459,7 +2457,12 @@ export function createSSEStream(options: StreamOptions = {}) {
 
             const accR = passthroughAccumulatedReasoning;
             const accC = passthroughAccumulatedContent;
-            const thinkFlush = flushThink(thinkState, passthroughResponsesId, accR, accC);
+            const thinkFlush = flushThink(
+              thinkState,
+              passthroughResponsesId ?? undefined,
+              accR,
+              accC
+            );
             if (thinkFlush) {
               passthroughAccumulatedReasoning = thinkFlush.reasoning;
               passthroughAccumulatedContent = thinkFlush.content;
@@ -2471,16 +2474,17 @@ export function createSSEStream(options: StreamOptions = {}) {
 
             // Estimate usage if provider didn't return valid usage
             if (!hasValidUsage(usage) && totalContentLength > 0) {
-              usage = estimateUsage(body, totalContentLength, sourceFormat || FORMATS.OPENAI);
+              usage =
+                estimateUsage(body, totalContentLength, sourceFormat ?? FORMATS.OPENAI) ?? null;
             }
 
             if (hasValidUsage(usage)) {
-              logUsage(provider, usage, model, connectionId, apiKeyInfo);
+              logUsage(provider, usage, model, connectionId, apiKeyInfo as Record<string, unknown>);
             } else {
               appendRequestLog({
-                model,
-                provider,
-                connectionId,
+                model: model ?? undefined,
+                provider: provider ?? undefined,
+                connectionId: connectionId ?? undefined,
                 tokens: null,
                 status: "200 OK",
               }).catch(() => {});
@@ -2644,7 +2648,7 @@ export function createSSEStream(options: StreamOptions = {}) {
               // events (e.g. prompt_tokens in message_start, completion_tokens
               // in message_delta). Direct assignment would lose earlier data.
               const extracted = extractUsage(parsed);
-              if (extracted) {
+              if (extracted && state) {
                 if (!state.usage) {
                   state.usage = extracted;
                 } else {
@@ -2827,17 +2831,23 @@ export function createSSEStream(options: StreamOptions = {}) {
           }
 
           // Estimate usage if provider didn't return valid usage (for translate mode)
-          if (!hasValidUsage(state?.usage) && totalContentLength > 0) {
-            state.usage = estimateUsage(body, totalContentLength, sourceFormat);
+          if (state && !hasValidUsage(state.usage) && totalContentLength > 0) {
+            state.usage = estimateUsage(body, totalContentLength, sourceFormat ?? FORMATS.OPENAI);
           }
 
-          if (hasValidUsage(state?.usage)) {
-            logUsage(state.provider || targetFormat, state.usage, model, connectionId, apiKeyInfo);
+          if (state && hasValidUsage(state.usage)) {
+            logUsage(
+              state.provider || targetFormat,
+              state.usage,
+              model,
+              connectionId,
+              apiKeyInfo as Record<string, unknown>
+            );
           } else {
             appendRequestLog({
-              model,
-              provider,
-              connectionId,
+              model: model ?? undefined,
+              provider: provider ?? undefined,
+              connectionId: connectionId ?? undefined,
               tokens: null,
               status: "200 OK",
             }).catch(() => {});
@@ -2955,10 +2965,10 @@ export function createSSEStream(options: StreamOptions = {}) {
           console.log(`[STREAM] Error in flush (${model || "unknown"}):`, error.message || error);
         }
       },
-      cancel(reason) {
+      cancel(_reason) {
         clearIdleTimer();
       },
-    },
+    } as Transformer<Uint8Array, Uint8Array> & { cancel?: (reason?: unknown) => void },
     { highWaterMark: 16384 },
     { highWaterMark: 16384 }
   );
