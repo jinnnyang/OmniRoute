@@ -4,6 +4,8 @@ import { isApiKeyRevealEnabled } from "@/lib/apiKeyExposure";
 import { requireManagementAuth } from "@/lib/api/requireManagementAuth";
 import * as log from "@/sse/utils/logger";
 
+export const dynamic = "force-dynamic";
+
 // GET /api/keys/[id]/reveal - Reveal full API key for explicit copy actions
 export async function GET(request, { params }) {
   const authError = await requireManagementAuth(request);

@@ -27,8 +27,8 @@ function notFoundResponse(request: Request): Response {
     },
     {
       status: 404,
-      headers: { "Content-Type": "application/json", ...CORS_HEADERS },
-    },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...CORS_HEADERS },
+    }
   );
 }
 

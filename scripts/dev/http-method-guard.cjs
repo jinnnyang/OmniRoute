@@ -8,6 +8,8 @@ const HIGH_RISK_METHOD_RULES = [
   [/^\/api\/keys\/?$/, ["GET", "POST"]],
   [/^\/api\/keys\/[^/]+\/?$/, ["GET", "PATCH", "DELETE"]],
   [/^\/api\/keys\/[^/]+\/devices\/?$/, ["GET"]],
+  [/^\/api\/keys\/[^/]+\/reveal\/?$/, ["GET"]],
+  [/^\/api\/keys\/[^/]+\/regenerate\/?$/, ["POST"]],
 ];
 
 let installed = false;

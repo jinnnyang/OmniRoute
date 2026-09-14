@@ -728,7 +728,10 @@ export default function ApiManagerPageClient() {
     if (!keyId) return;
 
     try {
-      const res = await fetch(`/api/keys/${encodeURIComponent(keyId)}/reveal`);
+      const res = await fetch(`/api/keys/${encodeURIComponent(keyId)}/reveal`, {
+        credentials: "same-origin",
+        cache: "no-store",
+      });
       if (!res.ok) {
         console.log("Error revealing key:", await res.text());
         return;
@@ -761,7 +764,10 @@ export default function ApiManagerPageClient() {
 
     if (!isCurrentlyVisible && !revealedKeys.has(keyId)) {
       try {
-        const res = await fetch(`/api/keys/${encodeURIComponent(keyId)}/reveal`);
+        const res = await fetch(`/api/keys/${encodeURIComponent(keyId)}/reveal`, {
+          credentials: "same-origin",
+          cache: "no-store",
+        });
         if (!res.ok) {
           console.log("Error revealing key:", await res.text());
           return;
