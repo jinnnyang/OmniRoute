@@ -173,7 +173,7 @@ test("permissions modal expands Claude Code default families in selected models 
   assert.match(source, /id: "opus",\s+label: "opus"/);
   assert.match(source, /id: "sonnet",\s+label: "sonnet"/);
   assert.match(source, /id: "haiku",\s+label: "haiku"/);
-  assert.match(source, /const orderedSelectedProviderScopes = useMemo/);
+  assert.match(source, /const orderedSelectedProviderScopes =/);
   assert.match(source, /modelId === CLAUDE_CODE_DEFAULT_MODEL_ID/);
   assert.match(source, /setClaudeCodeFamiliesExpanded/);
   assert.match(

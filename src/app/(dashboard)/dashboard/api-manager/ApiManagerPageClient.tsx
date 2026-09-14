@@ -263,76 +263,6 @@ export default function ApiManagerPageClient() {
     input?.focus({ preventScroll: true });
   }, [newKeyNameInputId]);
 
-  useEffect(() => {
-    fetchData();
-    fetchModels();
-    fetchCombos();
-    fetchConnections();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- initial dashboard load only
-
-  useEffect(() => {
-    if (!showAddModal || !nameError) return;
-    requestAnimationFrame(() => {
-      createKeyNameFieldRef.current?.scrollIntoView({ block: "center", behavior: "instant" });
-    });
-  }, [nameError, showAddModal]);
-
-  useEffect(() => {
-    setActiveOnly(readActiveOnlyPreference());
-  }, []);
-
-  useEffect(() => {
-    writeActiveOnlyPreference(activeOnly);
-  }, [activeOnly]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const loadQuotaGroups = async () => {
-      try {
-        const [poolsRes, groupsRes] = await Promise.all([
-          fetch("/api/quota/pools"),
-          fetch("/api/quota/groups"),
-        ]);
-        if (!poolsRes.ok || !groupsRes.ok) return;
-        const poolsData = await poolsRes.json();
-        const groupsData = await groupsRes.json();
-        const pools: Array<{ id: string; groupId: string }> = Array.isArray(poolsData.pools)
-          ? poolsData.pools
-          : [];
-        const groups: Array<{ id: string; name: string }> = Array.isArray(groupsData.groups)
-          ? groupsData.groups
-          : [];
-        const groupNameById: Record<string, string> = {};
-        for (const g of groups) {
-          groupNameById[g.id] = g.name;
-        }
-        const map: Record<string, string> = {};
-        for (const p of pools) {
-          if (groupNameById[p.groupId]) {
-            map[p.id] = groupNameById[p.groupId];
-          }
-        }
-        if (!cancelled) setQuotaPoolGroup(map);
-      } catch {
-        // fail open — quota group chips simply won't render
-      }
-    };
-    loadQuotaGroups();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!showAddModal || !nameError) return;
-
-    const timeout = window.setTimeout(() => {
-      scrollCreateKeyFormToTop();
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
-  }, [showAddModal, nameError, scrollCreateKeyFormToTop]);
-
   const fetchModels = async () => {
     setModelsLoaded(false);
     try {
@@ -544,6 +474,79 @@ export default function ApiManagerPageClient() {
       console.log("Error fetching device counts:", error);
     }
   };
+
+  useEffect(() => {
+    void (async () => {
+      fetchData();
+      fetchModels();
+      fetchCombos();
+      fetchConnections();
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- initial dashboard load only
+
+  useEffect(() => {
+    if (!showAddModal || !nameError) return;
+    requestAnimationFrame(() => {
+      createKeyNameFieldRef.current?.scrollIntoView({ block: "center", behavior: "instant" });
+    });
+  }, [nameError, showAddModal]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage hydration, runs once
+    setActiveOnly(readActiveOnlyPreference());
+  }, []);
+
+  useEffect(() => {
+    writeActiveOnlyPreference(activeOnly);
+  }, [activeOnly]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadQuotaGroups = async () => {
+      try {
+        const [poolsRes, groupsRes] = await Promise.all([
+          fetch("/api/quota/pools"),
+          fetch("/api/quota/groups"),
+        ]);
+        if (!poolsRes.ok || !groupsRes.ok) return;
+        const poolsData = await poolsRes.json();
+        const groupsData = await groupsRes.json();
+        const pools: Array<{ id: string; groupId: string }> = Array.isArray(poolsData.pools)
+          ? poolsData.pools
+          : [];
+        const groups: Array<{ id: string; name: string }> = Array.isArray(groupsData.groups)
+          ? groupsData.groups
+          : [];
+        const groupNameById: Record<string, string> = {};
+        for (const g of groups) {
+          groupNameById[g.id] = g.name;
+        }
+        const map: Record<string, string> = {};
+        for (const p of pools) {
+          if (groupNameById[p.groupId]) {
+            map[p.id] = groupNameById[p.groupId];
+          }
+        }
+        if (!cancelled) setQuotaPoolGroup(map);
+      } catch {
+        // fail open — quota group chips simply won't render
+      }
+    };
+    loadQuotaGroups();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showAddModal || !nameError) return;
+
+    const timeout = window.setTimeout(() => {
+      scrollCreateKeyFormToTop();
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
+  }, [showAddModal, nameError, scrollCreateKeyFormToTop]);
 
   const clearPageError = useCallback(() => setPageError(null), []);
 
@@ -1728,9 +1731,10 @@ const PermissionsModal = memo(function PermissionsModal({
 
   // Initialize state from props - component remounts when key prop changes
   const initialModels = Array.isArray(apiKey?.allowedModels) ? apiKey.allowedModels : [];
+  const apiKeyBlockedModels = apiKey?.blockedModels;
   const initialBlockedModels = useMemo(
-    () => (Array.isArray(apiKey?.blockedModels) ? apiKey.blockedModels : []),
-    [apiKey?.blockedModels]
+    () => (Array.isArray(apiKeyBlockedModels) ? apiKeyBlockedModels : []),
+    [apiKeyBlockedModels]
   );
   const initialCombos = Array.isArray(apiKey?.allowedCombos)
     ? apiKey.allowedCombos.filter((combo) => combo !== ALL_COMBOS_ACCESS_RULE)
@@ -2077,13 +2081,15 @@ const PermissionsModal = memo(function PermissionsModal({
   const totalModels = allModels.length;
   const hasClaudeCodeDefaultSelected =
     !allowAll && selectedModels.includes(CLAUDE_CODE_DEFAULT_MODEL_ID);
-  const orderedSelectedProviderScopes = useMemo(() => {
-    if (!hasClaudeCodeDefaultSelected) return selectedProviderScopes;
-    return [
-      CLAUDE_CODE_DEFAULT_MODEL_ID,
-      ...selectedProviderScopes.filter((scope) => scope !== CLAUDE_CODE_DEFAULT_MODEL_ID),
-    ];
-  }, [hasClaudeCodeDefaultSelected, selectedProviderScopes]);
+  // Plain derivation (no useMemo): selectedProviderScopes is a fresh array from
+  // restoreProviderScopeSelection on every render, so a memo here never produced
+  // a stable identity anyway; React Compiler auto-memoizes this correctly.
+  const orderedSelectedProviderScopes = hasClaudeCodeDefaultSelected
+    ? [
+        CLAUDE_CODE_DEFAULT_MODEL_ID,
+        ...selectedProviderScopes.filter((scope) => scope !== CLAUDE_CODE_DEFAULT_MODEL_ID),
+      ]
+    : selectedProviderScopes;
   const visibleClaudeCodeFamilies = useMemo(
     () =>
       CLAUDE_CODE_DEFAULT_FAMILIES.filter(
