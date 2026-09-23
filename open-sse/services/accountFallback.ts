@@ -24,6 +24,7 @@ import * as rot from "./rotationConfig.ts";
 import {
   getPassthroughProviders,
   getProviderCategory,
+  getRegistryEntry,
   isLocalProvider,
 } from "../config/providerRegistry.ts";
 import {
@@ -497,7 +498,7 @@ const canonicalProviderCache = new Map<string, string>();
 function getCanonicalLockProvider(provider: string): string {
   let canonical = canonicalProviderCache.get(provider);
   if (!canonical) {
-    canonical = resolveProviderId(provider);
+    canonical = getRegistryEntry(provider)?.id ?? resolveProviderId(provider);
     canonicalProviderCache.set(provider, canonical);
   }
   return canonical;

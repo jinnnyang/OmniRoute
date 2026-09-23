@@ -106,14 +106,13 @@ test("scope=subscription still deactivates OAuth and cookie accounts", () => {
   );
 });
 
-test("scope=subscription treats web-cookie providers as subscriptions even when authType is apikey", () => {
+test("scope=subscription treats apikey connections as non-subscription after web-cookie removal", () => {
   assert.equal(
     isSubscriptionStyleConnection({
       authType: "apikey",
       providerId: "grok-web",
-      webCookieProviderIds: { "grok-web": {} },
     }),
-    true
+    false
   );
   assert.equal(
     shouldAutoDisableBannedConnection({
@@ -121,9 +120,8 @@ test("scope=subscription treats web-cookie providers as subscriptions even when 
       scope: "subscription",
       authType: "apikey",
       providerId: "grok-web",
-      webCookieProviderIds: { "grok-web": {} },
     }),
-    true
+    false
   );
 });
 

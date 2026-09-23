@@ -16,6 +16,7 @@
 import { getModelContextLimit } from "../../../src/lib/modelCapabilities";
 import { getHiddenModelsByProvider } from "../../../src/lib/db/models";
 import { getComboModelString, normalizeComboStep } from "../../../src/lib/combos/steps.ts";
+import { getRegistryEntry } from "../../config/providerRegistry.ts";
 import { getProviderByAlias, getProviderById } from "../../../src/shared/constants/providers.ts";
 import { estimateTokens } from "../contextManager.ts";
 import { containsMediaKind } from "../../utils/mediaParts.ts";
@@ -48,10 +49,39 @@ import type {
  * Combo tools filters must keep those targets eligible so fail-closed does
  * not regress emulation-only combos (e.g. all chatgpt-web).
  */
+/**
+ * #8488 / #5240 / #9356: prompt-emulated tool shim providers
+ * (translator/webTools.ts). The API-key-only refactor deleted the web-cookie
+ * catalog section (src/shared/constants/providers/web-cookie.ts) where these
+ * providers' toolCalling:"emulated" flags lived. They are still routed from the
+ * open-sse REGISTRY with honestly-flagged models (toolCalling:false) — the shim
+ * is what makes tools work. Keep them eligible for tool requests so fail-closed
+ * cannot hard-reject emulation-only combos.
+ */
+const PROMPT_EMULATED_TOOL_PROVIDER_IDS = new Set([
+  "chatgpt-web",
+  "gemini-web",
+  "perplexity-web",
+  "blackbox-web",
+  "muse-spark-web",
+  "deepseek-web",
+  "inner-ai",
+  "adapta-web",
+  "qwen-web",
+]);
+
 export function providerSupportsEmulatedToolCalling(
   providerIdOrAlias: string | null | undefined
 ): boolean {
   if (!providerIdOrAlias) return false;
+  // Runtime truth first: resolve id/alias through the open-sse REGISTRY so
+  // trimmed web-cookie providers (and any entry declaring provider-level
+  // toolCalling:"emulated") are recognized without re-expanding the catalog.
+  const entry = getRegistryEntry(providerIdOrAlias);
+  if (entry) {
+    if (PROMPT_EMULATED_TOOL_PROVIDER_IDS.has(entry.id)) return true;
+    if ((entry as { toolCalling?: unknown }).toolCalling === "emulated") return true;
+  }
   const provider =
     getProviderById(providerIdOrAlias) || getProviderByAlias(providerIdOrAlias) || null;
   if (!provider || typeof provider !== "object") return false;

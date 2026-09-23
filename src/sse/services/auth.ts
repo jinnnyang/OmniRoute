@@ -62,7 +62,7 @@ import {
   recordModelLockoutFailure,
   isProviderModelUnsupported400,
 } from "@omniroute/open-sse/services/accountFallback.ts";
-import { isLocalProvider } from "@omniroute/open-sse/config/providerRegistry.ts";
+import { getRegistryEntry, isLocalProvider } from "@omniroute/open-sse/config/providerRegistry.ts";
 import { COOLDOWN_MS, RateLimitReason } from "@omniroute/open-sse/config/constants.ts";
 import {
   honorsRuleLockScope,
@@ -1004,7 +1004,7 @@ const PROVIDER_SEARCH_PAIRS: string[][] = [
  * Resolve provider aliases (e.g., nvidia -> nvidia_nim) for DB lookup
  */
 async function getProviderSearchPool(provider: string): Promise<string[]> {
-  const canonicalProvider = resolveProviderId(provider);
+  const canonicalProvider = getRegistryEntry(provider)?.id ?? resolveProviderId(provider);
   const canonicalAlias = getProviderAlias(canonicalProvider);
 
   const group = PROVIDER_SEARCH_PAIRS.find((aliases) => aliases.includes(provider));
@@ -1252,7 +1252,7 @@ export async function getProviderCredentials(
 
     // No-auth providers (e.g. opencode) need no DB connection — return synthetic credentials
     // so the executor receives a valid credentials object without auth headers being added.
-    const resolvedId = resolveProviderId(provider);
+    const resolvedId = getRegistryEntry(provider)?.id ?? resolveProviderId(provider);
     const providerMaps: Record<string, { noAuth?: boolean } | undefined>[] = [
       NOAUTH_PROVIDERS as Record<string, { noAuth?: boolean } | undefined>,
     ];
@@ -2959,7 +2959,12 @@ export async function markAccountUnavailable(
       }
     }
 
-    if (provider && resolveProviderId(provider) === "grok-web" && status === 403 && model) {
+    if (
+      provider &&
+      (getRegistryEntry(provider)?.id ?? resolveProviderId(provider)) === "grok-web" &&
+      status === 403 &&
+      model
+    ) {
       const lockout = recordModelLockoutFailure(
         provider,
         connectionId,

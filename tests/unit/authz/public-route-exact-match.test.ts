@@ -72,7 +72,6 @@ test("the reported bypass: /api/usage/om-usage<suffix> classifies MANAGEMENT", (
 
 test("genuine subtrees stay public all the way down", () => {
   assert.equal(isPublicApiRoute("/api/v1/chat/completions", "POST"), true);
-  assert.equal(isPublicApiRoute("/api/oauth/cursor/callback", "GET"), true);
   assert.equal(isPublicApiRoute("/api/auth/oidc/callback", "GET"), true);
   assert.equal(isPublicApiRoute("/api/codex/connect/complete", "POST"), true);
   assert.equal(isPublicApiRoute("/api/telegram/update", "POST"), true);
