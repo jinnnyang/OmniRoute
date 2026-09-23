@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-batch-api-"));
+const originalFetch = globalThis.fetch;
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.API_KEY_SECRET = process.env.API_KEY_SECRET || "test-secret-123";
 
@@ -40,6 +41,7 @@ const fileByIdRoute = await import("../../src/app/api/v1/files/[id]/route.ts");
 const fileContentRoute = await import("../../src/app/api/v1/files/[id]/content/route.ts");
 
 test.afterEach(async () => {
+  globalThis.fetch = originalFetch;
   stopBatchProcessor();
   await waitForAllBatches();
   if (typeof resetBatchProcessorState === "function") {
@@ -60,6 +62,24 @@ test.afterEach(async () => {
 test("Batch API and Processing", async () => {
   // 0. Setup environment, mock provider and API key
   process.env.API_KEY_SECRET = "test-secret-123";
+  // Isolate from the real network: this test exercises batch lifecycle, not
+  // upstream egress. Without this mock the processor dispatches the batch
+  // items to api.openai.com with the fake key and hangs the whole suite
+  // (openai unreachable from CI/domestic networks).
+  globalThis.fetch = async () =>
+    Response.json({
+      id: "chatcmpl-batch-mock",
+      object: "chat.completion",
+      model: "gpt-4o-mini",
+      choices: [
+        {
+          index: 0,
+          message: { role: "assistant", content: "OK" },
+          finish_reason: "stop",
+        },
+      ],
+      usage: { prompt_tokens: 2, completion_tokens: 2, total_tokens: 4 },
+    });
 
   await createProviderConnection({
     provider: "openai",
