@@ -43,7 +43,11 @@ function getServerSnapshot(): boolean {
  */
 export default function FirstRunReadinessCard({ setupComplete }: FirstRunReadinessCardProps) {
   const t = useTranslations("home");
-  const dismissed = useSyncExternalStore(subscribeReadiness, isReadinessDismissed, getServerSnapshot);
+  const dismissed = useSyncExternalStore(
+    subscribeReadiness,
+    isReadinessDismissed,
+    getServerSnapshot
+  );
 
   const dismiss = useCallback(() => {
     try {
@@ -93,6 +97,7 @@ export default function FirstRunReadinessCard({ setupComplete }: FirstRunReadine
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <Link
               href="/dashboard/onboarding"
+              prefetch={false}
               className="inline-flex items-center rounded-lg bg-blue-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
             >
               {t("readinessContinue")}
