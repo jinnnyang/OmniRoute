@@ -354,7 +354,7 @@ test.describe("Combos flow", () => {
               alias: "cx",
               displayName: "Codex",
               connectionCount: 1,
-              models: [],
+              models: [{ id: "gpt-5.5", name: "gpt-5.5", qualifiedModel: "codex/gpt-5.5" }],
               connections: [
                 {
                   id: "conn-codex",
@@ -369,7 +369,13 @@ test.describe("Combos flow", () => {
               alias: "openrouter",
               displayName: "OpenRouter",
               connectionCount: 1,
-              models: [],
+              models: [
+                {
+                  id: "openai/gpt-5.5",
+                  name: "openai/gpt-5.5",
+                  qualifiedModel: "openrouter/openai/gpt-5.5",
+                },
+              ],
               connections: [
                 {
                   id: "conn-openrouter",
@@ -448,12 +454,13 @@ test.describe("Combos flow", () => {
     );
 
     await comboDialog.locator('[data-testid="combo-name-input"]').fill("expert-stack");
-    await comboDialog.locator('[data-testid="combo-manual-model-input"]').fill("cx/gpt-5.5");
-    await comboDialog.locator('[data-testid="combo-manual-model-add"]').click();
-    await comboDialog
-      .locator('[data-testid="combo-manual-model-input"]')
-      .fill("openrouter/openai/gpt-5.5");
-    await comboDialog.locator('[data-testid="combo-manual-model-add"]').click();
+    // #8285 replaced free-text manual model entry with dropdown selects.
+    await comboDialog.locator('[data-testid="combo-builder-provider"]').selectOption("codex");
+    await comboDialog.locator('[data-testid="combo-builder-model"]').selectOption("gpt-5.5");
+    await comboDialog.locator('[data-testid="combo-builder-add-step"]').click();
+    await comboDialog.locator('[data-testid="combo-builder-provider"]').selectOption("openrouter");
+    await comboDialog.locator('[data-testid="combo-builder-model"]').selectOption("openai/gpt-5.5");
+    await comboDialog.locator('[data-testid="combo-builder-add-step"]').click();
     await expect(comboDialog.locator('[data-testid="combo-readiness-panel"]')).toHaveCount(0);
 
     // New advanced settings: failoverBeforeRetry, maxSetRetries, setRetryDelayMs
@@ -475,12 +482,16 @@ test.describe("Combos flow", () => {
         providerId: "codex",
         model: "codex/gpt-5.5",
         weight: 0,
+        connectionId: "conn-codex",
+        label: "Codex Primary",
       },
       {
         kind: "model",
         providerId: "openrouter",
         model: "openrouter/openai/gpt-5.5",
         weight: 0,
+        connectionId: "conn-openrouter",
+        label: "OpenRouter Primary",
       },
     ]);
     expect(state.lastPayload?.config?.failoverBeforeRetry).toBe(true);

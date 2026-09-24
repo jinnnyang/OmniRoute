@@ -197,6 +197,8 @@ test.describe("Proxy Registry smoke flow", () => {
 
     await expect(page.locator("table")).toContainText("http://smoke-updated.local:8080");
 
+    // Bulk assign moved under the row "More actions" (⋯) menu.
+    await page.getByTestId("proxy-registry-more-actions").click();
     await page.getByTestId("proxy-registry-open-bulk").click();
     const bulkDialog = page.getByRole("dialog");
     await expect(bulkDialog.getByText("Bulk Proxy Assignment")).toBeVisible();
