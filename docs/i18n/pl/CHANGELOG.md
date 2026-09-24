@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.8.55] — 2026-09-24
+
+### 🐛 Bug Fixes
+
+- **fix(dashboard):** the onboarding readiness card (`FirstRunReadinessCard`) no longer prefetches its onboarding route — the `<Link>` now sets `prefetch={false}`, so the dashboard emits zero RSC prefetch requests on first run (regression from the soft first-run card, #8292).
+
+### 📝 Maintenance
+
+- **test(e2e):** sync `combos-flow`, `group-b-quota-plans-config`, and `proxy-registry` specs with the current UI — the combo builder now uses provider/model dropdowns (post-global-model-search redesign), the proxy-registry bulk action moved into the "⋯" More menu, and the quota error-boundary assertion targets the visible heading instead of raw HTML.
+- **chore:** sync `package-lock.json` root version.
+- **docs(security):** add API key authentication behavior matrix and 2026-09-24 verification record (`docs/security/API_KEY_AUTH.md`).
+
+---
+
 ## [Unreleased]
 
 ### Fixed
