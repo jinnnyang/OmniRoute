@@ -66,9 +66,19 @@ import {
 import { parseDayGranularityResetMs, shouldPreserveQuotaSignals } from "./quotaResetParsing.ts";
 import { evictLockoutOverflow } from "./accountFallback/lockoutEviction.ts";
 export { MODEL_LOCKOUT_EVICTION_CAP } from "./accountFallback/lockoutEviction.ts";
-import { capScaledCooldownMs } from "./accountFallback/cooldownCap.ts";
 import { resolveApiKeyForbiddenFallback } from "./accountFallback/nonRetryableUpstream.ts";
 import * as exactModelLock from "./accountFallback/exactModelLock.ts";
+// Cluster B: cooldown computation moved to retryCooldown.ts (parameterized
+// pure functions). Aliased to avoid clashing with the adapter closures inside
+// checkFallbackError that keep the callback contract for quotaTextCooldowns /
+// nonRetryableUpstream consumers.
+import {
+  buildRetryableFallback as buildRetryableFallbackFn,
+  getScaledBaseCooldown as getScaledBaseCooldownFn,
+  getScaledCooldown,
+  getUpstreamRetryHintMs as getUpstreamRetryHintMsFn,
+  type RetryCooldownContext,
+} from "./retryCooldown.ts";
 
 // ─── Cluster A: error signals & classification (moved to errorClassifier.ts) ───
 // Definitions now live in errorClassifier.ts (migrated 2026-09-28). These
@@ -377,16 +387,6 @@ function getModelLockBaseCooldown(
     return profile.baseCooldownMs;
   }
   return status === HTTP_STATUS.RATE_LIMITED ? getQuotaCooldown(0) : COOLDOWN_MS.transientInitial;
-}
-
-function getScaledCooldown(
-  baseCooldownMs: number,
-  failureCount: number,
-  maxBackoffLevel = BACKOFF_CONFIG.maxLevel
-) {
-  const safeBase = Number.isFinite(baseCooldownMs) && baseCooldownMs > 0 ? baseCooldownMs : 1000;
-  const exponent = Math.min(Math.max(0, failureCount - 1), Math.max(0, maxBackoffLevel));
-  return safeBase * Math.pow(2, exponent);
 }
 
 // Auto-cleanup expired lockouts every 15 seconds (lazy init for Cloudflare Workers compatibility)
@@ -1263,98 +1263,29 @@ export function checkFallbackError(
     HTTP_STATUS.GATEWAY_TIMEOUT,
   ]);
 
-  function parseResetFromHeaders(headers: Headers | Record<string, string> | null): number | null {
-    if (!headers) return null;
-    const recordHeaders = headers as Record<string, string>;
-
-    // Retry-After header
-    const retryAfter =
-      typeof (headers as Headers).get === "function"
-        ? (headers as Headers).get("retry-after")
-        : recordHeaders["retry-after"] || recordHeaders["Retry-After"];
-
-    if (retryAfter) {
-      const seconds = Number.parseInt(retryAfter, 10);
-      if (!Number.isNaN(seconds) && String(seconds) === String(retryAfter).trim()) {
-        return Date.now() + seconds * 1000;
-      }
-      const date = new Date(retryAfter);
-      if (!Number.isNaN(date.getTime())) return date.getTime();
-    }
-
-    // X-RateLimit-Reset
-    const rlReset =
-      typeof (headers as Headers).get === "function"
-        ? (headers as Headers).get("x-ratelimit-reset")
-        : recordHeaders["x-ratelimit-reset"] || recordHeaders["X-RateLimit-Reset"];
-
-    if (rlReset) {
-      const ts = Number.parseInt(rlReset, 10);
-      if (!Number.isNaN(ts)) {
-        return ts > 10000000000 ? ts : ts * 1000;
-      }
-    }
-    return null;
-  }
+  // Cluster B: cooldown math lives in retryCooldown.ts (parameterized); these
+  // thin adapters preserve the closure shapes checkFallbackError's callers
+  // (buildSubscriptionQuotaFallback, resolveApiKeyForbiddenFallback) expect.
+  const retryCtx: RetryCooldownContext = {
+    profile,
+    backoffLevel,
+    maxBackoffSteps,
+    headers,
+    errorStr,
+    rotation,
+    parseRetryFromErrorText,
+  };
 
   function getUpstreamRetryHintMs() {
-    if (!profile?.useUpstreamRetryHints) return null;
-    const resetTime = parseResetFromHeaders(headers);
-    if (resetTime) {
-      const waitMs = Math.max(resetTime - Date.now(), 0);
-      if (waitMs > 0) return waitMs;
-    }
-
-    const retryFromErrorText = parseRetryFromErrorText(errorStr);
-    if (retryFromErrorText && retryFromErrorText > 0) {
-      return retryFromErrorText;
-    }
-
-    return null;
+    return getUpstreamRetryHintMsFn(profile, headers, errorStr, parseRetryFromErrorText);
   }
 
   function getScaledBaseCooldown(reason: RateLimitReasonValue, level = backoffLevel) {
-    void reason;
-    const baseCooldownMs =
-      typeof profile?.baseCooldownMs === "number" && profile.baseCooldownMs >= 0
-        ? profile.baseCooldownMs
-        : COOLDOWN_MS.transientInitial;
-    // #8396: cap against profile.maxCooldownMs, mirroring the model-lockout path.
-    return {
-      baseCooldownMs,
-      cooldownMs: capScaledCooldownMs(
-        getScaledCooldown(baseCooldownMs, level + 1, maxBackoffSteps),
-        profile?.maxCooldownMs,
-        BACKOFF_CONFIG.max
-      ),
-      newBackoffLevel: Math.min(level + 1, maxBackoffSteps),
-    };
+    return getScaledBaseCooldownFn(profile, reason, level, maxBackoffSteps);
   }
 
   function buildRetryableFallback(reason: RateLimitReasonValue) {
-    const upstreamRetryHintMs = getUpstreamRetryHintMs();
-    if (typeof upstreamRetryHintMs === "number" && upstreamRetryHintMs > 0) {
-      return {
-        shouldFallback: true,
-        cooldownMs: upstreamRetryHintMs,
-        baseCooldownMs: upstreamRetryHintMs,
-        newBackoffLevel: 0,
-        usedUpstreamRetryHint: true,
-        reason,
-      };
-    }
-
-    const ro = rot.overrideFor(reason, rotation?.account);
-    if (ro) return ro;
-    const scaled = getScaledBaseCooldown(reason, backoffLevel);
-    return {
-      shouldFallback: true,
-      cooldownMs: scaled.cooldownMs,
-      baseCooldownMs: scaled.baseCooldownMs,
-      newBackoffLevel: scaled.newBackoffLevel,
-      usedUpstreamRetryHint: false,
-      reason,
-    };
+    return buildRetryableFallbackFn(retryCtx, reason);
   }
 
   const isRateLimitStatus = status === HTTP_STATUS.RATE_LIMITED;
