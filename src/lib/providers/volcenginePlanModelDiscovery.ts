@@ -1,11 +1,17 @@
 /**
  * Volcano Ark Plan — live model discovery via console APIs.
  *
- * Both Plan subscriptions have NO usable `/models` endpoint on the chat API
- * (`/api/plan/v3` returns 404; coding `/api/coding/v3/models` is unreliable).
- * The authoritative model catalog is instead exposed by the console's
- * top-level Ark actions, authenticated by the same console cookie + csrf
- * token already captured during plan binding (see volcenginePlanBinding.ts).
+ * The two Plan subscriptions differ in their chat-API surface (see
+ * #volcengine-plan-vN):
+ *   - Coding Plan (`/api/coding/v3`) DOES serve GET /models with a Bearer key;
+ *     live-verified 2026-09-27. The response is a noisy catalog (stale version
+ *     ids, missing glm-5.3 / kimi-k2.7-code / minimax-m3), so the registry
+ *     marks it liveCatalogAuthoritative:false — the curated static models must
+ *     not be vetoed by the remote list.
+ *   - Agent Plan (`/api/plan/v3`) has NO /models endpoint (404).
+ * The authoritative full catalog is exposed by the console's top-level Ark
+ * actions, authenticated by the same console cookie + csrf token already
+ * captured during plan binding (see volcenginePlanBinding.ts).
  *
  *  - Agent Plan:  `ListAgentPlanLatestModel` → Result.Data[]
  *      id    : ModelId (version-suffixed, matches chat endpoint)

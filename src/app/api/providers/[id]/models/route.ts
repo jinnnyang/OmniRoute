@@ -748,8 +748,15 @@ export async function GET(
       }
 
       // T39: Try multiple endpoint formats
+      // #volcengine-plan-vN: plan bases already carry a version segment
+      // (/api/coding/v3, /api/plan/v3). Prepending /v1 would produce a
+      // nonexistent …/v3/v1/models and burn one 404 per discovery, so the
+      // /v1 candidate is only tried when the base has NO path version suffix.
+      // The `://v1` guard (same as the strip above) keeps a host literally
+      // named "v1" (http://v1/chat/completions) on the /v1/models candidate.
+      const hasPathVersionSegment = !base.endsWith("://v1") && /\/v\d+$/.test(base);
       const endpoints = [
-        `${base}/v1/models`,
+        ...(!hasPathVersionSegment ? [`${base}/v1/models`] : []),
         `${base}/models`,
         `${baseUrl.replace(/\/$/, "")}/models`, // Original fallback
       ];

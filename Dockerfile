@@ -226,7 +226,12 @@ ARG OMNIROUTE_BUILD_WORKERS=2
 ENV CIRCLE_NODE_TOTAL=${OMNIROUTE_BUILD_WORKERS}
 
 COPY . ./
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-next-cache,target=/app/.build/next/cache \
+# Cache ID suffixed -3856: the shared next-cache mount accumulated entries
+# across heterogeneous builds and made `next build` NON-DETERMINISTIC — three
+# consecutive builds of the same source produced three different standalone
+# layouts (one missing routes entirely). A fresh cache id forces a clean,
+# deterministic page-data regeneration for the 3.8.56 line.
+RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-next-cache-3856,target=/app/.build/next/cache \
   mkdir -p /app/data \
   && npm run build \
   && node --input-type=module -e "import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; const standaloneRoot = '/app/.build/next/standalone/node_modules/'; const require = createRequire('/app/.build/next/standalone/package.json'); const resolved = require.resolve('js-tiktoken'); if (!resolved.startsWith(standaloneRoot)) throw new Error('js-tiktoken resolved outside standalone: ' + resolved); await import(pathToFileURL(resolved).href);"
@@ -238,6 +243,40 @@ RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-next-cache,targ
 # resolving sharp from the standalone root can — and it fails the BUILD loudly
 # instead of the first image request (ERR_DLOPEN_FAILED at runtime).
 RUN node -e "const { createRequire } = require('node:module'); const standaloneRoot = '/app/.build/next/standalone/'; const req = createRequire(standaloneRoot + 'package.json'); const resolved = req.resolve('sharp'); if (!resolved.startsWith(standaloneRoot)) throw new Error('sharp resolved outside standalone: ' + resolved); const sharp = require(resolved); if (!sharp.versions || !sharp.versions.vips) throw new Error('sharp loaded but libvips .so missing: ' + JSON.stringify(sharp.versions || {})); console.log('standalone sharp ok, libvips', sharp.versions.vips);"
+
+# ── Standalone bundle prune (3.8.56) ─────────────────────────────────────
+# The standalone bundle ships Next.js output-tracing manifests (*.nft.json,
+# ~620 MB on a full build) that ONLY build tooling consumes — nothing reads
+# them at runtime (verified: zero refs in src/) — plus dev/test artifacts
+# (tests/, playwright-report/, electron/, images/) and a legacy .next/static
+# copy (server.js serves /_next/static from ./.build/next/static, per its baked
+# distDir). docs/ is KEPT: the Dashboard Docs viewer reads it at runtime
+# (see .dockerignore rationale). This prune runs in the builder so every
+# runner stage inherits the smaller COPY payload.
+RUN find /app/.build/next/standalone/.build/next/server -name '*.nft.json' -delete \
+  && rm -rf \
+    /app/.build/next/standalone/tests \
+    /app/.build/next/standalone/playwright-report \
+    /app/.build/next/standalone/electron \
+    /app/.build/next/standalone/images \
+    /app/.build/next/standalone/.next/static
+
+# Stage the standalone bundle into one dir for a single COPY layer, EXCEPT the
+# two biggest pieces which get dedicated COPY slices below: node_modules and
+# .build/next/server/chunks. Everything else — src, open-sse, docs, public,
+# scripts, bin, @omniroute, config, migrations, skills, dev/, server.js,
+# next.config.mjs, .build/* (incl. BUILD_ID, static, manifests, the Next 16
+# output-tracing collection dirs and .build/next/chunks), README.md, … — lands
+# here. Building the layer this way guarantees COMPLETE coverage: nothing can be
+# forgotten by a hand-written COPY list (3.8.56 layer split — see runner-base).
+# NOTE: find (not `./*`) is deliberate — a shell glob does NOT match dot-prefixed
+# entries, and .build IS one; `./*` silently skipped it and stripped every
+# route/BUILD_ID from the runtime image.
+RUN mkdir -p /app/standalone-rest \
+  && cd /app/.build/next/standalone \
+  && find . -maxdepth 1 -mindepth 1 -not -name node_modules -exec cp -a {} /app/standalone-rest/ \; \
+  && rm -rf /app/standalone-rest/.build/next/server/chunks \
+  && du -sh /app/standalone-rest
 
 # ── Runner base ────────────────────────────────────────────────────────────
 FROM base AS runner-base
@@ -262,7 +301,8 @@ ENV NODE_OPTIONS="--max-old-space-size=${OMNIROUTE_MEMORY_MB}"
 
 # Data directory inside Docker — must match the volume mount in docker-compose.yml
 ENV DATA_DIR=/app/data
-RUN mkdir -p /app/data
+# Owned by `node` so the runtime can write when no volume is mounted over it.
+RUN mkdir -p /app/data && chown node:node /app/data
 
 # `npm run build` (build-next-isolated → assembleStandalone) bundles ALL runtime
 # files into .build/next/standalone/ — .next, node_modules, migrations, scripts,
@@ -272,23 +312,38 @@ RUN mkdir -p /app/data
 # The old per-module overrides were therefore pure duplication and were removed
 # (build-output-isolation cleanup). See scripts/build/assembleStandalone.mjs
 # (EXTRA_MODULE_ENTRIES) for the single source of truth.
-COPY --from=builder /app/.build/next/standalone ./
+#
+# Every COPY below carries --chown=node:node so the final tree is owned by the
+# baked-in `node` non-root user (UID/GID 1000) from the first layer. 3.8.56
+# removed the old `RUN chown -R node:node /app` — that whole-tree chown was a
+# copy-on-write layer duplicating ~1.5 GB of disk per image.
+#
+# 3.8.56 layer split: the standalone bundle used to land as ONE ~957 MB layer
+# (241 MB compressed). Docker Hub's production registry does NOT support
+# resumable chunked uploads — large-layer pushes kept dying mid-PUT on flaky
+# uplinks (broken pipe / closed connection), while ≤~60 MB layers always went
+# through. The bundle is therefore copied in DISJOINT slices below, each
+# compressing to ≤~90 MB, so a full image push survives a lossy uplink.
+# Keep the slices DISJOINT — an overlapping COPY would re-add bytes into a
+# later layer and silently defeat the split.
+COPY --from=builder --chown=node:node /app/.build/next/standalone/.build/next/server/chunks .build/next/server/chunks
+COPY --from=builder --chown=node:node /app/.build/next/standalone/node_modules node_modules
+# Everything else (staged in the builder — see the prune block): src, open-sse,
+# docs, public, scripts, bin, @omniroute, config, migrations, skills, dev/,
+# server.js, next.config.mjs, docker/, .build/next (collections, chunks,
+# manifests), README.md, … Disjoint from the slices above.
+COPY --from=builder --chown=node:node /app/standalone-rest ./
 # better-sqlite3 is the one exception still copied explicitly: assembleStandalone
 # only syncs its native build/ dir; the JS wrapper (lib/, package.json) is left to
 # Next.js tracing. bootstrap-env requires SQLite BEFORE the standalone server
 # starts, so guarantee the complete package independent of trace behaviour.
-COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
+COPY --from=builder --chown=node:node /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
 # migrations land at <standalone>/migrations via assembleStandalone; point the runtime at them.
 ENV OMNIROUTE_MIGRATIONS_DIR=/app/migrations
 
 # Docker healthcheck script — not traced by Next.js standalone output, so copy
 # it explicitly. The HEALTHCHECK CMD references it as `node healthcheck.mjs`.
-COPY --from=builder /app/scripts/dev/healthcheck.mjs ./healthcheck.mjs
-
-# Hand /app over to the baked-in `node` non-root user (UID/GID 1000) so the
-# runtime process never holds root privileges. The chown happens after all
-# COPYs so it covers files originally owned by root in the builder stage.
-RUN chown -R node:node /app
+COPY --from=builder --chown=node:node /app/scripts/dev/healthcheck.mjs ./healthcheck.mjs
 
 EXPOSE 20128
 
@@ -297,7 +352,7 @@ EXPOSE 20128
 USER node
 
 # Warns if the mounted data volume has wrong ownership
-COPY --chmod=755 scripts/check-permissions.sh /app/check-permissions.sh
+COPY --chown=node:node --chmod=755 scripts/check-permissions.sh /app/check-permissions.sh
 ENTRYPOINT ["/app/check-permissions.sh"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
@@ -307,9 +362,15 @@ CMD ["node", "dev/run-standalone.mjs"]
 
 # ── Runner Web (web-cookie providers: Gemini Web, Claude Turnstile) ───────────
 #
-#  Two image flavors:
-#    runner-base  →  omniroute:VERSION        Lean base (~500 MB). No browsers.
-#    runner-web   →  omniroute:VERSION-web    +Chromium/Playwright (~800 MB).
+#  Three image flavors:
+#    runner-base  →  omniroute:VERSION         Lean gateway. No browsers, no
+#                                               preinstalled AI CLIs, no docker
+#                                               engine inside the container.
+#    runner-web   →  omniroute:VERSION-web     +Chromium/Playwright (required
+#                                               for web-cookie providers).
+#    runner-cli   →  omniroute:VERSION-cli     +docker CLI/compose v2 + git for
+#                                               auto-update & skills sandbox
+#                                               (talks to a host daemon socket).
 #
 #  Use runner-web when you need web-cookie providers (gemini-web, claude-web,
 #  claude-turnstile). For all other providers runner-base is sufficient.
@@ -349,26 +410,27 @@ USER node
 
 FROM runner-base AS runner-cli
 
-# Drop back to root briefly so we can install system + global npm packages,
-# then return to the `node` non-root user before the CMD inherited from
-# runner-base runs.
+# Drop back to root briefly to install the docker CLI + compose v2, then return
+# to the `node` non-root user before the CMD inherited from runner-base runs.
 USER root
 
-# The CLI image can use the internal ChatGPT Web (Codex) Chromium sidecar over
-# CDP without installing a second browser in this container.
-COPY --from=builder /app/node_modules/playwright-core ./node_modules/playwright-core
-COPY --from=builder /app/node_modules/playwright ./node_modules/playwright
-
-# Install system dependencies required by openclaw (git+ssh references).
+# docker-cli + docker-compose (v2) replace the full docker.io engine (~410 MB of
+# daemon/containerd/runc): the container talks to a HOST docker daemon through a
+# mounted socket (see docker-compose.yml `cli` profile), so the in-container
+# engine was dead weight. Keeping the CLI preserves the auto-update
+# (`docker compose pull/up`) and skills-sandbox (`docker kill`) features when
+# the socket is mounted. git stays for auto-update source mode.
+#
+# 3.8.56 removed the four preinstalled AI CLI packages
+# (npm install -g @openai/codex @anthropic-ai/claude-code droid openclaw@latest)
+# — a ~1.8 GB layer that was unpinned (@latest) and grew 3.3x between 3.8.54
+# and 3.8.55 as upstream shipped full native bundles. Nothing in production
+# used them (see docs/runner-cli-note.md).
 RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-cache,target=/var/cache/apt,sharing=locked \
   --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-apt-lists,target=/var/lib/apt/lists,sharing=locked \
   apt-get update \
-  && apt-get install -y --no-install-recommends git ca-certificates docker.io docker-compose \
+  && apt-get install -y --no-install-recommends git ca-certificates docker-cli docker-compose \
   && rm -rf /var/lib/apt/lists/* \
   && git config --system url."https://github.com/".insteadOf "ssh://git@github.com/"
-
-# Install CLI tools globally. Separate layer from apt for better cache reuse.
-RUN --mount=type=cache,id=s/92ca8a61-c1ba-421f-a389-d48ac7258c2d-npm-cache,target=/root/.npm \
-  npm install -g --no-audit --no-fund @openai/codex @anthropic-ai/claude-code droid openclaw@latest
 
 USER node

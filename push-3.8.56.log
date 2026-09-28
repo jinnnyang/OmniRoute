@@ -1,0 +1,456 @@
+﻿=== attempt 1 @ 13:01:40 ===
+The push refers to repository [docker.io/jinnnyang/omniroute]
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Already exists
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+98a5053b0047: Waiting
+6310eb16bf42: Layer already exists
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Already exists
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Layer already exists
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Layer already exists
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+a2a68e71ed69: Waiting
+8b0b3ba48def: Layer already exists
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Layer already exists
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+d05671585da5: Waiting
+4b17fe93a3db: Layer already exists
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Layer already exists
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+195db04c010e: Waiting
+4662acfdea8b: Layer already exists
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+3b860f51918b: Waiting
+72c692e80975: Waiting
+637f97d2af95: Waiting
+docker : failed to copy: failed to do request: Put "https://registry-1.docker.io/v2/jinnnyang/omniroute/blobs/uploads/5
+cb5cfbf-f611-4e92-8878-3fb2b2d8797d?_state=xYhBbMMKiruHSYiGVsa_HcqJ9EEZFTlOqsuEt2kkv-l7Ik5hbWUiOiJqaW5ubnlhbmcvb21uaXJv
+dXRlIiwiVVVJRCI6IjVjYjVjZmJmLWY2MTEtNGU5Mi04ODc4LTNmYjJiMmQ4Nzk3ZCIsIk9mZnNldCI6MCwiU3RhcnRlZEF0IjoiMjAyNi0wOS0yNlQwNTo
+wMTo0Ni4xNjE1MjY5NjhaIiwiRXhwaXJlc0F0IjoiMjAyNi0wOS0yNlQwNTozMTo0Ni4yNTA0MjY2NDRaIiwiVXNlcm5hbWUiOiJqaW5ubnlhbmciLCJVc2
+VyVVVJRCI6ImNiZjBlNTI3LWM3OGQtNDg2NC05MmU2LTZmNWE5M2RhYjQ1NyIsIlNlc3Npb25JRCI6ImRja3JfanRpX3VFRVF1eTVSRXllT3ozT3p5QTdsd
+m9ONFFEVT0ifQ%3D%3D&digest=sha256%3A195db04c010eaef57d33f87e993d97bad055159d4f86eb46912791f6f75efa39": write tcp 192.16
+8.65.3:51198->192.168.65.1:3128: write: broken pipe
+所在位置 行:1 字符: 274
++ ... d -Encoding utf8; docker push jinnnyang/omniroute:3.8.56 2>&1 | Out-F ...
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (failed to copy:...te: broken pipe:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+=== attempt 2 @ 13:53:54 ===
+The push refers to repository [docker.io/jinnnyang/omniroute]
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Already exists
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Layer already exists
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+adb20d485252: Waiting
+98a5053b0047: Already exists
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+9f3901a389d4: Waiting
+adb20d485252: Layer already exists
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Layer already exists
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+a2a68e71ed69: Waiting
+8b0b3ba48def: Layer already exists
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Layer already exists
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+d05671585da5: Waiting
+4b17fe93a3db: Layer already exists
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Layer already exists
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+195db04c010e: Waiting
+4662acfdea8b: Layer already exists
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+72c692e80975: Waiting
+637f97d2af95: Waiting
+3b860f51918b: Waiting
+docker : failed to copy: failed to do request: Put "https://registry-1.docker.io/v2/jinnnyang/omniroute/blobs/uploads/c
+7f9372d-9059-45d6-bbe8-78b2ec4e90e0?_state=f2cKih1ZaroRlW33fxKsvUL-i42f3gJdZT710xAiA_B7Ik5hbWUiOiJqaW5ubnlhbmcvb21uaXJv
+dXRlIiwiVVVJRCI6ImM3ZjkzNzJkLTkwNTktNDVkNi1iYmU4LTc4YjJlYzRlOTBlMCIsIk9mZnNldCI6MCwiU3RhcnRlZEF0IjoiMjAyNi0wOS0yNlQwNTo
+1NDowMC45NjA2NDI0MzhaIiwiRXhwaXJlc0F0IjoiMjAyNi0wOS0yNlQwNjoyNDowMS4wNDY3NjMyWiIsIlVzZXJuYW1lIjoiamlubm55YW5nIiwiVXNlcl
+VVSUQiOiJjYmYwZTUyNy1jNzhkLTQ4NjQtOTJlNi02ZjVhOTNkYWI0NTciLCJTZXNzaW9uSUQiOiJkY2tyX2p0aV9fT0xRdjRhNkpjY0JaU1ItUE54eHdUR
+EZkamc9In0%3D&digest=sha256%3A195db04c010eaef57d33f87e993d97bad055159d4f86eb46912791f6f75efa39": write tcp 192.168.65.3
+:48610->192.168.65.1:3128: use of closed network connection
+所在位置 行:1 字符: 274
++ ... d -Encoding utf8; docker push jinnnyang/omniroute:3.8.56 2>&1 | Out-F ...
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (failed to copy:...work connection:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+=== attempt 3 @ 14:01:08 ===
+The push refers to repository [docker.io/jinnnyang/omniroute]
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Already exists
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+98a5053b0047: Waiting
+6310eb16bf42: Layer already exists
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Already exists
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+9f3901a389d4: Waiting
+adb20d485252: Layer already exists
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Layer already exists
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+a2a68e71ed69: Waiting
+8b0b3ba48def: Layer already exists
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Layer already exists
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+d05671585da5: Waiting
+4b17fe93a3db: Layer already exists
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Layer already exists
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+195db04c010e: Waiting
+4662acfdea8b: Layer already exists
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+637f97d2af95: Waiting
+3b860f51918b: Waiting
+72c692e80975: Waiting
+docker : failed to copy: failed to do request: Put "https://registry-1.docker.io/v2/jinnnyang/omniroute/blobs/uploads/f
+6b9b596-ad20-4000-b043-b47877c83904?_state=KAZMWTc_QeoGGbgMF87iqBnFtoe1OSSHC8jEiwxHbGN7Ik5hbWUiOiJqaW5ubnlhbmcvb21uaXJv
+dXRlIiwiVVVJRCI6ImY2YjliNTk2LWFkMjAtNDAwMC1iMDQzLWI0Nzg3N2M4MzkwNCIsIk9mZnNldCI6MCwiU3RhcnRlZEF0IjoiMjAyNi0wOS0yNlQwNjo
+wMToxNC4xMzA1MjYwOTdaIiwiRXhwaXJlc0F0IjoiMjAyNi0wOS0yNlQwNjozMToxNC4yNTMxNzIxMzlaIiwiVXNlcm5hbWUiOiJqaW5ubnlhbmciLCJVc2
+VyVVVJRCI6ImNiZjBlNTI3LWM3OGQtNDg2NC05MmU2LTZmNWE5M2RhYjQ1NyIsIlNlc3Npb25JRCI6ImRja3JfanRpX18xWWNHelQ2QkhwWnRyRExRX0d2T
+zFQVHhHcz0ifQ%3D%3D&digest=sha256%3A195db04c010eaef57d33f87e993d97bad055159d4f86eb46912791f6f75efa39": write tcp 192.16
+8.65.3:46112->192.168.65.1:3128: write: broken pipe
+所在位置 行:1 字符: 274
++ ... d -Encoding utf8; docker push jinnnyang/omniroute:3.8.56 2>&1 | Out-F ...
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (failed to copy:...te: broken pipe:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+=== attempt 4 @ 15:21:20 ===
+The push refers to repository [docker.io/jinnnyang/omniroute]
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Already exists
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+98a5053b0047: Waiting
+6310eb16bf42: Layer already exists
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Already exists
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+9f3901a389d4: Waiting
+adb20d485252: Layer already exists
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Layer already exists
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+a2a68e71ed69: Waiting
+8b0b3ba48def: Layer already exists
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Layer already exists
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+d05671585da5: Waiting
+4b17fe93a3db: Layer already exists
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Layer already exists
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+195db04c010e: Waiting
+4662acfdea8b: Layer already exists
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+3b860f51918b: Waiting
+72c692e80975: Waiting
+637f97d2af95: Waiting
+3b860f51918b: Waiting
+72c692e80975: Waiting
+637f97d2af95: Waiting
+docker : failed to copy: failed to do request: Put "https://registry-1.docker.io/v2/jinnnyang/omniroute/blobs/uploads/9
+9ceb2e6-d824-422b-a498-35b41d4c8f78?_state=KhSGpUGVO8WokWdHc5kfRjW95CzB8gjmENICKj_pQxB7Ik5hbWUiOiJqaW5ubnlhbmcvb21uaXJv
+dXRlIiwiVVVJRCI6Ijk5Y2ViMmU2LWQ4MjQtNDIyYi1hNDk4LTM1YjQxZDRjOGY3OCIsIk9mZnNldCI6MCwiU3RhcnRlZEF0IjoiMjAyNi0wOS0yNlQwNzo
+yMToyNC43NjUxNTk5MThaIiwiRXhwaXJlc0F0IjoiMjAyNi0wOS0yNlQwNzo1MToyNC44MzgzNTYzNzVaIiwiVXNlcm5hbWUiOiJqaW5ubnlhbmciLCJVc2
+VyVVVJRCI6ImNiZjBlNTI3LWM3OGQtNDg2NC05MmU2LTZmNWE5M2RhYjQ1NyIsIlNlc3Npb25JRCI6ImRja3JfanRpXzVFUVlKZHJXbWwwSUZIU2JMRHZzM
+jFzZ1JFUT0ifQ%3D%3D&digest=sha256%3A195db04c010eaef57d33f87e993d97bad055159d4f86eb46912791f6f75efa39": write tcp 192.16
+8.65.3:33078->192.168.65.1:3128: write: broken pipe
+所在位置 行:1 字符: 274
++ ... d -Encoding utf8; docker push jinnnyang/omniroute:3.8.56 2>&1 | Out-F ...
++                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (failed to copy:...te: broken pipe:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+=== attempt 5 @ 15:25:14 ===
+The push refers to repository [docker.io/jinnnyang/omniroute]
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+44136fa355b3: Waiting
+6310eb16bf42: Waiting
+44136fa355b3: Already exists
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+6310eb16bf42: Waiting
+98a5053b0047: Waiting
+6310eb16bf42: Layer already exists
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Waiting
+98a5053b0047: Already exists
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+adb20d485252: Waiting
+9f3901a389d4: Waiting
+adb20d485252: Layer already exists
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Waiting
+9f3901a389d4: Layer already exists
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+8b0b3ba48def: Waiting
+a2a68e71ed69: Waiting
+8b0b3ba48def: Layer already exists
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Waiting
+a2a68e71ed69: Layer already exists
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+4b17fe93a3db: Waiting
+d05671585da5: Waiting
+4b17fe93a3db: Layer already exists
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Waiting
+d05671585da5: Layer already exists
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+4662acfdea8b: Waiting
+195db04c010e: Waiting
+4662acfdea8b: Layer already exists
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting
+195db04c010e: Waiting

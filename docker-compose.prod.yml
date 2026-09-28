@@ -10,10 +10,11 @@
 #    docker compose -f docker-compose.prod.yml down
 #    docker compose -f docker-compose.prod.yml logs -f
 #
-#  Image flavors (two Dockerfile stages):
+#  Image flavors (three Dockerfile stages, 3.8.56+):
 #    runner-base (default / omniroute:prod)
-#      Lean image — no Playwright/Chromium. Suitable for all providers
-#      except web-cookie ones (gemini-web, claude-web, claude-turnstile).
+#      Lean gateway — no Playwright/Chromium, no preinstalled AI CLIs, no docker
+#      engine inside the container. Suitable for all providers except web-cookie
+#      ones (gemini-web, claude-web, claude-turnstile).
 #
 #    runner-web (omniroute:prod-web) — opt-in, ~300 MB extra
 #      Includes Playwright + Chromium system libs. Required for web-cookie
@@ -24,6 +25,10 @@
 #            context: .
 #            target: runner-web
 #          image: omniroute:prod-web
+#
+#    runner-cli — opt-in (+docker CLI/compose v2 + git for auto-update and the
+#      skills sandbox; talks to a host docker daemon via a mounted socket).
+#      Since 3.8.56 the four AI CLI packages are no longer preinstalled.
 # ──────────────────────────────────────────────────────────────────────
 
 services:
@@ -50,7 +55,10 @@ services:
         condition: service_started
     build:
       context: .
-      target: runner-cli
+      # 3.8.56: production does not use the preinstalled AI CLIs or the
+      # in-container docker engine, so build the lean runner-base stage
+      # (matches the published image, e.g. jinnnyang/omniroute:3.8.56).
+      target: runner-base
       args:
         OMNIROUTE_BASE_PATH: ${OMNIROUTE_BASE_PATH:-}
     image: omniroute:prod

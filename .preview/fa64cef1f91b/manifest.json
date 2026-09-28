@@ -1,0 +1,58 @@
+{
+  "schema_version": "1",
+  "source_path": "C:\\Users\\jinnn\\Documents\\AptAPI-Dev\\.analysis\\OmniRoute_用量分析与分档定价_202609.xlsx",
+  "source_filename": "OmniRoute_用量分析与分档定价_202609.xlsx",
+  "source_hash": "fa64cef1f91b",
+  "source_size_bytes": 16365,
+  "kind": "xlsx",
+  "rendered_at_utc": "2026-09-25T08:26:45+00:00",
+  "output_dir": "C:\\Users\\jinnn\\Documents\\AptAPI-Dev\\OmniRoute\\.preview\\fa64cef1f91b",
+  "page_count": 0,
+  "rendered_page_count": 0,
+  "collage_count": 0,
+  "extracted_text_chars": 7043,
+  "text_relpath": "text.md",
+  "thumbnail_relpath": null,
+  "pages": [],
+  "collages": [],
+  "warnings": [],
+  "options": {
+    "max_pages": 12,
+    "collage": true,
+    "page_range": null,
+    "thumbnail": true,
+    "text_only": true,
+    "jpeg_quality": 85,
+    "out_max_dim": 2048
+  },
+  "summary": {
+    "sheets": [
+      {
+        "name": "总览",
+        "rows": 19,
+        "cols": 6
+      },
+      {
+        "name": "分Key明细",
+        "rows": 15,
+        "cols": 15
+      },
+      {
+        "name": "日周分布",
+        "rows": 37,
+        "cols": 9
+      },
+      {
+        "name": "成本与定价",
+        "rows": 40,
+        "cols": 10
+      },
+      {
+        "name": "上游与失败",
+        "rows": 31,
+        "cols": 7
+      }
+    ],
+    "sheet_count": 5
+  }
+}

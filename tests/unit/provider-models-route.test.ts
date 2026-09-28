@@ -1780,3 +1780,57 @@ test("provider models route uses provider-specific auth headers for Kimi Coding"
     [{ id: "kimi-k2.5", name: "Kimi K2.5" }]
   );
 });
+
+test("provider models route uses registry base URL for volcengine-coding-plan when baseUrl is empty (#volcengine-plan-vN)", async () => {
+  const connection = await seedConnection("volcengine-coding-plan", {
+    apiKey: "ark-test-key",
+    // No providerSpecificData.baseUrl — the registry base URL must be used.
+    providerSpecificData: { autoFetchModels: true },
+  });
+  const seenUrls: string[] = [];
+  globalThis.fetch = async (url) => {
+    seenUrls.push(String(url));
+    return Response.json({
+      data: [{ id: "doubao-seed-2-1-turbo", name: "Doubao Seed 2.1 Turbo" }],
+    });
+  };
+  const response = await callRoute(connection.id, "?refresh=true&excludeCustom=true");
+  const body = (await response.json()) as { source: string };
+  assert.equal(response.status, 200);
+  assert.equal(body.source, "api");
+  assert.equal(
+    seenUrls[0],
+    "https://ark.cn-beijing.volces.com/api/coding/v3/models",
+    `first URL should be the coding /models endpoint, got ${seenUrls[0]}`
+  );
+  assert.ok(
+    !seenUrls.some((u) => u.includes("/v1/models")),
+    "must not attempt a nonexistent /v3/v1/models candidate"
+  );
+});
+
+test("provider models route falls back to curated local catalog for volcengine-agent-plan (no /models endpoint) (#volcengine-plan-vN)", async () => {
+  const connection = await seedConnection("volcengine-agent-plan", {
+    apiKey: "ark-agent-key",
+    providerSpecificData: { autoFetchModels: true },
+  });
+  const seenUrls: string[] = [];
+  globalThis.fetch = async (url) => {
+    seenUrls.push(String(url));
+    // Agent Plan API has NO /models endpoint — always 404.
+    return new Response("{}", { status: 404 });
+  };
+  const response = await callRoute(connection.id, "?refresh=true&excludeCustom=true");
+  const body = (await response.json()) as { source: string; models: unknown[] };
+  assert.equal(response.status, 200);
+  assert.equal(body.source, "local_catalog");
+  assert.ok(
+    Array.isArray(body.models) && body.models.length > 0,
+    "curated agent-plan models returned"
+  );
+  assert.equal(
+    seenUrls[0],
+    "https://ark.cn-beijing.volces.com/api/plan/v3/models",
+    `first URL should be the plan /models endpoint, got ${seenUrls[0]}`
+  );
+});

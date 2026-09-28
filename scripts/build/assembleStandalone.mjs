@@ -598,6 +598,35 @@ function copyStaticAndPublic({ distDir, relDistDir, projectRoot, resolvedOutDir 
 }
 
 /**
+ * Recursively delete *.nft.json (Next.js output-file-tracing manifests) under a
+ * directory. These are BUILD-TIME metadata — a per-route list of traced files
+ * that Next's own tooling consumes; the runtime server never reads them (it
+ * uses required-server-files.json + the baked distDir). A full OmniRoute build
+ * emits ~620 MB of them into the standalone bundle; stripping them here keeps
+ * every consumer (Docker image, npm tarball, Electron app) ~620 MB lighter.
+ *
+ * @param {string} dir
+ * @returns {number} files removed
+ */
+function stripOutputTraceManifests(dir) {
+  if (!fsSync.existsSync(dir)) return 0;
+  let removed = 0;
+  const walk = (d) => {
+    for (const entry of fsSync.readdirSync(d, { withFileTypes: true })) {
+      const p = path.join(d, entry.name);
+      if (entry.isDirectory()) {
+        walk(p);
+      } else if (entry.isFile() && entry.name.endsWith(".nft.json")) {
+        fsSync.rmSync(p, { force: true });
+        removed += 1;
+      }
+    }
+  };
+  walk(dir);
+  return removed;
+}
+
+/**
  * Two independent copy passes assemble a bundle: the bulk "standalone -> outDir" tree
  * copy (step 1 of assembleStandalone) can already have carried a prior entry's result
  * into `dest` (e.g. an absolute pnpm-store symlink, or a directory) BEFORE this entry's
@@ -930,6 +959,14 @@ export function assembleStandalone({
   // NOT a literal <outDir>/.next/static. Copying to .next/static leaves the server's
   // static dir empty → every JS/CSS chunk 404s → blank page. Mirror the distDir path.
   copyStaticAndPublic({ distDir, relDistDir, projectRoot, resolvedOutDir });
+
+  // 3.5. Strip Next.js output-tracing manifests (*.nft.json) from the mirrored
+  // server output. Build-time metadata only — nothing at runtime reads them
+  // (verified: zero refs in src/); a full build emits ~620 MB of them.
+  const stripped = stripOutputTraceManifests(path.join(resolvedOutDir, relDistDir, "server"));
+  if (stripped > 0) {
+    console.log(`[assembleStandalone] Stripped ${stripped} *.nft.json trace manifest(s)`);
+  }
 
   // 4. Optionally sanitize abs paths
   if (sanitizePaths) {

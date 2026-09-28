@@ -59,6 +59,12 @@ _Avoid_: adapter, converter
 
 **Handler**: the pipeline stage that processes one request type (chat, embeddings, …).
 
+**Responses API**: the OpenAI Responses wire format (`/v1/responses`, `resp_…` objects with `output[]` items) — the protocol Codex CLI speaks natively; the app also exposes it as a gateway surface and forwards to upstream `{base}/responses` when a provider serves it.
+_Avoid_: calling it just "responses" in a sentence about a provider's chat endpoint (ambiguous)
+
+**Protocol split (chat/completions vs /responses)**: some providers (Volcengine Coding Plan) serve both OpenAI Chat and OpenAI Responses at one base; the executor picks the upstream path from the request's resolved targetFormat (`openai-responses` → `_omnirouteForceResponsesUpstream` marker → `responsesBaseUrl`, chat → `baseUrl`/`chat/completions`). Codex/Responses is the preferred protocol for Coding Plan (better reasoning per upstream docs); chat/completions remains the compatibility surface for chat-format clients.
+_Avoid_: "which endpoint is right" (both are, per protocol)
+
 **MCP server**: the Model Context Protocol server exposing tools to clients (scopes, transports).
 _Avoid_: MCP (when the topic is the protocol, not this server)
 

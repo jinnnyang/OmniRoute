@@ -4,6 +4,21 @@
 
 ---
 
+## [3.8.56] — 2026-09-28
+
+### ✨ New Features
+- **feat(docker):** slim the 3.8.56 images — remove the four preinstalled AI CLI packages (`codex` / `claude-code` / `droid` / `openclaw`) from `runner-cli` (no version-pinning of `@latest` drift anymore), strip Next.js output-tracing manifests (`*.nft.json`, ~620 MB) and the redundant `.next/static` copy plus repo-root junk (`tests/` / `playwright-report/` / `electron/` / `images/`) from the standalone bundle, replace the ~1.5 GB `RUN chown` layer with `COPY --chown`, and swap the embedded `docker.io` engine for the lean `docker-cli docker-compose` apt packages in `runner-cli` (auto-update + skills sandbox still work against a host-mounted docker socket). Published size target: ~1.67 GB → ~600 MB content.
+
+### 🐛 Bug Fixes
+- **fix(docker):** `docker-compose.prod.yml` now builds `runner-base` (no in-container docker engine or AI CLIs), matching the published image; and the `codex-app-server` compose sidecar is removed — it ran `codex app-server` from an image that no longer contains the codex CLI. The `codex-app-server` provider stays fully supported via an externally run app-server (`OMNIROUTE_CODEX_APPSERVER_WS`).
+- **fix(providers):** `volcengine-coding-plan` / `volcengine-agent-plan` are now classified as named OpenAI-style providers so model discovery falls back to the registry base URL (`/api/coding/v3`, `/api/plan/v3`) when a connection has no `providerSpecificData.baseUrl` — previously an API-key plan connection synced with an empty base and failed with `Invalid outbound URL: /models`. The two plans are handled separately: Coding Plan serves a live `/models` endpoint (versioned path bases no longer try a nonexistent `/v3/v1/models`), while Agent Plan has no `/models` endpoint and falls back to the curated local catalog. The dashboard prefills the correct plan base URLs.
+
+### 📝 Maintenance
+
+- **docs:** update `docs/runner-cli-note.md` (deferred observation → landed 3.8.56 decision), `docs/build-troubleshooting.md` (3.8.56 slim-build section) and `docs/guides/USER_GUIDE.md` Docker workflow (runner-base default, CLI removal note); bump version to 3.8.56 in `package.json` and `open-sse/package.json`.
+
+---
+
 ## [3.8.55] — 2026-09-24
 
 ### 🐛 Bug Fixes

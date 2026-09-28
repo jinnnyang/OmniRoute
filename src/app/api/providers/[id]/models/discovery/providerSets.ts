@@ -100,6 +100,16 @@ export const NAMED_OPENAI_STYLE_PROVIDERS = new Set([
   // (11 chat-capable). Live fetch keeps it fresh; the registry seed stays as the
   // offline fallback.
   "logfare",
+  // Volcano Ark plan providers (openai format, bearer key). Classified as named
+  // openai-style so the models route's registryEntry fallback supplies the
+  // built-in base URL when providerSpecificData.baseUrl is empty — previously a
+  // plan API-key connection with no base URL fell to the default branch and
+  // produced "Invalid outbound URL: /models" during sync (refresh=true).
+  //   coding-plan: baseUrl /api/coding/v3 — HAS a live /models endpoint
+  //   agent-plan:  baseUrl /api/plan/v3  — NO /models endpoint (404), the
+  //   all-endpoints-fail path falls back to the curated local catalog instead.
+  "volcengine-coding-plan",
+  "volcengine-agent-plan",
 ]);
 
 export function isNamedOpenAIStyleProvider(provider: string): boolean {

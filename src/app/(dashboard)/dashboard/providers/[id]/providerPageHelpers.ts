@@ -260,6 +260,12 @@ export const DEFAULT_PROVIDER_BASE_URLS: Record<string, string> = {
   // before; a CN-region user overrides it (see placeholder hint below).
   kimi: "https://api.moonshot.ai/v1",
   moonshot: "https://api.moonshot.ai/v1",
+  // #volcengine-plan-vN: Volcano Ark plan endpoints differ per subscription —
+  // coding serves /api/coding/v3 (chat + /models), agent serves /api/plan/v3
+  // (chat only, NO /models). Prefill the correct base so an API-key connection
+  // never syncs with an empty base URL ("Invalid outbound URL: /models").
+  "volcengine-coding-plan": "https://ark.cn-beijing.volces.com/api/coding/v3",
+  "volcengine-agent-plan": "https://ark.cn-beijing.volces.com/api/plan/v3",
 };
 
 export function getLocalProviderMetadata(providerId?: string | null) {
