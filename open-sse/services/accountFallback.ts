@@ -10,7 +10,6 @@ import {
   COOLDOWN_MS,
   calculateBackoffCooldown,
   findMatchingErrorRule,
-  matchErrorRuleByText,
   matchErrorRuleByStatus,
   serviceSupervisorCooldown,
   isNimFunctionDegraded,
@@ -36,11 +35,7 @@ import {
   getAllCircuitBreakerStatuses,
   getCircuitBreaker,
 } from "../../src/shared/utils/circuitBreaker";
-import {
-  classify429FromError,
-  looksLikeQuotaExhausted,
-  type FailureKind,
-} from "../../src/shared/utils/classify429";
+import { classify429FromError, type FailureKind } from "../../src/shared/utils/classify429";
 import { recordProviderSuccess as resetCooldownFailureCount } from "./providerCooldownTracker.ts";
 import {
   getProviderById,
@@ -64,7 +59,6 @@ import {
   MAX_SHORT_RETRY_HINT_MS,
 } from "./retryAfterJson.ts";
 import {
-  isSubscriptionQuotaText,
   buildSubscriptionQuotaFallback,
   buildWeeklyQuotaFallback,
   buildSessionQuotaFallback,
@@ -75,6 +69,39 @@ export { MODEL_LOCKOUT_EVICTION_CAP } from "./accountFallback/lockoutEviction.ts
 import { capScaledCooldownMs } from "./accountFallback/cooldownCap.ts";
 import { resolveApiKeyForbiddenFallback } from "./accountFallback/nonRetryableUpstream.ts";
 import * as exactModelLock from "./accountFallback/exactModelLock.ts";
+
+// ─── Cluster A: error signals & classification (moved to errorClassifier.ts) ───
+// Definitions now live in errorClassifier.ts (migrated 2026-09-28). These
+// re-exports keep the existing 65+ symbol surface and every consumer untouched;
+// the internal uses below import from errorClassifier directly.
+import {
+  AUTH_CREDENTIAL_ERROR_PATTERNS,
+  CONTEXT_OVERFLOW_PATTERNS,
+  MODEL_ACCESS_DENIED_PATTERNS,
+  RATE_LIMIT_TEXT_PATTERNS,
+  classifyErrorText,
+  isAccountDeactivated,
+  isCreditsExhausted,
+  isDailyQuotaExhausted,
+} from "./errorClassifier.ts";
+export {
+  ACCOUNT_DEACTIVATED_SIGNALS,
+  AUTH_CREDENTIAL_ERROR_PATTERNS,
+  CONTEXT_OVERFLOW_PATTERNS,
+  CREDITS_EXHAUSTED_SIGNALS,
+  MODEL_ACCESS_DENIED_PATTERNS,
+  OAUTH_INVALID_TOKEN_SIGNALS,
+  RATE_LIMIT_TEXT_PATTERNS,
+  classifyError,
+  classifyErrorText,
+  getMergedBannedSignals,
+  isAccountDeactivated,
+  isCreditsExhausted,
+  isDailyQuotaExhausted,
+  isOAuthInvalidToken,
+  isProviderModelUnsupported400,
+  setCustomBannedSignals,
+} from "./errorClassifier.ts";
 export type ProviderProfile = {
   baseCooldownMs: number;
   useUpstreamRetryHints: boolean;
@@ -168,97 +195,6 @@ if (typeof _connectionFailureSweep === "object" && "unref" in _connectionFailure
   (_connectionFailureSweep as { unref?: () => void }).unref?.();
 }
 
-// T06 (sub2api PR #1037): Signals that indicate permanent account deactivation.
-// When a 401 body contains these strings, the account is permanently dead
-// and should NOT be retried after token refresh.
-export const ACCOUNT_DEACTIVATED_SIGNALS = [
-  "account_deactivated",
-  "account has been deactivated",
-  "account has been disabled",
-  "your account has been suspended",
-  "this account is deactivated",
-  // AG (Antigravity/Google Cloud Code) permanent ban signals
-  "verify your account to continue",
-  "this service has been disabled in this account for violation",
-  "this service has been disabled in this account",
-];
-
-// Custom banned signals — loaded from DB settings at runtime.
-// Combined with ACCOUNT_DEACTIVATED_SIGNALS in isAccountDeactivated().
-let _customBannedSignals: string[] = [];
-
-export function setCustomBannedSignals(signals: string[]): void {
-  _customBannedSignals = signals;
-}
-
-export function getMergedBannedSignals(): string[] {
-  if (_customBannedSignals.length === 0) return ACCOUNT_DEACTIVATED_SIGNALS;
-  return [...ACCOUNT_DEACTIVATED_SIGNALS, ..._customBannedSignals];
-}
-
-// T10 (sub2api PR #1169): Signals that indicate billing credits are exhausted.
-// Distinct from rate-limit 429 — the account won't recover until credits are added.
-export const CREDITS_EXHAUSTED_SIGNALS = [
-  "insufficient_quota",
-  "billing_hard_limit_reached",
-  "exceeded your current quota",
-  "exceeded your current usage quota",
-  "credit_balance_too_low",
-  "your credit balance is too low",
-  "credits exhausted",
-  "out of credits",
-  "payment required",
-  "free tier of the model has been exhausted",
-  // #8631: narrower than a bare "has been exhausted" — that generic phrase also
-  // appears in Gemini's transient RPM/TPM 429 body ("Resource has been exhausted
-  // (e.g. check quota)."), which must stay RATE_LIMIT_EXCEEDED, not terminal.
-  // Anchoring on "tier" keeps free-tier depletion wording matched while excluding
-  // Gemini's "resource has been exhausted" rate-limit phrasing.
-  "tier has been exhausted",
-  // #5239: providers (e.g. DeepSeek/GLM-style) return "Insufficient account balance"
-  // on a depleted key. 402 is already terminalized by status, but catch non-402
-  // out-of-credit bodies here too.
-  "insufficient balance",
-  "insufficient_balance",
-  "insufficient account balance",
-  "insufficient credit balance",
-  // Command Code returns 400 "You have insufficient credits to make this
-  // request. Please purchase more credits to continue using the service."
-  // when the account's billing credits run out. Without this signal the
-  // error stays unclassified (errorType=null), so the connection is never
-  // marked credits_exhausted and keeps being re-selected on every request.
-  "insufficient credits",
-  "insufficient credit",
-];
-
-// T11: Signals that indicate OAuth token is invalid/expired (not permanent deactivation)
-export const OAUTH_INVALID_TOKEN_SIGNALS = [
-  "invalid authentication credentials",
-  "oauth 2",
-  "login cookie",
-  "valid authentication credential",
-  "invalid credentials",
-];
-
-// Context overflow patterns — the prompt exceeds the model's maximum context length.
-// Different providers phrase this differently. Used to decide whether a 400 error
-// should trigger combo fallback (a different model may have a larger context window).
-// Exported so combo.ts's isContextOverflow400() guard (open-sse/services/combo.ts)
-// can reuse this single source of truth instead of maintaining its own,
-// independently-drifting pattern list (see issue #6637).
-export const CONTEXT_OVERFLOW_PATTERNS = [
-  /\binput is too long\b/i,
-  /\binput too long\b/i,
-  /\bcontext.*(too long|exceeded|overflow|limit)/i,
-  /\btoo many tokens\b/i,
-  /\bprompt is too long\b/i,
-  /\bcontext window/i,
-  /\bmaximum context/i,
-  /\bmax.*token/i,
-  /\btoken limit/i,
-  /\brequest too large\b/i,
-];
-
 // Structured error codes that reliably indicate model access denied
 // (more reliable than regex on human-readable messages).
 // OpenAI:  { error: { code: "model_not_found", ... } }
@@ -281,85 +217,6 @@ const MODEL_ACCESS_AMBIGUOUS_TYPES = new Set([
   "permission_error", // Anthropic: could be model access OR key/org/feature scope
 ]);
 
-// Model access patterns — the account does not have access to the requested model
-// but a different account (e.g. PRO vs free tier) may support it.
-// Exported so combo.ts #2101 can exempt model-scoped 400s from the body-specific
-// stop guard (#5249): "model not supported" must advance to the next combo target
-// even when the message also contains wrapper words like "invalid" / "bad request".
-export const MODEL_ACCESS_DENIED_PATTERNS = [
-  /\binvalid model\b/i,
-  /\bmodel.*not.*(?:available|found|supported|accessible)\b/i,
-  /\bmodel.*(?:does not exist|doesn't exist)\b/i,
-  // "does not support" / "unsupported model" — GitHub Copilot / OpenAI-compatible
-  // often phrase model rejection this way without the "is not supported" word order.
-  /\bmodel\b[\s\S]{0,80}?\b(?:does\s+not\s+support|doesn't\s+support|unsupported)\b/i,
-  /\b(?:does\s+not\s+support|doesn't\s+support|unsupported)\b[\s\S]{0,80}?\bmodel\b/i,
-  /\bunsupported\s+model\b/i,
-  /\baccess.*denied.*model\b/i,
-  /\bmodel.*access.*denied\b/i,
-  /\bplease select a different model\b/i,
-  // "...access to the requested model" / "model ... access" — bounded lookahead
-  // (no nested quantifiers) so it stays ReDoS-safe while requiring BOTH an
-  // access/permission word and "model" so a pure auth error never matches.
-  /\b(?:access|permission)[\s\S]{0,60}?\bmodel\b/i,
-  /\bmodel[\s\S]{0,60}?\b(?:access|permission)\b/i,
-];
-
-// Pure credential/authentication failures — the key or token itself is bad, which
-// is NOT a model-availability problem. Some providers phrase these as a 400 that
-// also mentions the model (e.g. "invalid api key for model X"), which would
-// otherwise trip MODEL_ACCESS_DENIED_PATTERNS above and trigger combo fallback
-// across every target, masking the real "fix your credential" error. When the
-// text clearly indicates a bad credential, the regex-based model-access detection
-// is suppressed (structured codes/types like model_not_found are unaffected).
-export const AUTH_CREDENTIAL_ERROR_PATTERNS = [
-  /\b(?:invalid|incorrect|expired|missing|revoked)\s+api[\s_-]?key\b/i,
-  /\bapi[\s_-]?key\s+(?:is\s+)?(?:invalid|incorrect|expired|missing|revoked|not\s+valid)\b/i,
-  /\bauthentication\s+(?:failed|error|required)\b/i,
-  /\b(?:invalid|expired|missing|revoked)\s+(?:token|credentials?|bearer)\b/i,
-  /\bunauthorized\b/i,
-  /\bnot\s+authenticated\b/i,
-];
-
-// #10460: strict subset of MODEL_ACCESS_DENIED_PATTERNS that is unambiguously
-// PROVIDER-wide — the model does not exist / is not served by this provider at all, so
-// no account of that provider could serve it (e.g. "The requested model is not
-// supported", "model not found"). Deliberately EXCLUDES the "access"/"permission"
-// patterns from MODEL_ACCESS_DENIED_PATTERNS (e.g. "does not have permission to access
-// this model", "access denied ... model"): those commonly indicate an ACCOUNT-scoped
-// entitlement gap (e.g. PRO vs free tier) where a *different* account of the same
-// provider may still have access, so they must keep rotating through the normal
-// account-cooldown path — not be treated as provider-wide unsupported.
-const PROVIDER_MODEL_UNSUPPORTED_PATTERNS = [
-  /\binvalid model\b/i,
-  /\bmodel.*not.*(?:available|found|supported|accessible)\b/i,
-  /\bmodel.*(?:does not exist|doesn't exist)\b/i,
-  /\bmodel\b[\s\S]{0,80}?\b(?:does\s+not\s+support|doesn't\s+support|unsupported)\b/i,
-  /\b(?:does\s+not\s+support|doesn't\s+support|unsupported)\b[\s\S]{0,80}?\bmodel\b/i,
-  /\bunsupported\s+model\b/i,
-  /\bplease select a different model\b/i,
-];
-
-/**
- * #10460: is this 400 an unambiguous, PROVIDER-wide "model not supported" response —
- * i.e. would retrying a *different account* of the same provider also fail for the
- * same reason? Reuses AUTH_CREDENTIAL_ERROR_PATTERNS (the same bad-credential
- * exclusion `checkFallbackError`'s 400 branch applies) so a message like "invalid api
- * key for model X" is never misclassified as model-wide. Also excludes the broader,
- * ambiguous MODEL_ACCESS_DENIED_PATTERNS access/permission phrasing — those can be
- * account-scoped entitlement gaps, not a provider-wide unsupported model — so account
- * rotation for those keeps working normally via the regular cooldown path.
- *
- * Callers that want "should combo keep trying other targets" (not "should this
- * specific account keep rotating") should use MODEL_ACCESS_DENIED_PATTERNS /
- * isModelScoped400() instead — this helper is deliberately narrower.
- */
-export function isProviderModelUnsupported400(status: number, errorText: string): boolean {
-  if (status !== HTTP_STATUS.BAD_REQUEST) return false;
-  if (AUTH_CREDENTIAL_ERROR_PATTERNS.some((p) => p.test(errorText))) return false;
-  return PROVIDER_MODEL_UNSUPPORTED_PATTERNS.some((p) => p.test(errorText));
-}
-
 // Malformed request patterns — the model rejected the message format but a different
 // provider/model in the combo may accept it.
 const MALFORMED_REQUEST_PATTERNS = [
@@ -373,20 +230,6 @@ const MALFORMED_REQUEST_PATTERNS = [
   /tool_call.*name.*(?:blank|empty|missing)/i,
 ];
 
-// Rate-limit text on a 400 — some providers (e.g. MiMoCode) signal throttling with a
-// non-standard 400 status whose body carries rate-limit semantics instead of a 429
-// (#4976). When detected, the request is fallback-worthy at connection-cooldown scope
-// (NOT a whole-provider breaker) so combo routing can fail over to another free target.
-// Exported: mimocode.ts's executor reuses this list directly (single source of truth).
-export const RATE_LIMIT_TEXT_PATTERNS = [
-  /high.?frequency/i,
-  /non-compliant/i,
-  /too many requests/i,
-  /rate.?limit/i,
-  /频繁/, // "frequent" (zh) — high-frequency request throttling
-  /频率/, // "frequency" (zh) — request-frequency throttling
-];
-
 // Parameter validation errors — model-specific constraints (different models = different limits)
 const PARAM_VALIDATION_PATTERNS = [
   /max_tokens.*illegal/i,
@@ -395,31 +238,6 @@ const PARAM_VALIDATION_PATTERNS = [
   /parameter is illegal/i,
   /is illegal.*range/i,
 ];
-
-/**
- * T06: Returns true if response body indicates the account is permanently deactivated.
- */
-export function isAccountDeactivated(errorText: string): boolean {
-  const lower = String(errorText || "").toLowerCase();
-  return getMergedBannedSignals().some((sig) => lower.includes(sig));
-}
-
-/**
- * T10: Returns true if response body indicates credits/quota are permanently exhausted.
- */
-export function isCreditsExhausted(errorText: string): boolean {
-  const lower = String(errorText || "").toLowerCase();
-  return CREDITS_EXHAUSTED_SIGNALS.some((sig) => lower.includes(sig));
-}
-
-/**
- * T11: Returns true if response body indicates OAuth token is invalid/expired.
- * This is different from permanent account deactivation - token refresh can recover.
- */
-export function isOAuthInvalidToken(errorText: string): boolean {
-  const lower = String(errorText || "").toLowerCase();
-  return OAUTH_INVALID_TOKEN_SIGNALS.some((sig) => lower.includes(sig));
-}
 
 // ─── Resilience Profile Helper ──────────────────────────────────────────────
 
@@ -1329,109 +1147,6 @@ function computeDurationMs(match: RegExpMatchArray): number | null {
   return totalMs > 0 ? Math.min(totalMs, MAX_PROVIDER_COOLDOWN_MS) : null;
 }
 
-// ─── Error Classification ───────────────────────────────────────────────────
-
-/**
- * Classify error text into RateLimitReason
- */
-export function classifyErrorText(errorText: unknown): RateLimitReasonValue {
-  if (!errorText) return RateLimitReason.UNKNOWN;
-  const lower = String(errorText).toLowerCase();
-
-  if (
-    lower.includes("quota exceeded") ||
-    lower.includes("quota depleted") ||
-    lower.includes("quota will reset") ||
-    lower.includes("your quota will reset") ||
-    lower.includes("quota has been exceeded") ||
-    lower.includes("hour quota") ||
-    lower.includes("billing") ||
-    looksLikeQuotaExhausted(lower) ||
-    // Issue #2321: Anthropic OAuth (Claude Code Pro/Team) 429 bodies surface
-    // the subscription quota with phrases that contain neither "quota" nor
-    // "billing". Without these patterns the error was classified as a
-    // transient RATE_LIMIT_EXCEEDED (~5s base cooldown), which cascades all
-    // Pro accounts into a tight retry loop until the 5h window resets.
-    isSubscriptionQuotaText(lower)
-  ) {
-    return RateLimitReason.QUOTA_EXHAUSTED;
-  }
-  // T10: credits_exhausted signals
-  if (isCreditsExhausted(lower)) {
-    return RateLimitReason.QUOTA_EXHAUSTED;
-  }
-  // T06: account_deactivated signals
-  if (isAccountDeactivated(lower)) {
-    return RateLimitReason.AUTH_ERROR;
-  }
-  const configuredRule = matchErrorRuleByText(errorText);
-  if (configuredRule?.reason) return configuredRule.reason;
-  if (lower.includes("rate_limit")) return RateLimitReason.RATE_LIMIT_EXCEEDED;
-  if (lower.includes("resource exhausted") || lower.includes("high demand"))
-    return RateLimitReason.MODEL_CAPACITY;
-  if (
-    lower.includes("unauthorized") ||
-    lower.includes("invalid api key") ||
-    lower.includes("authentication")
-  ) {
-    return RateLimitReason.AUTH_ERROR;
-  }
-  if (lower.includes("server error") || lower.includes("internal error")) {
-    return RateLimitReason.SERVER_ERROR;
-  }
-  return RateLimitReason.UNKNOWN;
-}
-
-/**
- * Classify HTTP status + error text into RateLimitReason
- *
- * If context (provider, headers, body) is supplied, provider-specific rules
- * are evaluated FIRST. A provider like Opencode can signal account-wide quota
- * exhaustion via `x-ratelimit-remaining-requests: 0` even when the body says
- * "rate limit" — without context, classifyError falls through to the global
- * text rules and misclassifies as RATE_LIMIT_EXCEEDED. With context, the
- * provider rule takes precedence.
- */
-export function classifyError(
-  status: number,
-  errorText: unknown,
-  context?: { provider?: string | null; headers?: Record<string, string> | null; body?: unknown }
-): RateLimitReasonValue {
-  // Provider-specific rules take priority — they have the most accurate signal
-  // (e.g. `x-ratelimit-remaining-requests: 0` is irrefutable account exhaustion).
-  if (context?.provider) {
-    const match = getProviderErrorRuleMatch(
-      context.provider,
-      status,
-      context.headers ?? null,
-      context.body
-    );
-    if (match) return match.reason;
-  }
-
-  // Text classification takes priority (more specific)
-  const textReason = classifyErrorText(errorText);
-  if (textReason !== RateLimitReason.UNKNOWN) return textReason;
-
-  // Fall back to status code
-  if (status === HTTP_STATUS.UNAUTHORIZED || status === HTTP_STATUS.FORBIDDEN) {
-    return RateLimitReason.AUTH_ERROR;
-  }
-  if (status === HTTP_STATUS.PAYMENT_REQUIRED) {
-    return RateLimitReason.QUOTA_EXHAUSTED;
-  }
-  if (status === HTTP_STATUS.RATE_LIMITED) {
-    return RateLimitReason.RATE_LIMIT_EXCEEDED;
-  }
-  if (status === HTTP_STATUS.SERVICE_UNAVAILABLE || status === 529) {
-    return RateLimitReason.MODEL_CAPACITY;
-  }
-  if (status >= 500) {
-    return RateLimitReason.SERVER_ERROR;
-  }
-  return RateLimitReason.UNKNOWN;
-}
-
 // ─── Daily Quota Helpers ────────────────────────────────────────────────────
 
 /**
@@ -1448,22 +1163,6 @@ export function getMsUntilTomorrow(): number {
   // Guard against DST edge cases: if ms is negative (shouldn't happen) or
   // unreasonably large (>25h due to spring-forward), cap at 24 hours.
   return ms > 0 && ms <= 25 * 60 * 60 * 1000 ? ms : 24 * 60 * 60 * 1000;
-}
-
-/**
- * Check if error text indicates daily quota exhaustion (as opposed to rate limiting).
- * Daily quota errors typically mention "today's quota" or "try again tomorrow".
- * @param {string} errorText - Error message text
- * @returns {boolean} True if daily quota is exhausted
- */
-export function isDailyQuotaExhausted(errorText: string): boolean {
-  if (!errorText) return false;
-  const lower = errorText.toLowerCase();
-  return (
-    lower.includes("today's quota") ||
-    lower.includes("daily quota") ||
-    lower.includes("try again tomorrow")
-  );
 }
 
 // ─── Configurable Backoff ───────────────────────────────────────────────────
