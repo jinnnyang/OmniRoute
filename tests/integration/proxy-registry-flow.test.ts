@@ -175,6 +175,10 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
     levelId: "openai",
     provider: "openai",
   });
+  // logProxyEvent persists on a background batch timer (1s interval); the health
+  // aggregate reads SQLite directly, so flush synchronously before querying to
+  // make the assertion deterministic.
+  proxyLogger.flushProxyLogsSync();
 
   const healthRes = await proxyHealthRoute.GET(
     new Request("http://localhost/api/settings/proxies/health?hours=24")
