@@ -22,12 +22,11 @@ process.env.JWT_SECRET = "test-jwt-secret-letta";
 const core = await import("../../src/lib/db/core.ts");
 const localDb = await import("../../src/lib/localDb.ts");
 
-const { GET, POST, DELETE } = await import(
-  "../../src/app/api/cli-tools/letta-settings/route.ts"
-);
+const { GET, POST, DELETE } = await import("../../src/app/api/cli-tools/letta-settings/route.ts");
 
 let tmpHome: string;
 let origHome: string | undefined;
+let origUserProfile: string | undefined;
 
 function getAuthPath() {
   return path.join(tmpHome, ".letta", "lc-local-backend", "providers", "auth.json");
@@ -53,11 +52,16 @@ test.beforeEach(async () => {
   await resetStorage();
   tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "letta-settings-home-"));
   origHome = process.env.HOME;
+  origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 });
 
 test.afterEach(() => {
   process.env.HOME = origHome;
+  if (origUserProfile === undefined) delete process.env.USERPROFILE;
+  else process.env.USERPROFILE = origUserProfile;
   fs.rmSync(tmpHome, { recursive: true, force: true });
 });
 

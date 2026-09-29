@@ -28,6 +28,7 @@ const { GET, POST, DELETE } = await import("../../src/app/api/cli-tools/omp-sett
 
 let tmpHome: string;
 let origHome: string | undefined;
+let origUserProfile: string | undefined;
 
 function getOmpDir() {
   return path.join(tmpHome, ".omp", "agent");
@@ -72,11 +73,16 @@ test.beforeEach(async () => {
   await resetStorage();
   tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "omp-settings-home-"));
   origHome = process.env.HOME;
+  origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 });
 
 test.afterEach(() => {
   process.env.HOME = origHome;
+  if (origUserProfile === undefined) delete process.env.USERPROFILE;
+  else process.env.USERPROFILE = origUserProfile;
   fs.rmSync(tmpHome, { recursive: true, force: true });
 });
 

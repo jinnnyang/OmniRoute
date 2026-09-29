@@ -22,7 +22,8 @@ process.env.JWT_SECRET = "test-jwt-secret-codewhale";
 const core = await import("../../src/lib/db/core.ts");
 const localDb = await import("../../src/lib/localDb.ts");
 
-const { GET, POST, DELETE } = await import("../../src/app/api/cli-tools/codewhale-settings/route.ts");
+const { GET, POST, DELETE } =
+  await import("../../src/app/api/cli-tools/codewhale-settings/route.ts");
 
 async function resetStorage() {
   delete process.env.INITIAL_PASSWORD;
@@ -91,7 +92,10 @@ test("codewhale-settings POST: 400 when model is missing", async () => {
 test("codewhale-settings POST: writes primary ~/.codewhale/config.toml for a fresh install", async () => {
   const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "codewhale-home-"));
   const origHome = process.env.HOME;
+  const origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 
   try {
     const res = await POST(
@@ -126,6 +130,8 @@ test("codewhale-settings POST: writes primary ~/.codewhale/config.toml for a fre
     }
   } finally {
     process.env.HOME = origHome;
+    if (origUserProfile === undefined) delete process.env.USERPROFILE;
+    else process.env.USERPROFILE = origUserProfile;
     fs.rmSync(tmpHome, { recursive: true, force: true });
   }
 });
@@ -135,7 +141,10 @@ test("codewhale-settings POST: writes primary ~/.codewhale/config.toml for a fre
 test("codewhale-settings POST: syncs an existing legacy ~/.deepseek/config.toml", async () => {
   const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "codewhale-home-legacy-"));
   const origHome = process.env.HOME;
+  const origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 
   try {
     // Simulate an existing DeepSeek TUI install (pre-CodeWhale upgrade).
@@ -173,6 +182,8 @@ test("codewhale-settings POST: syncs an existing legacy ~/.deepseek/config.toml"
     }
   } finally {
     process.env.HOME = origHome;
+    if (origUserProfile === undefined) delete process.env.USERPROFILE;
+    else process.env.USERPROFILE = origUserProfile;
     fs.rmSync(tmpHome, { recursive: true, force: true });
   }
 });
@@ -182,7 +193,10 @@ test("codewhale-settings POST: syncs an existing legacy ~/.deepseek/config.toml"
 test("codewhale-settings GET: falls back to legacy ~/.deepseek/config.toml when primary is absent", async () => {
   const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "codewhale-home-getlegacy-"));
   const origHome = process.env.HOME;
+  const origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 
   try {
     const legacyDir = path.join(tmpHome, ".deepseek");
@@ -201,6 +215,8 @@ test("codewhale-settings GET: falls back to legacy ~/.deepseek/config.toml when 
     }
   } finally {
     process.env.HOME = origHome;
+    if (origUserProfile === undefined) delete process.env.USERPROFILE;
+    else process.env.USERPROFILE = origUserProfile;
     fs.rmSync(tmpHome, { recursive: true, force: true });
   }
 });
@@ -210,7 +226,10 @@ test("codewhale-settings GET: falls back to legacy ~/.deepseek/config.toml when 
 test("codewhale-settings DELETE: removes primary and legacy config files", async () => {
   const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "codewhale-home-del-"));
   const origHome = process.env.HOME;
+  const origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 
   try {
     const primaryDir = path.join(tmpHome, ".codewhale");
@@ -238,6 +257,8 @@ test("codewhale-settings DELETE: removes primary and legacy config files", async
     }
   } finally {
     process.env.HOME = origHome;
+    if (origUserProfile === undefined) delete process.env.USERPROFILE;
+    else process.env.USERPROFILE = origUserProfile;
     fs.rmSync(tmpHome, { recursive: true, force: true });
   }
 });

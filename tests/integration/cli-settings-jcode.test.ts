@@ -85,7 +85,10 @@ test("jcode-settings POST: 400 when model is missing", async () => {
 test("jcode-settings POST: writes [providers.omniroute] into config.toml", async () => {
   const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "jcode-home-"));
   const origHome = process.env.HOME;
+  const origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 
   try {
     const res = await POST(
@@ -115,6 +118,8 @@ test("jcode-settings POST: writes [providers.omniroute] into config.toml", async
     }
   } finally {
     process.env.HOME = origHome;
+    if (origUserProfile === undefined) delete process.env.USERPROFILE;
+    else process.env.USERPROFILE = origUserProfile;
     fs.rmSync(tmpHome, { recursive: true, force: true });
   }
 });
@@ -124,7 +129,10 @@ test("jcode-settings POST: writes [providers.omniroute] into config.toml", async
 test("jcode-settings DELETE: removes only the OmniRoute-managed block", async () => {
   const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), "jcode-home-del-"));
   const origHome = process.env.HOME;
+  const origUserProfile = process.env.USERPROFILE;
   process.env.HOME = tmpHome;
+  // Windows: os.homedir() reads USERPROFILE, not HOME.
+  process.env.USERPROFILE = tmpHome;
 
   try {
     const jcodeDir = path.join(tmpHome, ".jcode");
@@ -159,6 +167,8 @@ test("jcode-settings DELETE: removes only the OmniRoute-managed block", async ()
     }
   } finally {
     process.env.HOME = origHome;
+    if (origUserProfile === undefined) delete process.env.USERPROFILE;
+    else process.env.USERPROFILE = origUserProfile;
     fs.rmSync(tmpHome, { recursive: true, force: true });
   }
 });
