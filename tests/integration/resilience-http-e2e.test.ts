@@ -547,7 +547,9 @@ test.after(async () => {
   }
   await relay.stop();
   core.closeDbInstance();
-  await fsp.rm(TEST_DATA_DIR, { recursive: true, force: true });
+  // Windows: the spawned relay/server child's SQLite handle can outlive its
+  // exit by a few hundred ms; fs.rm maxRetries absorbs the EBUSY race.
+  await fsp.rm(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 6, retryDelay: 300 });
 });
 
 test("resilience API only exposes configuration, not runtime breaker state", async () => {

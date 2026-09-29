@@ -14,12 +14,11 @@ import path from "node:path";
 const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-ti-local-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
-const { isLocalOnlyPath, isLoopbackHost } = await import(
-  "../../src/server/authz/routeGuard.ts"
-);
+const { isLocalOnlyPath, isLoopbackHost } = await import("../../src/server/authz/routeGuard.ts");
 
-test.after(() => {
-  fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+test.after(async () => {
+  await import("../../src/lib/db/core.ts").then((m) => m.closeDbInstance());
+  fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 6, retryDelay: 300 });
 });
 
 // ── isLocalOnlyPath assertions ──────────────────────────────────────────────

@@ -280,7 +280,9 @@ test.after(async () => {
   if (app) await stopProcess(app.child);
   await upstream.stop();
   core.closeDbInstance();
-  await fsp.rm(TEST_DATA_DIR, { recursive: true, force: true });
+  // Windows: the spawned server child's SQLite -shm/-wal handle can outlive
+  // its exit by a few hundred ms; fs.rm maxRetries absorbs the EBUSY race.
+  await fsp.rm(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 6, retryDelay: 300 });
 });
 
 // ── Tests ──────────────────────────────────────────────────────────────────
