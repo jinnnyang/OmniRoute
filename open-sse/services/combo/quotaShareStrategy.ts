@@ -175,18 +175,32 @@ function partitionByConcurrencyCap(
  * cost of 1. Subtracting a constant (rather than zeroing) keeps the accumulated
  * fractional credit, so long-run selection frequency converges EXACTLY to the
  * weight ratio and the choice stays deterministic (no fragile float ties).
+ *
+ * When NO target carries a configured weight (all normalize to 0 — e.g.
+ * auto-minted quota-share combos whose steps omit `weight`), the round degrades
+ * to equal-weight DRR (quantum = 1/n each) instead of pinning the first target:
+ * this mirrors selectWeightedTarget's uniform fallback for the same input, so
+ * an unconfigured combo still rotates deterministically instead of starving
+ * every target but the first. A MIXED set keeps its proportions (explicit 0
+ * stays disabled, same probability-0 contract as weighted).
  */
 function applyDrr(targets: ResolvedComboTarget[], comboName: string): ResolvedComboTarget[] {
   if (targets.length <= 1) return targets.slice();
 
   const deficits = getDrrDeficits(comboName);
-  const totalWeight = targets.reduce((sum, t) => sum + normalizeWeight(t.weight), 0);
-  if (totalWeight <= 0) return targets.slice();
+  const weights = targets.map((t) => normalizeWeight(t.weight));
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+  const allZero = totalWeight <= 0;
+
+  // Equal-weight fallback: an unconfigured set is not "all disabled" — it means
+  // "no weights were set", so every target participates with quantum 1/n.
+  const effectiveWeights = allZero ? targets.map(() => 1) : weights;
+  const effectiveTotal = allZero ? targets.length : totalWeight;
 
   // Add each target's quantum (weight share) to its deficit.
-  for (const target of targets) {
-    const quantum = normalizeWeight(target.weight) / totalWeight;
-    deficits.set(target.executionKey, (deficits.get(target.executionKey) ?? 0) + quantum);
+  for (let i = 0; i < targets.length; i++) {
+    const quantum = effectiveWeights[i] / effectiveTotal;
+    deficits.set(targets[i].executionKey, (deficits.get(targets[i].executionKey) ?? 0) + quantum);
   }
 
   // Select the target with the largest deficit (ties keep input order).
