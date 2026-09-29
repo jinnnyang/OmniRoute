@@ -285,7 +285,7 @@ function buildOpenAIStreamResponse(text = "streamed from openai") {
 
 function buildOpenAIResponsesSSE({
   text = "responses streamed from codex",
-  model = "gpt-5.1-codex",
+  model = "gpt-5.6-sol",
   usage = null,
 } = {}) {
   return new Response(
@@ -566,7 +566,7 @@ test("chat pipeline persists Codex responses cache and reasoning tokens to call 
     buildRequest({
       url: "http://localhost/v1/responses",
       body: {
-        model: "codex/gpt-5.1-codex",
+        model: "codex/gpt-5.6-sol",
         stream: false,
         input: "Persist cache + reasoning usage",
       },
