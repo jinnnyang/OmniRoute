@@ -561,6 +561,7 @@ test("resilience API only exposes configuration, not runtime breaker state", asy
     "legacy",
     "providerBreaker",
     "providerCooldown",
+    "providerQuotaOverrides",
     "quotaShareConcurrencyLimit",
     "requestQueue",
     "waitForCooldown",
