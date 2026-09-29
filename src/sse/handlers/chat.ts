@@ -2282,7 +2282,15 @@ async function handleSingleModelChat(
             }
           );
 
-      if (shouldFallback) {
+      // #10952: pinned combo steps (and any explicit forcedConnectionId) must NOT
+      // fail over to a sibling connection inside the executor — the combo layer
+      // owns target-level fallback (it selects the next step). Without this guard
+      // a step-pinned 5xx rotated accounts on the SAME step (authHeaders picked up
+      // the second key while call_logs still recorded the first step), silently
+      // bypassing priority/weighted step orchestration. Mirrors the existing
+      // `!hasForcedConnection` guards on the antigravity and concurrency-cap
+      // branches above.
+      if (shouldFallback && !hasForcedConnection) {
         if (Number.isFinite(cooldownMs) && cooldownMs > 0) {
           lastCooldownMs = cooldownMs;
           requestRetryLastCooldownMs = cooldownMs;
