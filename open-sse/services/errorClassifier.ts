@@ -193,12 +193,18 @@ export const RATE_LIMIT_TEXT_PATTERNS = [
   /频率/, // "frequency" (zh) — request-frequency throttling
 ];
 
+// #4 (bad taste scan): the three signal-classifiers below were byte-for-byte
+// isomorphic (lowercase + .some(include)) — deduped through matchesAnySignal.
+function matchesAnySignal(lower: string, signals: readonly string[]): boolean {
+  return signals.some((sig) => lower.includes(sig));
+}
+
 /**
  * T06: Returns true if response body indicates the account is permanently deactivated.
  */
 export function isAccountDeactivated(errorText: string): boolean {
   const lower = String(errorText || "").toLowerCase();
-  return getMergedBannedSignals().some((sig) => lower.includes(sig));
+  return matchesAnySignal(lower, getMergedBannedSignals());
 }
 
 /**
@@ -206,7 +212,7 @@ export function isAccountDeactivated(errorText: string): boolean {
  */
 export function isCreditsExhausted(errorText: string): boolean {
   const lower = String(errorText || "").toLowerCase();
-  return CREDITS_EXHAUSTED_SIGNALS.some((sig) => lower.includes(sig));
+  return matchesAnySignal(lower, CREDITS_EXHAUSTED_SIGNALS);
 }
 
 /**
@@ -215,7 +221,7 @@ export function isCreditsExhausted(errorText: string): boolean {
  */
 export function isOAuthInvalidToken(errorText: string): boolean {
   const lower = String(errorText || "").toLowerCase();
-  return OAUTH_INVALID_TOKEN_SIGNALS.some((sig) => lower.includes(sig));
+  return matchesAnySignal(lower, OAUTH_INVALID_TOKEN_SIGNALS);
 }
 
 /**

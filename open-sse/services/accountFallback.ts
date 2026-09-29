@@ -68,6 +68,10 @@ import { evictLockoutOverflow } from "./accountFallback/lockoutEviction.ts";
 export { MODEL_LOCKOUT_EVICTION_CAP } from "./accountFallback/lockoutEviction.ts";
 import { resolveApiKeyForbiddenFallback } from "./accountFallback/nonRetryableUpstream.ts";
 import * as exactModelLock from "./accountFallback/exactModelLock.ts";
+// Cluster C: 400 model-access/malformed/param-validation classification and
+// the daily-quota lock helper moved to accountFallback/modelAccessDenial.ts.
+import { classifyBadRequest400, getMsUntilTomorrow } from "./accountFallback/modelAccessDenial.ts";
+export { getMsUntilTomorrow } from "./accountFallback/modelAccessDenial.ts";
 // Cluster B: cooldown computation moved to retryCooldown.ts (parameterized
 // pure functions). Aliased to avoid clashing with the adapter closures inside
 // checkFallbackError that keep the callback contract for quotaTextCooldowns /
@@ -85,9 +89,6 @@ import {
 // re-exports keep the existing 65+ symbol surface and every consumer untouched;
 // the internal uses below import from errorClassifier directly.
 import {
-  AUTH_CREDENTIAL_ERROR_PATTERNS,
-  CONTEXT_OVERFLOW_PATTERNS,
-  MODEL_ACCESS_DENIED_PATTERNS,
   RATE_LIMIT_TEXT_PATTERNS,
   classifyErrorText,
   isAccountDeactivated,
@@ -205,49 +206,8 @@ if (typeof _connectionFailureSweep === "object" && "unref" in _connectionFailure
   (_connectionFailureSweep as { unref?: () => void }).unref?.();
 }
 
-// Structured error codes that reliably indicate model access denied
-// (more reliable than regex on human-readable messages).
-// OpenAI:  { error: { code: "model_not_found", ... } }
-// Anthropic: { error: { type: "not_found_error", ... } }
-const MODEL_ACCESS_DENIED_CODES = new Set([
-  "model_not_found", // OpenAI, OpenAI-compatible (Kiro, Together, Fireworks, etc.)
-  "deployment_not_found", // Azure OpenAI
-]);
-
-const MODEL_ACCESS_DENIED_TYPES = new Set([
-  "not_found_error", // Anthropic: model doesn't exist — reliably model-scoped
-]);
-
-// Anthropic's permission_error is NOT exclusively model-access related: it also
-// covers API-key scope, organization restrictions and feature gating. Treating it
-// as model-access-denied unconditionally would make a genuinely auth-restricted key
-// silently exhaust every combo target and hide the real error from the caller.
-// So it only counts when the message text confirms it refers to the model.
-const MODEL_ACCESS_AMBIGUOUS_TYPES = new Set([
-  "permission_error", // Anthropic: could be model access OR key/org/feature scope
-]);
-
-// Malformed request patterns — the model rejected the message format but a different
-// provider/model in the combo may accept it.
-const MALFORMED_REQUEST_PATTERNS = [
-  /\bimproperly formed request\b/i,
-  /\binvalid.*message.*format/i,
-  /\bmessages must alternate\b/i,
-  /\bempty (message|content)\b/i,
-  // Tool call function name errors
-  /\bfunction'?s? name (?:can't|can not|is|has) (?:blank|empty|missing)/i,
-  /function.*name.*(?:blank|empty|missing)/i,
-  /tool_call.*name.*(?:blank|empty|missing)/i,
-];
-
-// Parameter validation errors — model-specific constraints (different models = different limits)
-const PARAM_VALIDATION_PATTERNS = [
-  /max_tokens.*illegal/i,
-  /max_tokens.*must be/i,
-  /max_tokens.*range/i,
-  /parameter is illegal/i,
-  /is illegal.*range/i,
-];
+// Cluster C: model-access-denied / malformed / param-validation constants and the
+// 400 classification now live in accountFallback/modelAccessDenial.ts.
 
 // ─── Resilience Profile Helper ──────────────────────────────────────────────
 
@@ -1147,23 +1107,7 @@ function computeDurationMs(match: RegExpMatchArray): number | null {
   return totalMs > 0 ? Math.min(totalMs, MAX_PROVIDER_COOLDOWN_MS) : null;
 }
 
-// ─── Daily Quota Helpers ────────────────────────────────────────────────────
-
-/**
- * Calculate milliseconds from now until tomorrow at midnight (00:00:00).
- * Used to lock a model until the next day when daily quota is exhausted.
- * @returns {number} Milliseconds until tomorrow
- */
-export function getMsUntilTomorrow(): number {
-  const nowMs = Date.now();
-  const tomorrow = new Date(nowMs);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  const ms = tomorrow.getTime() - nowMs;
-  // Guard against DST edge cases: if ms is negative (shouldn't happen) or
-  // unreasonably large (>25h due to spring-forward), cap at 24 hours.
-  return ms > 0 && ms <= 25 * 60 * 60 * 1000 ? ms : 24 * 60 * 60 * 1000;
-}
+// ─── Daily Quota Helpers (getMsUntilTomorrow now lives in accountFallback/modelAccessDenial.ts) ───
 
 // ─── Configurable Backoff ───────────────────────────────────────────────────
 
@@ -1544,36 +1488,12 @@ export function checkFallbackError(
 
   // 400 — context overflow / malformed request / model access denied
   if (status === HTTP_STATUS.BAD_REQUEST) {
-    // Check structured error codes first (more reliable, no false positives)
-    // OpenAI:  error.code === "model_not_found"
-    // Anthropic: error.type === "not_found_error" / "permission_error"
-    const structuredCode =
-      typeof structuredError?.code === "string" ? structuredError.code.toLowerCase() : "";
-    const structuredType =
-      typeof structuredError?.type === "string" ? structuredError.type.toLowerCase() : "";
-    // A clear bad-credential error must never be reclassified as model-access
-    // (which would silently exhaust every combo target). Structured detection
-    // below still catches genuine model_not_found / not_found_error codes.
-    const looksLikeAuthCredentialError = AUTH_CREDENTIAL_ERROR_PATTERNS.some((p) =>
-      p.test(errorStr)
-    );
-    const matchesModelAccessPattern =
-      !looksLikeAuthCredentialError && MODEL_ACCESS_DENIED_PATTERNS.some((p) => p.test(errorStr));
-
-    const isModelAccessDeniedStructured =
-      !!structuredError &&
-      (MODEL_ACCESS_DENIED_CODES.has(structuredCode) ||
-        MODEL_ACCESS_DENIED_TYPES.has(structuredType) ||
-        // Ambiguous types (e.g. Anthropic permission_error) only count as a model
-        // access denial when the message text confirms it is about the model.
-        (MODEL_ACCESS_AMBIGUOUS_TYPES.has(structuredType) && matchesModelAccessPattern));
-
-    const isOverflow = CONTEXT_OVERFLOW_PATTERNS.some((p) => p.test(errorStr));
-    const isMalformed = MALFORMED_REQUEST_PATTERNS.some((p) => p.test(errorStr));
-    const isParamValidation = PARAM_VALIDATION_PATTERNS.some((p) => p.test(errorStr));
-    const isModelAccessDenied = isModelAccessDeniedStructured || matchesModelAccessPattern;
+    // Cluster C: model-access-denied / malformed / param-validation classification
+    // moved to accountFallback/modelAccessDenial.ts. NIM-degraded stays inline
+    // (isNimFunctionDegraded, errorConfig.ts).
+    const badRequestClass = classifyBadRequest400(errorStr, structuredError);
     const isNimDegraded = isNimFunctionDegraded(errorStr);
-    if (isOverflow || isMalformed || isParamValidation || isModelAccessDenied || isNimDegraded) {
+    if (badRequestClass !== null || isNimDegraded) {
       return {
         shouldFallback: true,
         cooldownMs: 0,
