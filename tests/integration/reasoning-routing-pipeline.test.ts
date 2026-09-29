@@ -346,10 +346,16 @@ test("reasoning routing filters incompatible combo targets and rejects an empty 
   await reasoningRulesDb.deleteReasoningRoutingRule(
     (await reasoningRulesDb.getReasoningRoutingRules())[0].id
   );
+  // gemini-3-pro resolves to supportsThinking=null (unknown), which
+  // filterComboForReasoningDecision deliberately KEEPS (only explicit
+  // supportsThinking=false is "unsupported" and filtered). With it the combo
+  // survives filtering and fails at execution with 503 (no connection). To
+  // exercise the empty-target 400 path the combo target must be a model the
+  // reasoning filter actually rejects — gpt-4o-mini is supportsThinking=false.
   const incompatibleCombo = await combosDb.createCombo({
     name: "incompatible-reasoning-combo",
     strategy: "priority",
-    models: ["antigravity/gemini-3-pro"],
+    models: ["openai/gpt-4o-mini"],
   });
   await reasoningRulesDb.createReasoningRoutingRule({
     name: "Empty combo target",

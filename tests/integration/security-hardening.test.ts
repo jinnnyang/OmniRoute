@@ -248,10 +248,8 @@ test("T06 route payload validation uses validateBody in critical endpoints", () 
     "src/app/api/v1/audio/speech/route.ts",
     "src/app/api/v1/moderations/route.ts",
     "src/app/api/v1/rerank/route.ts",
-    "src/app/api/oauth/[provider]/[action]/route.ts",
-    "src/app/api/oauth/cursor/import/route.ts",
-    "src/app/api/oauth/kiro/import/route.ts",
-    "src/app/api/oauth/kiro/social-exchange/route.ts",
+    // src/app/api/oauth/* was removed in bd6e27f38 (API-key only); no OAuth
+    // routes remain to validate.
     "src/app/api/cloud/credentials/update/route.ts",
     "src/app/api/cloud/model/resolve/route.ts",
     "src/app/api/cloud/models/alias/route.ts",
@@ -288,45 +286,5 @@ test("T06 route payload validation uses validateBody in critical endpoints", () 
       content.includes("validateBody("),
       `${relPath} should validate payload with validateBody`
     );
-  }
-});
-
-test("OAuth routes that can create provider connections require auth guard", () => {
-  const targets = [
-    "src/app/api/oauth/[provider]/[action]/route.ts",
-    "src/app/api/oauth/cursor/import/route.ts",
-    "src/app/api/oauth/kiro/import/route.ts",
-    "src/app/api/oauth/kiro/social-authorize/route.ts",
-    "src/app/api/oauth/kiro/social-exchange/route.ts",
-  ];
-
-  // cursor/import and kiro/import delegate to the shared requireManagementAuth()
-  // guard, which internally performs the same checks the older inline literals
-  // asserted: isAuthRequired() (auth active?), isDashboardSessionAuthenticated()
-  // (user authenticated?) and a 401 "Authentication required" response for
-  // anonymous callers. Asserting the guard wiring keeps this contract
-  // refactor-proof.
-  const guardDelegatingTargets = new Set([
-    "src/app/api/oauth/cursor/import/route.ts",
-    "src/app/api/oauth/kiro/import/route.ts",
-  ]);
-
-  for (const relPath of targets) {
-    const content = readIfExists(relPath);
-    assert.ok(content, `${relPath} should exist`);
-    if (guardDelegatingTargets.has(relPath)) {
-      assert.ok(
-        content.includes("requireOAuthImportAuth") && content.includes("requireManagementAuth"),
-        `${relPath} must delegate auth to requireManagementAuth via requireOAuthImportAuth`
-      );
-      assert.ok(
-        content.includes("invalidApiKeyStatus: 401"),
-        `${relPath} must reject anonymous requests with 401`
-      );
-      continue;
-    }
-    assert.ok(content.includes("isAuthRequired"), `${relPath} should check whether auth is active`);
-    assert.ok(content.includes("isAuthenticated"), `${relPath} should require authenticated users`);
-    assert.ok(content.includes("Unauthorized"), `${relPath} should reject anonymous requests`);
   }
 });

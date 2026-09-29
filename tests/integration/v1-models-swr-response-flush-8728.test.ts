@@ -14,10 +14,19 @@ const catalogCache = await import("../../src/app/api/v1/models/catalogCache.ts")
 const REPO_ROOT = fileURLToPath(new URL("../..", import.meta.url));
 const BLOCK_MS = 300;
 
-function listen(server: http.Server, socketPath: string): Promise<void> {
+function listen(server: http.Server): Promise<number> {
   return new Promise((resolve, reject) => {
     server.once("error", reject);
-    server.listen(socketPath, resolve);
+    // Unix-domain sockets are not portable (Windows: EACCES on .sock listen);
+    // bind an ephemeral loopback TCP port instead.
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        reject(new Error("Failed to allocate a listener port"));
+        return;
+      }
+      resolve(address.port);
+    });
   });
 }
 
@@ -27,13 +36,11 @@ function close(server: http.Server): Promise<void> {
   });
 }
 
-function fetchFromExternalClient(
-  socketPath: string
-): Promise<{ body: string; receivedAt: number }> {
+function fetchFromExternalClient(port: number): Promise<{ body: string; receivedAt: number }> {
   const script = [
     'import http from "node:http";',
     "const chunks = [];",
-    "const request = http.request({ socketPath: process.argv[1], path: '/v1/models' }, (response) => {",
+    "const request = http.request({ host: '127.0.0.1', port: Number(process.argv[1]), path: '/v1/models' }, (response) => {",
     "  response.on('data', (chunk) => chunks.push(chunk));",
     "  response.on('end', () => {",
     "    const body = Buffer.concat(chunks).toString('utf8');",
@@ -43,7 +50,7 @@ function fetchFromExternalClient(
     "request.on('error', (error) => { throw error; });",
     "request.end();",
   ].join("\n");
-  const child = spawn(process.execPath, ["--input-type=module", "-e", script, socketPath], {
+  const child = spawn(process.execPath, ["--input-type=module", "-e", script, String(port)], {
     stdio: ["ignore", "pipe", "pipe"],
   });
 
@@ -80,8 +87,11 @@ function productionShapedSynchronousRefresh() {
   } while (Date.now() - startedAt < BLOCK_MS);
 }
 
-test.after(() => {
-  fs.rmSync(CACHE_DATA_DIR, { recursive: true, force: true });
+test.after(async () => {
+  // The imported catalogCache opens storage.sqlite in-process; close the
+  // singleton before removing the temp dir (Windows EBUSY otherwise).
+  await import("../../src/lib/db/core.ts").then((m) => m.closeDbInstance());
+  fs.rmSync(CACHE_DATA_DIR, { recursive: true, force: true, maxRetries: 6, retryDelay: 300 });
 });
 
 test("the /v1/models route wires Next after() as its response-flush-safe scheduler", () => {
@@ -101,8 +111,6 @@ test("the /v1/models route wires Next after() as its response-flush-safe schedul
 
 test("an external client receives the stale body before synchronous refresh finishes blocking", async (t) => {
   catalogCache.__resetCatalogBuilderRunsForTest();
-  const socketDir = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-swr-http-8728-"));
-  const socketPath = path.join(socketDir, "catalog.sock");
 
   let buildCount = 0;
   let responseFinishedAt = 0;
@@ -147,21 +155,21 @@ test("an external client receives the stale body before synchronous refresh fini
     outgoing.end(await response.text());
   });
 
+  let port: number;
   try {
-    await listen(server, socketPath);
+    port = await listen(server);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "EPERM") {
       t.skip("sandbox does not permit opening HTTP listener sockets");
-      fs.rmSync(socketDir, { recursive: true, force: true });
       return;
     }
     throw error;
   }
   try {
-    assert.equal((await fetchFromExternalClient(socketPath)).body, "old");
+    assert.equal((await fetchFromExternalClient(port)).body, "old");
     catalogCache.__expireCatalogCacheForTest();
 
-    const stale = await fetchFromExternalClient(socketPath);
+    const stale = await fetchFromExternalClient(port);
     await catalogCache.__flushCatalogBackgroundRefreshForTest();
 
     assert.equal(stale.body, "old");
@@ -177,7 +185,6 @@ test("an external client receives the stale body before synchronous refresh fini
     );
   } finally {
     await close(server);
-    fs.rmSync(socketDir, { recursive: true, force: true });
     catalogCache.__resetCatalogBuilderRunsForTest();
   }
 });

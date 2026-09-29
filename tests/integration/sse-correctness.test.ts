@@ -81,6 +81,10 @@ test("3. no leaked idle timers across N sequential streams", async () => {
   // prevent the test process from exiting cleanly in --test-force-exit mode).
   for (let i = 0; i < 10; i++) {
     const { up, out } = makeStream();
+    // A content chunk first: the empty-choices detector (streamEmptyChoices)
+    // treats a stream with NO valuable chunks as an upstream error, which is
+    // intentional — this test is about timer hygiene, not the empty path.
+    up.push('data: {"choices":[{"delta":{"content":"x"}}]}\n\n');
     up.push("data: [DONE]\n\n");
     up.close();
     await drain(out);
