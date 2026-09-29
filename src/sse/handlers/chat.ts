@@ -653,7 +653,7 @@ async function handleChatImplementation(
       .responsesPreviousResponseIdMode
   );
   if (
-    previousResponseIdMode !== "preserve" &&
+    previousResponseIdMode === "auto" &&
     sourceFormat === FORMATS.OPENAI_RESPONSES &&
     typeof (body as { previous_response_id?: unknown }).previous_response_id === "string"
   ) {

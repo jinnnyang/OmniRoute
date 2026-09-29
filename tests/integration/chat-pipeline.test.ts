@@ -727,7 +727,8 @@ test("chat pipeline applies Codex CLI fingerprint to OAuth responses requests", 
   );
 });
 
-test("chat pipeline strips previous_response_id from stateless Codex responses by default", async () => {
+test("chat pipeline strips previous_response_id from stateless Codex responses in strip mode", async () => {
+  await settingsDb.updateSettings({ responsesPreviousResponseIdMode: "strip" });
   await seedConnection("codex", {
     apiKey: "sk-codex-stateless-responses",
     providerSpecificData: { openaiStoreEnabled: false },
