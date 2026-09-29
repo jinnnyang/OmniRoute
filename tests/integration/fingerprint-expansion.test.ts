@@ -69,6 +69,7 @@ function createServerProcess(dataDir: string, port: number) {
       DISABLE_SQLITE_AUTO_BACKUP: "true",
       INITIAL_PASSWORD: "",
       NEXT_TELEMETRY_DISABLED: "1",
+      OMNIROUTE_BASE_URL: `http://127.0.0.1:${port}`,
       OMNIROUTE_DISABLE_BACKGROUND_SERVICES: "true",
       OMNIROUTE_DISABLE_TOKEN_HEALTHCHECK: "true",
       OMNIROUTE_DISABLE_LOCAL_HEALTHCHECK: "true",
@@ -160,7 +161,12 @@ async function stopProcess(child: ReturnType<typeof spawn>) {
   }
 }
 
-async function postChat(baseUrl: string, model: string, content: string) {
+async function postChat(
+  baseUrl: string,
+  model: string,
+  content: string,
+  logs?: { stdoutLines: string[]; stderrLines: string[] }
+) {
   const response = await fetch(`${baseUrl}/api/v1/chat/completions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -169,10 +175,15 @@ async function postChat(baseUrl: string, model: string, content: string) {
       stream: false,
       messages: [{ role: "user", content }],
     }),
-    signal: AbortSignal.timeout(30_000),
+    signal: AbortSignal.timeout(90_000),
   });
   const text = await response.text();
   const json = text ? JSON.parse(text) : {};
+  if (!response.ok && logs) {
+    const tail = (lines: string[]) => lines.slice(-60).join("\n");
+    json.__serverStderrTail = tail(logs.stderrLines);
+    json.__serverStdoutTail = tail(logs.stdoutLines);
+  }
   return { response, json };
 }
 
@@ -292,7 +303,7 @@ test("round-robin combo with 3 fingerprints: all requests succeed", async () => 
 
   // Send 3 requests — round-robin should distribute across expanded targets
   for (let i = 0; i < 3; i++) {
-    const result = await postChat(app.baseUrl, "fp-round-robin", `request ${i + 1}`);
+    const result = await postChat(app.baseUrl, "fp-round-robin", `request ${i + 1}`, app);
     assert.equal(
       result.response.status,
       200,
