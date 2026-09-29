@@ -169,7 +169,7 @@ function buildOpenAIToolCallResponse({
   );
 }
 
-function buildClaudeResponse(text = "ok", model = "claude-3-5-sonnet-20241022") {
+function buildClaudeResponse(text = "ok", model = "claude-sonnet-4-6") {
   return new Response(
     JSON.stringify({
       id: "msg_json",
@@ -953,7 +953,7 @@ test("chat pipeline translates OpenAI requests to Claude and returns OpenAI-shap
   const response = await handleChat(
     buildRequest({
       body: {
-        model: "claude/claude-3-5-sonnet-20241022",
+        model: "claude/claude-sonnet-4-6",
         stream: false,
         messages: [{ role: "user", content: "Hello Claude" }],
       },
@@ -1526,7 +1526,7 @@ test("chat pipeline falls back across combo models when the first provider fails
     name: "combo-fallback",
     strategy: "priority",
     config: { maxRetries: 0, retryDelayMs: 0 },
-    models: ["openai/gpt-4o-mini", "claude/claude-3-5-sonnet-20241022"],
+    models: ["openai/gpt-4o-mini", "claude/claude-sonnet-4-6"],
   });
   const attempts = [];
 
