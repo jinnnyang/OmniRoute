@@ -1068,8 +1068,21 @@ test("chat pipeline converts Claude SSE streams into OpenAI SSE output", async (
   assert.match(raw, /\[DONE\]/);
 });
 
-test("chat pipeline rejects invalid API keys and malformed JSON bodies", async () => {
+test("chat pipeline direct-call: unknown API keys fall through to provider resolution; malformed JSON bodies rejected", async () => {
+  // handleChat is the SSE handler below the API-route authz layer. Unknown API
+  // keys are intentionally skipped by the policy layer (apiKeyPolicy.ts:
+  // "Key not found in DB — skip policy (auth layer handles validation)"), so
+  // the 401 for an unknown key is enforced by the route authz pipeline, not
+  // here. This test pins the direct-call contract: the unknown key passes
+  // through to provider resolution (mock invoked, response proxied), while
+  // malformed JSON bodies are rejected in-handler.
   await seedConnection("openai", { apiKey: "sk-openai-invalid-key-path" });
+
+  const fetchCalls: Array<{ url: string }> = [];
+  globalThis.fetch = async (url, _init: RequestInit = {}) => {
+    fetchCalls.push({ url: String(url) });
+    return buildOpenAIResponse("unknown key passed through");
+  };
 
   const invalidKeyResponse = await handleChat(
     buildRequest({
@@ -1091,8 +1104,10 @@ test("chat pipeline rejects invalid API keys and malformed JSON bodies", async (
   );
   const invalidJson = (await invalidJsonResponse.json()) as any;
 
-  assert.equal(invalidKeyResponse.status, 401);
-  assert.match(invalidKeyJson.error.message, /Invalid API key|Incorrect API key/i);
+  assert.equal(invalidKeyResponse.status, 200);
+  assert.equal(fetchCalls.length, 1);
+  assert.match(fetchCalls[0].url, /\/chat\/completions$/);
+  assert.equal(invalidKeyJson.choices[0].message.content, "unknown key passed through");
   assert.equal(invalidJsonResponse.status, 400);
   assert.match(invalidJson.error.message, /Invalid JSON body/i);
 });
@@ -1490,7 +1505,7 @@ test("chat pipeline falls back to the next account after a provider failure", as
   });
   const seenAuthHeaders = [];
 
-  globalThis.fetch = async (url, init: RequestInit = {}) => {
+  globalThis.fetch = async (_url, init: RequestInit = {}) => {
     const headers = toPlainHeaders(init.headers);
     seenAuthHeaders.push(headers.Authorization);
     if (seenAuthHeaders.length === 1) {

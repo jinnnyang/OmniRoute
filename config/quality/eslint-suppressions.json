@@ -3089,9 +3089,6 @@
   "tests/integration/chat-pipeline.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 20
-    },
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "tests/integration/chatcore-compression-integration.test.ts": {
