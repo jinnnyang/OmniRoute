@@ -373,7 +373,9 @@ async function resetStorage() {
   invalidateMemorySettingsCache();
   await new Promise((resolve) => setTimeout(resolve, 20));
   core.resetDbInstance();
-  fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+  // Windows: the previous test's SQLite -shm/-wal handle can outlive close by
+  // a few hundred ms, so rmSync races it (ENOTEMPTY/EBUSY — flaky). Retry.
+  fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true, maxRetries: 6, retryDelay: 300 });
   fs.mkdirSync(TEST_DATA_DIR, { recursive: true });
   initTranslators();
 }
