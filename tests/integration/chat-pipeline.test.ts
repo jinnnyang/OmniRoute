@@ -19,6 +19,7 @@ const { getLatestCallLog, getResponsesCallLogs } = await import("./_chatPipeline
 const { invalidateMemorySettingsCache } = await import("../../src/lib/memory/settings.ts");
 const { skillRegistry } = await import("../../src/lib/skills/registry.ts");
 const { skillExecutor } = await import("../../src/lib/skills/executor.ts");
+const { encodeSkillToolName } = await import("../../src/lib/skills/injection.ts");
 const { handleChat } = await import("../../src/sse/handlers/chat.ts");
 const { initTranslators } = await import("../../open-sse/translator/index.ts");
 const { clearInflight } = await import("../../open-sse/services/requestDedup.ts");
@@ -1464,7 +1465,10 @@ test("chat pipeline injects skills into tools and intercepts tool calls with ski
   assert.equal(response.status, 200);
   assert.equal(fetchCalls.length, 1);
   assert.ok(Array.isArray(fetchCalls[0].body.tools));
-  assert.equal(fetchCalls[0].body.tools[0].function.name, "lookupWeather@1.0.0");
+  assert.equal(
+    fetchCalls[0].body.tools[0].function.name,
+    encodeSkillToolName("lookupWeather", "1.0.0")
+  );
   assert.equal(json.choices[0].finish_reason, "tool_calls");
   assert.equal(json.tool_results[0].tool_call_id, "call_weather");
   assert.equal(JSON.parse(json.tool_results[0].output).forecast, "Sunny in Sao Paulo");
