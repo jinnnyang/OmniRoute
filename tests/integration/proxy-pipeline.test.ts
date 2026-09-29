@@ -67,7 +67,12 @@ describe("Chat Pipeline — handleSingleModelChat decomposition", () => {
   });
 
   it("handleSingleModelChat should use executeChatWithBreaker", () => {
-    assert.match(src, /executeChatWithBreaker\(/);
+    // The breaker dispatch moved to chatDispatch.ts (frozen god-file budget):
+    // handleSingleModelChat -> dispatchChatWithAffinityEviction -> executeChatWithBreaker.
+    const dispatchSrc = readSrc("sse/handlers/chatDispatch.ts");
+    assert.ok(dispatchSrc, "chatDispatch.ts should exist");
+    assert.match(src, /dispatchChatWithAffinityEviction\(/);
+    assert.match(dispatchSrc, /executeChatWithBreaker\(/);
   });
 
   it("chatCore should record cost for both non-streaming and streaming responses", () => {
