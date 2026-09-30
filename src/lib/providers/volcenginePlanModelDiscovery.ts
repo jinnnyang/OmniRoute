@@ -167,7 +167,7 @@ function extractAccountId(cookieHeader: string): number | null {
  * family. Keyed by the canonical model name (RespModelName / OutputName /
  * ModelName) lowercased; a `*`-prefixed entry matches by prefix.
  *
- * Values mirror the curated static registry (volcengine/{agent,coding}-plan)
+ * Values mirror the curated static registry (volcengine/{agent,coding})
  * so behavior is unchanged for known models; unknown families fall back to
  * `enrichWithDefaults`.
  */
@@ -416,7 +416,7 @@ export function hasVolcConsoleSession(psd: unknown): boolean {
 
 export function providerToVolcPlanKind(providerId: string): VolcPlanKind | null {
   const id = providerId.trim().toLowerCase();
-  if (id === "volcengine-agent-plan") return "agent";
-  if (id === "volcengine-coding-plan") return "coding";
+  if (id === "volcengine-agent") return "agent";
+  if (id === "volcengine-coding") return "coding";
   return null;
 }

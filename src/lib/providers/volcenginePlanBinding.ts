@@ -7,8 +7,8 @@ import {
 type JsonRecord = Record<string, unknown>;
 
 export const CONSOLE_TOP_BASE = "https://console.volcengine.com/api/top/ark/cn-beijing/2024-01-01";
-const CODING_PLAN_PROVIDER = "volcengine-coding-plan";
-const AGENT_PLAN_PROVIDER = "volcengine-agent-plan";
+const CODING_PLAN_PROVIDER = "volcengine-coding";
+const AGENT_PLAN_PROVIDER = "volcengine-agent";
 
 const PLAN_CONFIG = {
   coding: {

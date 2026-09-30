@@ -12,7 +12,7 @@ const TOOL_ONLY_SERVICE_KINDS = new Set<string>(["webSearch", "webFetch"]);
 
 /** Providers whose registry catalog is the complete, intentional model list.
  *
- * Volcano Ark plan providers (`volcengine-agent-plan` / `volcengine-coding-plan`)
+ * Volcano Ark plan providers (`volcengine-agent` / `volcengine-coding`)
  * are intentionally NOT curated: their model list is discovered live from the
  * console API (see volcenginePlanModelDiscovery.ts) and merged into the synced
  * catalog, so the static registry only acts as a capability-seed fallback. */

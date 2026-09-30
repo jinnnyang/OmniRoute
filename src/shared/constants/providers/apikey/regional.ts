@@ -199,8 +199,8 @@ export const APIKEY_PROVIDERS_REGIONAL = {
     textIcon: "VE",
     website: "https://www.volcengine.com",
   },
-  "volcengine-agent-plan": {
-    id: "volcengine-agent-plan",
+  "volcengine-agent": {
+    id: "volcengine-agent",
     name: "Volcengine Agent",
     icon: "local_fire_department",
     color: "#DC2626",
@@ -208,8 +208,8 @@ export const APIKEY_PROVIDERS_REGIONAL = {
     website: "https://console.volcengine.com/ark/region:cn-beijing/subscription/agent-plan",
     authHint: "Connect your Volcano Engine account or use an Ark Agent Plan subscription API key.",
   },
-  "volcengine-coding-plan": {
-    id: "volcengine-coding-plan",
+  "volcengine-coding": {
+    id: "volcengine-coding",
     name: "Volcengine Coding",
     icon: "code",
     color: "#FF6A00",

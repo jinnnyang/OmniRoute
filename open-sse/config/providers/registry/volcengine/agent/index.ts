@@ -106,8 +106,8 @@ export const VOLCENGINE_AGENT_PLAN_MODELS: RegistryModel[] = [
   },
 ];
 
-export const volcengine_agent_planProvider: RegistryEntry = {
-  id: "volcengine-agent-plan",
+export const volcengine_agentProvider: RegistryEntry = {
+  id: "volcengine-agent",
   format: "openai",
   executor: "default",
   baseUrl: "https://ark.cn-beijing.volces.com/api/plan/v3/chat/completions",

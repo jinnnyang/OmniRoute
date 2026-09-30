@@ -110,14 +110,14 @@ export const VOLCENGINE_CODING_PLAN_MODELS: RegistryModel[] = [
   },
 ];
 
-export const volcengine_coding_planProvider: RegistryEntry = {
-  id: "volcengine-coding-plan",
+export const volcengine_codingProvider: RegistryEntry = {
+  id: "volcengine-coding",
   format: "openai",
   executor: "default",
   baseUrl: "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions",
-  // #volcengine-coding-plan-builtin: the same coding endpoint also serves the
+  // #volcengine-coding-builtin: the same coding endpoint also serves the
   // native Responses API (both protocols live-verified 200 on 2026-08-31).
-  // buildUrl("volcengine-coding-plan") switches here when
+  // buildUrl("volcengine-coding") switches here when
   // resolveExecutionCredentials flags the model with
   // _omnirouteForceResponsesUpstream (registry marks AND #2905 DB overrides).
   responsesBaseUrl: "https://ark.cn-beijing.volces.com/api/coding/v3/responses",

@@ -136,9 +136,9 @@ export const USAGE_FETCHER_PROVIDERS = [
   "ha",
   // Firecrawl team credits (GET /v2/team/credit-usage)
   "firecrawl",
-  // Volcano Ark Plan subscriptions (agent-plan / coding-plan)
-  "volcengine-agent-plan",
-  "volcengine-coding-plan",
+  // Volcano Ark Plan subscriptions (agent / coding)
+  "volcengine-agent",
+  "volcengine-coding",
   // Command Code credits + 5h/weekly windows (GET /alpha/billing/credits)
   "command-code",
   "conol-web",
@@ -246,8 +246,8 @@ export async function getUsageForProvider(
       return await getHyperAgentUsage(apiKey || accessToken, providerSpecificData);
     case "firecrawl":
       return await getFirecrawlUsage(id || "", apiKey, connection);
-    case "volcengine-agent-plan":
-    case "volcengine-coding-plan":
+    case "volcengine-agent":
+    case "volcengine-coding":
       return await getVolcenginePlanUsage(apiKey || "", provider, providerSpecificData);
     case "command-code":
       return await getCommandCodeUsage(apiKey || accessToken || "");

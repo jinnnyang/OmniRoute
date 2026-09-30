@@ -35,15 +35,15 @@ const CONSOLE_HINT_AGENT = "console.volcengine.com/ark → 订阅 Agent Plan";
 const CONSOLE_HINT_CODING = "console.volcengine.com/ark → 订阅 Coding Plan";
 
 function getPlanName(provider: string): string {
-  if (provider === "volcengine-agent-plan") return "Volcano Ark Agent Plan";
-  if (provider === "volcengine-coding-plan") return "Volcano Ark Coding Plan";
+  if (provider === "volcengine-agent") return "Volcano Ark Agent Plan";
+  if (provider === "volcengine-coding") return "Volcano Ark Coding Plan";
   return "Volcano Ark Plan";
 }
 
 function getBaseUrl(provider: string, providerSpecificData?: JsonRecord): string {
   const override = providerSpecificData?.arkPlanBaseUrl;
   if (typeof override === "string" && override.trim()) return override.trim().replace(/\/+$/, "");
-  if (provider === "volcengine-coding-plan") return CODING_PLAN_BASE_URL;
+  if (provider === "volcengine-coding") return CODING_PLAN_BASE_URL;
   return AGENT_PLAN_BASE_URL;
 }
 
@@ -256,7 +256,7 @@ export async function getVolcenginePlanUsage(
   providerSpecificData?: JsonRecord
 ) {
   const planName = getPlanName(provider);
-  const isCoding = provider === "volcengine-coding-plan";
+  const isCoding = provider === "volcengine-coding";
 
   // Preferred path: real usage via the authenticated console "top" API.
   const cookie = getConsoleCookie(providerSpecificData);

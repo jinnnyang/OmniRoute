@@ -357,8 +357,8 @@ export class DefaultExecutor extends BaseExecutor {
           defaultChatUrl: this.config.baseUrl,
         });
       }
-      case "volcengine-coding-plan": {
-        // #volcengine-coding-plan-builtin: the Ark coding endpoint serves both
+      case "volcengine-coding": {
+        // #volcengine-coding-builtin: the Ark coding endpoint serves both
         // protocols at the same base. A resolved targetFormat of
         // openai-responses is surfaced by resolveExecutionCredentials as the
         // marker below (registry marks AND #2905 DB overrides both funnel
