@@ -1,7 +1,7 @@
 ---
 title: "E2E Verification Notes (3.8.56) — containerized image"
 version: 3.8.56
-lastUpdated: 2026-09-27
+lastUpdated: 2026-10-01
 ---
 
 # E2E Verification Notes — `jinnnyang/omniroute:3.8.56`
@@ -47,6 +47,11 @@ lastUpdated: 2026-09-27
    sync with `Invalid outbound URL: /models`; fixed in 3.8.56+ by classifying the
    plan providers as named OpenAI-style (registry base fallback) — see
    [VOLCENGINE-PLAN-PROVIDERS.md](../providers/VOLCENGINE-PLAN-PROVIDERS.md).
+7. **Volcengine plan provider ids shortened (post-3.8.56)** — `volcengine-agent-plan`
+   → `volcengine-agent` and `volcengine-coding-plan` → `volcengine-coding` (registry
+   dirs, symbols, migration `164_rename_volcengine_plan_providers.sql`). The
+   round-trip row above keeps the historical id as it was recorded on 2026-09-27;
+   the next E2E round must use the new ids (e.g. `volcengine-coding/doubao-seed-2-1-turbo`).
 
 ## Teardown
 

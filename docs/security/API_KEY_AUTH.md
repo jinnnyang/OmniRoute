@@ -35,7 +35,7 @@ routes on login/password/OIDC configuration.
 ## Verified 2026-09-24
 
 On an isolated server (`REQUIRE_API_KEY=true`, env key
-`sk-auth-test-valid-key-2026`), against `volcengine-coding-plan/deepseek-v4-flash`
+`sk-auth-test-valid-key-2026`), against `volcengine-coding/deepseek-v4-flash`
 via `/v1/responses`:
 
 | Scenario                                       | Result                                                            |

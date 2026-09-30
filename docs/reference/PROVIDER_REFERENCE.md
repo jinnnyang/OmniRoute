@@ -1,14 +1,14 @@
 ---
 title: "Provider Reference"
-version: 3.8.51
-lastUpdated: 2026-09-01
+version: 3.8.56
+lastUpdated: 2026-09-30
 ---
 
 # Provider Reference
 
 > **Auto-generated** from `src/shared/constants/providers.ts` — do not edit by hand.
 > Regenerate with: `npm run gen:provider-reference`
-> **Last generated:** 2026-09-01
+> **Last generated:** 2026-09-30
 
 Total providers: **297**. See category breakdown below.
 
@@ -274,8 +274,8 @@ Use the dashboard at `/dashboard/providers` to enable, configure, and test each 
 | `vertex-partner` | `vp` | Vertex AI Partners | API key, enterprise | [link](https://cloud.google.com/vertex-ai) | Provide the same Service Account JSON used for Vertex AI partner models. |
 | `void-ai` | `void-ai` | Void AI | API key, aggregator | [link](https://voidai.app) | The public model catalog marks some models with a free plan requirement, but access is conditional and no numeric quota is confirmed. |
 | `volcengine` | `volcengine` | Volcengine | API key | [link](https://www.volcengine.com) | — |
-| `volcengine-agent-plan` | `veap` | Volcengine Agent | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/agent-plan) | Connect your Volcano Engine account or use an Ark Agent Plan subscription API key. |
-| `volcengine-coding-plan` | `vecp` | Volcengine Coding | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/coding-plan) | Connect your Volcano Engine account or use an Ark Coding Plan subscription API key. |
+| `volcengine-agent` | — | Volcengine Agent | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/agent-plan) | Connect your Volcano Engine account or use an Ark Agent Plan subscription API key. |
+| `volcengine-coding` | — | Volcengine Coding | API key | [link](https://console.volcengine.com/ark/region:cn-beijing/subscription/coding-plan) | Connect your Volcano Engine account or use an Ark Coding Plan subscription API key. |
 | `voyage-ai` | `voyage` | Voyage AI | API key, embed/rerank | [link](https://www.voyageai.com) | Bearer API key for Voyage AI embeddings and rerank APIs. |
 | `wafer` | `wafer` | Wafer AI | API key | [link](https://wafer.ai) | — |
 | `wandb` | `wandb` | Weights & Biases Inference | API key | [link](https://wandb.ai) | — |

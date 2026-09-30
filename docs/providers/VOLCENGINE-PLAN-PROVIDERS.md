@@ -7,19 +7,19 @@ lastUpdated: 2026-09-27
 # Volcengine Ark Plan Providers
 
 > Internal/ops reference for the two Volcano Ark subscription providers:
-> `volcengine-coding-plan` and `volcengine-agent-plan`.
+> `volcengine-coding` and `volcengine-agent`.
 
 ## Endpoint structure — they differ, handle them separately
 
-|                            | Coding Plan                                                                   | Agent Plan                                                             |
-| -------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Provider id                | `volcengine-coding-plan`                                                      | `volcengine-agent-plan`                                                |
-| Chat base URL              | `https://ark.cn-beijing.volces.com/api/coding/v3`                             | `https://ark.cn-beijing.volces.com/api/plan/v3`                        |
-| Chat endpoint              | `/api/coding/v3/chat/completions`                                             | `/api/plan/v3/chat/completions`                                        |
-| Responses API              | `/api/coding/v3/responses` (same base)                                        | —                                                                      |
-| `GET /models`              | **YES** — `/api/coding/v3/models` (Bearer key)                                | **NO** — `/api/plan/v3/models` returns 404                             |
-| Registry catalog           | `open-sse/config/providers/registry/volcengine/coding-plan` (12 models)       | `open-sse/config/providers/registry/volcengine/agent-plan` (11 models) |
-| `liveCatalogAuthoritative` | `false` — remote /models catalog is noisy/stale and must not veto curated ids | (n/a — no remote catalog)                                              |
+|                            | Coding Plan                                                                   | Agent Plan                                                        |
+| -------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Provider id                | `volcengine-coding`                                                           | `volcengine-agent`                                                |
+| Chat base URL              | `https://ark.cn-beijing.volces.com/api/coding/v3`                             | `https://ark.cn-beijing.volces.com/api/plan/v3`                   |
+| Chat endpoint              | `/api/coding/v3/chat/completions`                                             | `/api/plan/v3/chat/completions`                                   |
+| Responses API              | `/api/coding/v3/responses` (same base)                                        | —                                                                 |
+| `GET /models`              | **YES** — `/api/coding/v3/models` (Bearer key)                                | **NO** — `/api/plan/v3/models` returns 404                        |
+| Registry catalog           | `open-sse/config/providers/registry/volcengine/coding` (12 models)            | `open-sse/config/providers/registry/volcengine/agent` (11 models) |
+| `liveCatalogAuthoritative` | `false` — remote /models catalog is noisy/stale and must not veto curated ids | (n/a — no remote catalog)                                         |
 
 Using the wrong base URL returns `401` even with a valid key (the standard `/api/v3`
 endpoint does NOT serve plan keys; the plans do NOT serve standard keys). Volcengine
@@ -40,7 +40,7 @@ were live-verified against OmniRoute 2026-09-27 (real Coding Plan key, 200):
 So both registry URLs are correct — `baseUrl` serves chat-format clients and
 `responsesBaseUrl` serves Responses/Codex clients; the executor switches on the
 `_omnirouteForceResponsesUpstream` marker (see `open-sse/executors/default.ts`
-`case "volcengine-coding-plan"`). Official docs recommend Responses for best
+`case "volcengine-coding"`). Official docs recommend Responses for best
 reasoning quality.
 
 ## Two auth styles for the same provider id
