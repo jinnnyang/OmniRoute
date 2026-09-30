@@ -54,7 +54,6 @@ import { refreshGitHubToken } from "./tokenRefresh/providers/github.ts";
 import { refreshCopilotToken } from "./tokenRefresh/providers/copilot.ts";
 
 export {
-  refreshCodebuddyCnToken,
   refreshClineToken,
   refreshKimiCodingToken,
   refreshClaudeOAuthToken,
