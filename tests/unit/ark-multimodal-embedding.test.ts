@@ -1,5 +1,5 @@
 /**
- * Ark multimodal embeddings (#volcengine-coding-plan-builtin).
+ * Ark multimodal embeddings (#volcengine-coding-builtin).
  *
  * Live-verified upstream contract (2026-08-31, ark.cn-beijing.volces.com
  * /api/coding/v3):
@@ -28,7 +28,7 @@ const ARK_BASE = "https://ark.cn-beijing.volces.com/api/coding/v3/embeddings";
 
 function arkProvider() {
   return {
-    id: "volcengine-coding-plan",
+    id: "volcengine-coding",
     baseUrl: ARK_BASE,
     authType: "apikey",
     authHeader: "bearer",
@@ -119,10 +119,10 @@ test("rejects non-image media: Ark multimodal embeddings are text+image only", a
   );
 });
 
-test("registry: volcengine-coding-plan resolves (incl. vecp alias) with the live-verified vision model", async () => {
+test("registry: volcengine-coding resolves (incl. vecp alias) with the live-verified vision model", async () => {
   const registry = await import("../../open-sse/config/embeddingRegistry.ts");
-  const provider = registry.getEmbeddingProvider("volcengine-coding-plan");
-  assert.ok(provider, "volcengine-coding-plan must be a registered embedding provider");
+  const provider = registry.getEmbeddingProvider("volcengine-coding");
+  assert.ok(provider, "volcengine-coding must be a registered embedding provider");
   assert.equal(provider.structuredInputProtocol, "ark-multimodal");
   assert.equal(provider.baseUrl, ARK_BASE);
   const vision = provider.models.find((m) => m.id === "doubao-embedding-vision-250615");

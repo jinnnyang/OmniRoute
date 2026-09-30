@@ -172,7 +172,7 @@ test("isClientAbortError matches the hedge-cancelled production crash signature"
 //
 //   Error: Request exceeded OmniRoute's local rate-limit execution expiration
 //          (legacy resilienceSettings.requestQueue.maxWaitMs=15000ms) for
-//          volcengine-coding-plan/glm-5.3-flash
+//          volcengine-coding/glm-5.3-flash
 //     code: 'RATE_LIMIT_EXECUTION_TIMEOUT', status: 504
 //     [cause]: Error: This job timed out after 15000 ms.
 //         at doExpire ... at listOnTimeout
@@ -190,7 +190,7 @@ function makeRateLimitExpiryError(maxWaitMs = 15000) {
     new Error(
       `Request exceeded OmniRoute's local rate-limit execution expiration ` +
         `(legacy resilienceSettings.requestQueue.maxWaitMs=${maxWaitMs}ms) for ` +
-        `volcengine-coding-plan/glm-5.3-flash. Bottleneck applies this deadline only ` +
+        `volcengine-coding/glm-5.3-flash. Bottleneck applies this deadline only ` +
         `after dispatch; it does not bound queue wait and is not an upstream-generated timeout.`
     ),
     {

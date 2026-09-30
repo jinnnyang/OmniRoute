@@ -101,14 +101,14 @@ test("detectFormatFromEndpoint: /v1beta/models generateContent → openai even w
   // Body as chatCore actually sees it: the route's Gemini→OpenAI conversion
   // output (messages + max_tokens, no stream_options/response_format).
   const body = {
-    model: "volcengine-coding-plan/glm-5.3-flash",
+    model: "volcengine-coding/glm-5.3-flash",
     messages: [{ role: "user", content: "hi" }],
     max_tokens: 500,
   };
   assert.equal(
     detectFormatFromEndpoint(
       body,
-      "/api/v1beta/models/volcengine-coding-plan/glm-5.3-flash:generateContent"
+      "/api/v1beta/models/volcengine-coding/glm-5.3-flash:generateContent"
     ),
     "openai"
   );

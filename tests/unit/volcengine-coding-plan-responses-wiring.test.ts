@@ -31,8 +31,8 @@ const { getRegistryEntry } = await import("../../open-sse/config/providerRegistr
 const CHAT_URL = "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions";
 const RESPONSES_URL = "https://ark.cn-beijing.volces.com/api/coding/v3/responses";
 
-test("registry: volcengine-coding-plan carries responsesBaseUrl + liveCatalogAuthoritative:false", () => {
-  const entry = getRegistryEntry("volcengine-coding-plan");
+test("registry: volcengine-coding carries responsesBaseUrl + liveCatalogAuthoritative:false", () => {
+  const entry = getRegistryEntry("volcengine-coding");
   assert.ok(entry, "builtin entry must exist");
   assert.equal(entry.baseUrl, CHAT_URL);
   assert.equal(entry.responsesBaseUrl, RESPONSES_URL);
@@ -59,13 +59,13 @@ test("registry: volcengine-coding-plan carries responsesBaseUrl + liveCatalogAut
 });
 
 test("buildUrl: no marker → chat/completions (regression guard)", () => {
-  const executor = new DefaultExecutor("volcengine-coding-plan");
+  const executor = new DefaultExecutor("volcengine-coding");
   const url = executor.buildUrl("glm-5.3", false, 0, { apiKey: "k" });
   assert.equal(url, CHAT_URL);
 });
 
 test("buildUrl: marker → /responses", () => {
-  const executor = new DefaultExecutor("volcengine-coding-plan");
+  const executor = new DefaultExecutor("volcengine-coding");
   const url = executor.buildUrl("glm-5.3", false, 0, {
     apiKey: "k",
     providerSpecificData: { _omnirouteForceResponsesUpstream: true },
@@ -79,7 +79,7 @@ test("resolveExecutionCredentials: resolved openai-responses targetFormat inject
     nativeCodexPassthrough: false,
     endpointPath: "/v1/responses",
     targetFormat: "openai-responses",
-    provider: "volcengine-coding-plan",
+    provider: "volcengine-coding",
     ccSessionId: null,
   }) as { providerSpecificData: Record<string, unknown> };
   assert.equal(out.providerSpecificData._omnirouteForceResponsesUpstream, true);
@@ -91,14 +91,14 @@ test("resolveExecutionCredentials: plain openai targetFormat leaves no marker", 
     nativeCodexPassthrough: false,
     endpointPath: "/v1/chat/completions",
     targetFormat: "openai",
-    provider: "volcengine-coding-plan",
+    provider: "volcengine-coding",
     ccSessionId: null,
   }) as { providerSpecificData: Record<string, unknown> };
   assert.notEqual(out.providerSpecificData._omnirouteForceResponsesUpstream, true);
 });
 
 test("lockstep (e2e unit): marker injection → buildUrl /responses, removal → chat/completions", () => {
-  const executor = new DefaultExecutor("volcengine-coding-plan");
+  const executor = new DefaultExecutor("volcengine-coding");
   // The DB-override path resolves through chatCore to the same resolved
   // targetFormat; resolveExecutionCredentials is the shared funnel for both
   // sources, so simulating the resolved value exercises the full contract.
@@ -107,7 +107,7 @@ test("lockstep (e2e unit): marker injection → buildUrl /responses, removal →
     nativeCodexPassthrough: false,
     endpointPath: "/v1/responses",
     targetFormat: "openai-responses",
-    provider: "volcengine-coding-plan",
+    provider: "volcengine-coding",
     ccSessionId: null,
   });
   const responsesUrl = executor.buildUrl(
@@ -123,7 +123,7 @@ test("lockstep (e2e unit): marker injection → buildUrl /responses, removal →
     nativeCodexPassthrough: false,
     endpointPath: "/v1/chat/completions",
     targetFormat: "openai",
-    provider: "volcengine-coding-plan",
+    provider: "volcengine-coding",
     ccSessionId: null,
   });
   const chatUrl = executor.buildUrl(

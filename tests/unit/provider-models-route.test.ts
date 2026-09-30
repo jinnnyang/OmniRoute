@@ -1781,8 +1781,8 @@ test("provider models route uses provider-specific auth headers for Kimi Coding"
   );
 });
 
-test("provider models route uses registry base URL for volcengine-coding-plan when baseUrl is empty (#volcengine-plan-vN)", async () => {
-  const connection = await seedConnection("volcengine-coding-plan", {
+test("provider models route uses registry base URL for volcengine-coding when baseUrl is empty (#volcengine-plan-vN)", async () => {
+  const connection = await seedConnection("volcengine-coding", {
     apiKey: "ark-test-key",
     // No providerSpecificData.baseUrl — the registry base URL must be used.
     providerSpecificData: { autoFetchModels: true },
@@ -1809,8 +1809,8 @@ test("provider models route uses registry base URL for volcengine-coding-plan wh
   );
 });
 
-test("provider models route falls back to curated local catalog for volcengine-agent-plan (no /models endpoint) (#volcengine-plan-vN)", async () => {
-  const connection = await seedConnection("volcengine-agent-plan", {
+test("provider models route falls back to curated local catalog for volcengine-agent (no /models endpoint) (#volcengine-plan-vN)", async () => {
+  const connection = await seedConnection("volcengine-agent", {
     apiKey: "ark-agent-key",
     providerSpecificData: { autoFetchModels: true },
   });
