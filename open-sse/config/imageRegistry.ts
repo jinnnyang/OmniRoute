@@ -878,6 +878,35 @@ export const IMAGE_PROVIDERS: Record<string, ImageProviderConfig> = {
     supportedSizes: ["1024x1024", "2048x2048"],
   },
   aihorde: AI_HORDE_IMAGE_PROVIDER,
+
+  // Volcengine Agent Plan 视觉模型（图片生成）。端点 /api/plan/v3/images/generations 为
+  // OpenAI 兼容形态，但图生图输入用 `image` 字段（单图字符串/多图数组）而非 image_url，
+  // 且带火山专属 output_format/watermark 控制，故用专属 volcengine-image format
+  // （见 imageGeneration.ts 的 handleVolcengineImageGeneration）。凭据复用
+  // volcengine-agent chat 连接（Agent Plan 专属 API Key）。模型 ID 为 Agent Plan
+  // unversioned 别名（控制台视觉模型页 2026-10 核对；若上游 404 可尝试带日期后缀版本）。
+  // 分辨率能力以官方能力表为准：2K/3K/4K。
+  "volcengine-agent": {
+    id: "volcengine-agent",
+    baseUrl: "https://ark.cn-beijing.volces.com/api/plan/v3/images/generations",
+    authType: "apikey",
+    authHeader: "bearer",
+    format: "volcengine-image",
+    models: [
+      {
+        id: "doubao-seedream-5.0-pro",
+        name: "Seedream 5.0 Pro (Agent Plan)",
+        inputModalities: ["text", "image"],
+      },
+      {
+        id: "doubao-seedream-5.0-lite",
+        name: "Seedream 5.0 Lite (Agent Plan)",
+        inputModalities: ["text", "image"],
+        description: "官方标注即将下线",
+      },
+    ],
+    supportedSizes: ["2K", "3K", "4K"],
+  },
 };
 
 /**
@@ -925,7 +954,10 @@ export function parseImageModel(modelStr) {
 
   // No provider prefix — try to find the model in every provider, excluding cookie-auth (web) bridges
   for (const [providerId, config] of Object.entries(IMAGE_PROVIDERS)) {
-    if (config.authHeader !== "cookie" && (config.routingAliases?.includes(modelStr) || config.models.some((m) => m.id === modelStr))) {
+    if (
+      config.authHeader !== "cookie" &&
+      (config.routingAliases?.includes(modelStr) || config.models.some((m) => m.id === modelStr))
+    ) {
       return { provider: providerId, model: modelStr };
     }
   }

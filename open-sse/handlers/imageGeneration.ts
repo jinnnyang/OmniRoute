@@ -759,6 +759,17 @@ export async function handleImageGeneration({
     });
   }
 
+  if (providerConfig.format === "volcengine-image") {
+    return handleVolcengineImageGeneration({
+      model,
+      provider,
+      providerConfig,
+      body,
+      credentials,
+      log,
+    });
+  }
+
   return handleOpenAIImageGeneration({ model, provider, providerConfig, body, credentials, log });
 }
 
@@ -1289,6 +1300,108 @@ async function handleOpenAIImageGeneration({
         ? result.error.slice(0, 500)
         : null,
     requestBody: logRequestBody,
+    responseBody: result.success ? { images_count: result.data?.data?.length || 0 } : null,
+  }).catch(() => {});
+
+  return result;
+}
+
+/**
+ * Volcengine Agent Plan image generation (doubao-seedream).
+ *
+ * The Agent Plan images endpoint (/api/plan/v3/images/generations) is
+ * OpenAI-compatible for the basic fields (model/prompt/size/n/response_format)
+ * but differs in two ways: (1) image-to-image / multi-image input uses the
+ * `image` field (single URL string or array of URLs) instead of `image_url`;
+ * (2) it adds Volcengine-specific `output_format` (png/jpeg) and `watermark`
+ * controls, which the generic OpenAI handler drops. So this dedicated handler
+ * forwards both. Credentials reuse the volcengine-agent chat connection
+ * (Agent Plan-specific API key).
+ */
+async function handleVolcengineImageGeneration({
+  model,
+  provider,
+  providerConfig,
+  body,
+  credentials,
+  log,
+}) {
+  const startTime = Date.now();
+
+  const token = credentials?.apiKey || credentials?.accessToken;
+  if (!token) {
+    return saveImageErrorResult({
+      provider,
+      model,
+      status: 401,
+      startTime,
+      error: "Volcengine Agent Plan API key is required",
+    });
+  }
+
+  const upstreamBody: Record<string, unknown> = {
+    model,
+    prompt: body.prompt,
+  };
+
+  // OpenAI-compatible passthrough fields.
+  if (body.n !== undefined) upstreamBody.n = body.n;
+  if (body.size !== undefined) upstreamBody.size = body.size;
+  if (body.response_format !== undefined) upstreamBody.response_format = body.response_format;
+
+  // Volcengine-specific controls (dropped by the generic OpenAI handler).
+  if (body.output_format !== undefined) upstreamBody.output_format = body.output_format;
+  if (body.watermark !== undefined) upstreamBody.watermark = body.watermark;
+
+  // Image-to-image / multi-image input: upstream `image` accepts a single URL
+  // string or an array of URLs. OmniRoute callers may pass image_url / image /
+  // imageUrls / image_urls (or messages content parts) — normalize to `image`.
+  const { imageUrls } = extractImageInputs(body);
+  if (imageUrls.length > 0) {
+    upstreamBody.image = imageUrls.length === 1 ? imageUrls[0] : imageUrls;
+  }
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+
+  if (log) {
+    const promptPreview = String(body.prompt ?? "").slice(0, 60);
+    log.info(
+      "IMAGE",
+      `${provider}/${model} | prompt: "${promptPreview}..." | size: ${body.size || "default"} | images: ${imageUrls.length}`
+    );
+  }
+
+  const result = await fetchImageEndpoint(
+    providerConfig.baseUrl,
+    headers,
+    JSON.stringify(upstreamBody),
+    provider,
+    log
+  );
+
+  saveCallLog({
+    method: "POST",
+    path: "/v1/images/generations",
+    status: result.status || (result.success ? 200 : 502),
+    model: `${provider}/${model}`,
+    provider,
+    duration: Date.now() - startTime,
+    tokens: { prompt_tokens: 0, completion_tokens: 0 },
+    error: result.success
+      ? null
+      : typeof result.error === "string"
+        ? result.error.slice(0, 500)
+        : null,
+    requestBody: {
+      model: body.model,
+      prompt: String(body.prompt ?? "").slice(0, 200),
+      size: body.size || "default",
+      n: body.n || 1,
+      images: imageUrls.length,
+    },
     responseBody: result.success ? { images_count: result.data?.data?.length || 0 } : null,
   }).catch(() => {});
 
