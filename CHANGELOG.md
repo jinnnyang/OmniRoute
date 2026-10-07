@@ -4,6 +4,22 @@
 
 ---
 
+## [3.8.57] — 2026-10-07
+
+### ✨ New Features
+
+- **feat(embeddings):** register the Volcengine Ark **Agent Plan** vectorized model (`volcengine-agent` provider over `/api/plan/v3`) alongside the existing Coding Plan surface, both exposing the suffix-less `doubao-embedding-vision` (multimodal text+image, live-verified 2026-10-07). Version-suffixed ids (`-250615` / `-251215`) normalize to the suffix-less id via `EMBEDDING_MODEL_ALIASES`, so earlier clients keep working. The shared model definition is deduplicated into `DOUBAO_EMBEDDING_VISION`, and the `vecp` provider alias is removed — use `volcengine-coding/<model>` or `volcengine-agent/<model>` directly.
+- **feat(api):** add the `volcengine-agent` image generation provider (Seedream 5.0).
+- **feat(providers):** shorten the Volcengine plan provider ids (`volcengine-coding-plan` → `volcengine-coding`, `volcengine-agent-plan` → `volcengine-agent`); new DB migration renames existing connections so model discovery keeps working against the plan base URLs.
+
+### 🐛 Bug Fixes
+
+- **fix(auth):** honor `forcedConnectionId` — pinned combo steps no longer rotate accounts.
+- **fix(combo):** DRR now rotates on unweighted quota-share combos instead of pinning the first target.
+- **fix(sse):** gate `previous_response_id` virtualization to auto mode, unshadowing the strip path.
+
+---
+
 ## [3.8.56] — 2026-09-28
 
 ### ✨ New Features
