@@ -56,7 +56,7 @@ Repository map and Reference Documentation sections below.
 | Translators   | `open-sse/translator/`  | Format conversion (OpenAI↔Claude↔Gemini)                                                                                                                                  |
 | Transformer   | `open-sse/transformer/` | Responses API ↔ Chat Completions                                                                                                                                          |
 | Services      | `open-sse/services/`    | Combo routing, rate limits, caching, etc                                                                                                                                  |
-| Database      | `src/lib/db/`           | SQLite domain modules (160 migrations)                                                                                                                                    |
+| Database      | `src/lib/db/`           | SQLite domain modules (161 migrations)                                                                                                                                    |
 | Domain/Policy | `src/domain/`           | Policy engine, cost rules, fallback logic                                                                                                                                 |
 | MCP Server    | `open-sse/mcp-server/`  | 110 tools (44 canonical + memory/skill/GitHub/pool/gamification/plugin/Notion/Obsidian/local-corpus/RTK modules), 3 transports (stdio / SSE / Streamable HTTP), 33 scopes |
 | A2A Server    | `src/lib/a2a/`          | JSON-RPC 2.0 agent protocol                                                                                                                                               |
@@ -366,7 +366,7 @@ Documentation must describe verified behavior, not plausible behavior.
 
 ### Adding a New A2A Skill
 
-1. Create skill in `src/lib/a2a/skills/` (5 already exist: smart-routing, quota-management, provider-discovery, cost-analysis, health-report)
+1. Create skill in `src/lib/a2a/skills/` (6 already exist: smart-routing, quota-management, provider-discovery, cost-analysis, health-report, list-capabilities)
 2. Skill receives task context (messages, metadata) → returns structured result
 3. Register in `A2A_SKILL_HANDLERS` in `src/lib/a2a/taskExecution.ts`
 4. Expose in `src/app/.well-known/agent.json/route.ts` (Agent Card)
@@ -375,7 +375,7 @@ Documentation must describe verified behavior, not plausible behavior.
 
 ### Adding a New Cloud Agent
 
-1. Create agent class in `src/lib/cloudAgent/agents/` extending `CloudAgentBase` (3 already exist: codex-cloud, devin, jules)
+1. Create agent class in `src/lib/cloudAgent/agents/` extending `CloudAgentBase` (4 already exist: codex-cloud, cursor, devin, jules)
 2. Implement `createTask`, `getStatus`, `approvePlan`, `sendMessage`, `listSources`
 3. Register in `src/lib/cloudAgent/registry.ts`
 4. Add OAuth/credentials handling if needed (`src/lib/oauth/providers/`)
