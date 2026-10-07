@@ -65,6 +65,19 @@ export function buildDynamicEmbeddingProvider(node: EmbeddingProviderNodeRow): E
   };
 }
 
+/**
+ * Doubao Embedding Vision, shared by both Volcengine plan surfaces (Coding
+ * Plan + Agent Plan). Suffix-less id: both plan endpoints accept it and route
+ * to the current version; version-suffixed ids normalize via
+ * EMBEDDING_MODEL_ALIASES below.
+ */
+const DOUBAO_EMBEDDING_VISION: EmbeddingModel = {
+  id: "doubao-embedding-vision",
+  name: "Doubao Embedding Vision",
+  dimensions: 2048,
+  modalities: ["text", "image"],
+};
+
 export const EMBEDDING_PROVIDERS: Record<string, EmbeddingProvider> = {
   cohere: {
     id: "cohere",
@@ -410,33 +423,37 @@ export const EMBEDDING_PROVIDERS: Record<string, EmbeddingProvider> = {
   },
 
   // Volcengine Ark Coding Plan (#volcengine-coding-builtin). Live-verified
-  // 2026-08-31: the standard /embeddings endpoint is OpenAI-shaped and batches
-  // string[] into N vectors; /embeddings/multimodal fuses a canonical part
-  // array into ONE vector and returns data as an object. Plain string[] inputs
-  // therefore hit baseUrl directly (true batching); structured input is routed
-  // through the ark-multimodal translator in embeddingStructuredInput.ts.
+  // 2026-08-31: string[] hits baseUrl directly (true batching); structured
+  // input routes through the ark-multimodal translator in
+  // embeddingStructuredInput.ts.
   "volcengine-coding": {
     id: "volcengine-coding",
     structuredInputProtocol: "ark-multimodal",
     baseUrl: "https://ark.cn-beijing.volces.com/api/coding/v3/embeddings",
     authType: "apikey",
     authHeader: "bearer",
-    models: [
-      {
-        id: "doubao-embedding-vision-250615",
-        name: "Doubao Embedding Vision 250615",
-        dimensions: 2048,
-        modalities: ["text", "image"],
-      },
-    ],
+    models: [DOUBAO_EMBEDDING_VISION],
+  },
+
+  // Volcengine Ark Agent Plan. Credentials come from the console bind flow
+  // (volcenginePlanBinding.ts → provider "volcengine-agent", its own API key).
+  // Multimodal verified live 2026-10-07 (text+image, same ark-multimodal
+  // contract as Coding Plan; images must be ≥14px) — official docs only
+  // mention text retrieval, so the probe record lives in
+  // tests/unit/ark-multimodal-embedding.test.ts.
+  "volcengine-agent": {
+    id: "volcengine-agent",
+    structuredInputProtocol: "ark-multimodal",
+    baseUrl: "https://ark.cn-beijing.volces.com/api/plan/v3/embeddings",
+    authType: "apikey",
+    authHeader: "bearer",
+    models: [DOUBAO_EMBEDDING_VISION],
   },
 };
 
 const EMBEDDING_PROVIDER_ALIASES: Record<string, string> = {
   jina: "jina-ai",
   voyage: "voyage-ai",
-  // Builtin Volcengine Coding Plan chat provider prefix (volcengine-coding).
-  vecp: "volcengine-coding",
   // The dashboard stores LM Studio connections under the hyphenated provider
   // id "lm-studio" while the embedding registry keys the provider "lmstudio"
   // (#11233). Alias the dashboard id so "lm-studio/<model>" resolves instead
@@ -447,6 +464,12 @@ const EMBEDDING_PROVIDER_ALIASES: Record<string, string> = {
 /** Family name used by clients; Jina's public SKU is omni-small. */
 const EMBEDDING_MODEL_ALIASES: Record<string, string> = {
   "jina-embeddings-v5-omni": "jina-embeddings-v5-omni-small",
+  // Doubao Embedding Vision: the registry exposes the suffix-less id
+  // "doubao-embedding-vision" (both plan endpoints accept it and route to the
+  // current version). Version-suffixed ids from earlier clients normalize to
+  // the suffix-less id so the upstream body stays suffix-free.
+  "doubao-embedding-vision-250615": "doubao-embedding-vision",
+  "doubao-embedding-vision-251215": "doubao-embedding-vision",
   // Live native catalog is gemini/gemini-embedding-2. Clients that send the
   // OpenRouter-style google/ prefix still resolve to the Gemini provider —
   // do not steal a custom provider_node whose prefix is `google`.

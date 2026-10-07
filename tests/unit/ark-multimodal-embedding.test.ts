@@ -42,7 +42,7 @@ test("translates canonical items to Ark's multimodal part-list contract (one fus
     await import("../../open-sse/handlers/embeddingStructuredInput.ts");
   const prepared = await prepareStructuredEmbeddingRequest(
     arkProvider(),
-    "doubao-embedding-vision-250615",
+    "doubao-embedding-vision",
     {
       input: [
         { type: "text", text: "caption" },
@@ -63,7 +63,7 @@ test("translates canonical items to Ark's multimodal part-list contract (one fus
   // URL-sourced media is fetched and inlined as a data URI so the shared
   // 16 MiB aggregate cap stays enforceable on OmniRoute's side.
   assert.deepEqual(prepared.body, {
-    model: "doubao-embedding-vision-250615",
+    model: "doubao-embedding-vision",
     input: [
       { type: "text", text: "caption" },
       { type: "image_url", image_url: { url: "data:image/png;base64,aW1n" } },
@@ -77,7 +77,7 @@ test("normalizes Ark's single-object data payload into OpenAI shape", async () =
     await import("../../open-sse/handlers/embeddingStructuredInput.ts");
   const prepared = await prepareStructuredEmbeddingRequest(
     arkProvider(),
-    "doubao-embedding-vision-250615",
+    "doubao-embedding-vision",
     { input: [{ type: "text", text: "caption" }] },
     "ark-token",
     { fetchMedia: async () => ({ buffer: Buffer.from("img"), contentType: "image/png" }) }
@@ -105,7 +105,7 @@ test("rejects non-image media: Ark multimodal embeddings are text+image only", a
   await assert.rejects(
     prepareStructuredEmbeddingRequest(
       arkProvider(),
-      "doubao-embedding-vision-250615",
+      "doubao-embedding-vision",
       {
         input: [
           { type: "text", text: "caption" },
@@ -119,14 +119,45 @@ test("rejects non-image media: Ark multimodal embeddings are text+image only", a
   );
 });
 
-test("registry: volcengine-coding resolves (incl. vecp alias) with the live-verified vision model", async () => {
+test("registry: volcengine-coding resolves with the suffix-less vision model", async () => {
   const registry = await import("../../open-sse/config/embeddingRegistry.ts");
   const provider = registry.getEmbeddingProvider("volcengine-coding");
   assert.ok(provider, "volcengine-coding must be a registered embedding provider");
   assert.equal(provider.structuredInputProtocol, "ark-multimodal");
   assert.equal(provider.baseUrl, ARK_BASE);
-  const vision = provider.models.find((m) => m.id === "doubao-embedding-vision-250615");
-  assert.ok(vision, "doubao-embedding-vision-250615 must be listed");
+  const vision = provider.models.find((m) => m.id === "doubao-embedding-vision");
+  assert.ok(vision, "doubao-embedding-vision must be listed (suffix-less)");
   assert.equal(vision.dimensions, 2048, "dims verified live on 2026-08-31");
   assert.ok(vision.modalities?.includes("image"));
+});
+
+test("registry: volcengine-agent resolves with the same suffix-less vision model (multimodal live-verified)", async () => {
+  const registry = await import("../../open-sse/config/embeddingRegistry.ts");
+  const provider = registry.getEmbeddingProvider("volcengine-agent");
+  assert.ok(provider, "volcengine-agent must be a registered embedding provider");
+  assert.equal(provider.structuredInputProtocol, "ark-multimodal");
+  assert.equal(provider.baseUrl, "https://ark.cn-beijing.volces.com/api/plan/v3/embeddings");
+  const vision = provider.models.find((m) => m.id === "doubao-embedding-vision");
+  assert.ok(vision, "volcengine-agent must list doubao-embedding-vision");
+  assert.equal(vision.dimensions, 2048);
+  // Live-verified 2026-10-07 with a real Agent Plan key: /embeddings/multimodal
+  // accepts text+image parts (min image dimension 14px) and returns the same
+  // fused-vector object contract as Coding Plan.
+  assert.ok(vision.modalities?.includes("image"), "Agent Plan supports image embedding (verified)");
+});
+
+test("registry: version-suffixed doubao-embedding-vision ids normalize to the suffix-less id", async () => {
+  const registry = await import("../../open-sse/config/embeddingRegistry.ts");
+  for (const suffix of ["-250615", "-251215"]) {
+    const parsed = registry.parseEmbeddingModel(
+      `volcengine-coding/doubao-embedding-vision${suffix}`
+    );
+    assert.equal(parsed.provider, "volcengine-coding");
+    assert.equal(parsed.model, "doubao-embedding-vision", `${suffix} must normalize away`);
+  }
+  const agentParsed = registry.parseEmbeddingModel(
+    "volcengine-agent/doubao-embedding-vision-251215"
+  );
+  assert.equal(agentParsed.provider, "volcengine-agent");
+  assert.equal(agentParsed.model, "doubao-embedding-vision");
 });

@@ -412,7 +412,7 @@ export function composeVisionPrompt(
  */
 /**
  * Default usage_history writer for bridge describe attempts
- * (#vision-bridge-health): provider is stored CANONICALLY (vecp ->
+ * (#vision-bridge-health): provider is stored CANONICALLY (e.g.
  * volcengine-coding) so the rows join the same `${provider}/${model}`
  * keys getModelLatencyStats aggregates for auto-combo routing. Best-effort:
  * a persistence failure must never fail (or slow down) a describe result.
