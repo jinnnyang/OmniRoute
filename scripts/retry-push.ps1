@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Continue'
 $prevSha = ''
 for ($i = 1; $i -le 12; $i++) {
     Write-Output "=== push round $i $(Get-Date -Format 'HH:mm:ss') ==="
-    $out = docker push jinnnyang/omniroute:3.8.56 2>&1
+    $out = docker push jinnnyang/omniroute:3.8.57 2>&1
     $out | Select-Object -Last 1
     if ($LASTEXITCODE -eq 0) {
         Write-Output "PUSH COMPLETE on round $i"
