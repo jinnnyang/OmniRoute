@@ -516,6 +516,25 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
   },
 
+  // ── Xiaomi MiMo V2.6 (native multimodal, per vendor docs) ──
+  // Both mimo-v2.6-pro and mimo-v2.6-flash are native multimodal (accept
+  // image and video input) per Xiaomi's official docs — unlike the V2.5
+  // *-pro chat models which are text-only. Synced catalogs did not carry a
+  // vision marker, so without this entry the Vision Bridge treated them as
+  // text-only and rerouted image requests to a (possibly stale) vision model.
+  "mimo-v2.6-pro": {
+    maxOutputTokens: 131072,
+    contextWindow: 1048576,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "mimo-v2.6-flash": {
+    maxOutputTokens: 131072,
+    contextWindow: 1048576,
+    supportsTools: true,
+    supportsVision: true,
+  },
+
   // ── Xiaomi MiMo V2.5 (1M context, consensus across 7+ sync sources) ──
   // Vision: ONLY mimo-v2.5 and mimo-v2-omni accept images per Xiaomi's docs
   // (mimo.mi.com .../image-understanding). The *-pro chat models are TEXT-ONLY;

@@ -34,6 +34,7 @@ export const VISION_MODEL_ID_FRAGMENTS = [
   "minicpm-v",
   "moondream",
   "mimo-vl",
+  "mimo-v2.6",
   "kimi-vl",
   "glm-4v",
   "glm-4.5v",
