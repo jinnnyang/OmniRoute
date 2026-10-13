@@ -371,6 +371,7 @@ type PatchState = {
   originalFetch: typeof globalThis.fetch;
   proxyContext: AsyncLocalStorage<unknown>;
   tlsFingerprintContext?: AsyncLocalStorage<TlsFingerprintStore>;
+  headersTimeoutContext: AsyncLocalStorage<number | undefined>;
   isPatched: boolean;
 };
 
@@ -388,6 +389,7 @@ function getPatchState(): PatchState {
       originalFetch: globalThis.fetch,
       proxyContext: new AsyncLocalStorage(),
       tlsFingerprintContext: new AsyncLocalStorage(),
+      headersTimeoutContext: new AsyncLocalStorage<number | undefined>(),
       isPatched: false,
     };
   }
@@ -710,6 +712,20 @@ export function runWithDirectFetchContext<T>(fn: () => T): T {
 }
 
 /**
+ * Run a request with a custom response-start (headers) timeout.
+ *
+ * Use this for long-running synchronous APIs (e.g. image generation) that take
+ * >30s to return response headers, where the global 30s default would falsely
+ * time out. The overall fetch timeout is still controlled by fetchWithTimeout.
+ *
+ * @param timeoutMs Headers timeout in milliseconds. Pass 0 or undefined to reset to global default.
+ */
+export function runWithHeadersTimeout<T>(timeoutMs: number | undefined, fn: () => T): T {
+  const state = getPatchState();
+  return state.headersTimeoutContext.run(timeoutMs, fn);
+}
+
+/**
  * Like {@link runWithProxyContext}, but if the assigned proxy is unreachable or fails
  * its pre-checks the request can degrade to a DIRECT connection instead of throwing.
  *
@@ -818,7 +834,15 @@ async function patchedFetch(
     const _nativeFallback =
       (deps.nativeFetch as FetchWithDispatcher | undefined) ?? originalFetchWithDispatcher;
     let lastDispatcherError: unknown = null;
-    const directHeadersTimeoutMs = resolveDirectHeadersTimeoutMs();
+    // Allow callers to override the response-start timeout per-request via
+    // runWithHeadersTimeout() context. Image generation endpoints are synchronous
+    // blocking APIs that may take 30-60s+ to return headers; other streaming
+    // endpoints rely on the short default (30s) to detect dead keep-alive sockets.
+    const contextHeadersTimeoutMs = getPatchState().headersTimeoutContext.getStore();
+    const directHeadersTimeoutMs =
+      typeof contextHeadersTimeoutMs === "number" && contextHeadersTimeoutMs > 0
+        ? contextHeadersTimeoutMs
+        : resolveDirectHeadersTimeoutMs();
     let targetHostForLogs = "";
     try {
       targetHostForLogs = new URL(targetUrl).host;
