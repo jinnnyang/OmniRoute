@@ -209,6 +209,7 @@ export async function getUnifiedModelsResponse(
         hideAutoCombos:
           settingsForAuth?.hideAutoCombos === true || settingsForAuth?.autoRoutingEnabled === false,
         hideNoThinkVariants: settingsForAuth?.hideNoThinkVariants === true,
+        hideNoauthProviders: settingsForAuth?.hideNoauthProviders === true,
         scheduleBackgroundRefresh: options.scheduleBackgroundRefresh,
       }
     );
@@ -449,10 +450,15 @@ async function buildUnifiedModelsResponseCore(
     }
 
     // noAuth providers have no DB rows; settings.blockedProviders disables them.
-    for (const p of Object.values(NOAUTH_PROVIDERS)) {
-      if (isNoAuthProviderBlocked(blockedProviders, p.id, "alias" in p ? p.alias : null)) continue;
-      activeAliases.add(p.id);
-      if ("alias" in p && typeof p.alias === "string") activeAliases.add(p.alias);
+    // When settings.hideNoauthProviders is on, skip injection entirely — the operator
+    // only wants providers with an explicit DB connection to appear in the catalog.
+    if (settings.hideNoauthProviders !== true) {
+      for (const p of Object.values(NOAUTH_PROVIDERS)) {
+        if (isNoAuthProviderBlocked(blockedProviders, p.id, "alias" in p ? p.alias : null))
+          continue;
+        activeAliases.add(p.id);
+        if ("alias" in p && typeof p.alias === "string") activeAliases.add(p.alias);
+      }
     }
 
     // #9147 follow-up: this is called ~1-3x per model at catalog scale (providerSupportsModel,

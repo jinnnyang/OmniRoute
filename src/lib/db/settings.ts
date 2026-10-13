@@ -249,6 +249,12 @@ export async function getSettings() {
     // #9418: Opt-in filter that hides no-think/* gateway variants from the /v1/models catalog.
     // Routing still works for hidden ids sent explicitly.
     hideNoThinkVariants: false,
+    // Opt-in filter that hides all no-auth provider models from the /v1/models catalog.
+    // No-auth providers (duckduckgo-web, cloudflare-playground, etc.) are injected
+    // unconditionally because they need no DB connection — but many are unreachable
+    // from this deployment's region. When enabled, only providers with an explicit
+    // connection/credential appear in the catalog. Routing still works for hidden ids.
+    hideNoauthProviders: false,
     // #6977: Opt-in per-connection auto-ping that warms a Codex OAuth connection's
     // quota window right after it resets, so the first real request doesn't land in
     // a cold window. `connections` maps connection id -> enabled. Default empty map
