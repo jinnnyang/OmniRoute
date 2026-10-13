@@ -98,6 +98,7 @@ export type CatalogCacheOptions = {
   hideAutoCombos?: boolean;
   hideNoThinkVariants?: boolean;
   hideNoauthProviders?: boolean;
+  hideAllProviders?: boolean;
   /**
    * Overrides `CATALOG_STALE_WHILE_REVALIDATE_MS` for this call only.
    *
@@ -162,6 +163,7 @@ function buildCatalogCacheKey(
     hideAutoCombos?: boolean;
     hideNoThinkVariants?: boolean;
     hideNoauthProviders?: boolean;
+    hideAllProviders?: boolean;
   }
 ): string {
   const url = new URL(request.url);
@@ -172,7 +174,8 @@ function buildCatalogCacheKey(
   const hideAuto = catalogSettings?.hideAutoCombos ? "1" : "0";
   const hideNoThink = catalogSettings?.hideNoThinkVariants ? "1" : "0";
   const hideNoauth = catalogSettings?.hideNoauthProviders ? "1" : "0";
-  return `${prefix}|${isCodex}|${fingerprintCatalogAuthKey(apiKey)}|${configuredOnly}|${hideAuto}|${hideNoThink}|${hideNoauth}`;
+  const hideAll = catalogSettings?.hideAllProviders ? "1" : "0";
+  return `${prefix}|${isCodex}|${fingerprintCatalogAuthKey(apiKey)}|${configuredOnly}|${hideAuto}|${hideNoThink}|${hideNoauth}|${hideAll}`;
 }
 
 // Tracks the model-catalog cache version (src/lib/db/readCache.ts) as of the last

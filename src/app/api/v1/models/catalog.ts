@@ -210,6 +210,7 @@ export async function getUnifiedModelsResponse(
           settingsForAuth?.hideAutoCombos === true || settingsForAuth?.autoRoutingEnabled === false,
         hideNoThinkVariants: settingsForAuth?.hideNoThinkVariants === true,
         hideNoauthProviders: settingsForAuth?.hideNoauthProviders === true,
+        hideAllProviders: settingsForAuth?.hideAllProviders === true,
         scheduleBackgroundRefresh: options.scheduleBackgroundRefresh,
       }
     );
@@ -1886,6 +1887,15 @@ async function buildUnifiedModelsResponseCore(
       aliasToProviderId,
       hideNoThinkVariants: settings.hideNoThinkVariants === true,
     });
+
+    // hideAllProviders: only expose combos (user-defined + built-in auto/*),
+    // hide every upstream provider model. Routing still works for hidden ids.
+    if (settings.hideAllProviders === true) {
+      finalModels = finalModels.filter(
+        (m: { owned_by?: string; id?: string }) =>
+          m.owned_by === "combo" || (typeof m.id === "string" && m.id.startsWith("auto/"))
+      );
+    }
 
     const getDefaultContextFallback = (model: any): number | undefined => {
       if (typeof model.context_length === "number") return undefined;

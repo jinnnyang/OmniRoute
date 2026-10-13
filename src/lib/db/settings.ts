@@ -255,6 +255,11 @@ export async function getSettings() {
     // from this deployment's region. When enabled, only providers with an explicit
     // connection/credential appear in the catalog. Routing still works for hidden ids.
     hideNoauthProviders: false,
+    // Opt-in filter that hides ALL upstream provider models from /v1/models —
+    // only combos (user-defined + built-in auto/*) are exposed. Routing still
+    // works for hidden ids sent explicitly. Useful when the operator wants to
+    // present only curated combo endpoints to end users.
+    hideAllProviders: false,
     // #6977: Opt-in per-connection auto-ping that warms a Codex OAuth connection's
     // quota window right after it resets, so the first real request doesn't land in
     // a cold window. `connections` maps connection id -> enabled. Default empty map
