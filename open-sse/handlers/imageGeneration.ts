@@ -58,7 +58,6 @@ import { handleCursorAgentImageGeneration } from "./imageGeneration/providers/cu
 import { handleMinimaxImageGeneration } from "./imageGeneration/providers/minimax.ts";
 import { handleAdobeFireflyImageGeneration } from "./imageGeneration/providers/adobeFirefly.ts";
 import { handleAlibabaImageGeneration } from "./imageGeneration/providers/alibabaImage.ts";
-import { handleAiHordeImageGeneration } from "./imageGeneration/providers/aihorde.ts";
 import {
   applyPollinationsAnonymousFallback,
   reportPollinationsAnonOutcome,
@@ -449,18 +448,6 @@ export async function handleImageGeneration({
       body,
       credentials,
       log,
-    });
-  }
-
-  if (providerConfig.format === "aihorde") {
-    return handleAiHordeImageGeneration({
-      model,
-      provider,
-      providerConfig,
-      body,
-      credentials,
-      log,
-      signal,
     });
   }
 

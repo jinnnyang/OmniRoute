@@ -28,8 +28,8 @@ test("navy is registered as ONE shared pool, never per-model", () => {
   assert.equal(pool.poolKey, "navy-free");
 });
 
-test("ovhcloud and aihorde are keyless (no API key required)", () => {
-  for (const id of ["ovhcloud", "aihorde"]) {
+test("ovhcloud is keyless (no API key required)", () => {
+  for (const id of ["ovhcloud"]) {
     const rows = byProvider(id);
     assert.ok(rows.length > 0, `${id} must be in the free catalog`);
     assert.ok(
@@ -73,14 +73,10 @@ test("kilo free models carry the train-on-prompts warning", () => {
 });
 
 test("new providers are routable and canonically registered", () => {
-  for (const id of ["navy", "aihorde"]) {
+  for (const id of ["navy"]) {
     assert.ok(REGISTRY[id], `${id} must exist in the execution REGISTRY`);
     assert.ok(AI_PROVIDERS[id], `${id} must exist as a canonical provider`);
   }
-  // aihorde reaches the volunteer queue with its documented anonymous key.
-  assert.equal(REGISTRY.aihorde.anonymousApiKey, "0000000000");
-  // The volunteer queue is minutes-slow; the default timeout would abort it.
-  assert.equal(REGISTRY.aihorde.timeoutMs, 120_000);
 });
 
 test("every catalog provider id resolves to a canonical provider", () => {

@@ -15,7 +15,6 @@ import {
   ADOBE_FIREFLY_IMAGE_ROUTING_ALIASES,
   toRegistryImageModels,
 } from "../services/adobeFireflyModels.ts";
-import { AI_HORDE_IMAGE_PROVIDER } from "./providers/registry/aihorde/imageModels.ts";
 
 interface ImageModelEntry {
   id: string;
@@ -877,7 +876,6 @@ export const IMAGE_PROVIDERS: Record<string, ImageProviderConfig> = {
     // still pass supported 4K dimensions through the permissive request schema.
     supportedSizes: ["1024x1024", "2048x2048"],
   },
-  aihorde: AI_HORDE_IMAGE_PROVIDER,
 
   // Volcengine Agent Plan 视觉模型（图片生成）。端点 /api/plan/v3/images/generations 为
   // OpenAI 兼容形态，但图生图输入用 `image` 字段（单图字符串/多图数组）而非 image_url，

@@ -141,7 +141,6 @@ import { liquidProvider } from "./registry/liquid/index.ts";
 import { deepinfraProvider } from "./registry/deepinfra/index.ts";
 import { agyProvider } from "./registry/agy/index.ts";
 import { agnesProvider } from "./registry/agnes/index.ts";
-import { aihordeProvider } from "./registry/aihorde/index.ts";
 import { ainativeProvider } from "./registry/ainative/index.ts";
 import { aionProvider } from "./registry/aion/index.ts";
 import { udioProvider } from "./registry/udio/index.ts";
@@ -409,7 +408,6 @@ export const REGISTRY: Record<string, RegistryEntry> = {
   deepinfra: deepinfraProvider,
   agy: agyProvider,
   agnes: agnesProvider,
-  aihorde: aihordeProvider,
   ainative: ainativeProvider,
   aion: aionProvider,
   udio: udioProvider,

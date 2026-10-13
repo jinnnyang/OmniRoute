@@ -47,7 +47,7 @@ test.after(async () => {
 });
 
 const ALLOWED_NOAUTH_PROVIDERS = ["opencode", "felo-web"];
-const EXCLUDED_NOAUTH_PROVIDERS = ["duckduckgo-web", "theoldllm", "chipotle", "aihorde"];
+const EXCLUDED_NOAUTH_PROVIDERS = ["duckduckgo-web", "theoldllm", "chipotle"];
 
 test("fresh install: the allowlisted no-auth providers are present in the auto-combo pool", async () => {
   const combo = await virtualFactory.createVirtualAutoCombo(undefined);

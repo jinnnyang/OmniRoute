@@ -1,0 +1,1 @@
+- **maintenance(providers):** remove AI Horde provider (unsupported region, no active usage)

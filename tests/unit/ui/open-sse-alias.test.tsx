@@ -18,9 +18,8 @@ describe("open-sse alias resolution", () => {
   });
 
   it("code depending on REGISTRY sees the real entries", () => {
-    // Both are only reachable through REGISTRY: aihorde via anonymousApiKey,
-    // pollinations via authType: "optional". A broken alias yields "required".
-    expect(getCredentialRequirement("aihorde")).toBe("optional");
+    // pollinations is reachable via REGISTRY authType: "optional".
+    // A broken alias yields "required".
     expect(getCredentialRequirement("pollinations")).toBe("optional");
     expect(getCredentialRequirement("groq")).toBe("required");
   });

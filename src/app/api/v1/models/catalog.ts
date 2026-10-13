@@ -22,7 +22,6 @@ import {
   getAllImageModels,
   isRegisteredImageModel,
 } from "@omniroute/open-sse/config/imageRegistry";
-import { aiHordeImageCatalog } from "@omniroute/open-sse/services/aihordeImageCatalog";
 import { getAllRerankModels } from "@omniroute/open-sse/config/rerankRegistry";
 import { getAllAudioModels } from "@omniroute/open-sse/config/audioRegistry";
 import { getAllModerationModels } from "@omniroute/open-sse/config/moderationRegistry";
@@ -1404,14 +1403,6 @@ async function buildUnifiedModelsResponseCore(
     }
 
     // Add image models (filtered by active providers).
-    // AI Horde image workers come and go — refresh the live detector first.
-    if (isProviderActive("aihorde")) {
-      try {
-        await aiHordeImageCatalog.ensureFresh();
-      } catch {
-        // Keep the last good snapshot (or none) if Horde is unreachable.
-      }
-    }
     for (const imgModel of getAllImageModels()) {
       if (!isProviderActive(imgModel.provider)) continue;
       const rawModelId = getSpecialtyModelRelativeId(imgModel.id, imgModel.provider);
