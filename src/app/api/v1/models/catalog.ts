@@ -466,7 +466,7 @@ async function buildUnifiedModelsResponseCore(
       const cacheKey = keys
         .filter((k): k is string => Boolean(k))
         .sort()
-        .join(" ");
+        .join("|");
       const cached = connectionsForProviderCache.get(cacheKey);
       if (cached) return cached;
       const seen = new Set<string>();
