@@ -128,6 +128,10 @@ export const updateSettingsSchema = z.object({
   blockedProviders: z.array(z.string().max(100)).optional(),
   noAuthFallbackDisabledProviders: z.array(z.string().max(100)).optional(),
   hidePaidModels: z.boolean().optional(),
+  hideAutoCombos: z.boolean().optional(),
+  hideNoThinkVariants: z.boolean().optional(),
+  hideNoauthProviders: z.boolean().optional(),
+  hideAllProviders: z.boolean().optional(),
   // STRICT_ZERO_COST (opt-in, default "off"): stricter than hidePaidModels — a
   // candidate must be keyless (no credential exists, so no request against it
   // can ever be billed) OR pass a live, fresh, hard-stop-guaranteed quota

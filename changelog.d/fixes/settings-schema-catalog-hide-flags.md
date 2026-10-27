@@ -1,0 +1,1 @@
+- **fix(settings):** accept `hideAutoCombos`, `hideNoThinkVariants`, `hideNoauthProviders` and `hideAllProviders` in the `PATCH /api/settings` schema; they were silently dropped, so the catalog hide settings could not be saved through the API
