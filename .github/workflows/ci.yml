@@ -663,10 +663,16 @@ jobs:
     needs: build
     env:
       JWT_SECRET: ci-build-secret-with-sufficient-length-for-validation
+      # This repo releases from `less`; check:pack-artifact defaults the release
+      # line to origin/main, which `less` has diverged from.
+      OMNIROUTE_RELEASE_REF: origin/less
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+          # The provenance check runs `git merge-base --is-ancestor`, which needs
+          # history and the origin/less ref (a depth-1 checkout has neither).
+          fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
           node-version: ${{ env.CI_NODE_VERSION }}
