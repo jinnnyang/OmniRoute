@@ -686,6 +686,10 @@ jobs:
       - run: npm run build:cli
       - name: Assert dist/server.js exists
         run: test -f dist/server.js || (echo "dist/server.js missing — build:cli did not assemble correctly" && exit 1)
+      # check:pack-artifact requires dist/BUILD_SHA (provenance). build:cli does not
+      # write it; only build:release does, via this script.
+      - name: Write dist/BUILD_SHA
+        run: node scripts/build/write-build-sha.mjs
       - run: npm run check:pack-artifact
       # WS1.2 (#7065 class): pack the real tarball, install it into a clean prefix and
       # BOOT it to a healthy /api/monitoring/health — the gate that structure checks
