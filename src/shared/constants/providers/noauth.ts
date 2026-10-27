@@ -218,26 +218,6 @@ export const NOAUTH_PROVIDERS = {
       text: "UncloseAI needs no API key. API accepts any non-empty string as key for identification. If older built-in models return 404, use Available Models → Import from /models or Auto-Sync.",
     },
   },
-  aihorde: {
-    id: "aihorde",
-    alias: "horde",
-    name: "AI Horde",
-    icon: "diversity_3",
-    color: "#8B5CF6",
-    textIcon: "AH",
-    website: "https://aihorde.net",
-    noAuth: true,
-    hasFree: true,
-    passthroughModels: true,
-    serviceKinds: ["llm"],
-    authHint:
-      "No API key required — uses AI Horde's documented anonymous key. Adding a free aihorde.net key is optional and only buys higher queue priority (kudos).",
-    freeNote:
-      "Crowdsourced inference from volunteer GPUs. Throughput is a shared queue, not a quota: there is no RPM/RPD cap, but waits grow when the network is busy.",
-    notice: {
-      text: "AI Horde routes to volunteer-run workers, so chat and image jobs can take minutes and tool calling is unavailable. Chat models come from the live oai.aihorde.net catalog. Image models are listed only while Horde reports at least one worker. An optional aihorde.net API key raises queue priority (kudos).",
-    },
-  },
 };
 
 // Provider-level proxy controls are exposed only for transports whose complete

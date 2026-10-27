@@ -28,10 +28,6 @@ export const FREE_APIKEY_PROVIDER_IDS = new Set([
   "auggie",
   // zcode is a local app-server backend; auth stays in the ZCode profile.
   "zcode",
-  // AI Horde works anonymously (`0000000000`) and also accepts a free registered
-  // key for higher queue priority. The no-auth page still enables the provider;
-  // this flag admits an optional apikey connection so that stored key is used.
-  "aihorde",
 ]);
 
 export function supportsApiKeyOnFreeProvider(providerId: unknown): boolean {

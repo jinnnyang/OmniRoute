@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 // Live incident: a real request through /v1/responses to a strict OpenAI-compatible
-// upstream (AI Horde's Aphrodite-backed facade, oai.aihorde.net) got a 500 Internal
+// upstream (the Aphrodite-backed facade AI Horde used to expose) got a 500 Internal
 // Server Error for every message, including the simplest possible single-string
 // input. Root cause: normalizeResponsesInputForChat() always wraps a plain string
 // input as `content: [{ type: "input_text", text: value }]` (array of ONE part),
@@ -16,16 +16,30 @@ import assert from "node:assert/strict";
 // text+file) messages, which must stay arrays.
 const { openaiResponsesToOpenAIRequest } =
   await import("../../open-sse/translator/request/openai-responses.ts");
+const { REGISTRY } = await import("../../open-sse/config/providerRegistry.ts");
+
+// No built-in provider declares `requiresPlainStringContent` any more, so the
+// collapse path is exercised through a provider registered just for this file.
+const STRICT_PROVIDER_ID = "test-strict-plain-string";
+const STRICT_MODEL = `${STRICT_PROVIDER_ID}/aphrodite/TheDrummer/Behemoth-X-123B-v2.1`;
+
+test.before(() => {
+  (REGISTRY as Record<string, unknown>)[STRICT_PROVIDER_ID] = {
+    id: STRICT_PROVIDER_ID,
+    requiresPlainStringContent: true,
+  };
+});
+
+test.after(() => {
+  delete (REGISTRY as Record<string, unknown>)[STRICT_PROVIDER_ID];
+});
 
 type ChatMsg = { role: string; content?: unknown };
 
 test("Responses -> OpenAI: plain string input collapses to string content, not a single-part array", () => {
-  const result = openaiResponsesToOpenAIRequest(
-    "aihorde/aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
-    { input: "Say OK." },
-    false,
-    {}
-  ) as { messages: ChatMsg[] };
+  const result = openaiResponsesToOpenAIRequest(STRICT_MODEL, { input: "Say OK." }, false, {}) as {
+    messages: ChatMsg[];
+  };
 
   const userMsg = result.messages.find((m) => m.role === "user");
   assert.ok(userMsg, "expected a user message");
@@ -35,7 +49,7 @@ test("Responses -> OpenAI: plain string input collapses to string content, not a
 
 test("Responses -> OpenAI: single-part input_text array input also collapses to a string", () => {
   const result = openaiResponsesToOpenAIRequest(
-    "aihorde/aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
+    STRICT_MODEL,
     {
       input: [
         { type: "message", role: "user", content: [{ type: "input_text", text: "hi there" }] },
@@ -52,7 +66,7 @@ test("Responses -> OpenAI: single-part input_text array input also collapses to 
 
 test("Responses -> OpenAI: multi-turn conversation collapses every single-text-part message", () => {
   const result = openaiResponsesToOpenAIRequest(
-    "aihorde/aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
+    STRICT_MODEL,
     {
       input: [
         { type: "message", role: "user", content: [{ type: "input_text", text: "question one" }] },
@@ -80,7 +94,7 @@ test("Responses -> OpenAI: multi-turn conversation collapses every single-text-p
 
 test("Responses -> OpenAI: real multi-part content (text + image) is NOT collapsed", () => {
   const result = openaiResponsesToOpenAIRequest(
-    "aihorde/aphrodite/TheDrummer/Behemoth-X-123B-v2.1",
+    STRICT_MODEL,
     {
       input: [
         {

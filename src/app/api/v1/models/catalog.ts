@@ -22,7 +22,6 @@ import {
   getAllImageModels,
   isRegisteredImageModel,
 } from "@omniroute/open-sse/config/imageRegistry";
-import { aiHordeImageCatalog } from "@omniroute/open-sse/services/aihordeImageCatalog";
 import { getAllRerankModels } from "@omniroute/open-sse/config/rerankRegistry";
 import { getAllAudioModels } from "@omniroute/open-sse/config/audioRegistry";
 import { getAllModerationModels } from "@omniroute/open-sse/config/moderationRegistry";
@@ -210,6 +209,8 @@ export async function getUnifiedModelsResponse(
         hideAutoCombos:
           settingsForAuth?.hideAutoCombos === true || settingsForAuth?.autoRoutingEnabled === false,
         hideNoThinkVariants: settingsForAuth?.hideNoThinkVariants === true,
+        hideNoauthProviders: settingsForAuth?.hideNoauthProviders === true,
+        hideAllProviders: settingsForAuth?.hideAllProviders === true,
         scheduleBackgroundRefresh: options.scheduleBackgroundRefresh,
       }
     );
@@ -450,10 +451,15 @@ async function buildUnifiedModelsResponseCore(
     }
 
     // noAuth providers have no DB rows; settings.blockedProviders disables them.
-    for (const p of Object.values(NOAUTH_PROVIDERS)) {
-      if (isNoAuthProviderBlocked(blockedProviders, p.id, "alias" in p ? p.alias : null)) continue;
-      activeAliases.add(p.id);
-      if ("alias" in p && typeof p.alias === "string") activeAliases.add(p.alias);
+    // When settings.hideNoauthProviders is on, skip injection entirely — the operator
+    // only wants providers with an explicit DB connection to appear in the catalog.
+    if (settings.hideNoauthProviders !== true) {
+      for (const p of Object.values(NOAUTH_PROVIDERS)) {
+        if (isNoAuthProviderBlocked(blockedProviders, p.id, "alias" in p ? p.alias : null))
+          continue;
+        activeAliases.add(p.id);
+        if ("alias" in p && typeof p.alias === "string") activeAliases.add(p.alias);
+      }
     }
 
     // #9147 follow-up: this is called ~1-3x per model at catalog scale (providerSupportsModel,
@@ -466,7 +472,7 @@ async function buildUnifiedModelsResponseCore(
       const cacheKey = keys
         .filter((k): k is string => Boolean(k))
         .sort()
-        .join(" ");
+        .join("|");
       const cached = connectionsForProviderCache.get(cacheKey);
       if (cached) return cached;
       const seen = new Set<string>();
@@ -1404,14 +1410,6 @@ async function buildUnifiedModelsResponseCore(
     }
 
     // Add image models (filtered by active providers).
-    // AI Horde image workers come and go — refresh the live detector first.
-    if (isProviderActive("aihorde")) {
-      try {
-        await aiHordeImageCatalog.ensureFresh();
-      } catch {
-        // Keep the last good snapshot (or none) if Horde is unreachable.
-      }
-    }
     for (const imgModel of getAllImageModels()) {
       if (!isProviderActive(imgModel.provider)) continue;
       const rawModelId = getSpecialtyModelRelativeId(imgModel.id, imgModel.provider);
@@ -1889,6 +1887,15 @@ async function buildUnifiedModelsResponseCore(
       aliasToProviderId,
       hideNoThinkVariants: settings.hideNoThinkVariants === true,
     });
+
+    // hideAllProviders: only expose combos (user-defined + built-in auto/*),
+    // hide every upstream provider model. Routing still works for hidden ids.
+    if (settings.hideAllProviders === true) {
+      finalModels = finalModels.filter(
+        (m: { owned_by?: string; id?: string }) =>
+          m.owned_by === "combo" || (typeof m.id === "string" && m.id.startsWith("auto/"))
+      );
+    }
 
     const getDefaultContextFallback = (model: any): number | undefined => {
       if (typeof model.context_length === "number") return undefined;

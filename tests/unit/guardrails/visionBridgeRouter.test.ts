@@ -393,3 +393,84 @@ test("selection prefers a proven candidate over one with heavy recent failures",
   // clean with no latency data: 0 + 1000 + 60 = 1060 → must lose to them.
   assert.notEqual(model, "openai/gpt-4o-mini");
 });
+
+// ── model-level history gate (#vision-bridge-model-health) ───────────────────
+//
+// After a process restart the in-memory latencyStore is empty, so every
+// candidate would score a default 1.0 success rate — including models whose
+// PERSISTED usage_history shows 100% failure (e.g. a connection still marked
+// active whose upstream catalog removed the model). The
+// getModelHistoricalSuccessRate dep lets the router close that cold-start
+// trap: a candidate with persisted attempts and 0 successes must not win.
+
+test("a candidate with persisted 100%-failure history is excluded on cold start", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      // openai/gpt-4o-mini is the only keyed candidate; persisted history
+      // shows 60 attempts, 0 successes (exactly the nvidia/kimi-k2.6 case).
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async () => false,
+      getModelHistoricalSuccessRate: async (id) =>
+        id === "openai/gpt-4o-mini" ? { attempts: 60, successes: 0 } : null,
+    }
+  );
+  assert.notEqual(model, "openai/gpt-4o-mini", "a 0/60 model must not win");
+  assert.ok(model, "another vision-capable candidate must take over");
+});
+
+test("persisted history does not override fresher in-memory samples", async () => {
+  // openai/gpt-4o-mini has real in-memory samples (this process has used it).
+  // A stale persisted history (0/60) must be ignored: injecting it must yield
+  // the exact same selection as not injecting it. (Asserted via equality
+  // rather than a concrete model so the test stays order-independent — the
+  // shared in-memory latencyStore accumulates samples across sibling tests.)
+  for (let i = 0; i < 5; i++) recordLatency("openai/gpt-4o-mini", 50, true);
+  const baseDeps = {
+    classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+    isProviderUnhealthy: async () => false,
+  };
+  const modelNoHistory = await getBestVisionModel({}, baseDeps);
+  const modelWithStaleHistory = await getBestVisionModel(
+    {},
+    {
+      ...baseDeps,
+      getModelHistoricalSuccessRate: async (id) =>
+        id === "openai/gpt-4o-mini" ? { attempts: 60, successes: 0 } : null,
+    }
+  );
+  assert.ok(modelNoHistory);
+  assert.equal(
+    modelWithStaleHistory,
+    modelNoHistory,
+    "stale 0/60 history must not change selection when in-memory samples exist"
+  );
+});
+
+test("history-lookup errors fail open (candidate kept)", async () => {
+  const model = await getBestVisionModel(
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async () => false,
+      getModelHistoricalSuccessRate: async () => {
+        throw new Error("usage store unavailable");
+      },
+    }
+  );
+  assert.ok(model, "a keyed candidate must survive a history-lookup error");
+});
+
+test("getFallbackModels also excludes persisted 100%-failure models", async () => {
+  const fallbacks = await getFallbackModels(
+    "openai/gpt-4o",
+    {},
+    {
+      classifyCredentials: async (id) => (id.startsWith("openai/") ? "keyed" : "unusable"),
+      isProviderUnhealthy: async () => false,
+      getModelHistoricalSuccessRate: async (id) =>
+        id === "openai/gpt-4o-mini" ? { attempts: 60, successes: 0 } : null,
+    }
+  );
+  assert.ok(!fallbacks.includes("openai/gpt-4o-mini"));
+});

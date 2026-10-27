@@ -1,16 +1,16 @@
 ---
 title: "Provider Reference"
-version: 3.8.56
-lastUpdated: 2026-10-07
+version: 3.8.57
+lastUpdated: 2026-10-27
 ---
 
 # Provider Reference
 
 > **Auto-generated** from `src/shared/constants/providers.ts` — do not edit by hand.
 > Regenerate with: `npm run gen:provider-reference`
-> **Last generated:** 2026-10-07
+> **Last generated:** 2026-10-27
 
-Total providers: **297**. See category breakdown below.
+Total providers: **296**. See category breakdown below.
 
 ## Categories
 
@@ -34,11 +34,10 @@ Use the dashboard at `/dashboard/providers` to enable, configure, and test each 
 
 ---
 
-## No-auth Providers (no key required) (13)
+## No-auth Providers (no key required) (12)
 
 | ID | Alias | Name | Tags | Website | Notes | Tool calling |
 |----|-------|------|------|---------|-------|--------------|
-| `aihorde` | `horde` | AI Horde | No-auth | [link](https://aihorde.net) | No API key required — uses AI Horde's documented anonymous key. Adding a free aihorde.net key is optional and only buys higher queue priority (kudos). | — |
 | `auggie` | `aug` | Augment (Auggie CLI) | No-auth | [link](https://augmentcode.com) | No API key stored by OmniRoute. Install the Auggie CLI and run `auggie login` on this machine, then OmniRoute spawns it locally for each request. | — |
 | `chipotle` | `pepper` | Chipotle Pepper AI (Free) | No-auth | [link](https://amelia.chipotle.com) | No credentials required. Uses Chipotle's public support chatbot via reverse-engineered SockJS/STOMP protocol. | — |
 | `cloudflare-playground` | `cfp` | Cloudflare AI Playground | No-auth | [link](https://playground.ai.cloudflare.com) | No credentials required — anonymous browser sessions over a reverse-engineered cf_agent WebSocket protocol (Playwright transport). | — |

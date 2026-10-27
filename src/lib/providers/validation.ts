@@ -102,7 +102,6 @@ import {
   validateClaudeCodeCompatibleProvider,
 } from "./validation/anthropicFormat";
 import { validateBytezProvider } from "./validation/bytez";
-import { validateAiHordeProvider } from "./validation/aihorde";
 import { validateDifyProvider } from "./validation/dify";
 import { validateAdobeFireflyProvider } from "./validation/adobeFirefly";
 import {
@@ -214,7 +213,6 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
     devin: validateDevinCloudAgentProvider,
     auggie: validateAuggieProvider,
     "cursor-api": validateCursorApiProvider,
-    aihorde: validateAiHordeProvider,
     // #10522: registered under both the canonical id and the short alias — Firefly
     // connections are commonly stored as "firefly" (same prefix as firefly/<model>
     // routing ids), not the canonical "adobe-firefly" key.

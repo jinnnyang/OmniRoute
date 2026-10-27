@@ -14,6 +14,7 @@ import { getChatGptImage, findChatGptImageBySha256 } from "../services/chatgptIm
 import { createHash } from "node:crypto";
 import { saveCallLog } from "@/lib/usageDb";
 import { sleep } from "../utils/sleep.ts";
+import { runWithHeadersTimeout } from "../utils/proxyFetch.ts";
 import {
   getKieErrorMessage,
   getKieErrorStatus,
@@ -58,7 +59,6 @@ import { handleCursorAgentImageGeneration } from "./imageGeneration/providers/cu
 import { handleMinimaxImageGeneration } from "./imageGeneration/providers/minimax.ts";
 import { handleAdobeFireflyImageGeneration } from "./imageGeneration/providers/adobeFirefly.ts";
 import { handleAlibabaImageGeneration } from "./imageGeneration/providers/alibabaImage.ts";
-import { handleAiHordeImageGeneration } from "./imageGeneration/providers/aihorde.ts";
 import {
   applyPollinationsAnonymousFallback,
   reportPollinationsAnonOutcome,
@@ -449,18 +449,6 @@ export async function handleImageGeneration({
       body,
       credentials,
       log,
-    });
-  }
-
-  if (providerConfig.format === "aihorde") {
-    return handleAiHordeImageGeneration({
-      model,
-      provider,
-      providerConfig,
-      body,
-      credentials,
-      log,
-      signal,
     });
   }
 
@@ -3053,12 +3041,21 @@ async function fetchImageEndpoint(url, headers, body, provider, log) {
   try {
     let response;
     try {
-      response = await fetchWithTimeout(url, {
-        method: "POST",
-        headers,
-        body,
-        timeoutMs: getConfiguredTimeout(),
-      });
+      // Image generation endpoints are synchronous blocking APIs that may take
+      // 30-60s+ to return response headers (especially Seedream 5.0 Pro).
+      // Use a longer per-request headers timeout (120s) via AsyncLocalStorage
+      // context instead of the global 30s default, while keeping the overall
+      // fetch timeout (also 120s default) controlled by fetchWithTimeout to
+      // prevent OOM from stalled connections. Other proxy features (dispatcher,
+      // retries, TLS tracking) remain intact.
+      response = await runWithHeadersTimeout(120000, () =>
+        fetchWithTimeout(url, {
+          method: "POST",
+          headers,
+          body,
+          timeoutMs: getConfiguredTimeout(),
+        })
+      );
     } catch (err: unknown) {
       const isAbortError =
         typeof err === "object" &&

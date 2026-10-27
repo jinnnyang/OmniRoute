@@ -134,6 +134,14 @@ function calculateAverageLatency(modelId: string, windowMs: number = 300_000): n
 
 /**
  * Calculate success rate for a model.
+ *
+ * No in-memory samples = 1.0 ("assume good"). This default is deliberately
+ * optimistic for genuinely-new candidates, but it is also the cold-start
+ * trap the model-level history gate (#vision-bridge-model-health) exists to
+ * close: after a restart the store is empty for EVERY model, including ones
+ * whose persisted usage_history shows 100% failure. getVisionCapableModels()
+ * therefore consults getModelHistoricalSuccessRate() before a no-sample
+ * candidate scores its default 1.0.
  */
 function calculateSuccessRate(modelId: string): number {
   const records = latencyStore.get(modelId) || [];
@@ -163,6 +171,20 @@ export interface VisionBridgeRouterDeps {
    * this stub too.
    */
   isProviderUnhealthy?: (model: string) => Promise<boolean>;
+  /**
+   * Model-level reliability gate (#vision-bridge-model-health): return the
+   * durable attempt/success history for `model` (persisted in usage_history
+   * across process restarts). The in-memory latencyStore is reset on every
+   * restart, so a cold-start candidate with zero in-memory samples would
+   * otherwise score a default 1.0 success rate — letting a model with 60
+   * persisted attempts and 0 successes (e.g. nvidia/moonshotai/kimi-k2.6)
+   * win auto-selection and fail the describe call. Defaults to a
+   * usage_history-backed loader on the real (dep-free) path; tests that
+   * inject credential stubs keep the legacy in-memory-only behavior.
+   */
+  getModelHistoricalSuccessRate?: (
+    model: string
+  ) => Promise<{ attempts: number; successes: number } | null>;
   listConnections?: () => Promise<RouterConnectionLike[]>;
   listProviderNodes?: () => Promise<RouterNodeLike[]>;
   listModelsByConnection?: (providerId: string) => Promise<Record<string, RouterSyncedModelLike[]>>;
@@ -207,6 +229,44 @@ async function defaultListCustomVisionOverrides(): Promise<RouterVisionOverrideM
     return listCustomModelVisionOverrides();
   } catch {
     return new Map();
+  }
+}
+
+/**
+ * Default usage_history-backed success-rate loader (#vision-bridge-model-health).
+ *
+ * Aggregates persisted attempts/successes for a `provider/model` id across
+ * process restarts. The in-memory latencyStore in this module is reset on
+ * every boot, so without this the router would treat every candidate as a
+ * fresh 1.0-success model right after a restart — including models whose
+ * persisted history shows 100% failure (e.g. a connection still marked
+ * active whose upstream catalog removed the model). Returns null when the DB
+ * is unavailable or no rows exist; callers must then fall back to the
+ * in-memory default (1.0) exactly as before.
+ */
+async function defaultGetModelHistoricalSuccessRate(
+  model: string
+): Promise<{ attempts: number; successes: number } | null> {
+  try {
+    const { getDbInstance } = await import("@/lib/db/core");
+    const db = getDbInstance();
+    const sep = model.indexOf("/");
+    const provider = sep > 0 ? model.slice(0, sep) : model;
+    const modelName = sep > 0 ? model.slice(sep + 1) : model;
+    // usage_history rows store provider canonically (resolveProviderId result)
+    // and the model without the provider prefix — match on both so
+    // `provider/model` ids collapse correctly.
+    const row = db
+      .prepare(
+        `SELECT COUNT(*) AS attempts, COALESCE(SUM(CASE WHEN success = 1 THEN 1 ELSE 0 END), 0) AS successes
+         FROM usage_history
+         WHERE provider = ? AND model = ?`
+      )
+      .get(provider, modelName) as { attempts: number; successes: number } | undefined;
+    if (!row || !row.attempts) return null;
+    return { attempts: row.attempts, successes: row.successes };
+  } catch {
+    return null;
   }
 }
 
@@ -315,6 +375,17 @@ async function getVisionCapableModels(
       ? null
       : isModelProviderDurablyUnhealthy);
 
+  // Model-level reliability gate (#vision-bridge-model-health): a candidate
+  // with persisted 100%-failure history must not win auto-selection right
+  // after a restart just because the in-memory latencyStore is empty. Same
+  // activation rule as the health gate — injected credential stubs (hermetic
+  // unit tests) keep the legacy in-memory-only behavior.
+  const historicalSuccessRate =
+    deps.getModelHistoricalSuccessRate ??
+    (deps.classifyCredentials || deps.hasUsableCredentials
+      ? null
+      : defaultGetModelHistoricalSuccessRate);
+
   const pushCandidate = async (
     fullName: string,
     modelId: string,
@@ -333,6 +404,20 @@ async function getVisionCapableModels(
       }
       if (unhealthy) return;
     }
+    let successRate = calculateSuccessRate(fullName);
+    // Cold-start correction: only consult persisted history when the
+    // in-memory store has no samples at all. If we do have in-memory data,
+    // it reflects the current process and is more recent than history.
+    if (!latencyStore.has(fullName) && historicalSuccessRate) {
+      try {
+        const history = await historicalSuccessRate(fullName);
+        if (history && history.attempts > 0) {
+          successRate = history.successes / history.attempts;
+        }
+      } catch {
+        // fail open — keep the in-memory default (1.0)
+      }
+    }
     const priority =
       verdict === "keyed"
         ? PRIORITY_KEYED
@@ -345,7 +430,7 @@ async function getVisionCapableModels(
       priority,
       averageLatencyMs: calculateAverageLatency(fullName),
       lastUsedAt: 0,
-      successRate: calculateSuccessRate(fullName),
+      successRate,
     });
   };
 

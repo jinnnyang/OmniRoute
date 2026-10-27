@@ -97,6 +97,8 @@ function defaultBackgroundRefreshScheduler(task: () => Promise<unknown>): void {
 export type CatalogCacheOptions = {
   hideAutoCombos?: boolean;
   hideNoThinkVariants?: boolean;
+  hideNoauthProviders?: boolean;
+  hideAllProviders?: boolean;
   /**
    * Overrides `CATALOG_STALE_WHILE_REVALIDATE_MS` for this call only.
    *
@@ -157,7 +159,12 @@ let _catalogBuilderRuns = 0;
 
 function buildCatalogCacheKey(
   request: Request,
-  catalogSettings?: { hideAutoCombos?: boolean; hideNoThinkVariants?: boolean }
+  catalogSettings?: {
+    hideAutoCombos?: boolean;
+    hideNoThinkVariants?: boolean;
+    hideNoauthProviders?: boolean;
+    hideAllProviders?: boolean;
+  }
 ): string {
   const url = new URL(request.url);
   const prefix = url.searchParams.get("prefix") || "";
@@ -166,7 +173,9 @@ function buildCatalogCacheKey(
   const configuredOnly = url.searchParams.get("configuredOnly") === "true" ? "1" : "0";
   const hideAuto = catalogSettings?.hideAutoCombos ? "1" : "0";
   const hideNoThink = catalogSettings?.hideNoThinkVariants ? "1" : "0";
-  return `${prefix}|${isCodex}|${fingerprintCatalogAuthKey(apiKey)}|${configuredOnly}|${hideAuto}|${hideNoThink}`;
+  const hideNoauth = catalogSettings?.hideNoauthProviders ? "1" : "0";
+  const hideAll = catalogSettings?.hideAllProviders ? "1" : "0";
+  return `${prefix}|${isCodex}|${fingerprintCatalogAuthKey(apiKey)}|${configuredOnly}|${hideAuto}|${hideNoThink}|${hideNoauth}|${hideAll}`;
 }
 
 // Tracks the model-catalog cache version (src/lib/db/readCache.ts) as of the last
