@@ -637,9 +637,12 @@ jobs:
       # /api/monitoring/health 200). Downstream jobs (e2e ×9, package-artifact,
       # electron-package-smoke) consume this artifact, so a green run here validates
       # the Turbopack artifact end-to-end.
+      # Turbopack's native memory is not bounded by --max-old-space-size. On the
+      # hosted ubuntu-latest runner (~16 GB) `npm run build` was cancelled during
+      # "Collecting page data" in every run, so fall back to webpack here.
       - run: npm run build
         env:
-          OMNIROUTE_USE_TURBOPACK: "1"
+          OMNIROUTE_USE_TURBOPACK: "0"
       - name: Archive Next.js build for downstream jobs
         # Use tar so the archive preserves paths relative to CWD (.build/next/...).
         # upload-artifact path-stripping is ambiguous when exclude patterns are used;
