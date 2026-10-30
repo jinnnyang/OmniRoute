@@ -1,13 +1,22 @@
 import { createHash, createHmac } from "node:crypto";
 import { createRequire } from "node:module";
 
+declare const require: NodeRequire | undefined;
+
+// Keep the CommonJS request as a literal `require("node-machine-id")`: webpack
+// preserves the serverExternalPackages boundary only for static require calls.
+// A dynamic createRequire(argv[1])(...) gets rewritten to `(void 0)(...)` in the
+// standalone bundle, throws, and silently yields an empty machine ID.
+function loadMachineIdModule(): { machineIdSync?: (original?: boolean) => string; default?: { machineIdSync?: (original?: boolean) => string } } {
+  if (typeof require === "function") {
+    return require("node-machine-id");
+  }
+  return createRequire(process.argv[1] || process.cwd())("node-machine-id");
+}
+
 let machineIdSync: (original?: boolean) => string;
 try {
-  // Anchor runtime resolution to the process entrypoint. Turbopack rewrites
-  // createRequire(import.meta.url) into an in-bundle resolver, which cannot load
-  // external CommonJS packages from the installed standalone node_modules tree.
-  const runtimeRequire = createRequire(process.argv[1] || process.cwd());
-  const mod = runtimeRequire("node-machine-id");
+  const mod = loadMachineIdModule();
   machineIdSync = mod.machineIdSync || mod.default?.machineIdSync;
 } catch {
   machineIdSync = () => "";
