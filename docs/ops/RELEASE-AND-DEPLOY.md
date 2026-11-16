@@ -5,11 +5,12 @@
 
 ## Versioning
 
-The fork keeps its own version line. `package.json`, `open-see/package.json` and
-`docs/openapi.yaml` must agree, and the git tag must equal that version:
+The fork keeps its own version line (first independent release: `3.9.0`).
+`package.json`, `open-sse/package.json` and `docs/openapi.yaml` must agree, and the
+git tag must equal that version:
 
 ```
-npm version 3.9.0 --no-git-tag-version      # bump the three files
+node scripts/release/bump-version.mjs 3.9.0   # the three files, one place of truth
 git commit -am "release: 3.9.0"
 git tag v3.9.0 && git push origin less --tags
 ```
