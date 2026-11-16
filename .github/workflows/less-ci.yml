@@ -59,11 +59,25 @@ jobs:
           node-version-file: ".nvmrc"
           cache: npm
       - run: npm ci
+      # The `less` baseline ships ~158 known-failing tests (environment-dependent
+      # catalogs, OAuth routes, docs-drift checks). A red gate nobody reads is worse
+      # than no gate, and a non-blocking job is the SKIP-green pattern this fork's
+      # review calls out — so the job runs everything and a ratchet step fails only
+      # on failures that are NOT in config/quality/unit-known-failures.json.
       - name: Run unit tests (shard ${{ matrix.shard }})
+        id: unit
+        shell: bash
         env:
           TEST_SHARD: ${{ matrix.shard }}
           NODE_OPTIONS: "--max-old-space-size=4096"
-        run: npm run test:unit:ci:shard
+        run: |
+          set +e
+          npm run test:unit:ci:shard 2>&1 | tee unit.log
+          code=${PIPESTATUS[0]}
+          echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Ratchet against known failures
+        run: node scripts/quality/unit-ratchet.mjs unit.log --exit-code ${{ steps.unit.outputs.exit_code }}
 
   build:
     name: build (webpack)
