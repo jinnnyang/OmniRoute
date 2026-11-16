@@ -154,7 +154,12 @@ RUN LIBVIPS_X64=$(node -p "require('./package-lock.json').packages['node_modules
 # at build time. Turbopack compiles in native Rust memory that lives outside the
 # V8 heap, so OMNIROUTE_BUILD_MEMORY_MB cannot bound it and a memory-constrained
 # build host gets SIGKILLed by the cgroup OOM killer with no error message.
-ARG OMNIROUTE_USE_TURBOPACK=1
+# Fork policy (jinnnyang/OmniRoute, 2026-11-16): ship the build mode CI actually
+# validates. Upstream defaults to 1 (Turbopack) for speed, but nothing in our
+# pipeline ever exercised Turbopack, so images were produced by a path with zero
+# test coverage. Default is webpack; pass --build-arg OMNIROUTE_USE_TURBOPACK=1
+# to opt back in.
+ARG OMNIROUTE_USE_TURBOPACK=0
 ENV OMNIROUTE_USE_TURBOPACK="${OMNIROUTE_USE_TURBOPACK}"
 
 # Next.js basePath is fixed at build time; pass OMNIROUTE_BASE_PATH here when the
@@ -290,6 +295,14 @@ LABEL org.opencontainers.image.title="omniroute" \
 ENV NODE_ENV=production
 ENV PORT=20128
 ENV HOSTNAME=0.0.0.0
+
+# Build identity. CI passes --build-arg BUILD_SHA=$(git rev-parse HEAD); the value is
+# exported as OMNIROUTE_BUILD_SHA because readRunningBuildSha() (src/lib/monitoring/
+# buildSha.ts) prefers that env var over the on-disk sentinel, so /api/monitoring/health
+# can answer "which commit is this image?" without shell access.
+ARG BUILD_SHA=""
+ENV OMNIROUTE_BUILD_SHA=$BUILD_SHA
+LABEL org.opencontainers.image.revision=$BUILD_SHA
 # Runtime heap ceiling. 1024MB is enough for normal traffic but can be tight
 # for large fusion-combo panels (many models fanned out in parallel, each
 # response buffered in full — see open-sse/services/fusion.ts::FUSION_DEFAULTS
