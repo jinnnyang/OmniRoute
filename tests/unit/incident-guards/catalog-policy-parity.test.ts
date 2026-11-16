@@ -14,13 +14,15 @@ test("current: the request-side policy entry point exists", async () => {
   assert.equal(typeof validateApiKeyRoutingTarget, "function");
 });
 
-test("current: the catalog filter checks allowedModels but not allowedCombos", async () => {
+test("current: the catalog filter checks per-model permission but not allowedCombos", async () => {
   const fs = await import("node:fs");
   const catalog = fs.readFileSync(
     new URL("../../../src/app/api/v1/models/catalog.ts", import.meta.url),
     "utf8"
   );
-  assert.match(catalog, /allowedModels/);
+  // Model-level permission IS consulted (isModelAllowedForKey → allowed/blocked models)…
+  assert.match(catalog, /isModelAllowedForKey/);
+  // …but the combo allow-list never is, so a combo a key cannot call is still listed.
   assert.ok(!/allowedCombos/.test(catalog), "catalog filtering does not consult allowedCombos yet");
 });
 
