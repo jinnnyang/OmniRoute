@@ -1,0 +1,117 @@
+name: nightly-incidents
+
+# Incident-class nightly guards (fork policy).
+#
+# The vendored upstream nightlies cover property/mutation/LLM-security/Schemathesis
+# suites. We keep only the guards that map to incidents this deployment actually had,
+# and we run them daily rather than three times a day:
+#
+#   1. driver-fallback  — 17 篇: the image silently ran on the sql.js WASM driver for
+#                         days and died on heap exhaustion. Assert the native driver.
+#   2. resilience       — 21 篇 / 011 篇: rate-limit queue timeouts and combo retry
+#                         storms taking the process or the host down.
+#   3. catalog-policy    — 014 篇: /v1/models filtering drifting away from the call-time
+#                         authorization policy.
+#
+# The two test jobs reuse the unit-failure ratchet: the `less` baseline carries known
+# red tests, and these jobs must fail only when a guard regresses further.
+
+on:
+  schedule:
+    - cron: "0 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-incidents
+  cancel-in-progress: false
+
+jobs:
+  driver-fallback:
+    name: driver-fallback
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          df -h /
+      - name: Expand swap
+        run: |
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile /swapfile
+          sudo fallocate -l 8G /mnt/swapfile || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=8192
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+      - name: Build image
+        run: docker build --build-arg BUILD_SHA="${GITHUB_SHA}" -t omniroute:nightly .
+      - name: Boot and assert the native driver
+        run: |
+          set -euo pipefail
+          docker run -d --name nightly-om -p 127.0.0.1:20128:20128 -e DATA_DIR=/app/data omniroute:nightly
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:20128/api/monitoring/health -o /tmp/health.json 2>/dev/null; then break; fi
+            sleep 3
+          done
+          cat /tmp/health.json
+          grep -q '"status":"healthy"' /tmp/health.json
+          docker logs nightly-om 2>&1 | tee /tmp/boot.log | tail -40
+          grep -q '\[DB\] Driver: better-sqlite3' /tmp/boot.log
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs nightly-om || true
+
+  resilience:
+    name: resilience
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+      - run: npm ci
+      - name: Run resilience guards
+        id: t
+        shell: bash
+        run: |
+          set +e
+          npm run test:incidents:resilience 2>&1 | tee unit.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Ratchet
+        run: node scripts/quality/unit-ratchet.mjs unit.log --exit-code ${{ steps.t.outputs.exit_code }}
+
+  catalog-policy:
+    name: catalog-policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+      - run: npm ci
+      - name: Run catalog/policy guards
+        id: t
+        shell: bash
+        run: |
+          set +e
+          npm run test:incidents:catalog 2>&1 | tee unit.log
+          echo "exit_code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Ratchet
+        run: node scripts/quality/unit-ratchet.mjs unit.log --exit-code ${{ steps.t.outputs.exit_code }}

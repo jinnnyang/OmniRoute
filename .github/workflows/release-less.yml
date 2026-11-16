@@ -1,0 +1,161 @@
+name: release-less
+
+# Fork release pipeline (jinnnyang/OmniRoute).
+#
+# Tag-driven: pushing `v*` builds the image from the tag, scans it, pushes it to
+# Docker Hub and attaches a `docker load`-able tarball to the GitHub Release.
+#
+# Why the tarball: production is deployed with `scp` + `docker load` (see
+# scripts/deploy/scp-load.sh). Docker Hub is the registry of record, the tarball
+# is the artifact that actually crosses the wire to the VPS, so both come from
+# the same build in the same job.
+#
+# Required repository secrets: DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
+# (Docker Hub access token with Read & Write on jinnnyang/omniroute).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build (e.g. 3.9.0). Must match package.json."
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+
+env:
+  IMAGE_NAME: jinnnyang/omniroute
+
+jobs:
+  release:
+    name: build · scan · publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Resolve version
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          PKG=$(node -p "require('./package.json').version")
+          PKG_OPENSSE=$(node -p "require('./open-sse/package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "tag=${{ env.IMAGE_NAME }}:$VERSION"
+          if [ "$VERSION" != "$PKG" ] || [ "$VERSION" != "$PKG_OPENSSE" ]; then
+            echo "::error::tag version ($VERSION) does not match package.json ($PKG) / open-sse/package.json ($PKG_OPENSSE)"
+            exit 1
+          fi
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          df -h /
+
+      - name: Expand swap
+        run: |
+          sudo swapoff -a || true
+          sudo rm -f /mnt/swapfile /swapfile
+          sudo fallocate -l 8G /mnt/swapfile || sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=8192
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+          free -h
+
+      - name: Build image
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          docker build \
+            --build-arg BUILD_SHA="${GITHUB_SHA}" \
+            -t "${IMAGE_NAME}:${VERSION}" \
+            -t "${IMAGE_NAME}:sha-${{ steps.v.outputs.short }}" \
+            .
+
+      - name: Scan the image we are about to ship
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ steps.v.outputs.version }}
+          format: table
+          severity: CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          exit-code: "1"
+
+      - name: SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ env.IMAGE_NAME }}:${{ steps.v.outputs.version }}
+          format: cyclonedx-json
+          output-file: sbom-${{ steps.v.outputs.version }}.cdx.json
+          upload-artifact: false
+
+      - name: Save image for scp + docker load deploys
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          docker save "${IMAGE_NAME}:${VERSION}" | gzip -9 > "omniroute-${VERSION}.tar.gz"
+          ls -lh "omniroute-${VERSION}.tar.gz"
+
+      - name: Smoke the image before publishing
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          docker rm -f release-smoke >/dev/null 2>&1 || true
+          docker run -d --name release-smoke -p 127.0.0.1:20128:20128 -e DATA_DIR=/app/data "${IMAGE_NAME}:${VERSION}"
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:20128/api/monitoring/health -o /tmp/health.json 2>/dev/null; then break; fi
+            sleep 3
+          done
+          cat /tmp/health.json
+          grep -q '"status":"healthy"' /tmp/health.json
+          docker logs release-smoke 2>&1 | tee /tmp/boot.log | tail -30
+          grep -q '\[DB\] Driver: better-sqlite3' /tmp/boot.log
+          test "$(docker exec release-smoke printenv OMNIROUTE_BUILD_SHA)" = "${GITHUB_SHA}"
+
+      - name: Push to Docker Hub
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -z "$DOCKERHUB_TOKEN" ] || [ -z "$DOCKERHUB_USERNAME" ]; then
+            echo "::error::missing DOCKERHUB_USERNAME / DOCKERHUB_TOKEN secrets — add them in Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          docker tag "${IMAGE_NAME}:${VERSION}" "${IMAGE_NAME}:latest"
+          docker push "${IMAGE_NAME}:${VERSION}"
+          docker push "${IMAGE_NAME}:sha-${{ steps.v.outputs.short }}"
+          docker push "${IMAGE_NAME}:latest"
+          docker logout
+
+      - name: Publish GitHub Release with the deploy tarball
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ steps.v.outputs.version }}
+          draft: false
+          files: |
+            omniroute-${{ steps.v.outputs.version }}.tar.gz
+            sbom-${{ steps.v.outputs.version }}.cdx.json
+          body: |
+            Image: `${{ env.IMAGE_NAME }}:${{ steps.v.outputs.version }}` (also `:sha-${{ steps.v.outputs.short }}`, `:latest`)
+            Build: `${{ github.sha }}`
+            Deploy: `./scripts/deploy/scp-load.sh ${{ steps.v.outputs.version }}`
+
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs release-smoke || true
