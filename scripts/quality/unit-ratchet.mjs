@@ -18,7 +18,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const ANSI = /\x1b\[[0-9;]*m/g;
+const ANSI = /\x1b\[[0-9;]*m|\^\[\[[0-9;]*m/g;
 
 function parseArgs(argv) {
   const args = { log: null, baseline: "config/quality/unit-known-failures.json", exitCode: 0, update: false };
@@ -32,19 +32,26 @@ function parseArgs(argv) {
   return args;
 }
 
-/** Extract failing test names from node:test's spec reporter output. */
+/**
+ * Extract failing test names from node:test output.
+ *
+ * Only lines that carry the spec reporter's trailing duration — `✖ name (12.3ms)` — count.
+ * Application logs are printed with the same ✖ glyph (e.g. `✖ Failed to configure Qwen Code:
+ * Expected property name...`), and their text changes between runs; treating those as test
+ * names produced a "new failure" on an unchanged baseline. TAP output (`not ok N - name`) is
+ * also accepted so switching reporters does not silently disable the ratchet.
+ */
 export function extractFailures(text) {
   const names = new Set();
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.replace(ANSI, "");
     if (!line.includes("✖") && !/^not ok\s/.test(line)) continue;
-    const m = line.match(/✖\s+(.+)$/);
-    if (m) {
-      const name = m[1].replace(/\s+\(\d+(?:\.\d+)?ms\)\s*$/, "").trim();
-      if (name) names.add(name);
+    const spec = line.match(/✖\s+(.+?)\s+\(\d+(?:\.\d+)?ms\)\s*$/);
+    if (spec) {
+      names.add(spec[1].trim());
       continue;
     }
-    const tap = line.match(/^not ok\s+\d+\s+-\s+(.+)$/);
+    const tap = line.match(/^\s*not ok\s+\d+\s+-\s+(.+)$/);
     if (tap) names.add(tap[1].trim());
   }
   return names;
