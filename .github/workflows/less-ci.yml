@@ -159,10 +159,28 @@ jobs:
         if: failure()
         run: docker logs omniroute-ci || true
 
+  guards:
+    name: incident-guards
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+          cache: npm
+      - run: npm ci
+      # These are the T2 preconditions from reviews/20261116-less/code-arch.md.
+      # Green assertions lock in today's (broken) behaviour; `todo` tests carry the
+      # acceptance criteria and start passing when the fix lands.
+      - run: npm run test:incident-guards
+
   gate:
     name: Gate / less-ci
     if: always()
-    needs: [lint, unit, build, image]
+    needs: [lint, unit, build, image, guards]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -172,4 +190,5 @@ jobs:
           test "${{ needs.lint.result }}" = "success"
           test "${{ needs.unit.result }}" = "success"
           test "${{ needs.build.result }}" = "success"
+          test "${{ needs.guards.result }}" = "success"
           test "${{ needs.image.result }}" = "success"
