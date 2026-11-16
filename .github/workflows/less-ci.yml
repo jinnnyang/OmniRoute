@@ -80,10 +80,17 @@ jobs:
           # A handful of the baseline failures are network-dependent (firecrawl creds,
           # provider catalogs) and flip between runs. One retry separates a flake from a
           # regression without weakening the ratchet: a genuine new failure fails twice.
-          if ! run_shard; then
-            echo "::warning::unit shard ${{ matrix.shard }} reported new failures — retrying once"
-            run_shard
-          fi
+          # Two shard-3 tests are credential/network flavoured and each run fails a
+          # different one (search-route firecrawl, visionBridge callVisionModel) — see
+          # the T2 backlog: they need to be made hermetic. Until then, up to three
+          # attempts; a real regression fails all of them.
+          for attempt in 1 2 3; do
+            if run_shard; then
+              exit 0
+            fi
+            echo "::warning::unit shard ${{ matrix.shard }} attempt ${attempt}/3 reported new failures"
+          done
+          exit 1
 
   build:
     name: build (webpack)
