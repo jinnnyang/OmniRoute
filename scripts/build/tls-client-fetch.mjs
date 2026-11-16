@@ -30,8 +30,31 @@ if (fs.existsSync(dest)) {
   process.exit(0);
 }
 
+// Direct release-asset download first. The unauthenticated api.github.com lookup is
+// rate-limited per runner IP (60/hr) and shared GitHub-hosted runners hit it often:
+// 2026-11-16 the docker-smoke job died with "release lookup failed: HTTP 403".
+// The download URL does not go through the API rate limiter, so trying it first makes
+// the build independent of the API quota. TLS_CLIENT_ASSET overrides the asset name.
+const forcedAsset = process.env.TLS_CLIENT_ASSET;
+const directCandidates = forcedAsset ? [forcedAsset] : CANDIDATE_ASSETS;
+for (const name of directCandidates) {
+  const url = `https://github.com/${REPO}/releases/download/v${VERSION}/${name}`;
+  const res = await fetch(url, { headers: HEADERS, redirect: "follow" });
+  if (!res.ok) {
+    console.log(`[tls-client-fetch] direct ${name}: HTTP ${res.status}`);
+    continue;
+  }
+  fs.mkdirSync(BIN_DIR, { recursive: true });
+  fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+  console.log(`[tls-client-fetch] ${RUNTIME_NAME} <- ${name} (direct)`);
+  process.exit(0);
+}
+
+const authHeaders = process.env.GITHUB_TOKEN
+  ? { ...HEADERS, Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+  : HEADERS;
 const releaseRes = await fetch(`https://api.github.com/repos/${REPO}/releases/tags/v${VERSION}`, {
-  headers: HEADERS,
+  headers: authHeaders,
 });
 if (!releaseRes.ok) {
   console.error(

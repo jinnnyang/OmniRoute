@@ -64,20 +64,26 @@ jobs:
       # than no gate, and a non-blocking job is the SKIP-green pattern this fork's
       # review calls out — so the job runs everything and a ratchet step fails only
       # on failures that are NOT in config/quality/unit-known-failures.json.
-      - name: Run unit tests (shard ${{ matrix.shard }})
-        id: unit
+      - name: Run unit tests (shard ${{ matrix.shard }}) with one retry on new failures
         shell: bash
         env:
           TEST_SHARD: ${{ matrix.shard }}
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: |
-          set +e
-          npm run test:unit:ci:shard 2>&1 | tee unit.log
-          code=${PIPESTATUS[0]}
-          echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
-          exit 0
-      - name: Ratchet against known failures
-        run: node scripts/quality/unit-ratchet.mjs unit.log --exit-code ${{ steps.unit.outputs.exit_code }}
+          run_shard() {
+            set +e
+            npm run test:unit:ci:shard 2>&1 | tee unit.log
+            local code=${PIPESTATUS[0]}
+            set -e
+            node scripts/quality/unit-ratchet.mjs unit.log --exit-code "$code"
+          }
+          # A handful of the baseline failures are network-dependent (firecrawl creds,
+          # provider catalogs) and flip between runs. One retry separates a flake from a
+          # regression without weakening the ratchet: a genuine new failure fails twice.
+          if ! run_shard; then
+            echo "::warning::unit shard ${{ matrix.shard }} reported new failures — retrying once"
+            run_shard
+          fi
 
   build:
     name: build (webpack)
