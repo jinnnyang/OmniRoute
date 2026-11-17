@@ -13861,5 +13861,13 @@
     "cta": "Lấy khóa API",
     "partnerLinkNote": "Liên kết đối tác",
     "dismissAriaLabel": "Đóng"
+  },
+  "catalogVisibility": {
+    "title": "Hiển thị danh mục mô hình",
+    "description": "Kiểm soát nội dung mà /v1/models công bố. Đây là cài đặt toàn cục; để giới hạn một API key, hãy dùng quyền truy cập hạn chế với danh sách model/combo được phép.",
+    "hideAllProviders": "Chỉ hiển thị combo",
+    "hideAllProvidersDescription": "Ẩn toàn bộ model của nhà cung cấp khỏi /v1/models và chỉ hiển thị combo cùng auto/*. Gọi trực tiếp model bị ẩn vẫn được định tuyến.",
+    "hideNoauthProviders": "Ẩn nhà cung cấp không cần khóa",
+    "hideNoauthProvidersDescription": "Loại bỏ khỏi danh mục những nhà cung cấp không cần thông tin xác thực, để endpoint dùng chung hoặc không cần khóa không được công bố."
   }
 }

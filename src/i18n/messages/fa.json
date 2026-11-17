@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "نمایان بودن کاتالوگ مدل",
+    "description": "کنترل می‌کند که /v1/models چه چیزی نشان دهد. این تنظیم‌ها سراسری هستند؛ برای محدود کردن یک کلید API از دسترسی محدود با مدل و کامبوی مجاز استفاده کنید.",
+    "hideAllProviders": "فقط کامبوها را نشان بده",
+    "hideAllProvidersDescription": "همه مدل‌های ارائه‌دهنده را از /v1/models پنهان می‌کند و فقط کامبوها و auto/* را نشان می‌دهد. فراخوانی مستقیم مدل پنهان همچنان مسیریابی می‌شود.",
+    "hideNoauthProviders": "ارائه‌دهندگان بدون کلید را پنهان کن",
+    "hideNoauthProvidersDescription": "ارائه‌دهندگانی که به اعتبارنامه نیاز ندارند را از کاتالوگ حذف می‌کند تا نقاط پایانی مشترک یا بدون کلید فهرست نشوند."
   }
 }

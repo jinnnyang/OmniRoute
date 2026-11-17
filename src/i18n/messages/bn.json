@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "মডেল ক্যাটালগ দৃশ্যমানতা",
+    "description": "/v1/models কী দেখাবে তা নিয়ন্ত্রণ করে। এগুলো বৈশ্বিক সেটিংস; একটি API কী সীমিত করতে অনুমোদিত মডেল/কম্বোসহ সীমিত অ্যাক্সেস ব্যবহার করুন।",
+    "hideAllProviders": "শুধু কম্বো দেখান",
+    "hideAllProvidersDescription": "/v1/models থেকে সব আপস্ট্রিম প্রোভাইডার মডেল লুকিয়ে শুধু কম্বো ও auto/* দেখায়। লুকানো মডেলে সরাসরি কল করলেও রাউটিং হয়।",
+    "hideNoauthProviders": "কী-বিহীন প্রোভাইডার লুকান",
+    "hideNoauthProvidersDescription": "যে প্রোভাইডারদের ক্রেডেনশিয়াল লাগে না তাদের ক্যাটালগ থেকে সরায়, যাতে শেয়ার্ড বা কী-বিহীন এন্ডপয়েন্ট তালিকাভুক্ত না হয়।"
   }
 }

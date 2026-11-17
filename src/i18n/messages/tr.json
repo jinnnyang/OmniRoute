@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Model kataloğu görünürlüğü",
+    "description": "/v1/models uç noktasının ne göstereceğini belirler. Bunlar genel ayarlardır; tek bir API anahtarını kısıtlamak için izin verilen model/combo içeren kısıtlı erişim kullanın.",
+    "hideAllProviders": "Yalnızca combo göster",
+    "hideAllProvidersDescription": "/v1/models içinden tüm üst kaynak sağlayıcı modellerini gizler ve yalnızca combo ile auto/* gösterir. Gizlenen modele doğrudan çağrılar yine yönlendirilir.",
+    "hideNoauthProviders": "Anahtarsız sağlayıcıları gizle",
+    "hideNoauthProvidersDescription": "Kimlik bilgisi gerektirmeyen sağlayıcıları katalogdan çıkarır; böylece paylaşılan veya anahtarsız uç noktalar listelenmez."
   }
 }

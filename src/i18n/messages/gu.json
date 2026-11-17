@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "મોડેલ કેટલોગ દૃશ્યતા",
+    "description": "/v1/models શું દર્શાવે છે તે નિયંત્રિત કરે છે. આ વૈશ્વિક સેટિંગ્સ છે; એક API કી મર્યાદિત કરવા માટે મંજૂર મોડેલ/કોમ્બો સાથે પ્રતિબંધિત ઍક્સેસ વાપરો.",
+    "hideAllProviders": "ફક્ત કોમ્બો દર્શાવો",
+    "hideAllProvidersDescription": "/v1/models માંથી બધા અપસ્ટ્રીમ પ્રોવાઇડર મોડેલ છુપાવે છે અને ફક્ત કોમ્બો તથા auto/* દર્શાવે છે. છુપાયેલા મોડેલ પર સીધા કૉલ હજુ પણ રૂટ થાય છે.",
+    "hideNoauthProviders": "કી વગરના પ્રોવાઇડર છુપાવો",
+    "hideNoauthProvidersDescription": "જેને ક્રેડેન્શિયલની જરૂર નથી તેવા પ્રોવાઇડરને કેટલોગમાંથી દૂર કરે છે, જેથી શેર્ડ કે કી-રહિત એન્ડપૉઇન્ટ સૂચિબદ્ધ ન થાય."
   }
 }

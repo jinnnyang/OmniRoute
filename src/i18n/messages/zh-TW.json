@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "模型目錄可見性",
+    "description": "控制 /v1/models 對外顯示的內容。這是全域設定；如果只想限制單一 API Key，請使用受限存取並為其設定允許的模型/組合。",
+    "hideAllProviders": "僅顯示組合",
+    "hideAllProvidersDescription": "在 /v1/models 中隱藏所有上游提供者模型，只顯示組合與 auto/*。直連被隱藏的提供者模型仍可路由。",
+    "hideNoauthProviders": "隱藏免金鑰提供者",
+    "hideNoauthProvidersDescription": "從目錄中移除不需要憑證的提供者，讓共用或免金鑰端點不再出現在目錄裡。"
   }
 }

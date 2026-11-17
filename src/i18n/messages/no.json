@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Synlighet for modellkatalog",
+    "description": "Styrer hva /v1/models viser. Dette er globale innstillinger; for å begrense én API-nøkkel bruker du begrenset tilgang med egne tillatte modeller og comboer.",
+    "hideAllProviders": "Vis bare comboer",
+    "hideAllProvidersDescription": "Skjuler alle oppstrømsleverandørenes modeller fra /v1/models og viser bare comboer og auto/*. Direkte kall til en skjult modell rutes fortsatt.",
+    "hideNoauthProviders": "Skjul leverandører uten nøkkel",
+    "hideNoauthProvidersDescription": "Fjerner leverandører som ikke krever påloggingsdata fra katalogen, slik at delte eller nøkkelfrie endepunkter ikke vises."
   }
 }

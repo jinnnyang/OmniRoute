@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "모델 카탈로그 표시",
+    "description": "/v1/models 가 표시하는 내용을 제어합니다. 전체 설정입니다. 특정 API 키만 제한하려면 허용 모델/콤보를 지정한 제한 액세스를 사용하세요.",
+    "hideAllProviders": "콤보만 표시",
+    "hideAllProvidersDescription": "/v1/models 에서 모든 업스트림 공급자 모델을 숨기고 콤보와 auto/* 만 표시합니다. 숨겨진 공급자 모델로 직접 호출해도 라우팅은 그대로 동작합니다.",
+    "hideNoauthProviders": "키 없는 공급자 숨기기",
+    "hideNoauthProvidersDescription": "자격 증명이 필요 없는 공급자를 카탈로그에서 제외하여 공유 또는 키 없는 엔드포인트가 노출되지 않게 합니다."
   }
 }

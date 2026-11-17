@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "मॉडेल कॅटलॉग दृश्यमानता",
+    "description": "/v1/models काय दाखवते हे नियंत्रित करते. ही जागतिक सेटिंग्ज आहेत; एक API की मर्यादित करण्यासाठी अनुमत मॉडेल/कॉम्बोसह प्रतिबंधित प्रवेश वापरा.",
+    "hideAllProviders": "फक्त कॉम्बो दाखवा",
+    "hideAllProvidersDescription": "/v1/models मधून सर्व अपस्ट्रीम प्रदाता मॉडेल लपवते आणि फक्त कॉम्बो व auto/* दाखवते. लपवलेल्या मॉडेलवरील थेट कॉल अजूनही राउट होतात.",
+    "hideNoauthProviders": "की-विरहित प्रदाते लपवा",
+    "hideNoauthProvidersDescription": "ज्या प्रदात्यांना क्रेडेन्शियल्सची गरज नाही त्यांना कॅटलॉगमधून काढून टाकते, जेणेकरून सामायिक किंवा की-विरहित एंडपॉइंट सूचीबद्ध होणार नाहीत."
   }
 }

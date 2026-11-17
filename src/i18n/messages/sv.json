@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Synlighet för modellkatalog",
+    "description": "Styr vad /v1/models visar. Detta är globala inställningar; för att begränsa en enskild API-nyckel använd begränsad åtkomst med egna tillåtna modeller och combos.",
+    "hideAllProviders": "Visa endast combos",
+    "hideAllProvidersDescription": "Döljer alla upstream-leverantörers modeller från /v1/models och visar endast combos och auto/*. Direkta anrop till en dold modell routas fortfarande.",
+    "hideNoauthProviders": "Dölj leverantörer utan nyckel",
+    "hideNoauthProvidersDescription": "Tar bort leverantörer som inte kräver inloggningsuppgifter från katalogen, så delade eller nyckelfria slutpunkter inte listas."
   }
 }

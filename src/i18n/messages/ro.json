@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Vizibilitatea catalogului de modele",
+    "description": "Controlează ce expune /v1/models. Sunt setări globale; pentru a restrânge o singură cheie API folosește acces restricționat cu propriile modele și combo-uri permise.",
+    "hideAllProviders": "Afișează doar combo-uri",
+    "hideAllProvidersDescription": "Ascunde toate modelele furnizorilor din /v1/models și afișează doar combo-uri și auto/*. Apelurile directe către un model ascuns sunt în continuare rutate.",
+    "hideNoauthProviders": "Ascunde furnizorii fără cheie",
+    "hideNoauthProvidersDescription": "Elimină din catalog furnizorii care nu necesită acreditări, astfel încât endpoint-urile partajate sau fără cheie să nu fie listate."
   }
 }

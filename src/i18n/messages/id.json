@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Visibilitas katalog model",
+    "description": "Mengatur apa yang ditampilkan /v1/models. Ini pengaturan global; untuk membatasi satu API key, gunakan akses terbatas dengan model/combo yang diizinkan.",
+    "hideAllProviders": "Tampilkan hanya combo",
+    "hideAllProvidersDescription": "Menyembunyikan semua model penyedia upstream dari /v1/models dan hanya menampilkan combo serta auto/*. Panggilan langsung ke model yang disembunyikan tetap dirutekan.",
+    "hideNoauthProviders": "Sembunyikan penyedia tanpa kunci",
+    "hideNoauthProvidersDescription": "Menghapus dari katalog penyedia yang tidak memerlukan kredensial, sehingga endpoint bersama atau tanpa kunci tidak ditampilkan."
   }
 }
