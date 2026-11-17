@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Visibilità del catalogo modelli",
+    "description": "Controlla cosa espone /v1/models. Sono impostazioni globali; per limitare una singola chiave API usa l'accesso limitato con i suoi modelli/combo consentiti.",
+    "hideAllProviders": "Mostra solo combo",
+    "hideAllProvidersDescription": "Nasconde tutti i modelli dei provider upstream da /v1/models e mostra solo combo e auto/*. Le chiamate dirette a un modello nascosto vengono comunque instradate.",
+    "hideNoauthProviders": "Nascondi i provider senza chiave",
+    "hideNoauthProvidersDescription": "Rimuove dal catalogo i provider che non richiedono credenziali, così gli endpoint condivisi o senza chiave non vengono elencati."
   }
 }

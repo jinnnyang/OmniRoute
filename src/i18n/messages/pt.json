@@ -13859,5 +13859,13 @@
     "partnerLinkNote": "Link de parceiro",
     "dismissAriaLabel": "Dispensar"
   },
-  "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active."
+  "featureFlagDisableContextWindowChecksDescription": "Skip OmniRoute's local context-window and max-input-token check for direct single-model requests. Upstream providers still enforce their actual limits. Prompt compression and output-token caps remain active.",
+  "catalogVisibility": {
+    "title": "Visibilidade do catálogo de modelos",
+    "description": "Controla o que o /v1/models expõe. São configurações globais; para restringir uma única chave de API, use acesso restrito com os seus próprios modelos/combos permitidos.",
+    "hideAllProviders": "Mostrar apenas combos",
+    "hideAllProvidersDescription": "Oculta todos os modelos de fornecedores upstream do /v1/models e mostra apenas combos e auto/*. Chamadas diretas a um modelo oculto continuam a ser encaminhadas.",
+    "hideNoauthProviders": "Ocultar fornecedores sem chave",
+    "hideNoauthProvidersDescription": "Remove do catálogo os fornecedores que não exigem credenciais, para que os endpoints partilhados ou sem chave não sejam anunciados."
+  }
 }

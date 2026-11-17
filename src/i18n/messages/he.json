@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "נראות קטלוג המודלים",
+    "description": "קובע מה /v1/models מציג. אלו הגדרות גלובליות; כדי להגביל מפתח API בודד השתמשו בגישה מוגבלת עם מודלים וקומבואים מורשים.",
+    "hideAllProviders": "הצג קומבואים בלבד",
+    "hideAllProvidersDescription": "מסתיר את כל מודלי הספקים מ-/v1/models ומציג רק קומבואים ו-auto/*. קריאות ישירות למודל מוסתר עדיין מנותבות.",
+    "hideNoauthProviders": "הסתר ספקים ללא מפתח",
+    "hideNoauthProvidersDescription": "מסיר מהקטלוג ספקים שאינם דורשים פרטי התחברות, כך שנקודות קצה משותפות או ללא מפתח לא יוצגו."
   }
 }

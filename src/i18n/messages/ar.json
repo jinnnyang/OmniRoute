@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "رؤية كتالوج النماذج",
+    "description": "يتحكم في ما يعرضه /v1/models. هذه إعدادات عامة؛ لتقييد مفتاح API واحد استخدم وصولًا مقيّدًا بنماذجه ومجموعاته المسموح بها.",
+    "hideAllProviders": "إظهار المجموعات فقط",
+    "hideAllProvidersDescription": "يخفي كل نماذج المزوّدين من /v1/models ويعرض المجموعات وauto/* فقط. النداءات المباشرة إلى نموذج مخفي تظل تُوجَّه.",
+    "hideNoauthProviders": "إخفاء المزوّدين بلا مفتاح",
+    "hideNoauthProvidersDescription": "يزيل من الكتالوج المزوّدين الذين لا يحتاجون بيانات اعتماد، حتى لا تُعرض نقاط النهاية المشتركة أو التي لا تحتاج مفتاحًا."
   }
 }

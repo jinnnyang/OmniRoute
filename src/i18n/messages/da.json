@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Synlighed i modelkatalog",
+    "description": "Styrer, hvad /v1/models viser. Det er globale indstillinger; for at begrænse én API-nøgle skal du bruge begrænset adgang med egne tilladte modeller og combos.",
+    "hideAllProviders": "Vis kun combos",
+    "hideAllProvidersDescription": "Skjuler alle upstream-udbyderes modeller fra /v1/models og viser kun combos og auto/*. Direkte kald til en skjult model routes stadig.",
+    "hideNoauthProviders": "Skjul udbydere uden nøgle",
+    "hideNoauthProvidersDescription": "Fjerner udbydere uden loginoplysninger fra kataloget, så delte eller nøglefri endpoints ikke vises."
   }
 }

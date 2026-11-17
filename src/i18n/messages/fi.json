@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Malliluettelon näkyvyys",
+    "description": "Säätelee, mitä /v1/models näyttää. Nämä ovat yleisiä asetuksia; rajoita yksittäinen API-avain käyttämällä rajoitettua käyttöä ja sen omia sallittuja malleja ja comboja.",
+    "hideAllProviders": "Näytä vain combot",
+    "hideAllProvidersDescription": "Piilottaa kaikki ylävirran tarjoajien mallit /v1/models-näkymästä ja näyttää vain combot ja auto/*. Suorat kutsut piilotettuun malliin ohjautuvat edelleen.",
+    "hideNoauthProviders": "Piilota tarjoajat ilman avainta",
+    "hideNoauthProvidersDescription": "Poistaa luettelosta tarjoajat, jotka eivät vaadi tunnistetietoja, jotta jaetut tai avaimettomat päätepisteet eivät näy."
   }
 }

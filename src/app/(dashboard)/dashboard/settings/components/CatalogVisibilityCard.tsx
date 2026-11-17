@@ -22,6 +22,7 @@ type Status = "idle" | "saved" | "error";
 
 export default function CatalogVisibilityCard() {
   const t = useTranslations("catalogVisibility");
+  const tSettings = useTranslations("settings");
   const [values, setValues] = useState<Record<VisibilityKey, boolean>>({
     hideAllProviders: false,
     hideNoauthProviders: false,
@@ -109,10 +110,10 @@ export default function CatalogVisibilityCard() {
         />
       </div>
       {status === "saved" && (
-        <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-400">{t("saved")}</p>
+        <p className="mt-2 text-xs text-emerald-600 dark:text-emerald-400">{tSettings("saved")}</p>
       )}
       {status === "error" && (
-        <p className="mt-2 text-xs text-red-600 dark:text-red-400">{t("error")}</p>
+        <p className="mt-2 text-xs text-red-600 dark:text-red-400">{tSettings("saveFailed")}</p>
       )}
     </section>
   );

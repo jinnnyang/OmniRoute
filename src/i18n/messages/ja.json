@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "モデルカタログの表示",
+    "description": "/v1/models が表示する内容を制御します。これは全体設定です。特定の API キーだけを絞り込む場合は、許可するモデル/コンボを指定した制限付きアクセスを使用してください。",
+    "hideAllProviders": "コンボのみ表示",
+    "hideAllProvidersDescription": "/v1/models から上流プロバイダーのモデルをすべて隠し、コンボと auto/* のみを表示します。非表示のプロバイダーモデルへ直接呼び出してもルーティングは行われます。",
+    "hideNoauthProviders": "キー不要のプロバイダーを隠す",
+    "hideNoauthProvidersDescription": "認証情報が不要なプロバイダーをカタログから除外し、共有またはキー不要のエンドポイントを表示しないようにします。"
   }
 }

@@ -13861,5 +13861,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Sichtbarkeit des Modellkatalogs",
+    "description": "Steuert, was /v1/models anzeigt. Das sind globale Einstellungen; um nur einen API-Schlüssel einzuschränken, nutze eingeschränkten Zugriff mit eigenen erlaubten Modellen/Combos.",
+    "hideAllProviders": "Nur Combos anzeigen",
+    "hideAllProvidersDescription": "Blendet alle Upstream-Provider-Modelle aus /v1/models aus und zeigt nur Combos und auto/*. Direkte Aufrufe eines ausgeblendeten Provider-Modells werden weiterhin geroutet.",
+    "hideNoauthProviders": "Provider ohne Schlüssel ausblenden",
+    "hideNoauthProvidersDescription": "Entfernt Provider ohne Zugangsdaten aus dem Katalog, damit geteilte oder schlüssellose Endpunkte nicht gelistet werden."
   }
 }

@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Visibilidad del catálogo de modelos",
+    "description": "Controla qué expone /v1/models. Son ajustes globales; para restringir una sola clave de API, usa acceso restringido con sus propios modelos/combos permitidos.",
+    "hideAllProviders": "Mostrar solo combos",
+    "hideAllProvidersDescription": "Oculta todos los modelos de proveedores de /v1/models y muestra solo combos y auto/*. Las llamadas directas a un modelo oculto siguen enrutándose.",
+    "hideNoauthProviders": "Ocultar proveedores sin clave",
+    "hideNoauthProvidersDescription": "Quita del catálogo los proveedores que no necesitan credenciales, para que los endpoints compartidos o sin clave no aparezcan."
   }
 }

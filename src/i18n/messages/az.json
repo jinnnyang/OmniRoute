@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Model kataloqunun görünməsi",
+    "description": "/v1/models nə göstərdiyini idarə edir. Bunlar qlobal parametrlərdir; yalnız bir API açarını məhdudlaşdırmaq üçün icazə verilmiş model/kombo ilə məhdud girişdən istifadə edin.",
+    "hideAllProviders": "Yalnız komboları göstər",
+    "hideAllProvidersDescription": "/v1/models-dən bütün yuxarı provayder modellərini gizlədir və yalnız kombo və auto/* göstərir. Gizlədilmiş modelə birbaşa çağırışlar yenə marşrutlanır.",
+    "hideNoauthProviders": "Açarsız provayderləri gizlət",
+    "hideNoauthProvidersDescription": "Etimad məlumatı tələb etməyən provayderləri kataloqdan çıxarır ki, paylaşılan və ya açarsız son nöqtələr siyahıya alınmasın."
   }
 }

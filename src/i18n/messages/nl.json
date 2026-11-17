@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Zichtbaarheid van de modelcatalogus",
+    "description": "Bepaalt wat /v1/models toont. Dit zijn globale instellingen; om één API-sleutel te beperken gebruik je beperkte toegang met eigen toegestane modellen/combos.",
+    "hideAllProviders": "Alleen combo's tonen",
+    "hideAllProvidersDescription": "Verbergt alle upstream-providermodellen uit /v1/models en toont alleen combo's en auto/*. Directe aanroepen naar een verborgen provider-model worden nog steeds gerouteerd.",
+    "hideNoauthProviders": "Providers zonder sleutel verbergen",
+    "hideNoauthProvidersDescription": "Haalt providers zonder inloggegevens uit de catalogus, zodat gedeelde of sleutelloze endpoints niet worden vermeld."
   }
 }

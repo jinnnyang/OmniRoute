@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Modellkatalógus láthatósága",
+    "description": "Meghatározza, mit tesz közzé a /v1/models. Ezek globális beállítások; egyetlen API-kulcs korlátozásához használjon korlátozott hozzáférést saját engedélyezett modellekkel és kombókkal.",
+    "hideAllProviders": "Csak kombók megjelenítése",
+    "hideAllProvidersDescription": "Elrejti az összes szolgáltatói modellt a /v1/models listáról, és csak kombókat és auto/* elemeket mutat. A rejtett modell közvetlen hívása továbbra is továbbítódik.",
+    "hideNoauthProviders": "Kulcs nélküli szolgáltatók elrejtése",
+    "hideNoauthProvidersDescription": "Eltávolítja a katalógusból azokat a szolgáltatókat, amelyek nem igényelnek hitelesítő adatot, így a megosztott vagy kulcs nélküli végpontok nem jelennek meg."
   }
 }

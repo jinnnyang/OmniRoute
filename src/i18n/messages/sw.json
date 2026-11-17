@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Mwonekano wa orodha ya modeli",
+    "description": "Hudhibiti kile /v1/models inaonyesha. Hizi ni mipangilio ya jumla; ili kuzuia ufunguo mmoja wa API tumia ufikiaji uliozuiwa na modeli/kombo zilizoruhusiwa.",
+    "hideAllProviders": "Onyesha kombo pekee",
+    "hideAllProvidersDescription": "Huficha modeli zote za watoa huduma kutoka /v1/models na kuonyesha kombo na auto/* pekee. Mwito wa moja kwa moja kwa modeli iliyofichwa bado unaelekezwa.",
+    "hideNoauthProviders": "Ficha watoa huduma wasio na ufunguo",
+    "hideNoauthProvidersDescription": "Huondoa kwenye orodha watoa huduma wasiohitaji vitambulisho, ili vituo vinavyoshirikiwa au visivyo na ufunguo visiorodheshwe."
   }
 }

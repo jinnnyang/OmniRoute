@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "ماڈل کیٹلاگ کی نمائش",
+    "description": "یہ طے کرتا ہے کہ /v1/models کیا دکھاتا ہے۔ یہ عالمی ترتیبات ہیں؛ صرف ایک API کلید محدود کرنے کے لیے اجازت شدہ ماڈل/کومبو کے ساتھ محدود رسائی استعمال کریں۔",
+    "hideAllProviders": "صرف کومبو دکھائیں",
+    "hideAllProvidersDescription": "/v1/models سے تمام اپ اسٹریم فراہم کنندہ ماڈل چھپاتا ہے اور صرف کومبو اور auto/* دکھاتا ہے۔ چھپے ہوئے ماڈل پر براہ راست کال اب بھی روٹ ہوتی ہے۔",
+    "hideNoauthProviders": "بغیر کلید فراہم کنندگان چھپائیں",
+    "hideNoauthProvidersDescription": "ایسے فراہم کنندگان کو کیٹلاگ سے ہٹاتا ہے جنہیں اسناد درکار نہیں، تاکہ مشترکہ یا بغیر کلید اینڈ پوائنٹس درج نہ ہوں۔"
   }
 }

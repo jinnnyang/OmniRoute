@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Keterlihatan katalog model",
+    "description": "Mengawal perkara yang didedahkan oleh /v1/models. Ini tetapan global; untuk mengehadkan satu kunci API, gunakan akses terhad dengan model/combo yang dibenarkan.",
+    "hideAllProviders": "Tunjuk combo sahaja",
+    "hideAllProvidersDescription": "Menyembunyikan semua model pembekal huluan daripada /v1/models dan hanya memaparkan combo serta auto/*. Panggilan terus ke model tersembunyi masih dihalakan.",
+    "hideNoauthProviders": "Sembunyikan pembekal tanpa kunci",
+    "hideNoauthProvidersDescription": "Mengeluarkan pembekal yang tidak memerlukan kelayakan daripada katalog supaya titik akhir kongsi atau tanpa kunci tidak disenaraikan."
   }
 }

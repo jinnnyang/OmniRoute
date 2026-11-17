@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "การมองเห็นแคตตาล็อกโมเดล",
+    "description": "ควบคุมสิ่งที่ /v1/models แสดง นี่คือการตั้งค่าระดับทั้งระบบ หากต้องการจำกัดเฉพาะ API key เดียว ให้ใช้การเข้าถึงแบบจำกัดพร้อมโมเดล/combo ที่อนุญาต",
+    "hideAllProviders": "แสดงเฉพาะ combo",
+    "hideAllProvidersDescription": "ซ่อนโมเดลของผู้ให้บริการต้นทางทั้งหมดจาก /v1/models และแสดงเฉพาะ combo กับ auto/* การเรียกโมเดลที่ซ่อนไว้โดยตรงยังคงถูกกำหนดเส้นทางตามปกติ",
+    "hideNoauthProviders": "ซ่อนผู้ให้บริการที่ไม่ต้องใช้คีย์",
+    "hideNoauthProvidersDescription": "นำผู้ให้บริการที่ไม่ต้องใช้ข้อมูลรับรองออกจากแคตตาล็อก เพื่อไม่ให้ endpoint ที่ใช้ร่วมกันหรือไม่ต้องใช้คีย์ถูกแสดง"
   }
 }

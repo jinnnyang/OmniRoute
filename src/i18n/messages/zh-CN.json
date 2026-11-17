@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "模型目录可见性",
+    "description": "控制 /v1/models 对外展示的内容。这是全局设置；如果只想限制单个 API Key，请使用受限访问并为其配置允许的模型/组合。",
+    "hideAllProviders": "仅显示组合",
+    "hideAllProvidersDescription": "在 /v1/models 中隐藏所有上游供应商模型，只展示组合与 auto/*。直连被隐藏的供应商模型仍然可以路由。",
+    "hideNoauthProviders": "隐藏免密钥供应商",
+    "hideNoauthProvidersDescription": "从目录中移除不需要凭据的供应商，使共享或免密钥端点不再出现在目录里。"
   }
 }

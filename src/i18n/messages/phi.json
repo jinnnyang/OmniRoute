@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Visibility ng catalog ng modelo",
+    "description": "Kinokontrol kung ano ang ipinapakita ng /v1/models. Global na setting ito; para limitahan ang isang API key, gamitin ang restricted access na may sariling pinapayagang modelo at combo.",
+    "hideAllProviders": "Ipakita lang ang mga combo",
+    "hideAllProvidersDescription": "Itinatago ang lahat ng modelo ng upstream provider sa /v1/models at ipinapakita lang ang mga combo at auto/*. Ang direktang tawag sa nakatagong modelo ay niroroute pa rin.",
+    "hideNoauthProviders": "Itago ang mga provider na walang key",
+    "hideNoauthProvidersDescription": "Tinatanggal sa catalog ang mga provider na hindi nangangailangan ng kredensyal, para hindi nakalista ang shared o keyless na endpoint."
   }
 }

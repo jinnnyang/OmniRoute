@@ -13859,5 +13859,13 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Viditelnost katalogu modelů",
+    "description": "Řídí, co zobrazuje /v1/models. Jde o globální nastavení; pro omezení jednoho API klíče použijte omezený přístup s vlastními povolenými modely a komby.",
+    "hideAllProviders": "Zobrazit pouze komba",
+    "hideAllProvidersDescription": "Skryje všechny modely poskytovatelů z /v1/models a zobrazí jen komba a auto/*. Přímá volání skrytého modelu se stále směrují.",
+    "hideNoauthProviders": "Skrýt poskytovatele bez klíče",
+    "hideNoauthProvidersDescription": "Odstraní z katalogu poskytovatele, kteří nevyžadují přihlašovací údaje, aby se sdílené nebo bezklíčové endpointy nezobrazovaly."
   }
 }
