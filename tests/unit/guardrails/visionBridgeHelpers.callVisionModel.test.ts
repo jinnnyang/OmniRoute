@@ -450,17 +450,22 @@ test("isMetaVisionDescription flags narration instead of description", async () 
 });
 
 test("callVisionModel treats a meta response as failure and falls back", async () => {
-  const responses: string[] = [];
-  const fetchImpl: typeof fetch = async () =>
-    Response.json({ choices: [{ message: { content: responses.shift() ?? "" } }] });
-
-  // Primary model narrates (meta), fallback answers with a real description.
-  let callCount = 0;
+  // Hermetic by construction: the FIRST model call anywhere in the flow narrates
+  // (meta), every later one answers for real. The previous version keyed this off
+  // "call 1 of the fallback fetch", which silently depended on the primary model
+  // actually being attempted — in CI the primary is sometimes skipped (no usable
+  // connection resolved), so both fallback attempts narrated and the call threw
+  // "Vision API returned empty or invalid response". Same intent, no dependence on
+  // model resolution, DB state or ordering.
+  let servedMeta = false;
   const fallbackFetch: typeof fetch = async () => {
-    callCount += 1;
-    const content =
-      callCount === 1 ? "I will analyze the image and describe what I see." : "A red square";
-    return Response.json({ choices: [{ message: { content } }] });
+    if (!servedMeta) {
+      servedMeta = true;
+      return Response.json({
+        choices: [{ message: { content: "I will analyze the image and describe what I see." } }],
+      });
+    }
+    return Response.json({ choices: [{ message: { content: "A red square" } }] });
   };
 
   const result = await callVisionModel(
@@ -477,8 +482,6 @@ test("callVisionModel treats a meta response as failure and falls back", async (
   );
 
   assert.equal(result, "A red square", "fallback must replace the meta response");
-  void responses;
-  void fetchImpl;
 });
 
 test("callVisionModel throws when EVERY attempt returns a meta response", async () => {
