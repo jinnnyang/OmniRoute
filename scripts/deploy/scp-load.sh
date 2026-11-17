@@ -58,9 +58,13 @@ TARBALL="${TARBALL:-${TARBALL_NAME}}"
 ASSET_URL="https://github.com/${RELEASE_REPO}/releases/download/v${VERSION}/${TARBALL_NAME}"
 REMOTE_TARBALL="${REMOTE_DIR}/incoming/${TARBALL_NAME}"
 
+# The host decides which tag it tracks (typically `latest`); this script moves that
+# tag onto the version it just loaded, so the recreate script never has to be edited.
 PREV_TAG=$(ssh_do "grep -m1 '^IMAGE=' '${RECREATE}' | sed 's/.*://'")
-echo "==> current production tag : ${PREV_TAG}"
-echo "==> target tag             : ${IMAGE_REPO}:${VERSION}"
+TRACKED_TAG="${PREV_TAG:-${VERSION}}"
+PREV_IMAGE_ID=$(ssh_do "docker image inspect --format '{{.Id}}' '${IMAGE_REPO}:${TRACKED_TAG}' 2>/dev/null || true")
+echo "==> host tracks tag        : ${IMAGE_REPO}:${TRACKED_TAG} (currently ${PREV_IMAGE_ID:-<none>})"
+echo "==> deploying              : ${IMAGE_REPO}:${VERSION}"
 echo "==> host                   : ${HOST}"
 echo "==> transfer               : ${TRANSFER}"
 if [ "$TRANSFER" = "scp" ]; then echo "==> tarball                : ${TARBALL}"; else echo "==> asset url              : ${ASSET_URL}"; fi
@@ -91,25 +95,31 @@ echo "==> docker load"
 ssh_do "gunzip -c '${REMOTE_TARBALL}' | docker load | tail -3"
 ssh_do "docker image inspect '${IMAGE_REPO}:${VERSION}' >/dev/null && echo '    image present: ${IMAGE_REPO}:${VERSION}'"
 
-echo "==> repointing ${RECREATE} to ${IMAGE_REPO}:${VERSION}"
-ssh_do "cp -a '${RECREATE}' '${RECREATE}.bak-\$(date +%Y%m%d%H%M%S)' && sed -i 's|^IMAGE=.*|IMAGE=${IMAGE_REPO}:${VERSION}|' '${RECREATE}'"
+if [ "${TRACKED_TAG}" != "${VERSION}" ]; then
+  echo "==> moving ${IMAGE_REPO}:${TRACKED_TAG} onto ${VERSION}"
+  ssh_do "docker tag '${IMAGE_REPO}:${VERSION}' '${IMAGE_REPO}:${TRACKED_TAG}'"
+else
+  echo "==> host already tracks the version tag; nothing to retag"
+fi
 
 echo "==> recreating the container"
 ssh_do "sh '${RECREATE}'"
 
 if health_ok; then
-  echo "==> deployed ${IMAGE_REPO}:${VERSION} (previous: ${PREV_TAG})"
-  echo "    rollback: ./scripts/deploy/scp-load.sh ${PREV_TAG} --no-rollback    (or: ssh ${HOST} \"sed -i 's|^IMAGE=.*|IMAGE=${IMAGE_REPO}:${PREV_TAG}|' '${RECREATE}' && sh '${RECREATE}'\")"
+  echo "==> deployed ${IMAGE_REPO}:${VERSION} (host tag ${TRACKED_TAG}, previous image ${PREV_IMAGE_ID:-<none>})"
+  echo "    rollback: docker tag ${PREV_IMAGE_ID:-<previous>} ${IMAGE_REPO}:${TRACKED_TAG} && sh ${RECREATE}"
   exit 0
 fi
 
-if [ "$ROLLBACK_ON_FAIL" = "1" ] && [ -n "${PREV_TAG}" ]; then
-  echo "!! health check failed — rolling back to ${PREV_TAG}" >&2
-  ssh_do "sed -i 's|^IMAGE=.*|IMAGE=${IMAGE_REPO}:${PREV_TAG}|' '${RECREATE}' && sh '${RECREATE}'"
+if [ "$ROLLBACK_ON_FAIL" = "1" ] && [ -n "${PREV_IMAGE_ID}" ]; then
+  echo "!! health check failed — rolling ${IMAGE_REPO}:${TRACKED_TAG} back to ${PREV_IMAGE_ID}" >&2
+  ssh_do "docker tag '${PREV_IMAGE_ID}' '${IMAGE_REPO}:${TRACKED_TAG}' && sh '${RECREATE}'"
   if health_ok; then
-    echo "!! rolled back to ${PREV_TAG}; production is serving again" >&2
+    echo "!! rolled back; production is serving the previous image again" >&2
   else
     echo "!! rollback also unhealthy — manual intervention required" >&2
   fi
+else
+  echo "!! no rollback performed (no previous image on tag ${TRACKED_TAG} or --no-rollback)" >&2
 fi
 exit 1

@@ -81,8 +81,11 @@ release-less (tag v*)  ──success──▶  deploy-less  ──▶  VPS: curl
 - **Secret**: `production` environment → `VPS_SSH_KEY` (private key; its public half belongs in
   `root@<host>:/root/.ssh/authorized_keys`). Optional variable `VPS_HOST` (defaults to
   `155.103.156.145`).
-- **Rollback**: `scp-load.sh` records the previous `IMAGE=` and, if the container is not
-  `{"status":"healthy","setupComplete":true}` within ~2 minutes, re-points it back and
-  recreates. A failed deploy therefore ends with production serving the previous version.
+- **Which tag runs**: the host's `recreate-omniroute.sh` decides (`IMAGE=jinnnyang/omniroute:latest`
+  in production). The deploy script loads the versioned image and moves *that* tag onto it, so
+  the recreate script is never edited by hand.
+- **Rollback**: the previous image id on the tracked tag is captured first; if the container is not
+  `{"status":"healthy","setupComplete":true}` within ~2 minutes the tag is re-pointed at that image
+  id and the container is recreated. A failed deploy therefore ends on the previous version.
 - **Approval gate (optional)**: add required reviewers to the `production` environment to turn
   auto-deploy into "build automatically, approve the rollout".
