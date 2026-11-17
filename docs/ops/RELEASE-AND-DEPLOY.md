@@ -67,3 +67,22 @@ It prints the rollback command with the previous tag on exit.
 
 Test jobs run through `scripts/quality/unit-ratchet.mjs`, so they fail only on **new**
 failures relative to `config/quality/unit-known-failures.json`.
+
+## Auto-deploy
+
+`deploy-less.yml` deploys the image that a successful `release-less` run produced:
+
+```
+release-less (tag v*)  ──success──▶  deploy-less  ──▶  VPS: curl asset → docker load → recreate → health
+```
+
+- **Trigger**: `workflow_run` on `release-less` completion, plus manual dispatch with a version.
+- **Rail**: a failed build / Trivy finding / smoke failure never reaches the host.
+- **Secret**: `production` environment → `VPS_SSH_KEY` (private key; its public half belongs in
+  `root@<host>:/root/.ssh/authorized_keys`). Optional variable `VPS_HOST` (defaults to
+  `155.103.156.145`).
+- **Rollback**: `scp-load.sh` records the previous `IMAGE=` and, if the container is not
+  `{"status":"healthy","setupComplete":true}` within ~2 minutes, re-points it back and
+  recreates. A failed deploy therefore ends with production serving the previous version.
+- **Approval gate (optional)**: add required reviewers to the `production` environment to turn
+  auto-deploy into "build automatically, approve the rollout".

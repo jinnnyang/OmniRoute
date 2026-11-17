@@ -1,0 +1,101 @@
+name: deploy-less
+
+# Auto-deploy the image a successful release just produced.
+#
+# Trigger: `release-less` finishes successfully (i.e. the image was built, scanned by
+# Trivy, smoke-tested, pushed and attached to the GitHub Release). The host then pulls
+# that release asset itself — the tarball is ~345 MB, so downloading it on the VPS is
+# far faster than moving it from a runner.
+#
+# Safety rails:
+#   * only a *successful* release deploys; a failed build/scan never reaches the host
+#   * the job runs in the `production` environment, so the SSH key is an environment
+#     secret and you can add required reviewers / branch policies there
+#   * scripts/deploy/scp-load.sh re-points recreate-omniroute.sh, waits for
+#     {"status":"healthy","setupComplete":true} and rolls back to the previous tag if
+#     the container does not come up
+#
+# Required: environment `production` with secret VPS_SSH_KEY (private key whose public
+# half is in root@<host>:/root/.ssh/authorized_keys) and variable VPS_HOST.
+
+on:
+  workflow_run:
+    workflows: ["release-less"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (e.g. 3.8.59)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy to production
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://aptapi.dev
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: less
+
+      - name: Resolve version
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            V="${{ inputs.version }}"
+          else
+            # release-less is triggered by a `v*` tag; head_branch carries that tag name.
+            V="${{ github.event.workflow_run.head_branch }}"
+            V="${V#v}"
+          fi
+          case "$V" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::cannot resolve a version from '$V'"; exit 1 ;;
+          esac
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+          echo "deploying $V"
+
+      - name: Install SSH key
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_HOST: ${{ vars.VPS_HOST || '155.103.156.145' }}
+        run: |
+          if [ -z "$VPS_SSH_KEY" ]; then
+            echo "::error::missing VPS_SSH_KEY secret in the production environment"
+            exit 1
+          fi
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy
+        env:
+          VPS_HOST: ${{ vars.VPS_HOST || '155.103.156.145' }}
+          OMNIROUTE_SSH_KEY: /home/runner/.ssh/id_deploy
+        run: |
+          chmod +x scripts/deploy/scp-load.sh
+          ./scripts/deploy/scp-load.sh "${{ steps.v.outputs.version }}" --host "root@${VPS_HOST}"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### deploy ${{ steps.v.outputs.version }}"
+            echo ""
+            echo "- result: ${{ job.status }}"
+            echo "- host: ${{ vars.VPS_HOST || '155.103.156.145' }}"
+            echo "- rollback: \`./scripts/deploy/scp-load.sh <previous-version> --no-rollback\`"
+          } >> "$GITHUB_STEP_SUMMARY"
