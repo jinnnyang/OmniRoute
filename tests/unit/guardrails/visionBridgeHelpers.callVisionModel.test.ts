@@ -457,15 +457,25 @@ test("callVisionModel treats a meta response as failure and falls back", async (
   // connection resolved), so both fallback attempts narrated and the call threw
   // "Vision API returned empty or invalid response". Same intent, no dependence on
   // model resolution, DB state or ordering.
+  // Hermetic on two axes:
+  //  1. narration is served once for the whole flow (not "call 1 of the fallback"),
+  //     so it does not matter whether the primary model is attempted at all;
+  //  2. the reply shape follows the request. The resolver may pick an OpenAI-shaped
+  //     model in one environment and an Anthropic-shaped one in another (CI seeded
+  //     both connections), and the Anthropic branch rejects `{choices:[...]}` with
+  //     "Vision API returned empty or invalid response" — that is what made this
+  //     test fail only on CI.
   let servedMeta = false;
-  const fallbackFetch: typeof fetch = async () => {
-    if (!servedMeta) {
-      servedMeta = true;
-      return Response.json({
-        choices: [{ message: { content: "I will analyze the image and describe what I see." } }],
-      });
-    }
-    return Response.json({ choices: [{ message: { content: "A red square" } }] });
+  const fallbackFetch: typeof fetch = async (input: RequestInfo | URL) => {
+    const url = String(input instanceof Request ? input.url : input);
+    const anthropicShaped = /anthropic|\/v1\/messages/.test(url);
+    const content = servedMeta
+      ? "A red square"
+      : "I will analyze the image and describe what I see.";
+    servedMeta = true;
+    return anthropicShaped
+      ? Response.json({ content: [{ type: "text", text: content }] })
+      : Response.json({ choices: [{ message: { content } }] });
   };
 
   const result = await callVisionModel(
