@@ -23,8 +23,15 @@ permissions:
   contents: read
 
 concurrency:
+  # A newer commit on the same ref supersedes the older one, so finishing the older run
+  # only burns runner minutes: measured 2026-11-17, two pushes 74s apart produced two full
+  # ~35 minute gate runs. Cancelling is safe for a required check — branch protection reads
+  # the head commit, which is the run that survives.
+  #
+  # `deploy-less` deliberately does the opposite (serialise, never cancel): a publish must
+  # not be interrupted, and two must not overlap.
   group: less-ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 
 jobs:
   lint:

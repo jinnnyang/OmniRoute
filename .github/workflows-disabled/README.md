@@ -21,12 +21,14 @@ either never trigger or would fail structurally:
 | `opencode-plugin-ci.yml` | Bound to `release/v3.8.2` (dead branch). |
 | `opencode-provider-ci.yml` | Bound to `release/v3.8.0` (dead branch). |
 | `lock-released-branch.yml` | Locks released branches in upstream's release model. |
+| `build.yml` (`Build App`) | Re-targeted at `less` in the fork, so it did run — but it builds with `OMNIROUTE_USE_TURBOPACK=1` and archives an artifact nothing consumes, duplicating `less-ci`'s `build (webpack)` job (the mode we actually ship) on every push. Disabled 2026-11-17; it is not a required check. |
 
 ## Not yet decided
 
 `ci.yml`, `quality.yml`, `codeql.yml`, `semgrep.yml`, `dast-smoke.yml`,
 `scorecard.yml`, `nightly-*.yml` are still in `.github/workflows/` but bind to
-`main` / `release/**` and therefore never run here. They are candidates for
+`main` / `release/**` and therefore never run here (verified 2026-11-17 by reading
+every `on:` block; `build.yml` was the only leftover that targeted `less`). They are candidates for
 either re-targeting at `less` or moving here — see
 `reviews/20261116-less/00-SYNTHESIS-改造清单.md` (T1 items).
 
