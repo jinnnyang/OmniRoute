@@ -450,17 +450,32 @@ test("isMetaVisionDescription flags narration instead of description", async () 
 });
 
 test("callVisionModel treats a meta response as failure and falls back", async () => {
-  const responses: string[] = [];
-  const fetchImpl: typeof fetch = async () =>
-    Response.json({ choices: [{ message: { content: responses.shift() ?? "" } }] });
-
-  // Primary model narrates (meta), fallback answers with a real description.
-  let callCount = 0;
-  const fallbackFetch: typeof fetch = async () => {
-    callCount += 1;
-    const content =
-      callCount === 1 ? "I will analyze the image and describe what I see." : "A red square";
-    return Response.json({ choices: [{ message: { content } }] });
+  // Hermetic by construction: the FIRST model call anywhere in the flow narrates
+  // (meta), every later one answers for real. The previous version keyed this off
+  // "call 1 of the fallback fetch", which silently depended on the primary model
+  // actually being attempted — in CI the primary is sometimes skipped (no usable
+  // connection resolved), so both fallback attempts narrated and the call threw
+  // "Vision API returned empty or invalid response". Same intent, no dependence on
+  // model resolution, DB state or ordering.
+  // Hermetic on two axes:
+  //  1. narration is served once for the whole flow (not "call 1 of the fallback"),
+  //     so it does not matter whether the primary model is attempted at all;
+  //  2. the reply shape follows the request. The resolver may pick an OpenAI-shaped
+  //     model in one environment and an Anthropic-shaped one in another (CI seeded
+  //     both connections), and the Anthropic branch rejects `{choices:[...]}` with
+  //     "Vision API returned empty or invalid response" — that is what made this
+  //     test fail only on CI.
+  let servedMeta = false;
+  const fallbackFetch: typeof fetch = async (input: RequestInfo | URL) => {
+    const url = String(input instanceof Request ? input.url : input);
+    const anthropicShaped = /anthropic|\/v1\/messages/.test(url);
+    const content = servedMeta
+      ? "A red square"
+      : "I will analyze the image and describe what I see.";
+    servedMeta = true;
+    return anthropicShaped
+      ? Response.json({ content: [{ type: "text", text: content }] })
+      : Response.json({ choices: [{ message: { content } }] });
   };
 
   const result = await callVisionModel(
@@ -477,8 +492,6 @@ test("callVisionModel treats a meta response as failure and falls back", async (
   );
 
   assert.equal(result, "A red square", "fallback must replace the meta response");
-  void responses;
-  void fetchImpl;
 });
 
 test("callVisionModel throws when EVERY attempt returns a meta response", async () => {
