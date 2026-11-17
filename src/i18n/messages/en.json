@@ -13861,5 +13861,15 @@
     "cta": "Get an API Key",
     "partnerLinkNote": "Partner link",
     "dismissAriaLabel": "Dismiss"
+  },
+  "catalogVisibility": {
+    "title": "Model catalog visibility",
+    "description": "Controls what /v1/models advertises. These are global settings; to narrow a single API key, use restricted access with its own allowed models/combos.",
+    "hideAllProviders": "Show only combos",
+    "hideAllProvidersDescription": "Hide every upstream provider model from /v1/models and advertise only combos and auto/*. Direct calls to a hidden provider model still route.",
+    "hideNoauthProviders": "Hide keyless providers",
+    "hideNoauthProvidersDescription": "Drop providers that need no credentials from the catalog, so shared/keyless endpoints are not advertised.",
+    "saved": "Saved",
+    "error": "Could not save — the previous value was restored."
   }
 }
