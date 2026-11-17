@@ -159,10 +159,16 @@ test("callVisionModel persists success AND failure attempts via persistUsage", a
   }> = [];
 
   let fetchCallCount = 0;
+  let answeredModel = "";
   globalThis.fetch = async (_url: RequestInfo | URL, init?: RequestInit) => {
     fetchCallCount++;
     if (fetchCallCount === 1) throw new Error("mock: primary flaked");
     const request = JSON.parse(String(init?.body ?? "{}"));
+    // Remember who actually answered: the fallback ranking is scored from catalog
+    // data, so asserting a hard-coded fallback identity below makes this test fail
+    // whenever that ranking shifts (observed flipping between
+    // anthropic/claude-fable-5 and openai/gpt-5.6-sol on identical code).
+    answeredModel = String(request.model ?? "");
     const answer = "A convincing detailed image description.";
     // Respond with the wire shape for WHICHEVER fallback candidate asks, so the
     // test is order-independent (fallback ranking may change with scoring).
@@ -201,15 +207,18 @@ test("callVisionModel persists success AND failure attempts via persistUsage", a
     success: false,
     errorCode: "mock: primary flaked",
   });
-  // The fallback chain resolves to a different describer (anthropic/claude-fable-5)
-  // once the openai primary fails — the success row must reflect the model that
-  // ACTUALLY produced the description.
-  assert.deepEqual(persisted[1], {
-    provider: "anthropic",
-    model: "claude-fable-5",
-    success: true,
-    errorCode: null,
-  });
+  // The fallback chain resolves to some other describer once the openai primary
+  // fails — the success row must reflect the model that ACTUALLY produced the
+  // description, not the primary. Which candidate wins is a scored catalog decision
+  // (`getVisionCapableModels`), so pin the invariant, not the identity.
+  assert.equal(persisted[1].success, true);
+  assert.equal(persisted[1].errorCode, null);
+  assert.equal(
+    persisted[1].model,
+    answeredModel,
+    "the success row must name the model whose request the mock answered"
+  );
+  assert.notEqual(persisted[1].model, "gpt-4o-mini", "the success row must not be the primary");
 });
 
 test("persistUsage receives meta-response attempts as failures", async () => {
