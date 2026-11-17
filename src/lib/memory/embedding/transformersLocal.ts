@@ -28,9 +28,22 @@ async function getOrLoadPipeline(): Promise<PipelineFn> {
   if (_pipelineLoading) return _pipelineLoading;
 
   _pipelineLoading = (async (): Promise<PipelineFn> => {
-    // Lazy import — never at module level (D8, D25)
-    const transformers = await import("@huggingface/transformers");
-    const { pipeline } = transformers as { pipeline: (task: string, model: string, opts?: Record<string, unknown>) => Promise<PipelineFn> };
+    // Lazy import — never at module level (D8, D25).
+    //
+    // The specifier is computed on purpose. `@huggingface/transformers` is an optional
+    // runtime package (pack `ml-runtime`), not a build dependency, but a literal
+    // specifier still makes the bundler resolve it at build time: a runner where the
+    // optional install was skipped then fails the whole production build with
+    // "Module not found: Can't resolve '@huggingface/transformers'" (observed
+    // 2026-11-17, build job red at 5m18s while every unit shard was green).
+    // Both bundler hints keep this a genuine runtime import.
+    const transformersSpecifier = "@huggingface/transformers";
+    const transformers = (await import(
+      /* webpackIgnore: true */ /* turbopackIgnore: true */ transformersSpecifier
+    )) as {
+      pipeline: (task: string, model: string, opts?: Record<string, unknown>) => Promise<PipelineFn>;
+    };
+    const { pipeline } = transformers;
     const pipe = await pipeline("feature-extraction", TRANSFORMERS_MODEL, { dtype: "q8" });
     _pipeline = pipe;
     _pipelineLoading = null;
