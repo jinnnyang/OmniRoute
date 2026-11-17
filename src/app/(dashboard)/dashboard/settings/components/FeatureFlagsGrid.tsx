@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { matchesSearch } from "@/shared/utils/turkishText";
 import FeatureFlagCard from "./FeatureFlagCard";
+import CatalogVisibilityCards from "./CatalogVisibilityCard";
 
 // Type for flag data from API
 interface FlagData {
@@ -314,6 +315,10 @@ export default function FeatureFlagsGrid() {
           </select>
         </div>
       </div>
+
+      {/* Catalog visibility — settings-backed, not feature flags, so it sits above the
+          flag filters instead of inside the searchable grid. */}
+      <CatalogVisibilityCards />
 
       {/* Pending-restart banner — shown when at least one requiresRestart flag
           was toggled in this session. */}
