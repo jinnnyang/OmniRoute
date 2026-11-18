@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "コンボのみ表示",
     "hideAllProvidersDescription": "/v1/models から上流プロバイダーのモデルをすべて隠し、コンボと auto/* のみを表示します。非表示のプロバイダーモデルへ直接呼び出してもルーティングは行われます。",
     "hideNoauthProviders": "キー不要のプロバイダーを隠す",
-    "hideNoauthProvidersDescription": "認証情報が不要なプロバイダーをカタログから除外し、共有またはキー不要のエンドポイントを表示しないようにします。"
+    "hideNoauthProvidersDescription": "認証情報が不要なプロバイダーをカタログから除外し、共有またはキー不要のエンドポイントを表示しないようにします。",
+    "hideAutoCombos": "組み込みの auto/* コンボを隠す",
+    "hideAutoCombosDescription": "組み込みの auto/* 仮想コンボ（auto/coding や auto/best-fast など 40 件以上）を /v1/models に表示しません。独自のコンボは影響を受けません。上記と同じ注意点として、クライアントが auto/* を明示的に送信した場合は引き続きルーティングされます。完全に拒否したい場合はゼロ設定自動ルーティングを無効にしてください。"
   }
 }

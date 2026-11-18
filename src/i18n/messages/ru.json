@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "Показывать только комбо",
     "hideAllProvidersDescription": "Скрывает все модели провайдеров из /v1/models и оставляет только комбо и auto/*. Прямые вызовы скрытой модели по-прежнему маршрутизируются.",
     "hideNoauthProviders": "Скрыть провайдеров без ключа",
-    "hideNoauthProvidersDescription": "Убирает из каталога провайдеров, не требующих учётных данных, чтобы общие и бесключевые эндпоинты не публиковались."
+    "hideNoauthProvidersDescription": "Убирает из каталога провайдеров, не требующих учётных данных, чтобы общие и бесключевые эндпоинты не публиковались.",
+    "hideAutoCombos": "Скрыть встроенные комбо auto/*",
+    "hideAutoCombosDescription": "Убирает встроенные виртуальные комбо auto/* (более 40 идентификаторов, например auto/coding, auto/best-fast) из /v1/models. Ваши собственные комбо не затрагиваются. Та же оговорка: если клиент явно отправляет auto/*, запрос всё равно будет маршрутизирован — чтобы отклонять их, отключите авто-маршрутизацию без настройки."
   }
 }

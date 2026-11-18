@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "콤보만 표시",
     "hideAllProvidersDescription": "/v1/models 에서 모든 업스트림 공급자 모델을 숨기고 콤보와 auto/* 만 표시합니다. 숨겨진 공급자 모델로 직접 호출해도 라우팅은 그대로 동작합니다.",
     "hideNoauthProviders": "키 없는 공급자 숨기기",
-    "hideNoauthProvidersDescription": "자격 증명이 필요 없는 공급자를 카탈로그에서 제외하여 공유 또는 키 없는 엔드포인트가 노출되지 않게 합니다."
+    "hideNoauthProvidersDescription": "자격 증명이 필요 없는 공급자를 카탈로그에서 제외하여 공유 또는 키 없는 엔드포인트가 노출되지 않게 합니다.",
+    "hideAutoCombos": "내장 auto/* 콤보 숨기기",
+    "hideAutoCombosDescription": "내장 auto/* 가상 콤보(40개 이상, 예: auto/coding, auto/best-fast)를 /v1/models에서 숨깁니다. 직접 만든 콤보는 영향을 받지 않습니다. 위와 같은 주의사항이 적용됩니다. 클라이언트가 auto/*를 직접 보내면 여전히 라우팅되며, 완전히 거부하려면 제로 구성 자동 라우팅을 끄십시오."
   }
 }

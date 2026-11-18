@@ -13868,6 +13868,8 @@
     "hideAllProviders": "Nur Combos anzeigen",
     "hideAllProvidersDescription": "Blendet alle Upstream-Provider-Modelle aus /v1/models aus und zeigt nur Combos und auto/*. Direkte Aufrufe eines ausgeblendeten Provider-Modells werden weiterhin geroutet.",
     "hideNoauthProviders": "Provider ohne Schlüssel ausblenden",
-    "hideNoauthProvidersDescription": "Entfernt Provider ohne Zugangsdaten aus dem Katalog, damit geteilte oder schlüssellose Endpunkte nicht gelistet werden."
+    "hideNoauthProvidersDescription": "Entfernt Provider ohne Zugangsdaten aus dem Katalog, damit geteilte oder schlüssellose Endpunkte nicht gelistet werden.",
+    "hideAutoCombos": "Integrierte auto/*-Combos ausblenden",
+    "hideAutoCombosDescription": "Blendet die integrierten virtuellen auto/*-Combos (über 40 IDs wie auto/coding, auto/best-fast) aus /v1/models aus. Eigene Combos sind nicht betroffen. Gleicher Hinweis wie oben: Ein Client, der auto/* explizit sendet, wird weiterhin geroutet – zum vollständigen Ablehnen Zero-Config-Auto-Routing deaktivieren."
   }
 }

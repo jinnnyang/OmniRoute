@@ -12,15 +12,20 @@
  * Wording matters: `hideAllProviders` only filters the catalog. Direct calls to a hidden
  * provider model still route, which is what an operator wants when they only mean to tidy
  * the list. Per-key narrowing stays `modelAccessMode=restricted` + allowed models/combos.
+ *
+ * `hideAutoCombos` (2026-11-18) had the same gap: it shipped in the settings API as the
+ * only way to keep the 40-odd built-in `auto/*` virtual combos out of `/v1/models`, with
+ * no dashboard surface at all. Same wording caveat — it unadvertises ids that still route
+ * when sent explicitly; use `autoRoutingEnabled` when the ids must be rejected outright.
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-type VisibilityKey = "hideAllProviders" | "hideNoauthProviders";
+type VisibilityKey = "hideAllProviders" | "hideNoauthProviders" | "hideAutoCombos";
 type Status = "idle" | "saved" | "error";
 
-const CARDS: VisibilityKey[] = ["hideAllProviders", "hideNoauthProviders"];
+const CARDS: VisibilityKey[] = ["hideAllProviders", "hideNoauthProviders", "hideAutoCombos"];
 
 function Spinner() {
   return (
@@ -39,6 +44,7 @@ export default function CatalogVisibilityCards() {
   const [values, setValues] = useState<Record<VisibilityKey, boolean>>({
     hideAllProviders: false,
     hideNoauthProviders: false,
+    hideAutoCombos: false,
   });
   const [loading, setLoading] = useState(true);
   const [savingKey, setSavingKey] = useState<VisibilityKey | null>(null);
@@ -54,6 +60,7 @@ export default function CatalogVisibilityCards() {
         setValues({
           hideAllProviders: settings.hideAllProviders === true,
           hideNoauthProviders: settings.hideNoauthProviders === true,
+          hideAutoCombos: settings.hideAutoCombos === true,
         });
       })
       .catch(() => {
@@ -104,6 +111,10 @@ export default function CatalogVisibilityCards() {
       label: t("hideNoauthProviders"),
       description: t("hideNoauthProvidersDescription"),
     },
+    hideAutoCombos: {
+      label: t("hideAutoCombos"),
+      description: t("hideAutoCombosDescription"),
+    },
   };
 
   if (loading) return null;
@@ -111,10 +122,7 @@ export default function CatalogVisibilityCards() {
   return (
     <section className="space-y-3" aria-labelledby="catalog-visibility-heading">
       <div>
-        <h2
-          id="catalog-visibility-heading"
-          className="text-sm font-semibold text-text-primary"
-        >
+        <h2 id="catalog-visibility-heading" className="text-sm font-semibold text-text-primary">
           {t("title")}
         </h2>
         <p className="mt-1 text-xs text-text-muted">{t("description")}</p>
@@ -133,7 +141,9 @@ export default function CatalogVisibilityCards() {
               role="group"
               aria-label={text[key].label}
               className={`rounded-xl border bg-card p-4 shadow-soft transition-all duration-200 hover:-translate-y-px hover:border-black/15 hover:bg-bg-subtle/60 hover:shadow-elevated dark:hover:border-white/15 dark:hover:bg-surface ${
-                on ? "border-emerald-300 shadow-emerald-500/10 dark:border-green-500/30" : "border-border"
+                on
+                  ? "border-emerald-300 shadow-emerald-500/10 dark:border-green-500/30"
+                  : "border-border"
               }`}
             >
               <div className="mb-3 flex items-center justify-between">

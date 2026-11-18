@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "命令输出过滤引擎",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "仅显示组合",
     "hideAllProvidersDescription": "在 /v1/models 中隐藏所有上游提供者模型，只展示组合与 auto/*。直连被隐藏的提供者模型仍然可以路由。",
     "hideNoauthProviders": "隐藏免密钥提供者",
-    "hideNoauthProvidersDescription": "从目录中移除不需要凭据的提供者，使共享或免密钥端点不再出现在目录里。"
+    "hideNoauthProvidersDescription": "从目录中移除不需要凭据的提供者，使共享或免密钥端点不再出现在目录里。",
+    "hideAutoCombos": "隐藏内置 auto/* 组合",
+    "hideAutoCombosDescription": "把内置的 auto/* 虚拟组合（40 多个，例如 auto/coding、auto/best-fast）从 /v1/models 中隐藏；你自己建的组合不受影响。注意与上面相同的语义：客户端显式发送 auto/* 仍然会被路由——要彻底拒绝这些 id，请关闭零配置自动路由。"
   }
 }

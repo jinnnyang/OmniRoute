@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "Zobraziť len kombá",
     "hideAllProvidersDescription": "Skryje všetky modely poskytovateľov z /v1/models a zobrazí len kombá a auto/*. Priame volania skrytého modelu sa stále smerujú.",
     "hideNoauthProviders": "Skryť poskytovateľov bez kľúča",
-    "hideNoauthProvidersDescription": "Odstráni z katalógu poskytovateľov, ktorí nevyžadujú prihlasovacie údaje, aby sa zdieľané alebo bezkľúčové endpointy nezobrazovali."
+    "hideNoauthProvidersDescription": "Odstráni z katalógu poskytovateľov, ktorí nevyžadujú prihlasovacie údaje, aby sa zdieľané alebo bezkľúčové endpointy nezobrazovali.",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }

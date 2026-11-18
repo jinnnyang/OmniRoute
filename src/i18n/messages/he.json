@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "הצג קומבואים בלבד",
     "hideAllProvidersDescription": "מסתיר את כל מודלי הספקים מ-/v1/models ומציג רק קומבואים ו-auto/*. קריאות ישירות למודל מוסתר עדיין מנותבות.",
     "hideNoauthProviders": "הסתר ספקים ללא מפתח",
-    "hideNoauthProvidersDescription": "מסיר מהקטלוג ספקים שאינם דורשים פרטי התחברות, כך שנקודות קצה משותפות או ללא מפתח לא יוצגו."
+    "hideNoauthProvidersDescription": "מסיר מהקטלוג ספקים שאינם דורשים פרטי התחברות, כך שנקודות קצה משותפות או ללא מפתח לא יוצגו.",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }

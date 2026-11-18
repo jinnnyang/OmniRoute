@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "صرف کومبو دکھائیں",
     "hideAllProvidersDescription": "/v1/models سے تمام اپ اسٹریم فراہم کنندہ ماڈل چھپاتا ہے اور صرف کومبو اور auto/* دکھاتا ہے۔ چھپے ہوئے ماڈل پر براہ راست کال اب بھی روٹ ہوتی ہے۔",
     "hideNoauthProviders": "بغیر کلید فراہم کنندگان چھپائیں",
-    "hideNoauthProvidersDescription": "ایسے فراہم کنندگان کو کیٹلاگ سے ہٹاتا ہے جنہیں اسناد درکار نہیں، تاکہ مشترکہ یا بغیر کلید اینڈ پوائنٹس درج نہ ہوں۔"
+    "hideNoauthProvidersDescription": "ایسے فراہم کنندگان کو کیٹلاگ سے ہٹاتا ہے جنہیں اسناد درکار نہیں، تاکہ مشترکہ یا بغیر کلید اینڈ پوائنٹس درج نہ ہوں۔",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }

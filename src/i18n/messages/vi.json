@@ -13868,6 +13868,8 @@
     "hideAllProviders": "Chỉ hiển thị combo",
     "hideAllProvidersDescription": "Ẩn toàn bộ model của nhà cung cấp khỏi /v1/models và chỉ hiển thị combo cùng auto/*. Gọi trực tiếp model bị ẩn vẫn được định tuyến.",
     "hideNoauthProviders": "Ẩn nhà cung cấp không cần khóa",
-    "hideNoauthProvidersDescription": "Loại bỏ khỏi danh mục những nhà cung cấp không cần thông tin xác thực, để endpoint dùng chung hoặc không cần khóa không được công bố."
+    "hideNoauthProvidersDescription": "Loại bỏ khỏi danh mục những nhà cung cấp không cần thông tin xác thực, để endpoint dùng chung hoặc không cần khóa không được công bố.",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }
