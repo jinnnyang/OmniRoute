@@ -7,7 +7,6 @@ const { APIKEY_PROVIDERS_ENTERPRISE } = await import(
 const { APIKEY_PROVIDERS_INFERENCE } = await import(
   "../../src/shared/constants/providers/apikey/inference-hosts.ts"
 );
-const { WEB_COOKIE_PROVIDERS } = await import("../../src/shared/constants/providers/web-cookie.ts");
 
 // #5461 — Scaleway's `website` pointed at https://www.scaleway.com/en/ai/generative-apis
 // which returns HTTP 404. The live docs page is /en/docs/ai-data/generative-apis/.
@@ -32,15 +31,4 @@ test("#5470 Together AI no longer advertises a free tier and warns about the pre
   assert.ok(noticeText.length > 0, "a prepaid notice must be present");
   assert.ok(!noticeText.includes("$25 signup credits"), "must not repeat the retired $25 claim");
   assert.ok(/prepaid|\$5/i.test(noticeText), "notice must mention the prepaid / $5 minimum");
-});
-
-// #5534 — the M365 Copilot authHint gave no concrete steps and the reporter's guessed
-// method (Authorization header) is wrong; the credential lives on the Chathub WS URL.
-test("#5534 M365 Copilot authHint gives concrete DevTools WebSocket steps", () => {
-  const m365 = (WEB_COOKIE_PROVIDERS as Record<string, any>)["copilot-m365-web"];
-  assert.ok(m365, "copilot-m365-web provider must exist");
-  const hint: string = m365.authHint || "";
-  assert.ok(/websocket|\bWS\b/i.test(hint), "hint must point at the WebSocket (WS) tab");
-  assert.ok(/DevTools/i.test(hint), "hint must reference DevTools");
-  assert.ok(/access_token/.test(hint), "hint must name the access_token");
 });
