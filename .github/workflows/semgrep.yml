@@ -1,9 +1,12 @@
 name: semgrep
+# `less` is the fork's release branch: every image ships from it, so it gets the same
+# advisory scan the upstream branches get. Adds ~1-2 min per PR (container image pull).
 on:
   pull_request:
-    branches: ["main", "release/**"]
+    branches: ["main", "release/**", "less"]
   push:
-    branches: ["main"]
+    branches: ["main", "less"]
+  workflow_dispatch:
 permissions:
   contents: read
 

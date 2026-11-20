@@ -1,0 +1,57 @@
+name: osv-scan
+
+# Dependency vulnerability scan for the branch that actually ships.
+#
+# Why this file exists: `npm audit` is unusable here (the local setup points at
+# registry.npmmirror.com, which answers [NOT_IMPLEMENTED] for the advisories endpoint), and
+# the upstream `quality.yml` never runs on `less`. osv-scanner reads package-lock.json and
+# queries OSV directly, so it works regardless of the npm registry in use.
+#
+# Advisory on purpose: the tree already carries known findings (fork issue #3 recorded 169
+# against a baseline of 22). A hard gate today would be red forever and get ignored — the
+# ratchet comes next, once the baseline is ratified. The job still prints the counts and
+# uploads the SARIF so the number can be tracked.
+on:
+  pull_request:
+    branches: ["less"]
+  push:
+    branches: ["less"]
+  schedule:
+    - cron: "0 3 * * 2" # weekly, Tuesday 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: osv-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: osv-scanner (package-lock.json)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Scan lockfile (advisory)
+        id: scan
+        continue-on-error: true
+        uses: google/osv-scanner-action/osv-scanner-action@32d3cd482bdadfb38b186c0ad1b031902d55d932 # v2.7.1
+        with:
+          scan-args: |-
+            --lockfile=./package-lock.json
+            --format=table
+      - name: Summarize
+        if: always()
+        run: |
+          status="${{ steps.scan.outcome }}"
+          echo "osv-scanner outcome: ${status}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Advisory only — see the job log for the finding table." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$status" = "failure" ]; then
+            echo "::warning::osv-scanner reported known vulnerabilities in package-lock.json (advisory, not gating)"
+          fi
