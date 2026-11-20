@@ -18,7 +18,6 @@ export const GLM_ANTHROPIC_DEFAULT_BASE_URLS = Object.freeze({
 });
 
 export const GLM_SHARED_MODELS = Object.freeze([
-  // 2026-11-20 generation cleanup: GLM-5.3 is the only kept generation.
   {
     // GLM-5.3 exposes low|high|max reasoning_effort (default max); -high/-low
     // are OmniRoute aliases resolved by GlmExecutor::parseGlmEffortTier.
@@ -51,7 +50,7 @@ export const GLM_SHARED_MODELS = Object.freeze([
   },
   {
     // Explicit alias for the upstream default (max) — pins reasoning_effort so
-    // the tier survives an upstream default change.
+    // the tier survives an upstream default change, and mirrors glm-5.2-max UX.
     id: "glm-5.3-max",
     name: "GLM 5.3 Max",
     contextLength: 1000000,
@@ -59,6 +58,130 @@ export const GLM_SHARED_MODELS = Object.freeze([
     toolCalling: true,
     supportsReasoning: true,
     supportedThinkingEfforts: ["max"],
+  },
+  {
+    // GLM-5.2 has two positive effective tiers: low/medium map to high and xhigh
+    // maps to max; disabling thinking remains the separate thinking toggle.
+    // https://docs.z.ai/guides/capabilities/thinking
+    id: "glm-5.2",
+    name: "GLM 5.2",
+    contextLength: 1000000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: ["high", "max"],
+  },
+  {
+    id: "glm-5.2-high",
+    name: "GLM 5.2 High",
+    contextLength: 1000000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: ["high"],
+  },
+  {
+    id: "glm-5.2-max",
+    name: "GLM 5.2 Max",
+    contextLength: 1000000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: ["max"],
+  },
+  {
+    // Earlier GLM families support the thinking toggle, not reasoning_effort.
+    // An explicit empty list prevents generic catalog tiers from being inferred.
+    id: "glm-5.1",
+    name: "GLM 5.1",
+    contextLength: 204800,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-5",
+    name: "GLM 5",
+    contextLength: 200000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-5-turbo",
+    name: "GLM 5 Turbo",
+    contextLength: 200000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-4.7-flash",
+    name: "GLM 4.7 Flash",
+    contextLength: 200000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-4.7",
+    name: "GLM 4.7",
+    contextLength: 200000,
+    maxOutputTokens: 131072,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-4.6v",
+    name: "GLM 4.6V (Vision)",
+    contextLength: 128000,
+    maxOutputTokens: 32768,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+    supportsVision: true,
+  },
+  {
+    id: "glm-4.6",
+    name: "GLM 4.6",
+    contextLength: 200000,
+    maxOutputTokens: 32768,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-4.5v",
+    name: "GLM 4.5V (Vision)",
+    contextLength: 16000,
+    maxOutputTokens: 32768,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+    supportsVision: true,
+  },
+  {
+    id: "glm-4.5",
+    name: "GLM 4.5",
+    contextLength: 128000,
+    maxOutputTokens: 32768,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
+  },
+  {
+    id: "glm-4.5-air",
+    name: "GLM 4.5 Air",
+    contextLength: 128000,
+    maxOutputTokens: 32768,
+    toolCalling: true,
+    supportsReasoning: true,
+    supportedThinkingEfforts: [],
   },
 ]);
 

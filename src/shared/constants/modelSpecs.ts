@@ -63,18 +63,31 @@ const BEDROCK_CLAUDE_ALIASES = (...modelIds: string[]) => [
   ),
 ];
 
-// GLM-5.3 IDs: discovery/sync sources can under-report them (200K/128K). The
-// native window is 1M, so pin it here; everything else declares its own.
+// Provider discovery/sync sources can under-report GLM IDs as 128K/200K.
+// Keep native/bare Z.AI GLM windows authoritative, but do not blindly apply
+// them to every provider-wrapped alias: hosted providers can and do cap lower.
 const AUTHORITATIVE_CONTEXT_WINDOW_MODEL_IDS = new Set([
   "glm-5.3",
   "glm-5.3-high",
   "glm-5.3-low",
   "glm-5.3-max",
   "glm-5.3-flash",
+  "glm-5.2",
+  "glm-5.2-high",
+  "glm-5.2-max",
 ]);
-// Empty on purpose: every previous entry targeted the retired GLM-5.2
-// generation. Providers that still serve GLM-5.2 keep their registry windows.
-const AUTHORITATIVE_PROVIDER_CONTEXT_WINDOWS = new Map<string, number>();
+const AUTHORITATIVE_PROVIDER_CONTEXT_WINDOWS = new Map<string, number>([
+  ["cloudflare-ai/@cf/zai-org/glm-5.2", 262144],
+  // Hugging Face Router has 1M-capable backends, but bare routing can select
+  // lower-context providers (notably Together at 262K), so advertise a safe floor
+  // unless the caller can pin a 1M-capable backend.
+  ["huggingface/zai-org/glm-5.2", 262144],
+  ["opencode/glm-5.2", 1000000],
+  ["opencode-zen/glm-5.2", 1000000],
+  ["opencode-go/glm-5.2", 1000000],
+  ["zenmux/z-ai/glm-5.2", 1000000],
+  ["zenmux/z-ai/glm-5.2-free", 1000000],
+]);
 
 const GPT_5_6_MODEL_SPEC = {
   maxOutputTokens: 128000,
@@ -84,6 +97,14 @@ const GPT_5_6_MODEL_SPEC = {
   // for the actual response when thinking consumes the full budget.
   thinkingBudgetCap: 96000,
   supportsThinking: true,
+  supportsTools: true,
+  supportsVision: true,
+} satisfies ModelSpec;
+
+const GEMINI_36_FLASH_MODEL_SPEC = {
+  maxOutputTokens: 65536,
+  contextWindow: 1048576,
+  supportsThinking: false,
   supportsTools: true,
   supportsVision: true,
 } satisfies ModelSpec;
@@ -106,18 +127,202 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     aliases: ["openai/gpt-5.6-luna"],
   },
 
-  // ── Gemini 4 Argon (1M context) ──────────────────────────────────
-  "gemini-4-argon": {
-    maxOutputTokens: 65536,
-    contextWindow: 1048576,
+  "gpt-5.5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1050000,
     supportsThinking: true,
     supportsTools: true,
     supportsVision: true,
   },
 
-  // ── Claude 5.5 family (1M context, 128K max output) ─────────────
-  // Generation cleanup (2026-11-20): only the 5.5 generation is kept.
-  "claude-sonnet-5.5": {
+  "gpt-5.4": {
+    maxOutputTokens: 131072,
+    contextWindow: 409600,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["openai/gpt-5.4"],
+  },
+
+  // ── GPT-4o family ──────────────────────────────────────────────
+  "gpt-4o-mini": {
+    maxOutputTokens: 16384,
+    contextWindow: 128000,
+    supportsThinking: false,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["openai/gpt-4o-mini"],
+  },
+  "gpt-4o": {
+    maxOutputTokens: 16384,
+    contextWindow: 128000,
+    supportsThinking: false,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["openai/gpt-4o"],
+  },
+
+  // ── Gemini 2.5 Flash ─────────────────────────────────────────────
+  "gemini-2.5-flash": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    // #3842: real Google max thinking budget for 2.5-flash is 24576; declaring the
+    // cap makes capThinkingBudget() actually clamp instead of passing values through.
+    thinkingBudgetCap: 24576,
+    supportsThinking: false,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  // ── Gemini 3.7 Flash (current Antigravity/AGY live tiers) ─────────
+  // The tier suffix configures the thinking budget passed to the upstream
+  // gemini-3.7-flash-tiered backend (high: 24.5k, medium: 8k, low: 1k).
+  "gemini-3.7-flash-high": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 24576,
+    thinkingBudgetCap: 24576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "gemini-3.7-flash-medium": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 8192,
+    thinkingBudgetCap: 24576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "gemini-3.7-flash-low": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 1024,
+    thinkingBudgetCap: 24576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "gemini-3.7-flash": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 8192,
+    thinkingBudgetCap: 24576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["gemini-3.7-flash-tiered"],
+  },
+  "gemini-3.7-flash-tiered": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 8192,
+    thinkingBudgetCap: 24576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+
+  // Provider-neutral compatibility for providers that still serve Gemini 3.6.
+  // Antigravity/AGY availability is governed by their own provider catalogs and
+  // retirement filters; these shared specs must not be treated as an allowlist.
+  "gemini-3.6-flash-high": { ...GEMINI_36_FLASH_MODEL_SPEC },
+  "gemini-3.6-flash-medium": { ...GEMINI_36_FLASH_MODEL_SPEC },
+  "gemini-3.6-flash-low": { ...GEMINI_36_FLASH_MODEL_SPEC },
+
+  // ── Gemini 3 Flash series ───────────────────────────────────────
+  "gemini-3-flash": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 0,
+    thinkingBudgetCap: 0,
+    supportsThinking: false,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["gemini-3-flash-preview", "gemini-3.1-flash-lite-preview"],
+  },
+
+  // ── Gemini 3.1 Pro ───────────────────────────────────────────────
+  "gemini-3.1-pro": {
+    maxOutputTokens: 65535,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 24576,
+    thinkingBudgetCap: 32768,
+    thinkingOverhead: 1000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: [
+      "gemini-pro-agent",
+      "gemini-3.1-pro-high",
+      "gemini-3-pro-high",
+      "gemini-3-pro-preview",
+      "gemini-3.1-pro-preview",
+      "gemini-3.1-pro-preview-customtools",
+    ],
+  },
+
+  // ── Gemini 3.1 Pro Low (deprecated, kept for back-compat) ────────
+  "gemini-3.1-pro-low": {
+    maxOutputTokens: 65535,
+    contextWindow: 1048576,
+    defaultThinkingBudget: 8192,
+    thinkingBudgetCap: 16000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["gemini-3-pro-low"],
+  },
+
+  // ── Claude Opus 4.5 ─────────────────────────────────────────────
+  "claude-opus-4-5": {
+    maxOutputTokens: 32768,
+    contextWindow: 200000,
+    defaultThinkingBudget: 10000,
+    thinkingBudgetCap: 32000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+
+  // ── Claude Sonnet 4.5 ───────────────────────────────────────────
+  "claude-sonnet-4-5": {
+    maxOutputTokens: 64000,
+    contextWindow: 200000,
+    thinkingBudgetCap: 62000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-sonnet-4-5", "claude-sonnet-4-5-20250929"),
+  },
+
+  // ── Claude Opus 4.5 (full ID — overrides prefix match on claude-opus-4-5) ──
+  "claude-opus-4-5-20251101": {
+    maxOutputTokens: 64000,
+    contextWindow: 200000,
+    defaultThinkingBudget: 10000,
+    thinkingBudgetCap: 32000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+
+  // ── Claude Sonnet 4.6 ───────────────────────────────────────────
+  "claude-sonnet-4-6": {
+    maxOutputTokens: 64000,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 62000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-sonnet-4-6", "claude-sonnet-4.6"),
+  },
+
+  // ── Claude Sonnet 5 ─────────────────────────────────────────────
+  "claude-sonnet-5": {
+    // 1M context, 128K max output. Adaptive-thinking-only (manual
+    // budget_tokens / thinking.type:"enabled" return 400; effort-steered);
+    // unlike Fable 5 it still accepts thinking.type:"disabled".
     maxOutputTokens: 128000,
     contextWindow: 1000000,
     defaultThinkingBudget: 32000,
@@ -126,9 +331,60 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsTools: true,
     supportsVision: true,
     adaptiveThinkingOnly: true,
-    aliases: BEDROCK_CLAUDE_ALIASES("claude-sonnet-5.5", "claude-sonnet-5-5"),
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-sonnet-5"),
   },
-  "claude-opus-5.5": {
+
+  // ── Claude Opus 4.6 ─────────────────────────────────────────────
+  "claude-opus-4-6": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    // Anthropic accepts thinking.budget_tokens in [1024, 128000]; cap
+    // a bit below to leave headroom for the visible response within
+    // max_tokens (thinking + response must both fit under max_tokens).
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-4-6", "claude-opus-4.6"),
+  },
+
+  // ── Claude Opus 4.7 ─────────────────────────────────────────────
+  "claude-opus-4-7": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    // Opus 4.7 removed manual extended thinking: a fixed `thinking.budget_tokens`
+    // (or `thinking.type:"enabled"`) returns 400. Reasoning is adaptive-only and
+    // steered by `output_config.effort`. defaultThinkingBudget/thinkingBudgetCap
+    // are retained only as caps for any legacy budget path; the request flow
+    // collapses manual thinking to adaptive before dispatch (see adaptiveThinkingOnly).
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    adaptiveThinkingOnly: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-4-7", "claude-opus-4.7"),
+  },
+
+  // ── Claude Fable 5 ──────────────────────────────────────────────
+  "claude-fable-5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    // Fable 5 defaults to adaptive thinking and rejects `thinking.type:"disabled"` (#3554).
+    rejectsThinkingDisabled: true,
+    // …and, like Opus 4.7+, rejects manual budgets/`type:"enabled"` (adaptive-only).
+    adaptiveThinkingOnly: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-fable-5"),
+  },
+
+  // ── Claude Opus 5 ───────────────────────────────────────────────
+  "claude-opus-5": {
     maxOutputTokens: 128000,
     contextWindow: 1000000,
     defaultThinkingBudget: 32000,
@@ -138,19 +394,44 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
     adaptiveThinkingOnly: true,
     maxEffortWhenThinkingDisabled: "high",
-    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-5.5", "claude-opus-5-5"),
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-5"),
   },
-  "claude-haiku-5.5": {
-    // OpenCode Go exposes the dashed wire id `claude-haiku-5-5`; BAI uses the
-    // dotted `claude-haiku-5.5`. Both land on this single spec.
-    maxOutputTokens: 64000,
+
+  // ── Claude Opus 4.8 ─────────────────────────────────────────────
+  "claude-opus-4-8": {
+    maxOutputTokens: 128000,
     contextWindow: 1000000,
-    defaultThinkingBudget: 10000,
+    // Opus 4.8 inherits Opus 4.7's adaptive thinking constraints: no fixed
+    // thinking budget requests, with effort controlled by output_config.
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    adaptiveThinkingOnly: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-4-8", "claude-opus-4.8", "claude-opus-4.8-fast"),
+  },
+
+  // ── Claude Sonnet 4.5 ───────────────────────────────────────────
+  "claude-sonnet-4-5-20250929": {
+    maxOutputTokens: 64000,
+    contextWindow: 200000,
     thinkingBudgetCap: 62000,
     supportsThinking: true,
     supportsTools: true,
     supportsVision: true,
-    aliases: BEDROCK_CLAUDE_ALIASES("claude-haiku-5.5", "claude-haiku-5-5"),
+    aliases: ["claude-sonnet-4.5"],
+  },
+
+  // ── Claude Haiku 4.5 ────────────────────────────────────────────
+  "claude-haiku-4-5-20251001": {
+    maxOutputTokens: 64000,
+    contextWindow: 200000,
+    thinkingBudgetCap: 62000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["claude-haiku-4.5"],
   },
 
   // ── Kimi K3 (Moonshot API — 1M context/output, native vision) ────
@@ -165,16 +446,66 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     aliases: ["k3"],
   },
 
-  // ── Qwen3.8 Max (Bailian — multimodal, 1M context) ───────────────
-  // §5b: preview ids merge into the standard name (no standalone preview combo).
-  "qwen3.8-max": {
+  // ── Kimi K2.6 (Moonshot API — 262K native) ──────────────────────
+  "kimi-k2.6": {
+    maxOutputTokens: 262144,
+    contextWindow: 262144,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["kimi-k2.6-thinking"],
+  },
+
+  // ── Kimi K2.7 Code (Moonshot — 262K native, parity with K2.6) ───
+  // #3761: importing this via Ollama Cloud's sparse /v1/models gave it no caps, so it
+  // fell back to the 128K/8K defaults and lost vision/thinking. Pin the real values.
+  "kimi-k2.7-code": {
+    maxOutputTokens: 262144,
+    contextWindow: 262144,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["kimi-k2.7", "kimi-k2.7-code-thinking", "kimi-k2.7-code-highspeed"],
+  },
+
+  // ── Kimi K2.5 (Moonshot — 262K native, parity with K2.6) ────────
+  "kimi-k2.5": {
+    maxOutputTokens: 262144,
+    contextWindow: 262144,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["kimi-k2.5-thinking"],
+  },
+
+  // ── Qwen3.x Plus / Max (Bailian — multimodal text/image/video, 1M context) ─
+  "qwen3-max": {
     maxOutputTokens: 65536,
     contextWindow: 1000000,
     thinkingBudgetCap: 38912,
     supportsThinking: true,
     supportsTools: true,
     supportsVision: true,
-    aliases: ["qwen3.8-max-preview"],
+    aliases: ["qwen3.7-max", "qwen3-max-2026-01-23"],
+  },
+  "qwen3.6-plus": {
+    maxOutputTokens: 65536,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "qwen3.5-plus": {
+    maxOutputTokens: 65536,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
   },
 
   // ── Xiaomi MiMo V2.6 (native multimodal, per vendor docs) ──
@@ -194,6 +525,41 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     contextWindow: 1048576,
     supportsTools: true,
     supportsVision: true,
+  },
+
+  // ── Xiaomi MiMo V2.5 (1M context, consensus across 7+ sync sources) ──
+  // Vision: ONLY mimo-v2.5 and mimo-v2-omni accept images per Xiaomi's docs
+  // (mimo.mi.com .../image-understanding). The *-pro chat models are TEXT-ONLY;
+  // models.dev mislabels them (hermes-agent#18884) — a hard override in
+  // src/lib/modelCapabilities.ts also beats that wrong synced attachment.
+  "mimo-v2.5-pro": {
+    maxOutputTokens: 131072,
+    contextWindow: 1048576,
+    supportsTools: true,
+    supportsVision: false,
+  },
+  "mimo-v2.5": {
+    maxOutputTokens: 131072,
+    contextWindow: 1048576,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "mimo-v2-pro": {
+    maxOutputTokens: 131072,
+    contextWindow: 262144,
+    supportsTools: true,
+    supportsVision: false,
+  },
+  "mimo-v2-omni": {
+    maxOutputTokens: 131072,
+    contextWindow: 262144,
+    supportsTools: true,
+    supportsVision: true,
+  },
+  "mimo-v2-flash": {
+    maxOutputTokens: 65536,
+    contextWindow: 262144,
+    supportsTools: true,
   },
 
   // ── Z.AI GLM-5.3 (1M context mirrored from 5.2 — same base model; 128K max
@@ -226,6 +592,163 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsThinking: true,
     supportsTools: true,
   },
+
+  // ── Z.AI GLM-5.2 (1M context, 128K max output, effort tiers) ────
+  "glm-5.2": {
+    maxOutputTokens: 131072,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+  "glm-5.2-high": {
+    maxOutputTokens: 131072,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+  "glm-5.2-max": {
+    maxOutputTokens: 131072,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+
+  // ── Z.AI GLM-5.x (200K context, 128K max output) ─────────────────
+  "glm-5.1": {
+    maxOutputTokens: 128000,
+    contextWindow: 200000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+  "glm-5": {
+    maxOutputTokens: 128000,
+    contextWindow: 200000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+
+  // ── MiniMax M3 (1M context, 512K max output) ─────────────────────
+  // max output verified against MiniMax docs / OpenRouter / Artificial
+  // Analysis (Nov 2025 launch): 1,048,576-token context, up to 512K output.
+  "minimax-m3": {
+    maxOutputTokens: 512000,
+    contextWindow: 1048576,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+    aliases: ["MiniMax-M3", "MiniMaxAI/MiniMax-M3"],
+  },
+
+  // ── MiniMax M2.x (200K context family) ───────────────────────────
+  "minimax-m2.7": {
+    maxOutputTokens: 131072,
+    contextWindow: 204800,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+    aliases: ["MiniMax-M2.7", "MiniMaxAI/MiniMax-M2.7"],
+  },
+  "minimax-m2.5": {
+    maxOutputTokens: 131072,
+    contextWindow: 200000,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+    aliases: ["MiniMax-M2.5"],
+  },
+
+  // ── DeepSeek V4 (1M context, 384K max output) ────────────────────
+  "deepseek-v4-pro": {
+    maxOutputTokens: 384000,
+    contextWindow: 1000000,
+    // Reserve 4K for visible response: thinking + response must both fit
+    // under maxOutputTokens. A cap equal to maxOutputTokens leaves zero room
+    // for the actual response when thinking consumes the full budget.
+    thinkingBudgetCap: 380000,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+  "deepseek-v4-flash": {
+    maxOutputTokens: 384000,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 380000,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+
+  // ── Tencent Hunyuan 3 Preview ────────────────────────────────────
+  "hy3-preview": {
+    maxOutputTokens: 262144,
+    contextWindow: 262144,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+
+  // ── 2026-11-20 current-generation additions ───────────────────────
+  // These rows back the ids the operator routes today (glm 5.3 flash, claude 5.5,
+  // deepseek 4.1, doubao 2.1, minimax m3.1, gemini 4, grok 4.6).
+  "gemini-4-argon": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+
+  "claude-sonnet-5.5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    adaptiveThinkingOnly: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-sonnet-5.5", "claude-sonnet-5-5"),
+  },
+
+  "claude-opus-5.5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    adaptiveThinkingOnly: true,
+    maxEffortWhenThinkingDisabled: "high",
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-5.5", "claude-opus-5-5"),
+  },
+
+  "claude-haiku-5.5": {
+    // OpenCode Go exposes the dashed wire id `claude-haiku-5-5`; BAI uses the
+    // dotted `claude-haiku-5.5`. Both land on this single spec.
+    maxOutputTokens: 64000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 10000,
+    thinkingBudgetCap: 62000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-haiku-5.5", "claude-haiku-5-5"),
+  },
+
+  "qwen3.8-max": {
+    maxOutputTokens: 65536,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["qwen3.8-max-preview"],
+  },
+
   "glm-5.3-flash": {
     maxOutputTokens: 131072,
     contextWindow: 1000000,
@@ -235,7 +758,6 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     aliases: ["glm-5-3-flash-260828"],
   },
 
-  // ── MiniMax M3.1 Flash (1M context) ─────────────────────────────
   "minimax-m3.1-flash": {
     maxOutputTokens: 512000,
     contextWindow: 1048576,
@@ -244,7 +766,6 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsTools: true,
   },
 
-  // ── DeepSeek V4.1 Flash (1M context, 384K max output) ────────────
   "deepseek-v4.1-flash": {
     maxOutputTokens: 384000,
     contextWindow: 1000000,
@@ -260,9 +781,6 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     ],
   },
 
-  // ── Doubao Seed 2.1 family (262K context) ───────────────────────
-  // One spec per tier; every date-suffixed wire id is an alias so the dated
-  // plan ids (…-260915 / …-260628) resolve the same window provider-agnostically.
   "doubao-seed-2.1-turbo": {
     contextWindow: 262144,
     supportsThinking: true,
@@ -270,6 +788,7 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
     aliases: ["doubao-seed-2-1-turbo", "doubao-seed-2-1-turbo-260628"],
   },
+
   "doubao-seed-2.1-lite": {
     contextWindow: 262144,
     supportsThinking: true,
@@ -277,6 +796,7 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
     aliases: ["doubao-seed-2-1-lite", "doubao-seed-2-1-lite-260915"],
   },
+
   "doubao-seed-2.1-pro": {
     contextWindow: 262144,
     supportsThinking: true,
@@ -284,15 +804,7 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
     aliases: ["doubao-seed-2-1-pro", "doubao-seed-2-1-pro-260915"],
   },
-  // ── Tencent Hunyuan 3 Preview ────────────────────────────────────
-  "hy3-preview": {
-    maxOutputTokens: 262144,
-    contextWindow: 262144,
-    thinkingBudgetCap: 32768,
-    supportsThinking: true,
-    supportsTools: true,
-  },
-  // ── xAI Grok 4.6 (500K context, operator-confirmed 2026-11-20) ───
+
   "grok-4.6": {
     contextWindow: 500000,
     supportsThinking: true,

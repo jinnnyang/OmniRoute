@@ -110,7 +110,7 @@ test("buildClaudeCodeCompatibleRequest keeps prior role history while dropping t
         { role: "model", content: "prefill" },
       ],
     },
-    model: "claude-sonnet-4-6",
+    model: "claude-haiku-5.5",
     cwd: "/tmp/work",
     now: new Date("2026-04-01T12:00:00.000Z"),
     sessionId: "session-1",

@@ -79,11 +79,13 @@ test("resolveModelAliasLookup returns stored alias resolution with metadata", as
 });
 
 test("resolveModelAliasLookup flags ambiguous raw model IDs instead of guessing", async () => {
-  const resolved = await registry.resolveModelAliasLookup("claude-sonnet-4-6");
+  // glm-5.3 is served by several providers (zai, opencode-go/zen, the GLM plans…), so a
+  // bare id must come back ambiguous rather than silently picking one.
+  const resolved = await registry.resolveModelAliasLookup("glm-5.3");
 
   assert.equal(resolved.ok, false);
   if (resolved.ok) return;
   assert.equal(resolved.error.code, registry.MODEL_ALIAS_AMBIGUOUS);
   assert.equal(resolved.error.status, 409);
-  assert.ok((resolved.error.candidates || []).some((candidate) => candidate.startsWith("cc/")));
+  assert.ok((resolved.error.candidates || []).some((candidate) => candidate.startsWith("zai/")));
 });

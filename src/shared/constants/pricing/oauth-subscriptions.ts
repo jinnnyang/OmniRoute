@@ -4,6 +4,7 @@
  */
 import {
   CLAUDE_OPUS_5_PRICING,
+  CLAUDE_SONNET_5_PRICING,
   GEMINI_3_7_FLASH_PROMO_PRICING,
   GPT_5_3_CODEX_PRICING,
   GPT_5_5_PRICING,
@@ -28,6 +29,24 @@ export const DEFAULT_PRICING_OAUTH = {
       cache_creation: 12.5,
     },
     "claude-opus-5": CLAUDE_OPUS_5_PRICING,
+    // 5.5 generation — same tiers as the models they replaced. Without these rows the
+    // cost analytics for the models actually routed through the claude channel are blank.
+    "claude-opus-5.5": CLAUDE_OPUS_5_PRICING,
+    "claude-sonnet-5.5": CLAUDE_SONNET_5_PRICING,
+    "claude-haiku-5.5": {
+      input: 1.0,
+      output: 5.0,
+      cached: 0.1,
+      reasoning: 5.0,
+      cache_creation: 1.25,
+    },
+    "claude-haiku-5-5": {
+      input: 1.0,
+      output: 5.0,
+      cached: 0.1,
+      reasoning: 5.0,
+      cache_creation: 1.25,
+    },
     "claude-opus-4-8": {
       input: 5.0,
       output: 25.0,

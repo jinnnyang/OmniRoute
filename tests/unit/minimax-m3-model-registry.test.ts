@@ -36,22 +36,24 @@ describe("MiniMax M3 model registration (#3110)", () => {
     assert.equal(m3, undefined, "minimax-m3-free was delisted from OpenCode Zen's free tier (#6998)");
   });
 
-  it("opencode-go provider has minimax-m3 with Claude targetFormat", () => {
+  it("opencode-go provider has minimax-m3.1-flash with Claude targetFormat", () => {
+    // OpenCode Go's catalog moved to the 3.1 generation; the invariant under test is
+    // that its MiniMax M-series entry keeps the Claude transport and the 1M window.
     const entry = REGISTRY["opencode-go"];
     assert.ok(entry, "opencode-go registry entry must exist");
-    const m3 = entry.models.find((m) => m.id === "minimax-m3");
-    assert.ok(m3, "minimax-m3 must be in opencode-go models");
-    assert.equal(m3.name, "MiniMax M3");
+    const m3 = entry.models.find((m) => m.id === "minimax-m3.1-flash");
+    assert.ok(m3, "minimax-m3.1-flash must be in opencode-go models");
+    assert.equal(m3.name, "MiniMax M3.1 Flash");
     assert.equal(m3.targetFormat, "claude");
     assert.equal(m3.contextLength, 1_048_576);
   });
 
-  it("opencode-zen provider has minimax-m3 with 1M context", () => {
+  it("opencode-zen provider has minimax-m3.1-flash with 1M context", () => {
     const entry = REGISTRY["opencode-zen"];
     assert.ok(entry, "opencode-zen registry entry must exist");
-    const m3 = entry.models.find((m) => m.id === "minimax-m3");
-    assert.ok(m3, "minimax-m3 must be in opencode-zen models");
-    assert.equal(m3.name, "MiniMax M3");
+    const m3 = entry.models.find((m) => m.id === "minimax-m3.1-flash");
+    assert.ok(m3, "minimax-m3.1-flash must be in opencode-zen models");
+    assert.equal(m3.name, "MiniMax M3.1 Flash");
     assert.equal(m3.contextLength, 1_048_576);
   });
 

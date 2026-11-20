@@ -163,10 +163,10 @@ test("getModelInfoCore handles null", async () => {
 test(
   "getModelInfoCore routes newly released unprefixed Claude models to Claude Code when enabled",
   withEnv("OMNIROUTE_PREFER_CLAUDE_CODE_FOR_UNPREFIXED_CLAUDE_MODELS", "true", async () => {
-    const result = await model.getModelInfoCore("claude-fable-5", {});
+    const result = await model.getModelInfoCore("claude-opus-5.5", {});
     assert.deepEqual(result, {
       provider: "claude",
-      model: "claude-fable-5",
+      model: "claude-opus-5.5",
       extendedContext: false,
     });
   })
@@ -175,10 +175,10 @@ test(
 test(
   "getModelInfoCore resolves ambiguous unprefixed Claude catalog models to Claude Code when enabled",
   withEnv("OMNIROUTE_PREFER_CLAUDE_CODE_FOR_UNPREFIXED_CLAUDE_MODELS", "true", async () => {
-    const result = await model.getModelInfoCore("claude-haiku-4-5-20251001", {});
+    const result = await model.getModelInfoCore("claude-haiku-5.5", {});
     assert.deepEqual(result, {
       provider: "claude",
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-haiku-5.5",
       extendedContext: false,
     });
   })
@@ -193,17 +193,17 @@ test("getModelInfoCore routes unprefixed Claude models to Claude Code from setti
     const { updateSettings } = await import("../../src/lib/db/settings.ts");
     await updateSettings({ preferClaudeCodeForUnprefixedClaudeModels: true });
 
-    const result = await model.getModelInfoCore("claude-fable-5", {});
+    const result = await model.getModelInfoCore("claude-opus-5.5", {});
     assert.deepEqual(result, {
       provider: "claude",
-      model: "claude-fable-5",
+      model: "claude-opus-5.5",
       extendedContext: false,
     });
 
-    const extendedResult = await model.getModelInfoCore("claude-fable-5[1m]", {});
+    const extendedResult = await model.getModelInfoCore("claude-opus-5.5[1m]", {});
     assert.deepEqual(extendedResult, {
       provider: "claude",
-      model: "claude-fable-5",
+      model: "claude-opus-5.5",
       extendedContext: true,
     });
   } finally {

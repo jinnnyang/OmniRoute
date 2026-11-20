@@ -80,6 +80,10 @@ export const githubProvider: RegistryEntry = {
       targetFormat: "claude",
       contextLength: 1000000,
       maxOutputTokens: 64000,
+      // Generation cleanup (2026-11-20): the shared MODEL_SPECS only describe the
+      // 5.5 generation now, so the xhigh opt-out these 4.x ids carried there has
+      // to live on the rows Copilot still serves.
+      supportsXHighEffort: false,
     },
     {
       id: "claude-sonnet-4.6",
@@ -87,6 +91,7 @@ export const githubProvider: RegistryEntry = {
       targetFormat: "claude",
       contextLength: 1000000,
       maxOutputTokens: 64000,
+      supportsXHighEffort: false,
     },
     {
       id: "claude-opus-4.5",
@@ -94,6 +99,7 @@ export const githubProvider: RegistryEntry = {
       targetFormat: "claude",
       contextLength: 200000,
       maxOutputTokens: 32000,
+      supportsXHighEffort: false,
     },
     {
       id: "claude-sonnet-5",
@@ -108,6 +114,7 @@ export const githubProvider: RegistryEntry = {
       targetFormat: "claude",
       contextLength: 200000,
       maxOutputTokens: 32000,
+      supportsXHighEffort: false,
     },
     {
       id: "claude-haiku-4.5",
@@ -115,6 +122,7 @@ export const githubProvider: RegistryEntry = {
       targetFormat: "claude",
       contextLength: 200000,
       maxOutputTokens: 32000,
+      supportsXHighEffort: false,
     },
     // #2911: Gemini on Copilot must use chat/completions, not the Responses API.
     {

@@ -152,13 +152,13 @@ test("Codex Responses routing clamps reasoning effort to the nearest declared ti
   // then resolves the actual upstream target to opencode-go/GLM (a fallback target),
   // so `prepareUpstreamBody`'s final sanitizeRequestForResolvedTarget (#7050/#7533) must
   // strip the GPT-only `verbosity` for that concrete target. `reasoning_effort` is not
-  // gated by destination provider, but since #10788 glm-5.2 declares its live tier
+  // gated by destination provider, but since #10788 glm-5.3 declares its live tier
   // vocabulary {high, max}, the out-of-vocabulary `low` clamps up to the nearest
   // declared tier (`high`) instead of passing through verbatim.
   const translated = translateRequest(
     FORMATS.OPENAI_RESPONSES,
     FORMATS.OPENAI,
-    "glm-5.2",
+    "glm-5.3",
     {
       model: "gpt-5.2",
       input: [{ role: "user", content: [{ type: "input_text", text: "hi" }] }],
@@ -175,13 +175,13 @@ test("Codex Responses routing clamps reasoning effort to the nearest declared ti
 
   const outbound = await prepareUpstreamBody({
     translatedBody: translated,
-    modelToCall: "glm-5.2",
+    modelToCall: "glm-5.3",
     provider: "opencode-go",
     targetFormat: FORMATS.OPENAI,
     credentials: null,
   });
 
-  // #10788 nearest-tier clamp: glm-5.2 accepts {high, max}; low → high.
+  // #10788 nearest-tier clamp: glm-5.3 accepts {high, max}; low → high.
   assert.equal(outbound.reasoning_effort, "high");
   assert.equal(outbound.verbosity, undefined);
 });

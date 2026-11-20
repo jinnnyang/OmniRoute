@@ -47,13 +47,16 @@ test("sanitizeReasoningEffortForProvider: OpenRouter DeepSeek preserves xhigh", 
 });
 
 test("sanitizeReasoningEffortForProvider: explicit xhigh opt-out maps to max for max-native providers", () => {
+  // kimi-k3 is the current generation's xhigh opt-out that also accepts literal
+  // max (supportsMaxEffortForProvider). The Claude 5.5 generation accepts xhigh
+  // natively, so no Claude id exercises this quadrant any more.
   const log = makeLog();
   const body = {
-    model: "claude-opus-4-6",
+    model: "kimi-k3",
     reasoning_effort: "xhigh",
     messages: [{ role: "user", content: "hi" }],
   };
-  const result = sanitizeReasoningEffortForProvider(body, "claude", "claude-opus-4-6", log);
+  const result = sanitizeReasoningEffortForProvider(body, "kimi", "kimi-k3", log);
   assert.notEqual(result, body, "must return a new object when mutating");
   assert.equal((result as Record<string, unknown>).reasoning_effort, "max");
   assert.ok(
@@ -64,14 +67,14 @@ test("sanitizeReasoningEffortForProvider: explicit xhigh opt-out maps to max for
 
 test("sanitizeReasoningEffortForProvider: Anthropic-compatible dynamic provider honors xhigh opt-out", () => {
   const body = {
-    model: "claude-opus-4-6",
+    model: "claude-haiku-5.5",
     reasoning_effort: "xhigh",
     messages: [{ role: "user", content: "hi" }],
   };
   const result = sanitizeReasoningEffortForProvider(
     body,
     "anthropic-compatible-test",
-    "claude-opus-4-6",
+    "claude-haiku-5.5",
     null
   );
   assert.notEqual(result, body, "must return a new object when mutating");
@@ -182,14 +185,14 @@ test("sanitizeReasoningEffortForProvider: OpenRouter DeepSeek passes max through
 test("sanitizeReasoningEffortForProvider: OpenRouter Claude opt-out aliases downgrade max → high", () => {
   const log = makeLog();
   const body = {
-    model: "anthropic/claude-opus-4.6",
+    model: "anthropic/claude-haiku-5.5",
     reasoning_effort: "max",
     messages: [{ role: "user", content: "hi" }],
   };
   const result = sanitizeReasoningEffortForProvider(
     body,
     "openrouter",
-    "anthropic/claude-opus-4.6",
+    "anthropic/claude-haiku-5.5",
     log
   );
   assert.notEqual(result, body, "must return a new object when mutating");
@@ -241,42 +244,42 @@ test("sanitizeReasoningEffortForProvider: nested OpenAI reasoning max passes thr
 
 test("sanitizeReasoningEffortForProvider: claude preserves max for Opus/Sonnet and downgrades Haiku", () => {
   const sonnetBody = {
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-5.5",
     reasoning_effort: "max",
     messages: [{ role: "user", content: "hi" }],
   };
   const sonnetResult = sanitizeReasoningEffortForProvider(
     sonnetBody,
     "claude",
-    "claude-sonnet-4-6",
+    "claude-sonnet-5.5",
     null
   );
   assert.equal(sonnetResult, sonnetBody);
   assert.equal((sonnetResult as any).reasoning_effort, "max");
 
   const opusBody = {
-    model: "claude-opus-4-6",
+    model: "claude-opus-5.5",
     reasoning: { effort: "max", summary: "auto" },
     input: [],
   };
   const opusResult = sanitizeReasoningEffortForProvider(
     opusBody,
     "anthropic-compatible-cc-test",
-    "claude-opus-4-6",
+    "claude-opus-5.5",
     null
   );
   assert.equal(opusResult, opusBody);
   assert.equal((opusResult as any).reasoning.effort, "max");
 
   const haikuBody = {
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-haiku-5.5",
     reasoning_effort: "max",
     messages: [{ role: "user", content: "hi" }],
   };
   const haikuResult = sanitizeReasoningEffortForProvider(
     haikuBody,
     "claude",
-    "claude-haiku-4-5-20251001",
+    "claude-haiku-5.5",
     null
   );
   assert.notEqual(haikuResult, haikuBody);
@@ -301,11 +304,11 @@ test("sanitizeReasoningEffortForProvider: xiaomi-mimo preserves nested xhigh by 
 
 test("sanitizeReasoningEffortForProvider: explicit xhigh opt-out preserves Responses shape", () => {
   const body = {
-    model: "claude-opus-4-6",
+    model: "kimi-k3",
     reasoning: { effort: "xhigh", summary: "auto" },
     input: [],
   };
-  const result = sanitizeReasoningEffortForProvider(body, "claude", "claude-opus-4-6", null);
+  const result = sanitizeReasoningEffortForProvider(body, "kimi", "kimi-k3", null);
   assert.equal((result as Record<string, unknown>).reasoning.effort, "max");
   assert.equal((result as Record<string, unknown>).reasoning_effort, undefined);
 });
@@ -370,14 +373,14 @@ test("sanitizeReasoningEffortForProvider: rejecting providers strip max before n
   // because github is not Claude/CC-compatible (so supportsMax=false) and
   // the canonical Claude Opus 4.6 model opts out of xhigh.
   const githubBody = {
-    model: "claude-opus-4-6",
+    model: "claude-opus-4.6",
     reasoning_effort: "max",
     messages: [],
   };
   const githubResult = sanitizeReasoningEffortForProvider(
     githubBody,
     "github",
-    "claude-opus-4-6",
+    "claude-opus-4.6",
     null
   );
   assert.equal((githubResult as any).reasoning_effort, "high");
@@ -553,14 +556,14 @@ test("sanitizeReasoningEffortForProvider: Claude Haiku max degrades to high (exp
   // Claude Haiku is explicitly flagged as supportsXHighEffort: false and NOT in
   // supportsMaxEffortForProvider, so max should degrade to high.
   const body = {
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-haiku-5.5",
     reasoning_effort: "max",
     messages: [],
   };
   const result = sanitizeReasoningEffortForProvider(
     body,
     "claude",
-    "claude-haiku-4-5-20251001",
+    "claude-haiku-5.5",
     null
   );
   assert.notEqual(result, body);
@@ -901,11 +904,11 @@ test("sanitizeReasoningEffortForProvider: opencode-go with non-DeepSeek model pa
 test("sanitizeReasoningEffortForProvider: #7044 output_config.effort (Claude native) xhigh is mapped to max, not bypassed", () => {
   const log = makeLog();
   const body = {
-    model: "claude-opus-4-6",
+    model: "kimi-k3",
     output_config: { effort: "xhigh" },
     messages: [{ role: "user", content: "hi" }],
   };
-  const result = sanitizeReasoningEffortForProvider(body, "claude", "claude-opus-4-6", log);
+  const result = sanitizeReasoningEffortForProvider(body, "kimi", "kimi-k3", log);
   assert.notEqual(result, body, "must return a new object when mutating");
   assert.equal(
     (result as Record<string, unknown>).output_config.effort,

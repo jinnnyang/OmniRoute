@@ -631,9 +631,9 @@ test("DefaultExecutor.execute uses CC-compatible connection defaults to append 1
 
     const anthropicCompat = new DefaultExecutor("anthropic-compatible-test");
     await anthropicCompat.execute({
-      model: "claude-sonnet-4-6",
+      model: "claude-sonnet-5.5",
       body: {
-        model: "claude-sonnet-4-6",
+        model: "claude-sonnet-5.5",
         messages: [{ role: "user", content: "hi" }],
         max_tokens: 1,
       },
@@ -647,9 +647,9 @@ test("DefaultExecutor.execute uses CC-compatible connection defaults to append 1
       extendedContext: true,
     });
     await cc.execute({
-      model: "claude-opus-5",
+      model: "claude-opus-5.5",
       body: {
-        model: "claude-opus-5",
+        model: "claude-opus-5.5",
         messages: [{ role: "user", content: "hi" }],
         max_tokens: 1,
       },
@@ -677,12 +677,12 @@ test("DefaultExecutor.execute uses CC-compatible connection defaults to append 1
     calls[1].headers["anthropic-beta"].includes(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA),
     true
   );
-  // claude-sonnet-4-6 GA'd 1M context (2026-02-17) and was added to CONTEXT_1M_SUPPORTED_MODELS
-  // by #7129; a non-CC anthropic-compatible target with extendedContext:true now legitimately
+  // claude-sonnet-5.5 needs the legacy 1M beta and is listed in CONTEXT_1M_SUPPORTED_MODELS;
+  // a non-CC anthropic-compatible target with extendedContext:true now legitimately
   // gets the context-1m beta header (shouldForwardExtendedContext in base.ts), same as any other
   // 1M-capable model.
   assert.equal(calls[2].headers["anthropic-beta"].includes(CONTEXT_1M_BETA_HEADER), true);
-  // Opus 5 has a native 1M window and must not receive the legacy context beta.
+  // Opus 5.5 has a native 1M window and must not receive the legacy context beta.
   assert.equal(calls[3].headers["anthropic-beta"].includes(CONTEXT_1M_BETA_HEADER), false);
 });
 
@@ -718,9 +718,9 @@ test("DefaultExecutor.execute reports the exact serialized provider request befo
     };
     const result = await runWithCapture(requestCapture, () =>
       cc.execute({
-        model: "claude-sonnet-4-6",
+        model: "claude-haiku-5.5",
         body: {
-          model: "claude-sonnet-4-6",
+          model: "claude-haiku-5.5",
           system: [
             {
               type: "text",
@@ -745,8 +745,10 @@ test("DefaultExecutor.execute reports the exact serialized provider request befo
     assert.equal(preparedBeforeFetch, true);
     assert.deepEqual(prepared.body, fetchBody);
     assert.deepEqual(result.transformedBody, fetchBody);
-    assert.equal(prepared.body.reasoning_effort, "max");
-    assert.equal(fetchBody.reasoning_effort, "max");
+    // Haiku 5.5 opts out of xhigh and is not max-native, so the sanitizer degrades it
+    // before dispatch — the captured body must already show the sanitized value.
+    assert.equal(prepared.body.reasoning_effort, "high");
+    assert.equal(fetchBody.reasoning_effort, "high");
     assert.match(JSON.stringify(fetchBody), /\bcch=(?!00000)[0-9a-f]{5};/);
   } finally {
     globalThis.fetch = originalFetch;
