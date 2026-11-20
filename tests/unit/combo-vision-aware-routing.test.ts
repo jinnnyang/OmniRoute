@@ -152,9 +152,11 @@ test("text-only request: targets are untouched by the vision filter", () => {
 });
 
 test("large output request: unknown maxOutputTokens does not filter a target", () => {
+  // gpt-5.6 declares a 128K output cap, so a 200K request filters it; the
+  // local model declares no cap and must survive the same request.
   const out = filterTargetsByRequestCompatibility(
-    [target("openai-compatible-local/custom-large-output-model"), target("openai/gpt-4o-mini")],
-    { messages: [{ role: "user", content: "hello" }], max_tokens: 32000 },
+    [target("openai-compatible-local/custom-large-output-model"), target("openai/gpt-5.6")],
+    { messages: [{ role: "user", content: "hello" }], max_tokens: 200000 },
     noopLog
   );
   const ids = out.map((t) => t.modelStr);
