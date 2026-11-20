@@ -33,17 +33,27 @@ export const opencode_zenProvider: RegistryEntry = {
     { id: "gpt-5.6-sol", name: "GPT 5.6 Sol" },
     { id: "gpt-5.6-terra", name: "GPT 5.6 Terra" },
     { id: "gpt-5.6-luna", name: "GPT 5.6 Luna" },
+    { id: "gpt-5.4", name: "GPT 5.4" },
+    { id: "gpt-5.4-mini", name: "GPT 5.4 Mini" },
+    { id: "gpt-5.4-nano", name: "GPT 5.4 Nano" },
+    { id: "gpt-5.3-codex-spark", name: "GPT 5.3 Codex Spark" },
+    { id: "gpt-5.1", name: "GPT 5.1" },
 
     // ── Claude ─────────────────────────────────────────────────
-    // 2026-11-20 generation cleanup: only Claude 5.5 is kept. The 5.5 wire ids
-    // (claude-sonnet-5.5 / claude-opus-5.5 / claude-haiku-5-5) resolve their
-    // 1M windows from the shared static specs once the upstream advertises them.
+    { id: "claude-fable-5", name: "Claude Fable 5" },
+    { id: "claude-opus-5", name: "Claude Opus 5" },
+    { id: "claude-sonnet-5", name: "Claude Sonnet 5" },
+    { id: "claude-haiku-4-5", name: "Claude Haiku 4.5" },
+
     // ── Gemini ─────────────────────────────────────────────────
-    // 2026-11-20: 2.5/3.x retired; Gemini 4 (argon) resolves via shared specs.
+    { id: "gemini-3.7-flash", name: "Gemini 3.7 Flash" },
+    { id: "gemini-3.5-flash-lite", name: "Gemini 3.5 Flash Lite" },
+    { id: "gemini-3.1-pro", name: "Gemini 3.1 Pro" },
+    { id: "gemini-3-flash", name: "Gemini 3 Flash" },
 
     // ── Grok ───────────────────────────────────────────────────
     { id: "grok-build-0.1", name: "Grok Build 0.1" },
-    { id: "grok-4.6", name: "Grok 4.6", contextLength: 500000 },
+    { id: "grok-4.6", name: "Grok 4.6" },
 
     // ── Muse ───────────────────────────────────────────────────
     // Muse Spark is served by OpenCode Zen only on the OpenAI Responses API
@@ -72,34 +82,33 @@ export const opencode_zenProvider: RegistryEntry = {
     // #10788: same tier vocabulary as opencode-go's DeepSeek rows — the Zen
     // upstream accepts the identical effort set on these models.
     {
-      id: "deepseek-v4.1-flash",
-      name: "DeepSeek V4.1 Flash",
-      contextLength: 1000000,
+      id: "deepseek-v4-pro",
+      name: "DeepSeek V4 Pro",
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["none", "low", "high", "max"],
+    },
+    {
+      id: "deepseek-v4-flash",
+      name: "DeepSeek V4 Flash",
       supportsReasoning: true,
       supportedThinkingEfforts: ["none", "low", "high", "max"],
     },
 
     // ── GLM / Z.AI ─────────────────────────────────────────────
     {
-      id: "glm-5.3",
-      name: "GLM-5.3",
-      contextLength: 1000000,
+      id: "glm-5.2",
+      name: "GLM-5.2",
       supportsReasoning: true,
       supportedThinkingEfforts: ["high", "max"],
     },
-    { id: "glm-5.3-flash", name: "GLM-5.3 Flash", contextLength: 1000000 },
 
     // ── MiniMax ────────────────────────────────────────────────
-    // #3110: MiniMax M3.1 Flash — 1M context (M3 retired 2026-11-20)
-    {
-      id: "minimax-m3.1-flash",
-      name: "MiniMax M3.1 Flash",
-      contextLength: 1048576,
-      supportsVision: true,
-    },
+    // #3110: MiniMax M3 — frontier coding model with 1M context
+    { id: "minimax-m3", name: "MiniMax M3", contextLength: 1048576, supportsVision: true },
 
     // ── Kimi / Moonshot ────────────────────────────────────────
     { id: "kimi-k3", name: "Kimi K3", supportsReasoning: true, supportedThinkingEfforts: ["max"] },
+    // kimi-k2.7-code declared identically on opencode-go — see OPENCODE_ZEN_GO_SHARED_MODELS.
 
     // ── Qwen ───────────────────────────────────────────────────
     // Issue #2292: Qwen models return Claude-format SSE bodies even
@@ -107,14 +116,16 @@ export const opencode_zenProvider: RegistryEntry = {
     // through /messages and the Claude translator.
     // Issue #2822: These models are text-only — supportsVision: false
     // ensures combo routing skips them on image-bearing requests.
-    // 2026-11-20: Qwen3.5/3.6/3.7 retired; Qwen3.8 ids are declared on the
-    // opencode-go registry and resolve their windows from the shared specs.
+    // qwen3.5-plus / qwen3.6-plus declared identically on opencode-go — see
+    // OPENCODE_ZEN_GO_SHARED_MODELS.
 
     // ── Free Tier ──────────────────────────────────────────────
     // #6998 (2026-07-14): upstream free tier rotated — minimax-m2.5-free,
     // nemotron-3-super-free and qwen3.6-plus-free were delisted (401).
     // 2026-08-17 sync: north-mini-code-free delisted; nemotron-3.5-lightning-free
     // and laguna-s-2.1-free added.
+    { id: "deepseek-v4-flash-free", name: "DeepSeek V4 Flash Free", supportsReasoning: true },
+    { id: "mimo-v2.5-free", name: "MiMo V2.5 Free", contextLength: 200000 },
     { id: "hy3-free", name: "HY3 Free", contextLength: 200000 },
     { id: "nemotron-3-ultra-free", name: "Nemotron 3 Ultra Free", contextLength: 1000000 },
     { id: "nemotron-3.5-lightning-free", name: "Nemotron 3.5 Lightning Free" },
