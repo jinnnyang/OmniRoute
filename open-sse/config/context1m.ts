@@ -12,7 +12,13 @@
  * `claudeCodeCompatible.ts` (the `[1m]`-suffix path) share one source of truth
  * without importing each other.
  */
+// Ids that need the legacy long-context beta. The 5.5 generation is listed first
+// (Opus 5.5 has native 1M instead — see CONTEXT_1M_NATIVE_MODELS); the 4.x/5 rows
+// stay because providers still serve them and a pruned list silently drops the
+// beta for them (#10119 is the opposite failure: forwarding it too widely).
 export const CONTEXT_1M_SUPPORTED_MODELS = [
+  "claude-sonnet-5.5",
+  "claude-haiku-5.5",
   "claude-fable-5",
   "claude-sonnet-5",
   "claude-sonnet-4-6",

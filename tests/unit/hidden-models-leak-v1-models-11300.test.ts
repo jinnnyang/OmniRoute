@@ -74,22 +74,22 @@ test("#11300 A: hiding a static model under its ALIAS (cc) excludes it under bot
   // Sanity: before hiding, the model is advertised.
   let ids = await fetchCatalogIds();
   assert.ok(
-    ids.includes("cc/claude-opus-5"),
-    `expected cc/claude-opus-5 to be listed before hiding — got ${JSON.stringify(ids.filter((i) => i.includes("claude-opus-5")))}`
+    ids.includes("cc/claude-opus-5.5"),
+    `expected cc/claude-opus-5.5 to be listed before hiding — got ${JSON.stringify(ids.filter((i) => i.includes("claude-opus-5.5")))}`
   );
 
   // Operator hides the model on the provider page, whose route param is the
   // alias "cc" (not the canonical "claude").
-  mergeModelCompatOverride("cc", "claude-opus-5", { isHidden: true });
+  mergeModelCompatOverride("cc", "claude-opus-5.5", { isHidden: true });
 
   ids = await fetchCatalogIds();
   assert.ok(
-    !ids.includes("cc/claude-opus-5"),
-    `#11300 RED: cc/claude-opus-5 hidden under alias "cc" must not appear — got ${JSON.stringify(ids.filter((i) => i.includes("claude-opus-5")))}`
+    !ids.includes("cc/claude-opus-5.5"),
+    `#11300 RED: cc/claude-opus-5.5 hidden under alias "cc" must not appear — got ${JSON.stringify(ids.filter((i) => i.includes("claude-opus-5.5")))}`
   );
   assert.ok(
-    !ids.includes("claude/claude-opus-5"),
-    `#11300 RED: claude/claude-opus-5 hidden under alias "cc" must not appear either`
+    !ids.includes("claude/claude-opus-5.5"),
+    `#11300 RED: claude/claude-opus-5.5 hidden under alias "cc" must not appear either`
   );
 });
 

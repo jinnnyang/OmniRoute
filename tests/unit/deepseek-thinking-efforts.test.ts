@@ -29,11 +29,17 @@ test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
 });
 
-test("DeepSeek registries declare none/low/high/max on both V4 models", () => {
+test("DeepSeek registries declare none/low/high/max on the V4 models they serve", () => {
   const expectedEfforts = ["none", "low", "high", "max"];
-  for (const providerId of ["deepseek", "opencode-go"]) {
+  // OpenCode Go moved to the 4.1 generation (deepseek-v4.1-flash); native DeepSeek still
+  // serves both 4.0 models. Same contract, different ids per provider.
+  const providerModels = {
+    deepseek: ["deepseek-v4-flash", "deepseek-v4-pro"],
+    "opencode-go": ["deepseek-v4.1-flash"],
+  };
+  for (const [providerId, modelIds] of Object.entries(providerModels)) {
     const models = new Map((REGISTRY[providerId]?.models || []).map((model) => [model.id, model]));
-    for (const modelId of ["deepseek-v4-flash", "deepseek-v4-pro"]) {
+    for (const modelId of modelIds) {
       assert.deepEqual(models.get(modelId)?.supportedThinkingEfforts, expectedEfforts);
       for (const effort of expectedEfforts) {
         assert.equal(
@@ -91,7 +97,7 @@ test("OpenCode Go catalog derives the declared V4 effort aliases from base model
   const models = new Map(body.data.map((model) => [model.id, model]));
   const expectedEfforts = ["none", "low", "high", "max"];
 
-  for (const modelId of ["deepseek-v4-flash", "deepseek-v4-pro"]) {
+  for (const modelId of ["deepseek-v4.1-flash"]) {
     const baseId = `opencode-go/${modelId}`;
     assert.deepEqual(models.get(baseId)?.capabilities?.effort_tiers, expectedEfforts);
     for (const effort of expectedEfforts) {
@@ -213,7 +219,7 @@ test("hardcoded DeepSeek effort suffixes resolve through the static registry", a
 });
 
 test("OpenCode Go V4 suffixes resolve from base-model effort metadata", async () => {
-  for (const modelId of ["deepseek-v4-flash", "deepseek-v4-pro"]) {
+  for (const modelId of ["deepseek-v4.1-flash"]) {
     for (const effort of ["none", "low", "high", "max"]) {
       const info = await getModelInfo(`opencode-go/${modelId}-${effort}`);
       assert.equal(info.provider, "opencode-go");

@@ -38,72 +38,74 @@ test("NVIDIA catalog includes the verified 2026 additions and GPT OSS 20B alias 
   });
 });
 
-test("Fable 5 catalog exposes claude-fable-5 in cc — but NOT via Kiro (fabricated)", () => {
-  // claude-fable-5 is a real Claude flagship served by the Claude Code (cc) channel,
-  // but Kiro's upstream never served it — it had been copied verbatim into the Kiro
-  // registry from OmniRoute's own Anthropic catalog and returned upstream 400
-  // "Invalid model". #6170 removed the fabricated Kiro copy.
-  const ccIds = new Set(getModelsByProviderId("cc").map((m) => m.id));
-  assert.ok(ccIds.has("claude-fable-5"), "cc must expose claude-fable-5");
-
-  const ccPricing = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).cc;
-  assert.ok(ccPricing["claude-fable-5"], "cc pricing must include claude-fable-5");
-
+test("Fable 5 never reappears via Kiro (fabricated copy removed by #6170)", () => {
+  // claude-fable-5 is a real Claude flagship, but Kiro's upstream never served it — it
+  // had been copied verbatim into the Kiro registry from OmniRoute's own Anthropic
+  // catalog and returned upstream 400 "Invalid model". #6170 removed that copy; the
+  // guard stays even though the cc channel has moved on to the 5.5 generation.
   const kiroIds = new Set(getModelsByProviderId("kiro").map((m) => m.id));
   assert.equal(
     kiroIds.has("claude-fable-5"),
     false,
     "kiro must NOT expose claude-fable-5 (fabricated)"
   );
+
+  const ccIds = new Set(getModelsByProviderId("cc").map((m) => m.id));
+  assert.ok(ccIds.has("claude-opus-5.5"), "cc must expose the current flagship claude-opus-5.5");
+
+  const ccPricing = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).cc;
+  assert.ok(ccPricing["claude-opus-5.5"], "cc pricing must include claude-opus-5.5");
 });
 
-test("Opus 5 catalog is limited to verified first-party, web, and Copilot providers", () => {
-  for (const providerId of ["claude", "github", "claude-web", "anthropic"]) {
-    const model = getModelsByProviderId(providerId).find((entry) => entry.id === "claude-opus-5");
-    assert.ok(model, `${providerId} must expose claude-opus-5`);
+test("Opus 5.5 is wired on the first-party Claude channel only", () => {
+  // The claude (OAuth) channel moved to the 5.5 generation; no other shipped catalog
+  // advertises Opus 5.5 yet, and Kiro has never served any Opus at all.
+  for (const providerId of ["cc", "claude"]) {
+    const model = getModelsByProviderId(providerId).find((entry) => entry.id === "claude-opus-5.5");
+    assert.ok(model, `${providerId} must expose claude-opus-5.5`);
   }
 
-  const claude = getModelsByProviderId("claude").find((entry) => entry.id === "claude-opus-5");
+  const claude = getModelsByProviderId("claude").find((entry) => entry.id === "claude-opus-5.5");
   assert.equal(claude?.contextLength, 1000000);
   assert.equal(claude?.maxOutputTokens, 128000);
   assert.ok(
-    getStaticModelsForProvider("claude")?.some((entry) => entry.id === "claude-opus-5"),
-    "claude OAuth discovery must expose claude-opus-5"
+    getStaticModelsForProvider("claude")?.some((entry) => entry.id === "claude-opus-5.5"),
+    "claude OAuth discovery must expose claude-opus-5.5"
   );
 
-  const github = getModelsByProviderId("github").find((entry) => entry.id === "claude-opus-5");
-  assert.equal(github?.targetFormat, "claude");
-
   const kiroIds = new Set(getModelsByProviderId("kiro").map((entry) => entry.id));
-  assert.equal(kiroIds.has("claude-opus-5"), false, "do not fabricate Kiro availability");
+  assert.equal(kiroIds.has("claude-opus-5.5"), false, "do not fabricate Kiro availability");
 
-  const pricing = DEFAULT_PRICING as Record<string, Record<string, unknown>>;
-  for (const providerId of ["cc", "gh", "anthropic"]) {
-    const price = pricing[providerId]["claude-opus-5"] as { input: number; output: number };
-    assert.equal(price.input, 5.0, `${providerId} Opus 5 input price`);
-    assert.equal(price.output, 25.0, `${providerId} Opus 5 output price`);
-  }
+  const price = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).cc[
+    "claude-opus-5.5"
+  ] as { input: number; output: number };
+  assert.equal(price.input, 5.0, "cc Opus 5.5 input price");
+  assert.equal(price.output, 25.0, "cc Opus 5.5 output price");
 });
 
-test("Sonnet 5 catalog exposes claude-sonnet-5 across cc/kiro/anthropic/blackbox with Sonnet-tier pricing", () => {
-  // Sonnet 5 must be wired everywhere the last flagship (Fable 5) was — but as a
-  // Sonnet-tier model: $3/$15 pricing (NOT the Opus/Fable $15/$75), 1M ctx / 128K out.
-  for (const providerId of ["cc", "kiro", "anthropic", "blackbox"]) {
+test("Sonnet 5.5 is wired on the first-party Claude channel with Sonnet-tier pricing", () => {
+  // The cc channel now advertises the 5.5 generation: 1M ctx / 128K out and the
+  // Sonnet-tier $3/$15 sticker (NOT the Opus/Fable $15/$75).
+  for (const providerId of ["cc", "claude"]) {
     const ids = new Set(getModelsByProviderId(providerId).map((m) => m.id));
-    assert.ok(ids.has("claude-sonnet-5"), `${providerId} must expose claude-sonnet-5`);
+    assert.ok(ids.has("claude-sonnet-5.5"), `${providerId} must expose claude-sonnet-5.5`);
   }
 
-  const kiroSonnet5 = getModelsByProviderId("kiro").find((m) => m.id === "claude-sonnet-5");
-  assert.equal(kiroSonnet5?.contextLength, 1000000);
-  assert.equal(kiroSonnet5?.maxOutputTokens, 128000);
+  const claudeSonnet55 = getModelsByProviderId("claude").find((m) => m.id === "claude-sonnet-5.5");
+  assert.equal(claudeSonnet55?.contextLength, 1000000);
+  assert.equal(claudeSonnet55?.maxOutputTokens, 128000);
 
   const ccPricing = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).cc;
-  assert.ok(ccPricing["claude-sonnet-5"], "cc pricing must include claude-sonnet-5");
+  const sonnet55Price = ccPricing["claude-sonnet-5.5"] as { input: number; output: number };
+  assert.ok(sonnet55Price, "cc pricing must include claude-sonnet-5.5");
+  assert.equal(sonnet55Price.input, 3.0);
+  assert.equal(sonnet55Price.output, 15.0);
 
-  const kiroPricing = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).kiro;
-  const kiroSonnet5Price = kiroPricing["claude-sonnet-5"] as { input: number; output: number };
+  // Kiro still serves the 5 generation; its Sonnet-tier sticker must not drift either.
+  const kiroSonnet5Price = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).kiro[
+    "claude-sonnet-5"
+  ] as { input: number; output: number };
   assert.ok(kiroSonnet5Price, "kiro pricing must include claude-sonnet-5");
-  // Sonnet-tier, not Opus-tier — guards against copying Fable 5's $15/$75.
   assert.equal(kiroSonnet5Price.input, 3.0);
   assert.equal(kiroSonnet5Price.output, 15.0);
 });

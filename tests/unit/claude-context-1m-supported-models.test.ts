@@ -161,7 +161,7 @@ test("every known 1M model entry has a matching high-context Claude model", () =
   );
 });
 
-test("Claude Opus 5 uses native 1M context without the legacy beta header", () => {
-  assert.equal(parseModelList("CONTEXT_1M_SUPPORTED_MODELS").includes("claude-opus-5"), false);
-  assert.equal(parseModelList("CONTEXT_1M_NATIVE_MODELS").includes("claude-opus-5"), true);
+test("Claude Opus 5.5 uses native 1M context without the legacy beta header", () => {
+  assert.equal(parseModelList("CONTEXT_1M_SUPPORTED_MODELS").includes("claude-opus-5.5"), false);
+  assert.equal(parseModelList("CONTEXT_1M_NATIVE_MODELS").includes("claude-opus-5.5"), true);
 });

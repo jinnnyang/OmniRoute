@@ -119,9 +119,9 @@ test("resolveClaudeCodeCompatibleSessionId prefers explicit session headers and 
 });
 
 test("buildClaudeCodeCompatibleValidationPayload produces the expected smoke-test request", () => {
-  const payload = buildClaudeCodeCompatibleValidationPayload("claude-sonnet-4-6");
+  const payload = buildClaudeCodeCompatibleValidationPayload("claude-haiku-5.5");
 
-  assert.equal(payload.model, "claude-sonnet-4-6");
+  assert.equal(payload.model, "claude-haiku-5.5");
   assert.equal(payload.stream, true);
   assert.equal(payload.max_tokens, 1);
   assert.equal(payload.output_config.effort, "high");

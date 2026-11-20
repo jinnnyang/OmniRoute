@@ -14,8 +14,8 @@ import { isAdaptiveThinkingOnly } from "../../src/shared/constants/modelSpecs.ts
 
 const SAMPLING = ["temperature", "top_p", "top_k"];
 
-test("claude registry strips temperature/top_p/top_k for Opus 4.7+/Fable 5", () => {
-  for (const model of ["claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-fable-5"]) {
+test("claude registry strips temperature/top_p/top_k for the 5.5 generation", () => {
+  for (const model of ["claude-opus-5.5", "claude-sonnet-5.5"]) {
     const unsupported = getUnsupportedParams("claude", model);
     for (const param of SAMPLING) {
       assert.ok(
@@ -53,23 +53,18 @@ test("pre-4.7 Claude models still accept sampling params (regression guard)", ()
   }
 });
 
-test("isAdaptiveThinkingOnly is true only for Opus 4.7+/Fable 5", () => {
-  for (const model of ["claude-opus-5", "claude-opus-4-8", "claude-opus-4-7", "claude-fable-5"]) {
+test("isAdaptiveThinkingOnly is true only for the adaptive-only 5.5 tiers", () => {
+  for (const model of ["claude-opus-5.5", "claude-sonnet-5.5"]) {
     assert.equal(isAdaptiveThinkingOnly(model), true, `${model} is adaptive-only`);
   }
-  for (const model of [
-    "claude-opus-4-6",
-    "claude-opus-4-5-20251101",
-    "claude-sonnet-4-6",
-    "claude-haiku-4-5-20251001",
-  ]) {
+  for (const model of ["claude-haiku-5.5", "claude-haiku-5-5"]) {
     assert.equal(isAdaptiveThinkingOnly(model), false, `${model} still supports manual thinking`);
   }
   assert.equal(isAdaptiveThinkingOnly(null), false);
   assert.equal(isAdaptiveThinkingOnly(""), false);
 });
 
-test("isAdaptiveThinkingOnly resolves Bedrock/dated aliases", () => {
-  assert.equal(isAdaptiveThinkingOnly("anthropic.claude-opus-5"), true);
-  assert.equal(isAdaptiveThinkingOnly("anthropic.claude-opus-4-8"), true);
+test("isAdaptiveThinkingOnly resolves Bedrock/dashed aliases", () => {
+  assert.equal(isAdaptiveThinkingOnly("anthropic.claude-opus-5.5"), true);
+  assert.equal(isAdaptiveThinkingOnly("claude-sonnet-5-5"), true);
 });

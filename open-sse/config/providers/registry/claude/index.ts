@@ -1,15 +1,5 @@
 import type { RegistryEntry } from "../../shared.ts";
-import {
-  getClaudeCliHeaders,
-  mapStainlessOs,
-  mapStainlessArch,
-  ANTHROPIC_BETA_CLAUDE_OAUTH,
-  ANTHROPIC_VERSION_HEADER,
-  CLAUDE_CLI_STAINLESS_PACKAGE_VERSION,
-  CLAUDE_CLI_STAINLESS_RUNTIME_VERSION,
-  CLAUDE_CLI_USER_AGENT,
-  resolvePublicCred,
-} from "../../shared.ts";
+import { getClaudeCliHeaders, resolvePublicCred } from "../../shared.ts";
 
 export const claudeProvider: RegistryEntry = {
   id: "claude",
@@ -104,6 +94,30 @@ export const claudeProvider: RegistryEntry = {
       name: "Claude 4.5 Haiku",
       supportsXHighEffort: false,
       contextLength: 200000,
+      maxOutputTokens: 64000,
+    },
+    // ── 5.5 generation (current; added 2026-11-20 with the catalog cleanup) ──
+    {
+      id: "claude-opus-5.5",
+      name: "Claude Opus 5.5",
+      contextLength: 1000000,
+      maxOutputTokens: 128000,
+      supportsXHighEffort: true,
+      unsupportedParams: ["temperature", "top_p", "top_k"],
+    },
+    {
+      id: "claude-sonnet-5.5",
+      name: "Claude Sonnet 5.5",
+      contextLength: 1000000,
+      maxOutputTokens: 128000,
+      supportsXHighEffort: true,
+      unsupportedParams: ["temperature", "top_p", "top_k"],
+    },
+    {
+      id: "claude-haiku-5.5",
+      name: "Claude Haiku 5.5",
+      supportsXHighEffort: false,
+      contextLength: 1000000,
       maxOutputTokens: 64000,
     },
   ],

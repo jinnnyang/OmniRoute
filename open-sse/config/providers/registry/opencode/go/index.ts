@@ -263,5 +263,72 @@ export const opencode_goProvider: RegistryEntry = {
       supportsReasoning: true,
       supportedThinkingEfforts: ["low", "high", "max"],
     },
+
+    // ── Added 2026-11-20: routed current generation, windows pinned ──
+    // (rows above stay for the shipped catalog; these carry the real 1M
+    // windows so combo targets resolve correctly at the request gate)
+    {
+      id: "glm-5.3",
+      name: "GLM-5.3",
+      contextLength: 1000000,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["high", "max"],
+    },
+    {
+      id: "glm-5.3-flash",
+      name: "GLM-5.3 Flash",
+      contextLength: 1000000,
+      supportsReasoning: true,
+      supportsVision: true,
+    },
+    {
+      id: "deepseek-v4.1-flash",
+      name: "DeepSeek V4.1 Flash",
+      contextLength: 1000000,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["none", "low", "high", "max"],
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "claude-haiku-5-5",
+      name: "Claude Haiku 5.5",
+      contextLength: 1000000,
+      maxOutputTokens: 64000,
+      supportsReasoning: true,
+      supportsVision: true,
+    },
+    {
+      id: "minimax-m3.1-flash",
+      name: "MiniMax M3.1 Flash",
+      targetFormat: "claude",
+      contextLength: 1048576,
+      supportsVision: true,
+    },
+    {
+      id: "qwen3.8-max",
+      name: "Qwen3.8 Max",
+      targetFormat: "claude",
+      contextLength: 1000000,
+      supportsVision: false,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["high", "max"],
+    },
+    {
+      id: "qwen3.8-flash",
+      name: "Qwen3.8 Flash",
+      targetFormat: "claude",
+      contextLength: 1000000,
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    {
+      id: "grok-4.6",
+      name: "Grok 4.6",
+      contextLength: 500000,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["low", "medium", "high"],
+    },
+    { id: "mimo-v2.6-flash", name: "MiMo V2.6 Flash", contextLength: 1048576 },
+    { id: "mimo-v2.6-pro", name: "MiMo V2.6 Pro", contextLength: 1048576 },
   ],
 };

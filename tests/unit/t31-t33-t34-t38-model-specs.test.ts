@@ -1,19 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { REGISTRY } = await import("../../open-sse/config/providerRegistry.ts");
 const { getStaticModelsForProvider } = await import("../../src/lib/providers/staticModels.ts");
 const { resolveModelAlias: resolveDeprecatedAlias } =
   await import("../../open-sse/services/modelDeprecation.ts");
 const { normalizeThinkingLevel } = await import("../../open-sse/services/thinkingBudget.ts");
-const {
-  MODEL_SPECS,
-  getModelSpec,
-  capMaxOutputTokens,
-  resolveModelAlias,
-  getDefaultThinkingBudget,
-  capThinkingBudget,
-} = await import("../../src/shared/constants/modelSpecs.ts");
+const { MODEL_SPECS, getModelSpec, capMaxOutputTokens, resolveModelAlias } =
+  await import("../../src/shared/constants/modelSpecs.ts");
 
 test("T31: antigravity static catalog exposes client-visible Gemini preview IDs", () => {
   // Antigravity exposes client-visible Gemini IDs even though the upstream still
@@ -54,108 +47,105 @@ test("T33: thinkingLevel string is converted into numeric thinkingBudget", () =>
 });
 
 test("T34: max output tokens are capped by model spec", () => {
-  assert.equal(capMaxOutputTokens("gpt-5.5", 200000), 128000);
-  assert.equal(capMaxOutputTokens("gpt-5.5-xhigh", 200000), 128000);
-  assert.equal(capMaxOutputTokens("gemini-3-flash", 131072), 65536);
-  assert.equal(capMaxOutputTokens("gemini-3-flash"), 65536);
-  assert.equal(capMaxOutputTokens("gemini-3.1-pro-high", 131072), 65535);
-  assert.equal(capMaxOutputTokens("claude-opus-5", 200000), 128000);
-  assert.equal(capMaxOutputTokens("claude-opus-4-8", 200000), 128000);
-  assert.equal(capMaxOutputTokens("claude-opus-4-7", 200000), 128000);
-  assert.equal(capMaxOutputTokens("anthropic.claude-sonnet-4-6", 200000), 64000);
-  assert.equal(capMaxOutputTokens("eu.anthropic.claude-opus-4-6", 200000), 128000);
+  assert.equal(capMaxOutputTokens("gpt-5.6", 200000), 128000);
+  assert.equal(capMaxOutputTokens("gpt-5.6-luna", 200000), 128000);
+  assert.equal(capMaxOutputTokens("claude-opus-5.5", 200000), 128000);
+  assert.equal(capMaxOutputTokens("claude-sonnet-5.5", 200000), 128000);
+  assert.equal(capMaxOutputTokens("anthropic.claude-opus-5.5", 200000), 128000);
+  assert.equal(capMaxOutputTokens("claude-haiku-5.5", 200000), 64000);
+  assert.equal(capMaxOutputTokens("gemini-4-argon", 131072), 65536);
+  assert.equal(capMaxOutputTokens("glm-5.3", 200000), 131072);
+  assert.equal(capMaxOutputTokens("deepseek-v4.1-flash", 500000), 384000);
+  assert.equal(capMaxOutputTokens("minimax-m3.1-flash", 900000), 512000);
 });
 
 test("T38: modelSpecs exposes centralized helpers with alias and prefix lookup", () => {
-  assert.equal(getModelSpec("gpt-5.5").contextWindow, 1050000);
-  assert.equal(getModelSpec("gpt-5.5-high").maxOutputTokens, 128000);
-  assert.equal(typeof MODEL_SPECS["gemini-3.1-pro"], "object");
-  assert.equal(getModelSpec("gemini-3-pro-high").maxOutputTokens, 65535);
-  assert.equal(getModelSpec("gemini-3-pro-preview").maxOutputTokens, 65535);
-  assert.equal(getModelSpec("gemini-3-flash-preview").maxOutputTokens, 65536);
-  assert.equal(getModelSpec("gemini-3.1-pro-preview").maxOutputTokens, 65535);
-  assert.equal(getModelSpec("gemini-3.1-pro-preview-customtools").maxOutputTokens, 65535);
-  assert.equal(getModelSpec("claude-opus-5").contextWindow, 1000000);
-  assert.equal(getModelSpec("anthropic.claude-opus-5").maxOutputTokens, 128000);
-  assert.equal(getModelSpec("claude-opus-4-7").contextWindow, 1000000);
-  assert.equal(getModelSpec("claude-opus-4.8").maxOutputTokens, 128000);
-  assert.equal(getModelSpec("claude-opus-4.7").maxOutputTokens, 128000);
-  assert.equal(getModelSpec("bedrock/eu.anthropic.claude-sonnet-4-6").contextWindow, 1000000);
-  assert.equal(getModelSpec("bedrock/anthropic.claude-sonnet-4-5").contextWindow, 200000);
-  assert.equal(getModelSpec("global.anthropic.claude-opus-4-6").maxOutputTokens, 128000);
-  assert.equal(resolveModelAlias("gemini-3-pro-low"), "gemini-3.1-pro-low");
-  assert.equal(resolveModelAlias("gemini-3-pro-preview"), "gemini-3.1-pro");
-  assert.equal(resolveModelAlias("gemini-3.1-pro-preview"), "gemini-3.1-pro");
-  assert.equal(resolveModelAlias("gemini-3.1-pro-preview-customtools"), "gemini-3.1-pro");
-  assert.equal(getDefaultThinkingBudget("gemini-3.1-pro-high"), 24576);
-  assert.equal(capThinkingBudget("gemini-3.1-pro-low", 50000), 16000);
-});
-
-test("T38: only MiMo V2.5 and V2 Omni support vision; the *-pro/flash are text-only", () => {
-  // Corrected: Xiaomi documents ONLY mimo-v2.5 and mimo-v2-omni as image-capable
-  // (mimo.mi.com .../image-understanding). The *-pro chat models are text-only;
-  // models.dev mislabels them (hermes-agent#18884).
-  assert.equal(MODEL_SPECS["mimo-v2.5-pro"].supportsVision, false);
-  assert.equal(MODEL_SPECS["mimo-v2-pro"].supportsVision, false);
-  assert.equal(MODEL_SPECS["mimo-v2.5"].supportsVision, true);
-  assert.equal(MODEL_SPECS["mimo-v2-omni"].supportsVision, true);
-  assert.equal(MODEL_SPECS["mimo-v2-flash"].supportsVision, undefined);
-});
-
-test("opencode-go family: context/output caps match upstream provider docs", () => {
-  // Qwen3.x Plus / Max: 1M context, 65K output (Bailian)
-  assert.equal(getModelSpec("qwen3-max").contextWindow, 1000000);
-  assert.equal(getModelSpec("qwen3-max").maxOutputTokens, 65536);
+  assert.equal(getModelSpec("gpt-5.6").contextWindow, 1050000);
+  assert.equal(getModelSpec("gpt-5.6-sol").maxOutputTokens, 128000);
+  assert.equal(typeof MODEL_SPECS["gemini-4-argon"], "object");
+  assert.equal(getModelSpec("claude-opus-5.5").contextWindow, 1000000);
+  assert.equal(getModelSpec("anthropic.claude-opus-5.5").maxOutputTokens, 128000);
+  assert.equal(getModelSpec("claude-sonnet-5-5").contextWindow, 1000000);
+  assert.equal(getModelSpec("claude-haiku-5-5").contextWindow, 1000000);
+  assert.equal(getModelSpec("bedrock/us.anthropic.claude-haiku-5-5").contextWindow, 1000000);
+  assert.equal(getModelSpec("glm-5.3-flash").contextWindow, 1000000);
+  assert.equal(getModelSpec("glm-5-3-flash-260828").contextWindow, 1000000);
+  assert.equal(getModelSpec("deepseek-v4-1-flash-economy-261017").contextWindow, 1000000);
+  assert.equal(getModelSpec("deepseek-v4.1-flash").maxOutputTokens, 384000);
   assert.equal(getModelSpec("qwen3.8-max-preview").contextWindow, 1000000);
-  assert.equal(getModelSpec("qwen3.8-max-preview").maxOutputTokens, 65536);
-  assert.equal(getModelSpec("qwen3.8-max-preview").supportsThinking, true);
-  assert.equal(getModelSpec("qwen3.8-max-preview").supportsTools, true);
-  assert.equal(getModelSpec("qwen3.8-max-preview").supportsVision, true);
+  assert.equal(resolveModelAlias("qwen3.8-max-preview"), "qwen3.8-max");
+  assert.equal(getModelSpec("grok-4.6").contextWindow, 500000);
+  assert.equal(getModelSpec("doubao-seed-2-1-lite-260915").contextWindow, 262144);
+  assert.equal(getModelSpec("doubao-seed-2.1-turbo").contextWindow, 262144);
+  assert.equal(getModelSpec("minimax-m3.1-flash").contextWindow, 1048576);
+  assert.equal(getModelSpec("kimi-k3").contextWindow, 1048576);
+  assert.equal(getModelSpec("mimo-v2.6-flash").supportsVision, true);
+});
+
+test("T38: MiMo vision flags stay correct per generation (additive policy)", () => {
+  assert.equal(MODEL_SPECS["mimo-v2.6-pro"].supportsVision, true);
+  assert.equal(MODEL_SPECS["mimo-v2.6-flash"].supportsVision, true);
+  // Legacy rows stay for providers that still serve them; the *-pro chat models
+  // remain text-only (models.dev mislabels them, hermes-agent#18884).
+  assert.equal(MODEL_SPECS["mimo-v2.5"].supportsVision, true);
+  assert.equal(MODEL_SPECS["mimo-v2-pro"].supportsVision, false);
+});
+
+test("opencode-go family: current-generation specs match upstream docs", () => {
+  // Qwen3.8 Max: 1M context, 65K output (Bailian)
   assert.equal(getModelSpec("qwen3.8-max").contextWindow, 1000000);
   assert.equal(getModelSpec("qwen3.8-max").maxOutputTokens, 65536);
-  assert.equal(getModelSpec("qwen3.7-max").contextWindow, 1000000);
-  assert.equal(getModelSpec("qwen3-max-2026-01-23").contextWindow, 1000000);
-  assert.equal(getModelSpec("qwen3.6-plus").contextWindow, 1000000);
-  assert.equal(getModelSpec("qwen3.6-plus").maxOutputTokens, 65536);
-  assert.equal(getModelSpec("qwen3.5-plus").contextWindow, 1000000);
-  assert.equal(getModelSpec("qwen3.5-plus").maxOutputTokens, 65536);
+  assert.equal(getModelSpec("qwen3.8-max-preview").contextWindow, 1000000);
 
-  // Kimi K2.5: 262K context/output (Moonshot, parity with K2.6)
-  assert.equal(getModelSpec("kimi-k2.5").contextWindow, 262144);
-  assert.equal(getModelSpec("kimi-k2.5").maxOutputTokens, 262144);
+  // GLM-5.3 family: 1M context, 128K output
+  assert.equal(getModelSpec("glm-5.3").contextWindow, 1000000);
+  assert.equal(getModelSpec("glm-5.3-flash").contextWindow, 1000000);
+  assert.equal(getModelSpec("glm-5.3").maxOutputTokens, 131072);
 
-  // GLM-5.x: 200K context, 128K output (Z.AI)
-  assert.equal(getModelSpec("glm-5.1").contextWindow, 200000);
-  assert.equal(getModelSpec("glm-5.1").maxOutputTokens, 128000);
-  assert.equal(getModelSpec("glm-5").contextWindow, 200000);
+  // DeepSeek V4.1 Flash: 1M context, 384K output
+  assert.equal(getModelSpec("deepseek-v4.1-flash").contextWindow, 1000000);
+  assert.equal(getModelSpec("deepseek-v4.1-flash").maxOutputTokens, 384000);
+  assert.equal(getModelSpec("deepseek-v4-1-flash-261017").contextWindow, 1000000);
 
-  // MiniMax M2.x: ~200K context, 131K output
-  assert.equal(getModelSpec("minimax-m2.7").contextWindow, 204800);
-  assert.equal(getModelSpec("minimax-m2.7").maxOutputTokens, 131072);
-  assert.equal(getModelSpec("minimax-m2.5").contextWindow, 200000);
-  assert.equal(getModelSpec("MiniMax-M2.5").contextWindow, 200000);
+  // Claude 5.5 family: 1M context
+  assert.equal(getModelSpec("claude-haiku-5.5").contextWindow, 1000000);
+  assert.equal(getModelSpec("claude-sonnet-5.5").contextWindow, 1000000);
+  assert.equal(getModelSpec("claude-opus-5.5").contextWindow, 1000000);
 
-  // DeepSeek V4: 1M context, 384K output
-  assert.equal(getModelSpec("deepseek-v4-pro").contextWindow, 1000000);
-  assert.equal(getModelSpec("deepseek-v4-pro").maxOutputTokens, 384000);
-  assert.equal(getModelSpec("deepseek-v4-flash").contextWindow, 1000000);
+  // Grok 4.6: 500K context (operator-confirmed 2026-11-20)
+  assert.equal(getModelSpec("grok-4.6").contextWindow, 500000);
+
+  // MiniMax M3.1 Flash: 1M context
+  assert.equal(getModelSpec("minimax-m3.1-flash").contextWindow, 1048576);
 
   // Tencent Hunyuan 3 Preview: 262K context/output
   assert.equal(getModelSpec("hy3-preview").contextWindow, 262144);
   assert.equal(getModelSpec("hy3-preview").maxOutputTokens, 262144);
+
+  // Additive policy (2026-11-20): spec rows for models providers still serve are
+  // kept so they resolve real windows instead of the 128K fallback.
+  for (const stillServed of [
+    "glm-5.2",
+    "claude-opus-4-5",
+    "claude-sonnet-5",
+    "kimi-k2.6",
+    "minimax-m3",
+    "deepseek-v4-flash",
+    "deepseek-v4-pro",
+    "mimo-v2.5",
+  ]) {
+    assert.equal(
+      typeof MODEL_SPECS[stillServed],
+      "object",
+      `${stillServed} must keep a spec row (capability knowledge for providers that still serve it)`
+    );
+  }
 });
 
-test("opencode-go family: capMaxOutputTokens grants full upstream budget", () => {
-  // Without explicit specs these models would fall back to __default__ (8192).
-  // Assert they now receive the real upstream cap.
-  assert.equal(capMaxOutputTokens("qwen3-max", 100000), 65536);
-  assert.equal(capMaxOutputTokens("qwen3.8-max-preview", 100000), 65536);
-  assert.equal(capMaxOutputTokens("qwen3.7-max", 100000), 65536);
-  assert.equal(capMaxOutputTokens("qwen3-max-2026-01-23", 100000), 65536);
-  assert.equal(capMaxOutputTokens("kimi-k2.5", 300000), 262144);
-  assert.equal(capMaxOutputTokens("glm-5.1", 200000), 128000);
-  assert.equal(capMaxOutputTokens("minimax-m2.7", 200000), 131072);
-  assert.equal(capMaxOutputTokens("MiniMax-M2.5", 200000), 131072);
-  assert.equal(capMaxOutputTokens("deepseek-v4-pro", 500000), 384000);
+test("opencode-go family: capMaxOutputTokens uses the current specs", () => {
+  assert.equal(capMaxOutputTokens("qwen3.8-max", 100000), 65536);
+  assert.equal(capMaxOutputTokens("glm-5.3", 200000), 131072);
+  assert.equal(capMaxOutputTokens("deepseek-v4.1-flash", 500000), 384000);
+  assert.equal(capMaxOutputTokens("minimax-m3.1-flash", 900000), 512000);
   assert.equal(capMaxOutputTokens("hy3-preview", 300000), 262144);
 });

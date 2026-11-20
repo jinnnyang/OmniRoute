@@ -104,6 +104,22 @@ export const VOLCENGINE_AGENT_PLAN_MODELS: RegistryModel[] = [
     supportsVision: true,
     supportsReasoning: true,
   },
+  // ── Added 2026-11-20: DeepSeek V4.1 (1M) — the routed generation ──
+  {
+    id: "deepseek-v4.1-flash",
+    name: "DeepSeek V4.1 Flash (Agent Plan)",
+    aliases: ["deepseek-v4-1-flash"],
+    contextLength: 1048576,
+    toolCalling: true,
+    supportsReasoning: true,
+  },
+  {
+    id: "deepseek-v4-1-flash-economy-261017",
+    name: "DeepSeek V4.1 Flash Economy (Agent Plan)",
+    contextLength: 1048576,
+    toolCalling: true,
+    supportsReasoning: true,
+  },
 ];
 
 export const volcengine_agentProvider: RegistryEntry = {

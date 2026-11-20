@@ -63,14 +63,15 @@ const BEDROCK_CLAUDE_ALIASES = (...modelIds: string[]) => [
   ),
 ];
 
-// Provider discovery/sync sources can under-report GLM-5.2 IDs as 128K.
-// Keep native/bare Z.AI GLM-5.2 context authoritative, but do not blindly apply
-// it to every provider-wrapped alias: hosted providers can and do cap lower.
+// Provider discovery/sync sources can under-report GLM IDs as 128K/200K.
+// Keep native/bare Z.AI GLM windows authoritative, but do not blindly apply
+// them to every provider-wrapped alias: hosted providers can and do cap lower.
 const AUTHORITATIVE_CONTEXT_WINDOW_MODEL_IDS = new Set([
   "glm-5.3",
   "glm-5.3-high",
   "glm-5.3-low",
   "glm-5.3-max",
+  "glm-5.3-flash",
   "glm-5.2",
   "glm-5.2-high",
   "glm-5.2-max",
@@ -490,15 +491,6 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     supportsVision: true,
     aliases: ["qwen3.7-max", "qwen3-max-2026-01-23"],
   },
-  "qwen3.8-max-preview": {
-    maxOutputTokens: 65536,
-    contextWindow: 1000000,
-    thinkingBudgetCap: 38912,
-    supportsThinking: true,
-    supportsTools: true,
-    supportsVision: true,
-    aliases: ["qwen3.8-max"],
-  },
   "qwen3.6-plus": {
     maxOutputTokens: 65536,
     contextWindow: 1000000,
@@ -696,6 +688,128 @@ export const MODEL_SPECS: Record<string, ModelSpec> = {
     thinkingBudgetCap: 32768,
     supportsThinking: true,
     supportsTools: true,
+  },
+
+  // ── 2026-11-20 current-generation additions ───────────────────────
+  // These rows back the ids the operator routes today (glm 5.3 flash, claude 5.5,
+  // deepseek 4.1, doubao 2.1, minimax m3.1, gemini 4, grok 4.6).
+  "gemini-4-argon": {
+    maxOutputTokens: 65536,
+    contextWindow: 1048576,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+  },
+
+  "claude-sonnet-5.5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    adaptiveThinkingOnly: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-sonnet-5.5", "claude-sonnet-5-5"),
+  },
+
+  "claude-opus-5.5": {
+    maxOutputTokens: 128000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 32000,
+    thinkingBudgetCap: 120000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    adaptiveThinkingOnly: true,
+    maxEffortWhenThinkingDisabled: "high",
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-opus-5.5", "claude-opus-5-5"),
+  },
+
+  "claude-haiku-5.5": {
+    // OpenCode Go exposes the dashed wire id `claude-haiku-5-5`; BAI uses the
+    // dotted `claude-haiku-5.5`. Both land on this single spec.
+    maxOutputTokens: 64000,
+    contextWindow: 1000000,
+    defaultThinkingBudget: 10000,
+    thinkingBudgetCap: 62000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: BEDROCK_CLAUDE_ALIASES("claude-haiku-5.5", "claude-haiku-5-5"),
+  },
+
+  "qwen3.8-max": {
+    maxOutputTokens: 65536,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["qwen3.8-max-preview"],
+  },
+
+  "glm-5.3-flash": {
+    maxOutputTokens: 131072,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 38912,
+    supportsThinking: true,
+    supportsTools: true,
+    aliases: ["glm-5-3-flash-260828"],
+  },
+
+  "minimax-m3.1-flash": {
+    maxOutputTokens: 512000,
+    contextWindow: 1048576,
+    thinkingBudgetCap: 32768,
+    supportsThinking: true,
+    supportsTools: true,
+  },
+
+  "deepseek-v4.1-flash": {
+    maxOutputTokens: 384000,
+    contextWindow: 1000000,
+    thinkingBudgetCap: 380000,
+    supportsThinking: true,
+    supportsTools: true,
+    aliases: [
+      "deepseek-v4-1-flash",
+      "deepseek-v4-1-flash-260910",
+      "deepseek-v4-1-flash-261017",
+      "deepseek-v4-1-flash-economy-261017",
+      "deepseek-v4.1-flash-economy",
+    ],
+  },
+
+  "doubao-seed-2.1-turbo": {
+    contextWindow: 262144,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["doubao-seed-2-1-turbo", "doubao-seed-2-1-turbo-260628"],
+  },
+
+  "doubao-seed-2.1-lite": {
+    contextWindow: 262144,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["doubao-seed-2-1-lite", "doubao-seed-2-1-lite-260915"],
+  },
+
+  "doubao-seed-2.1-pro": {
+    contextWindow: 262144,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
+    aliases: ["doubao-seed-2-1-pro", "doubao-seed-2-1-pro-260915"],
+  },
+
+  "grok-4.6": {
+    contextWindow: 500000,
+    supportsThinking: true,
+    supportsTools: true,
+    supportsVision: true,
   },
 
   // Defaults

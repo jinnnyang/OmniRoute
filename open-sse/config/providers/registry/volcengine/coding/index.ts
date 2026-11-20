@@ -108,6 +108,28 @@ export const VOLCENGINE_CODING_PLAN_MODELS: RegistryModel[] = [
     toolCalling: true,
     supportsReasoning: true,
   },
+  // ── Added 2026-11-20: DeepSeek V4.1 wire ids (1M) ──
+  {
+    id: "deepseek-v4-1-flash-261017",
+    name: "DeepSeek V4.1 Flash (Coding Plan)",
+    contextLength: 1048576,
+    toolCalling: true,
+    supportsReasoning: true,
+  },
+  {
+    id: "deepseek-v4-1-flash-260910",
+    name: "DeepSeek V4.1 Flash (Coding Plan, 260910)",
+    contextLength: 1048576,
+    toolCalling: true,
+    supportsReasoning: true,
+  },
+  {
+    id: "deepseek-v4-1-flash-economy-261017",
+    name: "DeepSeek V4.1 Flash Economy (Coding Plan)",
+    contextLength: 1048576,
+    toolCalling: true,
+    supportsReasoning: true,
+  },
 ];
 
 export const volcengine_codingProvider: RegistryEntry = {

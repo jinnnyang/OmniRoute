@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { MODEL_SPECS } from "../../src/shared/constants/modelSpecs.ts";
+import { MODEL_SPECS, getModelSpec } from "../../src/shared/constants/modelSpecs.ts";
 import { resolveModelAlias } from "../../open-sse/services/modelDeprecation.ts";
 import { resolveLifecycle } from "../../open-sse/handlers/chatCore/modelLifecyclePolicy.ts";
 import { hasKnownProviderModel } from "../../open-sse/services/model.ts";
@@ -44,12 +44,15 @@ test("the canonical id is a no-op through the alias map (no double rewrite)", ()
 });
 
 test("the alias target carries the real 1M window, not the 128k fallback", () => {
-  const spec = MODEL_SPECS[CANONICAL];
-  assert.ok(spec, `MODEL_SPECS is missing ${CANONICAL}`);
+  // §5b: the shipped name is the spec row and the retired `-preview` id is its alias.
+  // Both ids must resolve through ONE row — a second source of truth for the same model
+  // is what lets the two drift apart again.
+  const spec = getModelSpec(CANONICAL);
+  assert.ok(spec, `MODEL_SPECS is missing a row for ${CANONICAL}`);
   assert.equal(spec.contextWindow, 1_000_000);
-  // The bare id must NOT gain its own spec entry — a second source of truth for the
-  // same model is what lets the two ids drift apart again.
-  assert.equal(MODEL_SPECS[BARE], undefined);
+  assert.equal(getModelSpec(BARE)?.contextWindow, 1_000_000);
+  const rows = [BARE, CANONICAL].filter((id) => MODEL_SPECS[id] !== undefined);
+  assert.deepEqual(rows, [BARE], "exactly one spec row owns the pair; the preview id is an alias");
 });
 
 // The catalogs have since split. `qwen-cloud-token-plan` and `qwen-web` now list the

@@ -3,7 +3,7 @@
  * reasoning-token buffer. Core contract from #1761: OmniRoute must not
  * silently enlarge a Claude Max user's per-turn cost.
  *
- * On claude-opus-5 (registry maxOutputTokens = 128000), a client sending
+ * On claude-opus-5.5 (registry maxOutputTokens = 128000), a client sending
  * max_tokens: 64000 got rewritten to 96000 (Math.ceil(64000 * 1.5)) because
  * 96000 < 128000 so the "fits in cap" guard did NOT rescue it.
  */
@@ -25,8 +25,8 @@ test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
 });
 
-test("#9507 reasoning buffer does NOT enlarge a Claude opus-5 client budget upward", () => {
-  const result = resolveReasoningBufferedMaxTokens("anthropic/claude-opus-5", 64000);
+test("#9507 reasoning buffer does NOT enlarge a Claude opus-5.5 client budget upward", () => {
+  const result = resolveReasoningBufferedMaxTokens("anthropic/claude-opus-5.5", 64000);
   assert.equal(
     result,
     64000,
@@ -34,9 +34,9 @@ test("#9507 reasoning buffer does NOT enlarge a Claude opus-5 client budget upwa
   );
 });
 
-test("#9507 reasoning buffer does NOT enlarge a Claude sonnet-5 client budget upward", () => {
+test("#9507 reasoning buffer does NOT enlarge a Claude sonnet-5.5 client budget upward", () => {
   const client = 32000;
-  const result = resolveReasoningBufferedMaxTokens("anthropic/claude-sonnet-5", client);
+  const result = resolveReasoningBufferedMaxTokens("anthropic/claude-sonnet-5.5", client);
   assert.ok(
     result === null || result <= client,
     `client max_tokens=${client} must not be enlarged, got ${result}`

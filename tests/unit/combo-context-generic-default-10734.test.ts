@@ -47,20 +47,20 @@ test("#10734: getSourcedTokenLimit keeps provider-specific defaults (claude)", (
 test("#10734: combo min() ignores unsourced members instead of advertising 128k", () => {
   const combo = {
     name: "large-plus-unknown",
-    models: ["glm/glm-5.2", "not-a-real-provider/no-such-model"],
+    models: ["glm/glm-5.3", "not-a-real-provider/no-such-model"],
   };
   const result = computeComboContextLength(combo, []);
   assert.equal(
     result,
     1000000,
-    "glm-5.2 is a sourced 1M window; the generic-default member must not pull min() to 128k"
+    "glm-5.3 is a sourced 1M window; the generic-default member must not pull min() to 128k"
   );
 });
 
 test("#10734: nested combo-ref inherits sourced min(), not 128k", () => {
   const inner = {
     name: "inner-large",
-    models: ["glm/glm-5.2", "not-a-real-provider/no-such-model"],
+    models: ["glm/glm-5.3", "not-a-real-provider/no-such-model"],
   };
   const wrapper = {
     name: "wrapper-large",

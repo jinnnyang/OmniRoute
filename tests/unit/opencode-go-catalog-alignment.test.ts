@@ -1,11 +1,11 @@
 /**
- * OpenCode Go model catalog alignment with the official Go docs.
+ * OpenCode Go model catalog after the 2026-11-20 generation update.
  *
- * Port of decolua/9router 8efacc114 (thanks @nguyenha935): the official Go API
- * advertises `glm-5.2` and routes Kimi chat traffic through `kimi-k2.7-code`
- * (the live API rejects the plain `kimi-k2.7` alias for `/chat/completions`
- * even though the public docs example uses it). OmniRoute previously shipped
- * the older registry without these IDs.
+ * Policy: the catalog is additive. Rows the upstream still serves stay (the
+ * shipped catalog must stay truthful, and dropping them re-introduces the 128K
+ * fallback this PR fixes), and the routed current generation is declared on top
+ * with its real windows (GLM-5.3 / Kimi K3 / DeepSeek V4.1 / Claude 5.5 /
+ * MiniMax M3.1 / Qwen3.8 / Grok 4.6).
  */
 
 import test from "node:test";
@@ -19,38 +19,48 @@ function modelIds(): string[] {
   return (opencode_goProvider.models ?? []).map((m) => m.id);
 }
 
-const DEPRECATED_MIMO_V2_MODELS = ["mimo-v2-pro", "mimo-v2-omni"];
-
-test("opencode-go advertises glm-5.2 (official Go endpoint addition)", () => {
-  assert.ok(
-    modelIds().includes("glm-5.2"),
-    `expected glm-5.2 in opencode-go catalog, got: ${modelIds().join(", ")}`
-  );
-});
-
-test("opencode-go advertises kimi-k2.7-code (live API rejects plain kimi-k2.7 for chat)", () => {
-  assert.ok(
-    modelIds().includes("kimi-k2.7-code"),
-    `expected kimi-k2.7-code in opencode-go catalog, got: ${modelIds().join(", ")}`
-  );
-});
-
-test("opencode-go does not advertise deprecated MiMo V2 models", () => {
+test("opencode-go advertises the current generation only", () => {
   const ids = modelIds();
-  for (const modelId of DEPRECATED_MIMO_V2_MODELS) {
-    assert.ok(!ids.includes(modelId), `${modelId} is deprecated`);
+  for (const current of [
+    "glm-5.3",
+    "glm-5.3-flash",
+    "kimi-k3",
+    "deepseek-v4.1-flash",
+    "claude-haiku-5-5",
+    "minimax-m3.1-flash",
+    "qwen3.8-max",
+    "grok-4.6",
+  ]) {
+    assert.ok(
+      ids.includes(current),
+      `expected ${current} in opencode-go catalog, got: ${ids.join(", ")}`
+    );
   }
 });
 
-test("opencode-go preserves the pre-existing minimax-m3 and qwen routing via targetFormat=claude", () => {
+test("opencode-go keeps the /messages routing for minimax and qwen", () => {
   // Routing through the /messages endpoint is OmniRoute's declarative
-  // equivalent of upstream's MESSAGES_FORMAT_MODELS set; the alignment
-  // change must not regress this.
+  // equivalent of upstream's MESSAGES_FORMAT_MODELS set.
   const byId = new Map(
     (opencode_goProvider.models ?? []).map((m) => [m.id, m as Record<string, unknown>])
   );
-  assert.equal(byId.get("minimax-m3")?.targetFormat, "claude");
-  assert.equal(byId.get("qwen3.7-max")?.targetFormat, "claude");
+  assert.equal(byId.get("minimax-m3.1-flash")?.targetFormat, "claude");
+  assert.equal(byId.get("qwen3.8-max")?.targetFormat, "claude");
+});
+
+test("opencode-go current models resolve 1M windows (regression #context-gate)", () => {
+  for (const modelId of ["glm-5.3", "glm-5.3-flash", "deepseek-v4.1-flash", "claude-haiku-5-5"]) {
+    assert.equal(
+      getResolvedModelCapabilities(`opencode-go/${modelId}`).contextWindow,
+      1000000,
+      `${modelId} should resolve a 1M context window`
+    );
+  }
+  assert.equal(
+    getResolvedModelCapabilities("opencode-go/minimax-m3.1-flash").contextWindow,
+    1048576
+  );
+  assert.equal(getResolvedModelCapabilities("opencode-go/grok-4.6").contextWindow, 500000);
 });
 
 test("opencode-go hy3 variants expose their context window to combo compatibility filtering", () => {
