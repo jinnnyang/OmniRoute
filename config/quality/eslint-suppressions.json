@@ -19,11 +19,6 @@
       "count": 1
     }
   },
-  "open-sse/config/providers/registry/claude/index.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 7
-    }
-  },
   "open-sse/config/providers/registry/vertex/index.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -5979,11 +5974,6 @@
     }
   },
   "tests/unit/t3-chat-web.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
-  "tests/unit/t31-t33-t34-t38-model-specs.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
     }

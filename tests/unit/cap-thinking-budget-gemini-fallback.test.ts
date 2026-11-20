@@ -43,12 +43,12 @@ test("non-gemini unregistered model passes through unchanged (no fallback)", () 
 
 // ── Registry cap still wins for registered models ──────────────────────────
 
-test("registered gemini-2.5-flash keeps its explicit 24576 cap (fallback does not override)", () => {
-  assert.equal(capThinkingBudget("gemini-2.5-flash", 131072), 24576);
+test("registered glm-5.3 keeps its explicit 38912 cap (fallback does not override)", () => {
+  assert.equal(capThinkingBudget("glm-5.3", 131072), 38912);
 });
 
-test("registered gemini-3.1-pro keeps its explicit 32768 cap", () => {
-  assert.equal(capThinkingBudget("gemini-3.1-pro", 131072), 32768);
+test("registered minimax-m3.1-flash keeps its explicit 32768 cap", () => {
+  assert.equal(capThinkingBudget("minimax-m3.1-flash", 131072), 32768);
 });
 
 // ── Learned cap integration ────────────────────────────────────────────────
@@ -74,6 +74,7 @@ test("learned caps are scoped per provider+model (no cross-contamination)", () =
   assert.equal(capThinkingBudget("vertex/gemini-2.5-pro", 131072), 32768);
   // The native-gemini provider key is independent too.
   assert.equal(capThinkingBudget("gemini/gemini-2.5-pro", 131072), 32768);
-  // A different model on the same provider keeps its own (registry) cap.
-  assert.equal(capThinkingBudget("openrouter/gemini-2.5-flash", 131072), 24576); // registry cap
+  // A different model on the same provider keeps its own (fallback) cap — the
+  // retired gemini-2.5-flash spec is gone, so the gemini-substring fallback applies.
+  assert.equal(capThinkingBudget("openrouter/gemini-2.5-flash", 131072), 32768);
 });

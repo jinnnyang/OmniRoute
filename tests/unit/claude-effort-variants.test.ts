@@ -37,27 +37,27 @@ test("formatClaudeEffortLabel matches the VS Code catalog casing", () => {
 // ── shouldExposeClaudeEffortVariants ─────────────────────────────────────────
 
 test("exposes variants for thinking-capable Claude base models", () => {
-  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-fable-5")), true);
-  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-opus-4-8")), true);
-  assert.equal(shouldExposeClaudeEffortVariants(mk("cc/claude-fable-5")), true);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-opus-5.5")), true);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-sonnet-5.5")), true);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("cc/claude-opus-5.5")), true);
 });
 
-test("adaptive-only models (Fable 5) still get effort variants despite rejecting disabled", () => {
+test("adaptive-only models (Opus 5.5) still get effort variants despite rejecting disabled", () => {
   // Regression guard: the no-thinking gate excludes rejectsThinkingDisabled models,
-  // but effort variants must NOT — Fable 5 is adaptive-only yet takes an effort.
-  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-fable-5")), true);
+  // but effort variants must NOT — Opus 5.5 is adaptive-only yet takes an effort.
+  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-opus-5.5")), true);
 });
 
 test("does not expose variants for non-Claude, combos, or non-thinking models", () => {
-  assert.equal(shouldExposeClaudeEffortVariants(mk("codex/gpt-5.5")), false);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("codex/gpt-5.6")), false);
   assert.equal(shouldExposeClaudeEffortVariants({ id: "x", owned_by: "combo" }), false);
-  assert.equal(shouldExposeClaudeEffortVariants(mk("gemini-cli/gemini-3.1-pro-preview")), false);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("gemini-cli/gemini-4-argon")), false);
 });
 
 test("never double-synthesizes: already-suffixed or no-think ids are skipped", () => {
-  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-fable-5-high")), false);
-  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-fable-5-xhigh")), false);
-  assert.equal(shouldExposeClaudeEffortVariants(mk("no-think/claude/claude-fable-5")), false);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-opus-5.5-high")), false);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("claude/claude-opus-5.5-xhigh")), false);
+  assert.equal(shouldExposeClaudeEffortVariants(mk("no-think/claude/claude-opus-5.5")), false);
 });
 
 test("non-string / empty / non-object ids never match", () => {
@@ -69,11 +69,11 @@ test("non-string / empty / non-object ids never match", () => {
 // ── isKnownClaudeEffortBaseModel ─────────────────────────────────────────────
 
 test("isKnownClaudeEffortBaseModel returns true for a real effort-capable Claude model", () => {
-  assert.equal(isKnownClaudeEffortBaseModel("claude-fable-5"), true);
+  assert.equal(isKnownClaudeEffortBaseModel("claude-opus-5.5"), true);
 });
 
 test("isKnownClaudeEffortBaseModel returns false for a non-Claude model", () => {
-  assert.equal(isKnownClaudeEffortBaseModel("gpt-4o"), false);
+  assert.equal(isKnownClaudeEffortBaseModel("gpt-5.6"), false);
 });
 
 test("isKnownClaudeEffortBaseModel returns false for an unregistered model id", () => {
@@ -81,75 +81,71 @@ test("isKnownClaudeEffortBaseModel returns false for an unregistered model id", 
 });
 
 test("isKnownClaudeEffortBaseModel returns false for a non-Claude model that also supports thinking (SC-1)", () => {
-  // gpt-5.5 has supportsThinking:true in MODEL_SPECS (like 36+ other non-Claude models) —
+  // gpt-5.6 has supportsThinking:true in MODEL_SPECS (like 36+ other non-Claude models) —
   // the /claude/i name check is the only thing excluding it, not the thinking flag alone.
-  assert.equal(isKnownClaudeEffortBaseModel("gpt-5.5"), false);
+  assert.equal(isKnownClaudeEffortBaseModel("gpt-5.6"), false);
 });
 
 // ── claudeEffortLevelsFor ────────────────────────────────────────────────────
 
 test("xHigh is added only for models that support it", () => {
-  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-fable-5"), [
+  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-opus-5.5"), [
     "low",
     "medium",
     "high",
     "xhigh",
   ]);
-  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-opus-4-8"), [
+  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-sonnet-5.5"), [
     "low",
     "medium",
     "high",
     "xhigh",
   ]);
-  // Opus 4.6 and Haiku 4.5 are flagged supportsXHighEffort:false in the registry.
-  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-opus-4-6"), ["low", "medium", "high"]);
-  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-haiku-4-5-20251001"), [
-    "low",
-    "medium",
-    "high",
-  ]);
+  // Haiku 5.5 and Haiku 4.5 are flagged supportsXHighEffort:false in the registry.
+  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-haiku-5.5"), ["low", "medium", "high"]);
+  assert.deepEqual(claudeEffortLevelsFor("claude", "claude-haiku-5.5"), ["low", "medium", "high"]);
 });
 
 // ── appendClaudeEffortVariants ───────────────────────────────────────────────
 
 test("appends effort variant ids + names for eligible models only", () => {
-  const out = appendClaudeEffortVariants([mk("claude/claude-fable-5"), mk("codex/gpt-5.5")]);
+  const out = appendClaudeEffortVariants([mk("claude/claude-opus-5.5"), mk("codex/gpt-5.6")]);
   const ids = out.map((m) => m.id);
   assert.deepEqual(ids, [
-    "claude/claude-fable-5",
-    "codex/gpt-5.5",
-    "claude/claude-fable-5-low",
-    "claude/claude-fable-5-medium",
-    "claude/claude-fable-5-high",
-    "claude/claude-fable-5-xhigh",
+    "claude/claude-opus-5.5",
+    "codex/gpt-5.6",
+    "claude/claude-opus-5.5-low",
+    "claude/claude-opus-5.5-medium",
+    "claude/claude-opus-5.5-high",
+    "claude/claude-opus-5.5-xhigh",
   ]);
-  const high = out.find((m) => m.id === "claude/claude-fable-5-high");
-  assert.equal(high?.name, "claude-fable-5 (High)");
+  const high = out.find((m) => m.id === "claude/claude-opus-5.5-high");
+  assert.equal(high?.name, "claude-opus-5.5 (High)");
   // root stays unprefixed — the provider-scoped models route serves it verbatim.
-  assert.equal(high?.root, "claude-fable-5-high");
+  assert.equal(high?.root, "claude-opus-5.5-high");
 });
 
 test("normalizes the provider prefix (cc → claude) when a canonical map is given", () => {
-  const out = appendClaudeEffortVariants([mk("cc/claude-fable-5")], { cc: "claude" });
+  const out = appendClaudeEffortVariants([mk("cc/claude-opus-5.5")], { cc: "claude" });
   const variantIds = out.map((m) => m.id).filter((id) => /-(low|medium|high|xhigh)$/.test(id));
   assert.deepEqual(variantIds, [
-    "claude/claude-fable-5-low",
-    "claude/claude-fable-5-medium",
-    "claude/claude-fable-5-high",
-    "claude/claude-fable-5-xhigh",
+    "claude/claude-opus-5.5-low",
+    "claude/claude-opus-5.5-medium",
+    "claude/claude-opus-5.5-high",
+    "claude/claude-opus-5.5-xhigh",
   ]);
 });
 
 test("returns the original array reference when nothing is eligible", () => {
-  const input = [mk("codex/gpt-5.5"), mk("gemini-cli/gemini-3.1-pro-preview")];
+  const input = [mk("codex/gpt-5.6"), mk("gemini-cli/gemini-4-argon")];
   const out = appendClaudeEffortVariants(input);
   assert.equal(out, input);
 });
 
 test("never generates variants-of-variants when the list already contains effort ids", () => {
   // The catalog calls this once, but even if suffixed ids are already present they
-  // must be skipped — no `claude/claude-fable-5-high-high` etc.
-  const withVariants = appendClaudeEffortVariants([mk("claude/claude-fable-5")]);
+  // must be skipped — no `claude/claude-opus-5.5-high-high` etc.
+  const withVariants = appendClaudeEffortVariants([mk("claude/claude-opus-5.5")]);
   const again = appendClaudeEffortVariants(withVariants);
   const doubleSuffixed = again
     .map((m) => m.id)
@@ -177,7 +173,7 @@ test("CLAUDE_EFFORT_SUFFIX_RE stays in sync across claudeEffortVariants/noThinki
   // `thinking:{type:"disabled"}` — satisfies every module's registry-lookup
   // gate identically, so any behavioral difference below is attributable only
   // to the effort-suffix regex, not to some other per-module gating rule.
-  const BASE = "claude-opus-4-5";
+  const BASE = "claude-haiku-5.5";
   const EFFORT_SUFFIXES = ["-low", "-medium", "-high", "-xhigh", "-XHIGH"];
   // Trailing tokens that look suffix-like but must NOT match the regex
   // (anchored to exactly low/medium/high/xhigh at end-of-string).
@@ -217,7 +213,7 @@ test("CLAUDE_EFFORT_SUFFIX_RE stays in sync across claudeEffortVariants/noThinki
   // Suffix-like-but-non-matching trailing tokens must NOT be excluded by the
   // regex. This isolates the regex's specificity (exactly xhigh/high/medium/low)
   // from the models-registry prefix-matching gate: `getCanonicalModelSpecId`
-  // resolves "claude-opus-4-5-max" back to the "claude-opus-4-5" spec via its
+  // resolves "claude-haiku-5.5-max" back to the "claude-haiku-5.5" spec via its
   // prefix-match fallback, so `shouldExposeClaudeEffortVariants` /
   // `shouldExposeNoThinkingAlias` still pass their registry-lookup gate here —
   // any exclusion left could only come from the suffix regex, and there is none.

@@ -12,14 +12,9 @@
  * `claudeCodeCompatible.ts` (the `[1m]`-suffix path) share one source of truth
  * without importing each other.
  */
-export const CONTEXT_1M_SUPPORTED_MODELS = [
-  "claude-fable-5",
-  "claude-sonnet-5",
-  "claude-sonnet-4-6",
-  "claude-opus-4-8",
-  "claude-opus-4-7",
-  "claude-opus-4-6",
-] as const;
+// 2026-11-20 generation cleanup: only the 5.5 generation is kept. Opus 5.5 has
+// native 1M (see CONTEXT_1M_NATIVE_MODELS); these two need the legacy beta.
+export const CONTEXT_1M_SUPPORTED_MODELS = ["claude-sonnet-5.5", "claude-haiku-5.5"] as const;
 
 /**
  * True when the (resolved upstream) model qualifies for the long-context beta.

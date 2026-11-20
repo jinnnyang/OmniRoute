@@ -16,38 +16,6 @@ import type { RegistryEntry, RegistryModel } from "../../../shared.ts";
  */
 export const VOLCENGINE_AGENT_PLAN_MODELS: RegistryModel[] = [
   {
-    id: "doubao-seed-2.0-lite",
-    name: "Doubao Seed 2.0 Lite (Agent Plan)",
-    contextLength: 262144,
-    toolCalling: true,
-    supportsVision: true,
-    supportsReasoning: true,
-  },
-  {
-    id: "doubao-seed-2.0-mini",
-    name: "Doubao Seed 2.0 Mini (Agent Plan)",
-    contextLength: 262144,
-    toolCalling: true,
-    supportsVision: true,
-    supportsReasoning: true,
-  },
-  {
-    id: "kimi-k2.7-code",
-    name: "Kimi K2.7 Code (Agent Plan)",
-    contextLength: 1048576,
-    toolCalling: true,
-    supportsVision: true,
-    supportsReasoning: true,
-  },
-  {
-    id: "minimax-m3",
-    name: "MiniMax M3 (Agent Plan)",
-    contextLength: 1048576,
-    toolCalling: true,
-    supportsVision: true,
-    supportsReasoning: true,
-  },
-  {
     id: "doubao-seed-evolving",
     name: "Doubao Seed Evolving (Agent Plan)",
     contextLength: 1048576,
@@ -72,13 +40,6 @@ export const VOLCENGINE_AGENT_PLAN_MODELS: RegistryModel[] = [
     supportsReasoning: true,
   },
   {
-    id: "deepseek-v4-flash",
-    name: "DeepSeek V4 Flash (Agent Plan)",
-    contextLength: 1048576,
-    toolCalling: true,
-    supportsReasoning: true,
-  },
-  {
     id: "glm-5.3",
     name: "GLM 5.3 (Agent Plan)",
     contextLength: 1048576,
@@ -90,18 +51,26 @@ export const VOLCENGINE_AGENT_PLAN_MODELS: RegistryModel[] = [
     supportsReasoning: true,
   },
   {
-    id: "deepseek-v4-pro",
-    name: "DeepSeek V4 Pro (Agent Plan)",
-    contextLength: 1048576,
-    toolCalling: true,
-    supportsReasoning: true,
-  },
-  {
     id: "glm-5.3-flash",
     name: "GLM 5.3 Flash (Agent Plan)",
     contextLength: 1048576,
     toolCalling: true,
     supportsVision: true,
+    supportsReasoning: true,
+  },
+  {
+    id: "deepseek-v4.1-flash",
+    name: "DeepSeek V4.1 Flash (Agent Plan)",
+    aliases: ["deepseek-v4-1-flash"],
+    contextLength: 1048576,
+    toolCalling: true,
+    supportsReasoning: true,
+  },
+  {
+    id: "deepseek-v4-1-flash-economy-261017",
+    name: "DeepSeek V4.1 Flash Economy (Agent Plan)",
+    contextLength: 1048576,
+    toolCalling: true,
     supportsReasoning: true,
   },
 ];

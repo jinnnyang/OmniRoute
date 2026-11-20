@@ -1,11 +1,11 @@
 /**
- * OpenCode Go model catalog alignment with the official Go docs.
+ * OpenCode Go model catalog after the 2026-11-20 generation cleanup.
  *
- * Port of decolua/9router 8efacc114 (thanks @nguyenha935): the official Go API
- * advertises `glm-5.2` and routes Kimi chat traffic through `kimi-k2.7-code`
- * (the live API rejects the plain `kimi-k2.7` alias for `/chat/completions`
- * even though the public docs example uses it). OmniRoute previously shipped
- * the older registry without these IDs.
+ * Only the current generation is advertised (GLM-5.3 / Kimi K3 / DeepSeek V4.1 /
+ * Claude 5.5 / MiniMax M3.1 / Qwen3.8). The previously ported decolua/9router
+ * alignment (glm-5.2, kimi-k2.7-code) is intentionally retired: those rows were
+ * previous-generation ids and their windows (200K provider default) were wrong
+ * for the models users actually route today.
  */
 
 import test from "node:test";
@@ -19,38 +19,73 @@ function modelIds(): string[] {
   return (opencode_goProvider.models ?? []).map((m) => m.id);
 }
 
-const DEPRECATED_MIMO_V2_MODELS = ["mimo-v2-pro", "mimo-v2-omni"];
-
-test("opencode-go advertises glm-5.2 (official Go endpoint addition)", () => {
-  assert.ok(
-    modelIds().includes("glm-5.2"),
-    `expected glm-5.2 in opencode-go catalog, got: ${modelIds().join(", ")}`
-  );
-});
-
-test("opencode-go advertises kimi-k2.7-code (live API rejects plain kimi-k2.7 for chat)", () => {
-  assert.ok(
-    modelIds().includes("kimi-k2.7-code"),
-    `expected kimi-k2.7-code in opencode-go catalog, got: ${modelIds().join(", ")}`
-  );
-});
-
-test("opencode-go does not advertise deprecated MiMo V2 models", () => {
+test("opencode-go advertises the current generation only", () => {
   const ids = modelIds();
-  for (const modelId of DEPRECATED_MIMO_V2_MODELS) {
-    assert.ok(!ids.includes(modelId), `${modelId} is deprecated`);
+  for (const current of [
+    "glm-5.3",
+    "glm-5.3-flash",
+    "kimi-k3",
+    "deepseek-v4.1-flash",
+    "claude-haiku-5-5",
+    "minimax-m3.1-flash",
+    "qwen3.8-max",
+    "grok-4.6",
+  ]) {
+    assert.ok(
+      ids.includes(current),
+      `expected ${current} in opencode-go catalog, got: ${ids.join(", ")}`
+    );
+  }
+  for (const retired of [
+    "glm-5.2",
+    "glm-5.2-high",
+    "glm-5.2-max",
+    "glm-5.1",
+    "glm-5",
+    "kimi-k2.6",
+    "kimi-k2.5",
+    "kimi-k2.7-code",
+    "mimo-v2.5",
+    "mimo-v2.5-pro",
+    "mimo-v2-pro",
+    "minimax-m3",
+    "minimax-m2.7",
+    "minimax-m2.5",
+    "qwen3.7-max",
+    "qwen3.7-plus",
+    "qwen3.6-plus",
+    "qwen3.5-plus",
+    "grok-4.5",
+    "deepseek-v4-pro",
+    "deepseek-v4-flash",
+  ]) {
+    assert.ok(!ids.includes(retired), `${retired} is previous-generation and must be gone`);
   }
 });
 
-test("opencode-go preserves the pre-existing minimax-m3 and qwen routing via targetFormat=claude", () => {
+test("opencode-go keeps the /messages routing for minimax and qwen", () => {
   // Routing through the /messages endpoint is OmniRoute's declarative
-  // equivalent of upstream's MESSAGES_FORMAT_MODELS set; the alignment
-  // change must not regress this.
+  // equivalent of upstream's MESSAGES_FORMAT_MODELS set.
   const byId = new Map(
     (opencode_goProvider.models ?? []).map((m) => [m.id, m as Record<string, unknown>])
   );
-  assert.equal(byId.get("minimax-m3")?.targetFormat, "claude");
-  assert.equal(byId.get("qwen3.7-max")?.targetFormat, "claude");
+  assert.equal(byId.get("minimax-m3.1-flash")?.targetFormat, "claude");
+  assert.equal(byId.get("qwen3.8-max")?.targetFormat, "claude");
+});
+
+test("opencode-go current models resolve 1M windows (regression #context-gate)", () => {
+  for (const modelId of ["glm-5.3", "glm-5.3-flash", "deepseek-v4.1-flash", "claude-haiku-5-5"]) {
+    assert.equal(
+      getResolvedModelCapabilities(`opencode-go/${modelId}`).contextWindow,
+      1000000,
+      `${modelId} should resolve a 1M context window`
+    );
+  }
+  assert.equal(
+    getResolvedModelCapabilities("opencode-go/minimax-m3.1-flash").contextWindow,
+    1048576
+  );
+  assert.equal(getResolvedModelCapabilities("opencode-go/grok-4.6").contextWindow, 500000);
 });
 
 test("opencode-go hy3 variants expose their context window to combo compatibility filtering", () => {
