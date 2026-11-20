@@ -1,11 +1,11 @@
 /**
- * OpenCode Go model catalog after the 2026-11-20 generation cleanup.
+ * OpenCode Go model catalog after the 2026-11-20 generation update.
  *
- * Only the current generation is advertised (GLM-5.3 / Kimi K3 / DeepSeek V4.1 /
- * Claude 5.5 / MiniMax M3.1 / Qwen3.8). The previously ported decolua/9router
- * alignment (glm-5.2, kimi-k2.7-code) is intentionally retired: those rows were
- * previous-generation ids and their windows (200K provider default) were wrong
- * for the models users actually route today.
+ * Policy: the catalog is additive. Rows the upstream still serves stay (the
+ * shipped catalog must stay truthful, and dropping them re-introduces the 128K
+ * fallback this PR fixes), and the routed current generation is declared on top
+ * with its real windows (GLM-5.3 / Kimi K3 / DeepSeek V4.1 / Claude 5.5 /
+ * MiniMax M3.1 / Qwen3.8 / Grok 4.6).
  */
 
 import test from "node:test";
@@ -35,31 +35,6 @@ test("opencode-go advertises the current generation only", () => {
       ids.includes(current),
       `expected ${current} in opencode-go catalog, got: ${ids.join(", ")}`
     );
-  }
-  for (const retired of [
-    "glm-5.2",
-    "glm-5.2-high",
-    "glm-5.2-max",
-    "glm-5.1",
-    "glm-5",
-    "kimi-k2.6",
-    "kimi-k2.5",
-    "kimi-k2.7-code",
-    "mimo-v2.5",
-    "mimo-v2.5-pro",
-    "mimo-v2-pro",
-    "minimax-m3",
-    "minimax-m2.7",
-    "minimax-m2.5",
-    "qwen3.7-max",
-    "qwen3.7-plus",
-    "qwen3.6-plus",
-    "qwen3.5-plus",
-    "grok-4.5",
-    "deepseek-v4-pro",
-    "deepseek-v4-flash",
-  ]) {
-    assert.ok(!ids.includes(retired), `${retired} is previous-generation and must be gone`);
   }
 });
 

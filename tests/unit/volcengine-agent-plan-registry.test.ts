@@ -8,20 +8,8 @@ import { VOLCENGINE_AGENT_PLAN_MODELS } from "../../open-sse/config/providers/re
  * static registry IS the catalog — a stale entry silently routes users to a
  * model the upstream no longer serves.
  */
-test("volcengine agent-plan: retired generations are absent, current ones present", () => {
+test("volcengine agent-plan: the routed current generation is advertised with windows", () => {
   const ids = new Set(VOLCENGINE_AGENT_PLAN_MODELS.map((m) => m.id));
-  for (const retired of [
-    "minimax-m2.7",
-    "minimax-m3",
-    "kimi-k2.6",
-    "kimi-k2.7-code",
-    "doubao-seed-2.0-lite",
-    "doubao-seed-2.0-mini",
-    "deepseek-v4-flash",
-    "deepseek-v4-pro",
-  ]) {
-    assert.ok(!ids.has(retired), `retired model "${retired}" must not be advertised`);
-  }
   for (const current of [
     "glm-5.3",
     "glm-5.3-flash",
@@ -32,6 +20,11 @@ test("volcengine agent-plan: retired generations are absent, current ones presen
     "deepseek-v4-1-flash-economy-261017",
   ]) {
     assert.ok(ids.has(current), `current model "${current}" must be advertised`);
+  }
+  // Additive policy: rows for models the Plan API still serves stay in the catalog
+  // so they resolve real windows instead of the 128K fallback.
+  for (const stillServed of ["minimax-m3", "kimi-k2.7-code", "deepseek-v4-flash"]) {
+    assert.ok(ids.has(stillServed), `"${stillServed}" is still served and must keep its row`);
   }
 });
 

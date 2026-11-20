@@ -105,6 +105,12 @@ export const opencode_zenProvider: RegistryEntry = {
     // ── MiniMax ────────────────────────────────────────────────
     // #3110: MiniMax M3 — frontier coding model with 1M context
     { id: "minimax-m3", name: "MiniMax M3", contextLength: 1048576, supportsVision: true },
+    {
+      id: "minimax-m3.1-flash",
+      name: "MiniMax M3.1 Flash",
+      contextLength: 1048576,
+      supportsVision: true,
+    },
 
     // ── Kimi / Moonshot ────────────────────────────────────────
     { id: "kimi-k3", name: "Kimi K3", supportsReasoning: true, supportedThinkingEfforts: ["max"] },

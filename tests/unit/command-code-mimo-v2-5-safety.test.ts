@@ -30,7 +30,9 @@ for (const [modelId, expected] of MIMO_V26_CASES) {
   });
 }
 
-test("retired MiMo V2.5 specs are gone", () => {
+test("retired MiMo V2.5 ids keep their capability rows", () => {
+  // Additive policy: providers still serving these ids must resolve their real
+  // windows/flags instead of the 128K heuristic fallback.
   for (const retired of [
     "mimo-v2.5",
     "mimo-v2.5-pro",
@@ -38,8 +40,10 @@ test("retired MiMo V2.5 specs are gone", () => {
     "mimo-v2-omni",
     "mimo-v2-flash",
   ]) {
-    assert.equal(MODEL_SPECS[retired], undefined, `${retired} must be deleted from MODEL_SPECS`);
+    assert.equal(typeof MODEL_SPECS[retired], "object", `${retired} must keep a spec row`);
   }
+  assert.equal(MODEL_SPECS["mimo-v2.5"].supportsVision, true);
+  assert.equal(MODEL_SPECS["mimo-v2-pro"].supportsVision, false);
 });
 
 test("mimo-vl fragment heuristic still detects vision ids", () => {

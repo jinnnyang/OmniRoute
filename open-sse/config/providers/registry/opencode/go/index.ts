@@ -14,44 +14,54 @@ export const opencode_goProvider: RegistryEntry = {
   authPrefix: "Bearer",
   defaultContextLength: 200000,
   models: [
-    // 2026-11-20 generation cleanup: only the current generation is kept
-    // (GLM-5.3 / Kimi K3 / DeepSeek V4.1 / Claude 5.5 / MiniMax M3.1 / Qwen3.8).
-    // GLM-5.3 — base model + effort-tier aliases (#6922).
+    // Port from decolua/9router 8efacc11: align with official Go endpoints —
+    // glm-5.2 is now advertised and Kimi chat traffic must route through
+    // `kimi-k2.7-code` (the live API rejects the plain `kimi-k2.7` alias for
+    // `/chat/completions`, even though the docs config example uses it).
+    // GLM-5.2 — base model + effort-tier aliases (#6922).
     // #10788: the tier vocabulary is declared on the base row so the catalog's
     // variant synthesis (#9485) and the effort sanitizer share one source of
     // truth with OpencodeExecutor's EFFORT_TIERS.
     {
-      id: "glm-5.3",
-      name: "GLM-5.3",
-      contextLength: 1000000,
+      id: "glm-5.2",
+      name: "GLM-5.2",
       supportsReasoning: true,
       supportedThinkingEfforts: ["high", "max"],
     },
-    {
-      id: "glm-5.3-flash",
-      name: "GLM-5.3 Flash",
-      contextLength: 1000000,
-      supportsReasoning: true,
-      supportsVision: true,
-    },
+    { id: "glm-5.2-high", name: "GLM-5.2 (high effort)", supportsReasoning: true },
+    { id: "glm-5.2-max", name: "GLM-5.2 (max effort)", supportsReasoning: true },
 
     ...OPENCODE_ZEN_GO_SHARED_MODELS,
-    // models[0] (glm-5.3) is the dashboard default (LlmChatCard/ProviderTestSlideOver take models[0]).
+    // models[0] (glm-5.2) is the dashboard default (LlmChatCard/ProviderTestSlideOver take models[0]).
 
+    { id: "glm-5.1", name: "GLM-5.1" },
+    { id: "glm-5", name: "GLM-5" },
+    // kimi-k2.7-code declared identically on opencode-zen — see OPENCODE_ZEN_GO_SHARED_MODELS.
+    { id: "kimi-k2.6", name: "Kimi K2.6" },
+    { id: "kimi-k2.5", name: "Kimi K2.5" },
     // #8353: Kimi K3 base + max-effort alias from the OpenCode Go registry.
     { id: "kimi-k3", name: "Kimi K3", supportsReasoning: true, supportedThinkingEfforts: ["max"] },
     { id: "kimi-k3-max", name: "Kimi K3 (max effort)", supportsReasoning: true },
-    // MiMo V2.6 is the kept MiMo generation (V2.5 rows retired 2026-11-20).
-    { id: "mimo-v2.6-flash", name: "MiMo V2.6 Flash", contextLength: 1048576 },
-    { id: "mimo-v2.6-pro", name: "MiMo V2.6 Pro", contextLength: 1048576 },
-    // #3110: MiniMax M3.1 Flash via OpenCode Go tier (M3 retired 2026-11-20)
+    // MiMo-V2.5 — base model + effort-tier aliases (#6922).
+    { id: "mimo-v2.5-pro", name: "MiMo-V2.5-Pro", supportsReasoning: true },
     {
-      id: "minimax-m3.1-flash",
-      name: "MiniMax M3.1 Flash",
+      id: "mimo-v2.5",
+      name: "MiMo-V2.5",
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["high", "max"],
+    },
+    { id: "mimo-v2.5-high", name: "MiMo-V2.5 (high effort)", supportsReasoning: true },
+    { id: "mimo-v2.5-max", name: "MiMo-V2.5 (max effort)", supportsReasoning: true },
+    // #3110: MiniMax M3 via OpenCode Go tier
+    {
+      id: "minimax-m3",
+      name: "MiniMax M3",
       targetFormat: "claude",
       contextLength: 1048576,
       supportsVision: true,
     },
+    { id: "minimax-m2.7", name: "MiniMax M2.7", targetFormat: "claude" },
+    { id: "minimax-m2.5", name: "MiniMax M2.5", targetFormat: "claude" },
     // Issue #2292: Qwen models on opencode-go reject oa-compat format
     // ("Model qwen3.x-* is not supported for format oa-compat") — same
     // upstream behavior already declared for opencode-zen. Route them
@@ -59,21 +69,64 @@ export const opencode_goProvider: RegistryEntry = {
     // Issue #2822: These models are text-only — mark supportsVision: false
     // so combo routing skips them when the request contains image blocks,
     // preventing image content from reaching a vision-incapable upstream.
-    // 2026-11-20 generation cleanup: Qwen3.8 only (3.5/3.6/3.7 retired).
+    // #8353: effort-tier aliases from the OpenCode Go registry.
     {
-      id: "qwen3.8-max",
-      name: "Qwen3.8 Max",
+      id: "qwen3.7-max",
+      name: "Qwen3.7 Max",
       targetFormat: "claude",
-      contextLength: 1000000,
       supportsVision: false,
       supportsReasoning: true,
       supportedThinkingEfforts: ["high", "max"],
     },
     {
-      id: "qwen3.8-flash",
-      name: "Qwen3.8 Flash",
+      id: "qwen3.7-max-high",
+      name: "Qwen3.7 Max (high effort)",
       targetFormat: "claude",
-      contextLength: 1000000,
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    {
+      id: "qwen3.7-max-max",
+      name: "Qwen3.7 Max (max effort)",
+      targetFormat: "claude",
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    {
+      id: "qwen3.7-plus",
+      name: "Qwen3.7 Plus",
+      targetFormat: "claude",
+      supportsVision: false,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["high", "max"],
+    },
+    {
+      id: "qwen3.7-plus-high",
+      name: "Qwen3.7 Plus (high effort)",
+      targetFormat: "claude",
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    {
+      id: "qwen3.7-plus-max",
+      name: "Qwen3.7 Plus (max effort)",
+      targetFormat: "claude",
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    // qwen3.6-plus / qwen3.5-plus base ids declared identically on opencode-zen — see
+    // OPENCODE_ZEN_GO_SHARED_MODELS.
+    {
+      id: "qwen3.6-plus-high",
+      name: "Qwen3.6 Plus (high effort)",
+      targetFormat: "claude",
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    {
+      id: "qwen3.6-plus-max",
+      name: "Qwen3.6 Plus (max effort)",
+      targetFormat: "claude",
       supportsVision: false,
       supportsReasoning: true,
     },
@@ -173,31 +226,29 @@ export const opencode_goProvider: RegistryEntry = {
       supportsVideo: true,
       targetFormat: "openai-responses",
     },
-    // 2026-11-20: Grok 4.6 is the current tier (4.5 retired). 500K context.
+    // #8353: Grok 4.5 + effort tiers from the OpenCode Go registry.
     {
-      id: "grok-4.6",
-      name: "Grok 4.6",
-      contextLength: 500000,
+      id: "grok-4.5",
+      name: "Grok 4.5",
       supportsReasoning: true,
       supportedThinkingEfforts: ["low", "medium", "high"],
     },
+    { id: "grok-4.5-low", name: "Grok 4.5 (low effort)", supportsReasoning: true },
+    { id: "grok-4.5-medium", name: "Grok 4.5 (medium effort)", supportsReasoning: true },
+    { id: "grok-4.5-high", name: "Grok 4.5 (high effort)", supportsReasoning: true },
     {
-      id: "deepseek-v4.1-flash",
-      name: "DeepSeek V4.1 Flash",
-      contextLength: 1000000,
+      id: "deepseek-v4-pro",
+      name: "DeepSeek V4 Pro",
       supportsReasoning: true,
       supportedThinkingEfforts: ["none", "low", "high", "max"],
       targetFormat: "openai-responses",
     },
-    // Claude 5.5 (the only Claude generation kept, 2026-11-20): the Go tier
-    // serves the dashed wire id; the shared spec covers the dotted spelling.
     {
-      id: "claude-haiku-5-5",
-      name: "Claude Haiku 5.5",
-      contextLength: 1000000,
-      maxOutputTokens: 64000,
+      id: "deepseek-v4-flash",
+      name: "DeepSeek V4 Flash",
       supportsReasoning: true,
-      supportsVision: true,
+      supportedThinkingEfforts: ["none", "low", "high", "max"],
+      targetFormat: "openai-responses",
     },
     // Console Go free GLM-tier model (live-verified 2026-08-23): the upstream
     // rejects every reasoning_effort outside {low, high, max} whenever tools
@@ -212,5 +263,72 @@ export const opencode_goProvider: RegistryEntry = {
       supportsReasoning: true,
       supportedThinkingEfforts: ["low", "high", "max"],
     },
+
+    // ── Added 2026-11-20: routed current generation, windows pinned ──
+    // (rows above stay for the shipped catalog; these carry the real 1M
+    // windows so combo targets resolve correctly at the request gate)
+    {
+      id: "glm-5.3",
+      name: "GLM-5.3",
+      contextLength: 1000000,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["high", "max"],
+    },
+    {
+      id: "glm-5.3-flash",
+      name: "GLM-5.3 Flash",
+      contextLength: 1000000,
+      supportsReasoning: true,
+      supportsVision: true,
+    },
+    {
+      id: "deepseek-v4.1-flash",
+      name: "DeepSeek V4.1 Flash",
+      contextLength: 1000000,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["none", "low", "high", "max"],
+      targetFormat: "openai-responses",
+    },
+    {
+      id: "claude-haiku-5-5",
+      name: "Claude Haiku 5.5",
+      contextLength: 1000000,
+      maxOutputTokens: 64000,
+      supportsReasoning: true,
+      supportsVision: true,
+    },
+    {
+      id: "minimax-m3.1-flash",
+      name: "MiniMax M3.1 Flash",
+      targetFormat: "claude",
+      contextLength: 1048576,
+      supportsVision: true,
+    },
+    {
+      id: "qwen3.8-max",
+      name: "Qwen3.8 Max",
+      targetFormat: "claude",
+      contextLength: 1000000,
+      supportsVision: false,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["high", "max"],
+    },
+    {
+      id: "qwen3.8-flash",
+      name: "Qwen3.8 Flash",
+      targetFormat: "claude",
+      contextLength: 1000000,
+      supportsVision: false,
+      supportsReasoning: true,
+    },
+    {
+      id: "grok-4.6",
+      name: "Grok 4.6",
+      contextLength: 500000,
+      supportsReasoning: true,
+      supportedThinkingEfforts: ["low", "medium", "high"],
+    },
+    { id: "mimo-v2.6-flash", name: "MiMo V2.6 Flash", contextLength: 1048576 },
+    { id: "mimo-v2.6-pro", name: "MiMo V2.6 Pro", contextLength: 1048576 },
   ],
 };

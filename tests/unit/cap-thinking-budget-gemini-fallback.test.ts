@@ -74,7 +74,6 @@ test("learned caps are scoped per provider+model (no cross-contamination)", () =
   assert.equal(capThinkingBudget("vertex/gemini-2.5-pro", 131072), 32768);
   // The native-gemini provider key is independent too.
   assert.equal(capThinkingBudget("gemini/gemini-2.5-pro", 131072), 32768);
-  // A different model on the same provider keeps its own (fallback) cap — the
-  // retired gemini-2.5-flash spec is gone, so the gemini-substring fallback applies.
-  assert.equal(capThinkingBudget("openrouter/gemini-2.5-flash", 131072), 32768);
+  // A different model on the same provider keeps its own (registry) cap.
+  assert.equal(capThinkingBudget("openrouter/gemini-2.5-flash", 131072), 24576);
 });

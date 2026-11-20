@@ -82,11 +82,13 @@ test("T38: modelSpecs exposes centralized helpers with alias and prefix lookup",
   assert.equal(getModelSpec("mimo-v2.6-flash").supportsVision, true);
 });
 
-test("T38: MiMo V2.6 is the only kept MiMo generation (native multimodal)", () => {
+test("T38: MiMo vision flags stay correct per generation (additive policy)", () => {
   assert.equal(MODEL_SPECS["mimo-v2.6-pro"].supportsVision, true);
   assert.equal(MODEL_SPECS["mimo-v2.6-flash"].supportsVision, true);
-  assert.equal(MODEL_SPECS["mimo-v2.5"], undefined);
-  assert.equal(MODEL_SPECS["mimo-v2-pro"], undefined);
+  // Legacy rows stay for providers that still serve them; the *-pro chat models
+  // remain text-only (models.dev mislabels them, hermes-agent#18884).
+  assert.equal(MODEL_SPECS["mimo-v2.5"].supportsVision, true);
+  assert.equal(MODEL_SPECS["mimo-v2-pro"].supportsVision, false);
 });
 
 test("opencode-go family: current-generation specs match upstream docs", () => {
@@ -120,20 +122,23 @@ test("opencode-go family: current-generation specs match upstream docs", () => {
   assert.equal(getModelSpec("hy3-preview").contextWindow, 262144);
   assert.equal(getModelSpec("hy3-preview").maxOutputTokens, 262144);
 
-  // Retired generations no longer resolve a static spec (2026-11-20 cleanup).
-  for (const retired of [
+  // Additive policy (2026-11-20): spec rows for models providers still serve are
+  // kept so they resolve real windows instead of the 128K fallback.
+  for (const stillServed of [
     "glm-5.2",
-    "glm-5",
     "claude-opus-4-5",
     "claude-sonnet-5",
     "kimi-k2.6",
     "minimax-m3",
     "deepseek-v4-flash",
     "deepseek-v4-pro",
-    "qwen3.7-max",
     "mimo-v2.5",
   ]) {
-    assert.equal(MODEL_SPECS[retired], undefined, `${retired} must be deleted from MODEL_SPECS`);
+    assert.equal(
+      typeof MODEL_SPECS[stillServed],
+      "object",
+      `${stillServed} must keep a spec row (capability knowledge for providers that still serve it)`
+    );
   }
 });
 
