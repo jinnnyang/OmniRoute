@@ -218,10 +218,35 @@ jobs:
       # accepted ones stay visible instead of turning the job permanently red.
       - run: node scripts/quality/osv-ratchet.mjs
 
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+      # No `npm ci`: these three checks are pure filesystem/grep work (~4 s total), and the
+      # docs drift they catch does not depend on installed packages.
+      #
+      # Why it belongs in the gate: check-docs-counts-sync is STRICT but only ran in the
+      # upstream `quality.yml`, which triggers on `release/**` — so `less` could carry a stale
+      # "160 migrations" claim indefinitely (fork issue #5, fixed by hand in PR #35). A check
+      # that nobody runs is the same as no check.
+      - name: Docs counts are in sync with the code (STRICT)
+        run: node scripts/check/check-docs-counts-sync.mjs
+      - name: Internal doc links resolve
+        run: node scripts/check/check-doc-links.mjs
+      - name: ENV / docs contract is in sync
+        run: node scripts/check/check-env-doc-sync.mjs
+
   gate:
     name: Gate / less-ci
     if: always()
-    needs: [lint, unit, build, image, guards, osv]
+    needs: [lint, unit, build, image, guards, osv, docs]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -234,3 +259,4 @@ jobs:
           test "${{ needs.guards.result }}" = "success"
           test "${{ needs.image.result }}" = "success"
           test "${{ needs.osv.result }}" = "success"
+          test "${{ needs.docs.result }}" = "success"
