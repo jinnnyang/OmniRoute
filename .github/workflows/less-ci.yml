@@ -197,18 +197,40 @@ jobs:
       # acceptance criteria and start passing when the fix lands.
       - run: npm run test:incident-guards
 
+  osv:
+    name: osv-ratchet
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+      # No `npm ci` on purpose: the ratchet only reads package-lock.json and queries
+      # api.osv.dev, so this job costs seconds instead of minutes.
+      #
+      # Accepted advisories live in config/quality/osv-baseline.json. That set is 12 findings
+      # / 8 advisories, all dev-only, each needing a major bump through dev tooling (glob 14,
+      # minimatch 11, simple-git 4, @azure/msal-node 7). The gate fails only on advisories
+      # outside that set — so a dependency picking up something new is caught, while the
+      # accepted ones stay visible instead of turning the job permanently red.
+      - run: node scripts/quality/osv-ratchet.mjs
+
   gate:
     name: Gate / less-ci
     if: always()
-    needs: [lint, unit, build, image, guards]
+    needs: [lint, unit, build, image, guards, osv]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Fail unless every required job succeeded
         run: |
-          echo "lint=${{ needs.lint.result }} unit=${{ needs.unit.result }} build=${{ needs.build.result }} image=${{ needs.image.result }}"
+          echo "lint=${{ needs.lint.result }} unit=${{ needs.unit.result }} build=${{ needs.build.result }} image=${{ needs.image.result }} guards=${{ needs.guards.result }} osv=${{ needs.osv.result }}"
           test "${{ needs.lint.result }}" = "success"
           test "${{ needs.unit.result }}" = "success"
           test "${{ needs.build.result }}" = "success"
           test "${{ needs.guards.result }}" = "success"
           test "${{ needs.image.result }}" = "success"
+          test "${{ needs.osv.result }}" = "success"
