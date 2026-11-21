@@ -218,6 +218,20 @@ const IGNORE_FROM_CODE = new Set([
   // Test-only override: points setup-open-code.mjs at a fixture plugin dir without
   // requiring the real bundled plugin to be built.
   "OMNIROUTE_OPENCODE_PLUGIN_DIR",
+  // Test / ad-hoc-script credentials and knobs. None of these are product configuration:
+  // they are read by live-smoke harnesses (scripts/test/ark-live-smoke.mjs,
+  // tests/integration/combo-live/_liveHarness.ts), ad-hoc probes (scripts/ad-hoc/), or the
+  // CLI's manual model probe, and every one of them is supplied by the caller's shell.
+  "ARK_BASE",
+  "ARK_KEY",
+  "ARK_MODEL",
+  "OMNIROUTE_TEST_ARK_API_KEY",
+  "OMNIROUTE_TEST_ARK_BASE",
+  "OMNIROUTE_TEST_ARK_MODEL",
+  "DASHBOARD_PASSWORD",
+  "MOCK_PORT",
+  "TEST_MODEL",
+  "TEST_MSG",
 ]);
 
 // Vars documented in ENVIRONMENT.md but intentionally absent from .env.example.
