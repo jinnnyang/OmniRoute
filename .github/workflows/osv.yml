@@ -1,57 +1,43 @@
 name: osv-scan
 
-# Dependency vulnerability scan for the branch that actually ships.
+# Weekly dependency drift check for `less`.
 #
-# Why this file exists: `npm audit` is unusable here (the local setup points at
-# registry.npmmirror.com, which answers [NOT_IMPLEMENTED] for the advisories endpoint), and
-# the upstream `quality.yml` never runs on `less`. osv-scanner reads package-lock.json and
-# queries OSV directly, so it works regardless of the npm registry in use.
+# The merge gate lives in less-ci.yml (`osv` job). This one exists because advisories are
+# published *after* a merge: without a scheduled run, a lockfile that was clean last week can
+# quietly become vulnerable and nobody would know until the next PR.
 #
-# Advisory on purpose: the tree already carries known findings (fork issue #3 recorded 169
-# against a baseline of 22). A hard gate today would be red forever and get ignored — the
-# ratchet comes next, once the baseline is ratified. The job still prints the counts and
-# uploads the SARIF so the number can be tracked.
+# Same ratchet script, so the accepted set comes from config/quality/osv-baseline.json and only
+# NEW advisories fail the run. `npm audit` is not usable here (the npm registry in use answers
+# [NOT_IMPLEMENTED] for the advisories endpoint), which is why the script queries api.osv.dev
+# directly with the lockfile, the same data osv-scanner uses.
 on:
-  pull_request:
-    branches: ["less"]
-  push:
-    branches: ["less"]
   schedule:
     - cron: "0 3 * * 2" # weekly, Tuesday 03:00 UTC
   workflow_dispatch:
 
 permissions:
   contents: read
-  security-events: write
 
 concurrency:
   group: osv-scan-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   scan:
-    name: osv-scanner (package-lock.json)
+    name: osv-ratchet (package-lock.json)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - name: Scan lockfile (advisory)
-        id: scan
-        continue-on-error: true
-        uses: google/osv-scanner-action/osv-scanner-action@32d3cd482bdadfb38b186c0ad1b031902d55d932 # v2.7.1
+      - uses: actions/setup-node@v7
         with:
-          scan-args: |-
-            --lockfile=./package-lock.json
-            --format=table
-      - name: Summarize
+          node-version-file: ".nvmrc"
+      - run: node scripts/quality/osv-ratchet.mjs
+      - name: Summary
         if: always()
         run: |
-          status="${{ steps.scan.outcome }}"
-          echo "osv-scanner outcome: ${status}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Advisory baseline: \`config/quality/osv-baseline.json\`" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Advisory only — see the job log for the finding table." >> "$GITHUB_STEP_SUMMARY"
-          if [ "$status" = "failure" ]; then
-            echo "::warning::osv-scanner reported known vulnerabilities in package-lock.json (advisory, not gating)"
-          fi
+          echo "Refresh after fixing or accepting findings: \`node scripts/quality/osv-ratchet.mjs --update\`" >> "$GITHUB_STEP_SUMMARY"

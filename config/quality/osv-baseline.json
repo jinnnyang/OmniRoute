@@ -1,0 +1,89 @@
+{
+  "count": 12,
+  "advisories": [
+    "GHSA-3g3m-2fjr-6pw4",
+    "GHSA-5j98-mcp5-4vw2",
+    "GHSA-858h-whjf-mvg5",
+    "GHSA-g3hv-75wg-m249",
+    "GHSA-g4wm-2vf7-vfgr",
+    "GHSA-v5rq-49vh-5v5c",
+    "GHSA-x6jw-m9v5-85vh",
+    "GHSA-xcx6-jx8p-x3h5"
+  ],
+  "findings": [
+    {
+      "package": "@azure/msal-node",
+      "version": "5.6.0",
+      "dev": true,
+      "id": "GHSA-xcx6-jx8p-x3h5"
+    },
+    {
+      "package": "@simple-git/argv-parser",
+      "version": "1.1.1",
+      "dev": true,
+      "id": "GHSA-v5rq-49vh-5v5c"
+    },
+    {
+      "package": "glob",
+      "version": "13.0.6",
+      "dev": true,
+      "id": "GHSA-3g3m-2fjr-6pw4"
+    },
+    {
+      "package": "glob",
+      "version": "13.0.7",
+      "dev": true,
+      "id": "GHSA-3g3m-2fjr-6pw4"
+    },
+    {
+      "package": "glob",
+      "version": "11.1.0",
+      "dev": true,
+      "id": "GHSA-3g3m-2fjr-6pw4"
+    },
+    {
+      "package": "glob",
+      "version": "10.4.5",
+      "dev": true,
+      "id": "GHSA-3g3m-2fjr-6pw4"
+    },
+    {
+      "package": "glob",
+      "version": "10.4.5",
+      "dev": true,
+      "id": "GHSA-5j98-mcp5-4vw2"
+    },
+    {
+      "package": "minimatch",
+      "version": "9.0.9",
+      "dev": true,
+      "id": "GHSA-g3hv-75wg-m249"
+    },
+    {
+      "package": "minimatch",
+      "version": "10.2.6",
+      "dev": true,
+      "id": "GHSA-g3hv-75wg-m249"
+    },
+    {
+      "package": "simple-git",
+      "version": "3.36.0",
+      "dev": true,
+      "id": "GHSA-858h-whjf-mvg5"
+    },
+    {
+      "package": "simple-git",
+      "version": "3.36.0",
+      "dev": true,
+      "id": "GHSA-g4wm-2vf7-vfgr"
+    },
+    {
+      "package": "simple-git",
+      "version": "3.36.0",
+      "dev": true,
+      "id": "GHSA-x6jw-m9v5-85vh"
+    }
+  ],
+  "updatedAt": "2026-11-21",
+  "note": "Known advisories in the lockfile, all dev-only. Every one of them needs a MAJOR bump through dev tooling and no top-level bump reaches it: glob 10/11/13 -> 14.0.2 (ctrf, junit-to-ctrf, make-fetch-happen, rimraf), minimatch 9/10 -> 11.0.1 (make-fetch-happen, rimraf, npmcli), simple-git 3 -> 4.0.1 and @azure/msal-node 5 -> 7.1.0 (promptfoo). Refresh with: node scripts/quality/osv-ratchet.mjs --update"
+}
