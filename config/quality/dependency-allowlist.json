@@ -1,6 +1,7 @@
 {
   "_comment": "Allowlist anti-slopsquatting (check-deps.mjs). Toda dep nova exige adicao EXPLICITA aqui apos verificar que e legitima.",
   "_justifications": {
+    "yaml": "Declared dependency (^2.9.1): imported by src/shared/constants/cliTools.ts, scripts/quality/validate-release-green.mjs and tests/unit/repro-8542.test.ts, but was never listed -- it only existed in the tree via a transitive hoist. The 2026-11-20 lockfile convergence made npm hoist the 1.x that other packages require, so `import { parse } from \"yaml\"` stopped resolving.",
     "@testing-library/dom": "Peer dep obrigatoria de @testing-library/react v16 (adicionada no PR #11224); Refs #9985.",
     "@testing-library/user-event": "Utilitario oficial do ecossistema testing-library para testes de UI (adicionada no PR #11224); Refs #9985."
   },
@@ -140,6 +141,7 @@
     "ws",
     "wtfnode",
     "xxhash-wasm",
+    "yaml",
     "yazl",
     "zod",
     "zustand"
