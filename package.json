@@ -288,8 +288,8 @@
     "dompurify": "^3.4.14",
     "fetch-socks": "^1.3.3",
     "fflate": "^0.8.3",
-    "fumadocs-core": "^16.15.0",
-    "fumadocs-ui": "^16.15.0",
+    "fumadocs-core": "16.15.0",
+    "fumadocs-ui": "16.15.0",
     "https-proxy-agent": "^9.0.0",
     "ink": "^7.0.3",
     "ink-spinner": "^5.0.0",
@@ -325,7 +325,7 @@
     "safe-regex": "^2.1.1",
     "selfsigned": "^5.5.0",
     "sharp": "^0.35.3",
-    "smol-toml": "1.8.0",
+    "smol-toml": "^1.9.1",
     "socks": "^2.8.7",
     "sql.js": "^1.14.2",
     "tailwind-merge": "^3.6.0",
@@ -338,6 +338,7 @@
     "ws": "^8.21.3",
     "xxhash-wasm": "^1.1.0",
     "yazl": "^3.3.1",
+    "yaml": "^2.9.1",
     "zod": "^4.4.3",
     "zustand": "^5.0.15"
   },
@@ -379,7 +380,7 @@
     "eslint-config-next": "16.3.2",
     "eslint-plugin-sonarjs": "^4.1.0",
     "fast-check": "^4.8.0",
-    "fumadocs-mdx": "^15.3.1",
+    "fumadocs-mdx": "15.3.1",
     "glob": "^13.0.6",
     "httpyac": "^6.16.7",
     "husky": "^9.1.7",
@@ -493,6 +494,11 @@
       "js-yaml": "^4.3.1"
     },
     "nanoid": "^3.3.17",
+    "@openai/codex-security": {
+      "smol-toml": "^1.9.1",
+      "zod": "^4.6.7"
+    },
+    "eslint-plugin-react-hooks": "7.0.1",
     "monaco-editor": {
       "dompurify": "^3.4.13"
     }
