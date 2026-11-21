@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK 引擎",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "僅顯示組合",
     "hideAllProvidersDescription": "在 /v1/models 中隱藏所有上游提供者模型，只顯示組合與 auto/*。直連被隱藏的提供者模型仍可路由。",
     "hideNoauthProviders": "隱藏免金鑰提供者",
-    "hideNoauthProvidersDescription": "從目錄中移除不需要憑證的提供者，讓共用或免金鑰端點不再出現在目錄裡。"
+    "hideNoauthProvidersDescription": "從目錄中移除不需要憑證的提供者，讓共用或免金鑰端點不再出現在目錄裡。",
+    "hideAutoCombos": "隱藏內建 auto/* 組合",
+    "hideAutoCombosDescription": "把內建的 auto/* 虛擬組合（40 多個，例如 auto/coding、auto/best-fast）從 /v1/models 中隱藏；你自己建立的組合不受影響。注意與上面相同的語意：用戶端明確送出 auto/* 仍會被路由——要徹底拒絕這些 id，請關閉零設定自動路由。"
   }
 }

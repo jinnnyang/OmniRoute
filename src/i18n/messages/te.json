@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "కాంబోలు మాత్రమే చూపించు",
     "hideAllProvidersDescription": "/v1/models నుండి అన్ని అప్‌స్ట్రీమ్ ప్రొవైడర్ మోడల్‌లను దాచి, కాంబోలు మరియు auto/* మాత్రమే చూపిస్తుంది. దాచిన మోడల్‌కు నేరుగా చేసే కాల్‌లు ఇప్పటికీ రూట్ అవుతాయి.",
     "hideNoauthProviders": "కీ లేని ప్రొవైడర్‌లను దాచు",
-    "hideNoauthProvidersDescription": "క్రెడెన్షియల్స్ అవసరం లేని ప్రొవైడర్‌లను కేటలాగ్ నుండి తొలగిస్తుంది, తద్వారా షేర్డ్ లేదా కీ లేని ఎండ్‌పాయింట్‌లు జాబితా కావు."
+    "hideNoauthProvidersDescription": "క్రెడెన్షియల్స్ అవసరం లేని ప్రొవైడర్‌లను కేటలాగ్ నుండి తొలగిస్తుంది, తద్వారా షేర్డ్ లేదా కీ లేని ఎండ్‌పాయింట్‌లు జాబితా కావు.",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }

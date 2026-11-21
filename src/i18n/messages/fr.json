@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "Afficher uniquement les combos",
     "hideAllProvidersDescription": "Masque tous les modèles de fournisseurs en amont de /v1/models et n'affiche que les combos et auto/*. Les appels directs à un modèle masqué restent routés.",
     "hideNoauthProviders": "Masquer les fournisseurs sans clé",
-    "hideNoauthProvidersDescription": "Retire du catalogue les fournisseurs sans identifiants, afin que les points d'accès partagés ou sans clé ne soient pas listés."
+    "hideNoauthProvidersDescription": "Retire du catalogue les fournisseurs sans identifiants, afin que les points d'accès partagés ou sans clé ne soient pas listés.",
+    "hideAutoCombos": "Masquer les combos auto/* intégrés",
+    "hideAutoCombosDescription": "Retire les combos virtuels auto/* intégrés (plus de 40 identifiants comme auto/coding, auto/best-fast) de /v1/models. Vos propres combos ne sont pas concernés. Même réserve que ci-dessus : un client qui envoie auto/* explicitement est toujours routé — désactivez le routage automatique zéro configuration pour les refuser."
   }
 }

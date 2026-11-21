@@ -13868,6 +13868,8 @@
     "hideAllProviders": "Show only combos",
     "hideAllProvidersDescription": "Hide every upstream provider model from /v1/models and advertise only combos and auto/*. Direct calls to a hidden provider model still route.",
     "hideNoauthProviders": "Hide keyless providers",
-    "hideNoauthProvidersDescription": "Drop providers that need no credentials from the catalog, so shared/keyless endpoints are not advertised."
+    "hideNoauthProvidersDescription": "Drop providers that need no credentials from the catalog, so shared/keyless endpoints are not advertised.",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }

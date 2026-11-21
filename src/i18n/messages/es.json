@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "Mostrar solo combos",
     "hideAllProvidersDescription": "Oculta todos los modelos de proveedores de /v1/models y muestra solo combos y auto/*. Las llamadas directas a un modelo oculto siguen enrutándose.",
     "hideNoauthProviders": "Ocultar proveedores sin clave",
-    "hideNoauthProvidersDescription": "Quita del catálogo los proveedores que no necesitan credenciales, para que los endpoints compartidos o sin clave no aparezcan."
+    "hideNoauthProvidersDescription": "Quita del catálogo los proveedores que no necesitan credenciales, para que los endpoints compartidos o sin clave no aparezcan.",
+    "hideAutoCombos": "Ocultar los combos auto/* integrados",
+    "hideAutoCombosDescription": "Elimina de /v1/models los combos virtuales auto/* integrados (más de 40 identificadores como auto/coding, auto/best-fast). Tus propios combos no se ven afectados. Misma advertencia que arriba: un cliente que envíe auto/* explícitamente seguirá enrutándose; desactiva el enrutamiento automático sin configuración para rechazarlos."
   }
 }

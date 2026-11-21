@@ -8274,7 +8274,9 @@
     "presetAdmin": "Admin",
     "presetAdminDesc": "Monitoring & audit",
     "settingsSidebarTitle": "Sidebar Customization",
-    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable."
+    "settingsSidebarDesc": "Choose which sidebar items to show. Essentials keeps Advanced tools searchable.",
+    "resilienceConnectionScopeConcurrentRequests": "Concurrent requests per connection/quota scope",
+    "resilienceGlobalConcurrentRequests": "Global concurrent upstream requests (0 = disabled)"
   },
   "contextRtk": {
     "title": "RTK Engine",
@@ -13866,6 +13868,8 @@
     "hideAllProviders": "केवल कॉम्बो दिखाएँ",
     "hideAllProvidersDescription": "/v1/models से सभी अपस्ट्रीम प्रदाता मॉडल छिपाता है और केवल कॉम्बो तथा auto/* दिखाता है। छिपे हुए मॉडल पर सीधे कॉल अभी भी रूट होते हैं।",
     "hideNoauthProviders": "बिना कुंजी वाले प्रदाता छिपाएँ",
-    "hideNoauthProvidersDescription": "ऐसे प्रदाताओं को कैटलॉग से हटाता है जिन्हें क्रेडेंशियल की आवश्यकता नहीं होती, ताकि साझा या बिना कुंजी वाले एंडपॉइंट सूचीबद्ध न हों।"
+    "hideNoauthProvidersDescription": "ऐसे प्रदाताओं को कैटलॉग से हटाता है जिन्हें क्रेडेंशियल की आवश्यकता नहीं होती, ताकि साझा या बिना कुंजी वाले एंडपॉइंट सूचीबद्ध न हों।",
+    "hideAutoCombos": "Hide built-in auto/* combos",
+    "hideAutoCombosDescription": "Keep the built-in auto/* virtual combos (40+ ids such as auto/coding, auto/best-fast) out of /v1/models. Your own combos are unaffected. Same caveat as above: a client that sends auto/* explicitly still gets routed — disable zero-config auto-routing instead if those ids must be rejected."
   }
 }
