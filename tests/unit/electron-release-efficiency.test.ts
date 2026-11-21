@@ -4,7 +4,10 @@ import { join } from "node:path";
 import test from "node:test";
 
 const ROOT = join(import.meta.dirname, "..", "..");
-const workflow = readFileSync(join(ROOT, ".github", "workflows", "electron-release.yml"), "utf8");
+const workflow = readFileSync(
+  join(ROOT, ".github", "workflows-disabled", "electron-release.yml"),
+  "utf8"
+);
 
 test("Electron release relies on setup-node's npm cache instead of caching node_modules", () => {
   assert.doesNotMatch(workflow, /path:\s*node_modules/);

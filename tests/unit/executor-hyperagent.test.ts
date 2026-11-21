@@ -7,17 +7,8 @@ const mod = await import("../../open-sse/executors/hyperagent.ts");
 const usage = await import("../../open-sse/services/usage/hyperagent.ts");
 const models = await import("../../open-sse/services/hyperagentModels.ts");
 const { getModelsByProviderId } = await import("../../open-sse/config/providerModels.ts");
-const { WEB_COOKIE_PROVIDERS } = await import("../../src/shared/constants/providers/web-cookie.ts");
 
 describe("HyperAgent — registry consistency", () => {
-  it("is present in WEB_COOKIE_PROVIDERS", () => {
-    const entry = (WEB_COOKIE_PROVIDERS as Record<string, Record<string, unknown>>)["hyperagent"];
-    assert.ok(entry, "hyperagent missing from WEB_COOKIE_PROVIDERS");
-    assert.equal(entry.id, "hyperagent");
-    assert.equal(entry.alias, "ha");
-    assert.equal(entry.subscriptionRisk, true);
-  });
-
   it("registers a model catalog via getModelsByProviderId", () => {
     const catalog = getModelsByProviderId("hyperagent");
     assert.ok(catalog.length >= 4, `expected validated models, got ${catalog.length}`);

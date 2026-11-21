@@ -5157,11 +5157,6 @@
       "count": 2
     }
   },
-  "tests/unit/oauth-400-recovery.test.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "tests/unit/observability-fase04.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 1
@@ -5355,7 +5350,7 @@
   },
   "tests/unit/provider-metadata-5461-5470-5534.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 3
+      "count": 2
     }
   },
   "tests/unit/provider-models-management-route.test.ts": {

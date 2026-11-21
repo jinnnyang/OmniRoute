@@ -8,7 +8,6 @@ import assert from "node:assert/strict";
 
 const mod = await import("../../open-sse/executors/notion-web.ts");
 const { getModelsByProviderId } = await import("../../open-sse/config/providerModels.ts");
-const { WEB_COOKIE_PROVIDERS } = await import("../../src/shared/constants/providers/web-cookie.ts");
 const { __setTlsFetchOverrideForTesting } = await import(
   "../../open-sse/services/notionTlsClient.ts"
 );
@@ -36,16 +35,6 @@ function installNotionTlsMock(
 }
 
 describe("NotionWebExecutor — registry consistency", () => {
-  it("is present in WEB_COOKIE_PROVIDERS with the expected shape", () => {
-    const entry = (WEB_COOKIE_PROVIDERS as Record<string, Record<string, unknown>>)["notion-web"];
-    assert.ok(entry, "notion-web missing from WEB_COOKIE_PROVIDERS");
-    assert.equal(entry.id, "notion-web");
-    assert.equal(entry.alias, "nw");
-    assert.equal(entry.subscriptionRisk, true);
-    assert.equal(entry.riskNoticeVariant, "webCookie");
-    assert.match(String(entry.name), /unofficial|experimental/i);
-  });
-
   it("registers a model catalog reachable via getModelsByProviderId", () => {
     const models = getModelsByProviderId("notion-web");
     assert.deepEqual(

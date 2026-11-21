@@ -17,7 +17,9 @@ const RESOLVE_VERSION = path.join(
 );
 const SHOULD_PROMOTE = path.join(ROOT, "scripts/ci/should-promote-latest.sh");
 const WORKFLOW = readFileSync(
-  path.join(ROOT, ".github/workflows/docker-publish.yml"),
+  // The publish pipeline is parked under workflows-disabled/ (not triggered on `less`),
+  // but its content is still the source of truth if it is re-enabled.
+  path.join(ROOT, ".github/workflows-disabled/docker-publish.yml"),
   "utf8",
 );
 

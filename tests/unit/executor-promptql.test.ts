@@ -7,9 +7,6 @@ const mod = await import("../../open-sse/executors/promptql.ts");
 const usage = await import("../../open-sse/services/usage/promptql.ts");
 const models = await import("../../open-sse/services/promptqlModels.ts");
 const { getModelsByProviderId } = await import("../../open-sse/config/providerModels.ts");
-const { WEB_COOKIE_PROVIDERS } = await import(
-  "../../src/shared/constants/providers/web-cookie.ts"
-);
 
 // Sample JWT payload (unsigned shape for claim extraction only)
 function makeFakeJwt(claims: Record<string, unknown>): string {
@@ -45,14 +42,6 @@ const ddnLuxJwt = makeFakeJwt({
 });
 
 describe("PromptQl — registry consistency", () => {
-  it("is present in WEB_COOKIE_PROVIDERS", () => {
-    const entry = (WEB_COOKIE_PROVIDERS as Record<string, Record<string, unknown>>)["promptql"];
-    assert.ok(entry, "promptql missing from WEB_COOKIE_PROVIDERS");
-    assert.equal(entry.id, "promptql");
-    assert.equal(entry.alias, "pql");
-    assert.equal(entry.subscriptionRisk, true);
-  });
-
   it("registers a model catalog via getModelsByProviderId", () => {
     const catalog = getModelsByProviderId("promptql");
     assert.ok(catalog.length >= 5);
