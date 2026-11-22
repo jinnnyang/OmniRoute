@@ -49,6 +49,20 @@ describe("Caveman language packs", () => {
     assert.ok(text.includes("auth"));
   });
 
+  it("keeps zh question particles and still applies ultra abbreviations", () => {
+    const zhRules = getRulesForContext("user", "ultra", "zh");
+    const { text } = applyRulesToText("这个方案对吗？数据库连接超时了。", zhRules);
+    assert.ok(text.includes("对吗"), "modal question particle 吗 must survive");
+    assert.ok(text.includes("DB"), "ultra abbreviations still apply");
+  });
+
+  it("keeps ja question forms while removing politeness filler", () => {
+    const jaRules = getRulesForContext("user", "full", "ja");
+    const { text } = applyRulesToText("表示できますか？お願いします。", jaRules);
+    assert.ok(text.includes("できますか"), "question form must survive");
+    assert.ok(!text.includes("お願いします"), "politeness filler still removed");
+  });
+
   it("keeps the Spanish pack aligned with English rule categories", () => {
     const esRules = loadAllRulesForLanguage("es", { refresh: true });
     assert.ok(esRules.length >= 40, `es expected 40+ rules, got ${esRules.length}`);

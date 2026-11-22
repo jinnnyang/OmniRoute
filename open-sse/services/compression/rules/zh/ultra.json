@@ -3,15 +3,6 @@
   "category": "ultra",
   "rules": [
     {
-      "name": "zh_ultra_modal_particles",
-      "pattern": "(?:吗|呢|吧|啊|呀|嘛)(?=[。，！？、\\s]|$)",
-      "flags": "g",
-      "replacement": "",
-      "context": "all",
-      "category": "terse",
-      "minIntensity": "full"
-    },
-    {
       "name": "zh_ultra_database_abbreviation",
       "pattern": "数据库",
       "replacement": "DB",
