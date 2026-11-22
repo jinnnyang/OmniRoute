@@ -387,10 +387,10 @@ export function cavemanCompress(
       const normalized = isCodeDominantText(rulesApplied)
         ? rulesApplied
         : recapitalizeSentences(cleanupArtifacts(rulesApplied));
-      const cleaned =
-        blocks.length > 0
-          ? cleanupArtifacts(restorePreservedBlocks(normalized, blocks))
-          : normalized;
+      // Restore preserved blocks LAST: cleanupArtifacts collapses `[ \t]{2,}` runs,
+      // which would mangle the restored block's indentation and trip
+      // validateCompression into a full-text fallback (silent 0% savings).
+      const cleaned = blocks.length > 0 ? restorePreservedBlocks(normalized, blocks) : normalized;
       if (shouldPreserve || blocks.length > 0) {
         const validation = validateCompression(textPart, cleaned);
         validationWarnings.push(...validation.warnings);
