@@ -4,6 +4,22 @@
 
 ---
 
+## [3.8.62] — 2026-11-21
+
+### ✨ New Features
+- **feat(catalog):** add opt-in `hideAllProviders` catalog filter — hides ALL upstream provider models from `/v1/models`, exposing only combos (user-defined + built-in `auto/*`); routing still works for explicitly requested hidden ids
+- **feat(catalog):** add opt-in `hideNoauthProviders` catalog filter — hides no-auth provider models (duckduckgo-web, cloudflare-playground, opencode, …) from `/v1/models`; they are injected unconditionally and many are unreachable from some regions, producing dead entries
+
+### 🐛 Bug Fixes
+- **fix(catalog):** remove stray NUL byte in `getConnectionsForProvider` cache-key join (use explicit `|` separator instead of an invisible `\0`)
+- **fix(settings):** accept `hideAutoCombos`, `hideNoThinkVariants`, `hideNoauthProviders` and `hideAllProviders` in the `PATCH /api/settings` schema; they were silently dropped, so the catalog hide settings could not be saved through the API
+
+### 📝 Maintenance
+
+- **maintenance(providers):** remove AI Horde provider (unsupported region, no active usage)
+
+---
+
 ## [3.8.57] — 2026-10-07
 
 ### ✨ New Features

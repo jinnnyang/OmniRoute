@@ -1,1 +1,0 @@
-- **fix(catalog):** remove stray NUL byte in `getConnectionsForProvider` cache-key join (use explicit `|` separator instead of an invisible `\0`)
