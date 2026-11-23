@@ -5,24 +5,19 @@ import os from "node:os";
 import path from "node:path";
 
 /**
- * #10225 — combo known-context-overflow must NOT hard-reject a compressible
- * request before OmniRoute's compression pipeline can run.
+ * Combo context-overflow contract after #10162 and the removal of the
+ * #10225/#10503 deferral gate (knownContextOverflow.ts is gone):
  *
- * Root cause: getKnownContextOverflow() estimates the RAW body (ceil(serializedChars/4)
- * over the whole Responses input[]) during combo target resolution, before any
- * compression. When every known target limit is below that raw estimate, both call
- * sites (round-robin + target-resolution) convert it into an immediate local 400
- * `context_length_exceeded` with attempted:0 — so chatCore's proactive compression
- * (which can shrink 294133→111529, 62% in the reporter's case) never runs. The only
- * existing bypass (clientManagedResponsesContext) is gated to VERIFIED native Codex
- * clients, so a generic Responses client (e.g. OpenCode) pointed at a codex model
- * still hits the hard gate.
+ * - Combo NEVER hard-400s an oversized request on approximate chars/4 estimates —
+ *   the estimate is advisory; the request reaches chatCore, whose post-compression
+ *   enforceOutputTokenBudget is the final context gate.
+ * - chatCore's compression pipeline is what actually bounds oversized bodies:
+ *   a genuinely compressible history dispatches COMPRESSED upstream; a body that
+ *   still cannot fit is rejected locally with zero upstream dispatch.
  *
- * Fix: thread a request-scoped `deferContextOverflowWhenCompressible` flag (set when
- * the global compression switch is ON and not API-key opted-out). When set AND at
- * least one target can run compression, getKnownContextOverflow returns null so the
- * request reaches chatCore, whose post-compression enforceOutputTokenBudget becomes
- * the final context gate — a local 400 only if the compressed body still cannot fit.
+ * The former deferContextOverflowWhenCompressible / compressionExclusions /
+ * sourceFormat threading existed only to feed the deleted preflight gate and is
+ * removed with it.
  */
 
 const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-combo-overflow-compress-"));
@@ -94,7 +89,7 @@ function bigResponsesBody(tokens: number) {
 
 const noopLog = { info() {}, warn() {}, error() {}, debug() {} };
 
-test("#10225 combo does not early-400 a compressible over-limit request when deferral is on", async () => {
+test("#10162 combo does not early-400 an over-limit request on advisory estimates", async () => {
   saveModelsDevCapabilities({ codex: { "gpt-5.6-terra": capabilityEntry(272_000) } });
   let dispatches = 0;
 
@@ -105,7 +100,6 @@ test("#10225 combo does not early-400 a compressible over-limit request when def
       strategy: "priority",
       models: ["codex/gpt-5.6-terra"],
     },
-    deferContextOverflowWhenCompressible: true,
     clientManagedResponsesContext: false,
     isModelAvailable: async () => true,
     handleSingleModel: async () => {
@@ -119,7 +113,7 @@ test("#10225 combo does not early-400 a compressible over-limit request when def
   assert.equal(dispatches, 1, "must dispatch so chatCore compaction runs first");
 });
 
-test("#10225 combo keeps the fast 400 when compression is disabled", async () => {
+test("#10162 combo dispatches an over-limit request even with compression disabled", async () => {
   saveModelsDevCapabilities({ codex: { "gpt-5.6-terra": capabilityEntry(272_000) } });
   let dispatches = 0;
 
@@ -130,7 +124,6 @@ test("#10225 combo keeps the fast 400 when compression is disabled", async () =>
       strategy: "priority",
       models: ["codex/gpt-5.6-terra"],
     },
-    deferContextOverflowWhenCompressible: false,
     clientManagedResponsesContext: false,
     isModelAvailable: async () => true,
     handleSingleModel: async () => {
@@ -165,7 +158,7 @@ test("#10225 combo keeps the fast 400 when compression is disabled", async () =>
 // combo member over `/v1/responses` in openai-responses format still hits chatCore's
 // compression bypass — exactly the gap `sourceFormat`/`endpointPath` (not the looser
 // `clientManagedResponsesContext` flag) now closes.
-test("#10503 handleComboChat: native-codex-passthrough pool fails FAST locally, zero upstream dispatches", async () => {
+test("#10162 combo does not hard-400 native-codex-passthrough pools on advisory estimates", async () => {
   saveModelsDevCapabilities({ codex: { "gpt-5.6-terra": capabilityEntry(272_000) } });
   let dispatches = 0;
 
@@ -176,9 +169,7 @@ test("#10503 handleComboChat: native-codex-passthrough pool fails FAST locally, 
       strategy: "priority",
       models: ["codex/gpt-5.6-terra"],
     },
-    deferContextOverflowWhenCompressible: true,
-    sourceFormat: "openai-responses",
-    endpointPath: "/v1/responses",
+
     isModelAvailable: async () => true,
     handleSingleModel: async () => {
       dispatches += 1;

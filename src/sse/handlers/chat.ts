@@ -41,8 +41,6 @@ import type { ComboLike, SingleModelTarget } from "@omniroute/open-sse/services/
 import { mergeAbortSignals } from "@omniroute/open-sse/executors/base.ts";
 import { resolveRequestAutoControls } from "@omniroute/open-sse/services/autoCombo/requestControls.ts";
 import { isVerifiedNativeCodexRequest } from "@omniroute/open-sse/config/codexIdentity.ts";
-import { resolveCompressionSettings } from "@omniroute/open-sse/handlers/chatCore/compressionSettings.ts";
-import type { CompressionExclusions } from "@omniroute/open-sse/services/compression/exclusions.ts";
 import { resolveComboConfig } from "@omniroute/open-sse/services/comboConfig.ts";
 import { injectHandoffIntoBody } from "@omniroute/open-sse/services/contextHandoff.ts";
 import {
@@ -237,31 +235,6 @@ let combosCachePromise: Promise<ComboLike[]> | null = null;
 let combosCacheTs = 0;
 let combosCacheVersionSnapshot = -1;
 const COMBOS_CACHE_TTL_MS = 10_000;
-
-/**
- * #10225 — resolve whether this request's combo preflight should DEFER its hard
- * context-overflow rejection so chatCore's compression runs first.
- *
- * Mirrors handleChatCore's own enablement determination (chatCore.ts): defer only
- * when the global compression switch is ON and the API key has not opted out
- * (`apiKeyInfo.compressionEnabled !== false`). Per-target applicability (server-side
- * exclusions) is checked inside getKnownContextOverflow via the returned exclusions.
- * Fail closed (defer=false) on any lookup error — the existing hard preflight stays.
- */
-async function resolveComboContextOverflowDeferral(
-  logger: { warn?: (...args: unknown[]) => void } | null | undefined,
-  apiKeyInfo: { compressionEnabled?: boolean } | null | undefined
-): Promise<{ defer: boolean; exclusions: CompressionExclusions | undefined }> {
-  try {
-    const compression = await resolveCompressionSettings(logger);
-    return {
-      defer: compression.enabled && apiKeyInfo?.compressionEnabled !== false,
-      exclusions: compression.settings?.exclusions,
-    };
-  } catch {
-    return { defer: false, exclusions: undefined };
-  }
-}
 
 async function getCombosCachedForChat(): Promise<ComboLike[]> {
   const now = Date.now();
@@ -1029,20 +1002,9 @@ async function handleChatImplementation(
 
     // Context-relay keeps generation in combo.ts, but handoff injection lives here
     // because only this layer knows which connectionId was actually selected.
-    const { defer: deferContextOverflowWhenCompressible, exclusions: compressionExclusions } =
-      await resolveComboContextOverflowDeferral(log, apiKeyInfo);
     const response = await (handleComboChat as any)({
       body,
       combo,
-      deferContextOverflowWhenCompressible,
-      compressionExclusions,
-      // #10503: same request-shape facts chatCore.ts resolves for itself
-      // (resolveChatCoreRequestFormat), so getKnownContextOverflow's target-aware
-      // deferral check can never drift from chatCore's own native-codex-passthrough
-      // decision. See knownContextOverflow.ts::KnownContextOverflowOptions.
-      sourceFormat,
-      endpointPath: new URL(request.url).pathname,
-      requestHeaders: request.headers,
       clientManagedResponsesContext:
         sourceFormat === "openai-responses" &&
         new URL(request.url).pathname.split("/").includes("responses") &&
@@ -1337,20 +1299,10 @@ async function handleSingleModelChat(
     );
     log.info("ROUTING", `Auto-combo redirect from handleSingleModelChat for "${modelStr}"`);
     log.info("ROUTING", `Auto-combo redirect to combo flow for "${modelStr}"`);
-    const { defer: sNetDefer, exclusions: sNetExclusions } =
-      await resolveComboContextOverflowDeferral(log, apiKeyInfo);
-    // #10503: same request-shape facts chatCore.ts resolves for itself — threaded
-    // down so getKnownContextOverflow's target-aware deferral check can never drift
-    // from chatCore's own native-codex-passthrough decision.
     const sNetSourceFormat = detectFormatFromEndpoint(body, clientRawRequest?.endpoint || "");
     return handleComboChat({
       body,
       combo: redirectCombo,
-      deferContextOverflowWhenCompressible: sNetDefer,
-      compressionExclusions: sNetExclusions,
-      sourceFormat: sNetSourceFormat,
-      endpointPath: clientRawRequest?.endpoint || "",
-      requestHeaders: clientRawRequest?.headers,
       clientManagedResponsesContext:
         sNetSourceFormat === "openai-responses" &&
         String(clientRawRequest?.endpoint || "")

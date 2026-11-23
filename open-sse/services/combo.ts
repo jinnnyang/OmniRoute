@@ -726,11 +726,6 @@ async function handleComboChatInner({
   hiddenModelsByProvider = getHiddenModelsByProvider(),
   clientManagedResponsesContext = false,
   perTargetAdmission = null,
-  deferContextOverflowWhenCompressible = false,
-  compressionExclusions,
-  sourceFormat = null,
-  endpointPath = null,
-  requestHeaders = null,
   invocationId,
 }: HandleComboChatOptions): Promise<Response> {
   const comboCtx = createComboContext({ body, combo, settings, relayOptions, log });
@@ -805,11 +800,6 @@ async function handleComboChatInner({
     apiKeyAllowedConnections,
     hiddenModelsByProvider,
     perTargetAdmission,
-    deferContextOverflowWhenCompressible,
-    compressionExclusions,
-    sourceFormat,
-    endpointPath,
-    requestHeaders,
     runCombo: handleComboChat,
   });
   if (fusionDispatch) return fusionDispatch;
@@ -861,11 +851,6 @@ async function handleComboChatInner({
     apiKeyAllowedConnections,
     hiddenModelsByProvider,
     perTargetAdmission,
-    deferContextOverflowWhenCompressible,
-    compressionExclusions,
-    sourceFormat,
-    endpointPath,
-    requestHeaders,
     runCombo: handleComboChat,
   });
   if (runtimeUnitDispatch) return runtimeUnitDispatch;
@@ -889,11 +874,6 @@ async function handleComboChatInner({
       signal,
       hiddenModelsByProvider,
       clientManagedResponsesContext,
-      deferContextOverflowWhenCompressible,
-      compressionExclusions,
-      sourceFormat,
-      endpointPath,
-      requestHeaders,
       relayOptions,
       perTargetAdmission,
     });
@@ -2898,11 +2878,6 @@ async function handleRoundRobinCombo({
   nesting = null,
   hiddenModelsByProvider = getHiddenModelsByProvider(),
   clientManagedResponsesContext,
-  deferContextOverflowWhenCompressible = false,
-  compressionExclusions,
-  sourceFormat = null,
-  endpointPath = null,
-  requestHeaders = null,
   relayOptions,
   perTargetAdmission = null,
 }: HandleRoundRobinOptions): Promise<Response> {
