@@ -862,7 +862,6 @@ export async function checkConnection(conn) {
     "openai",
     "kimi-coding",
     "cline",
-    "kiro",
     "amazon-q",
     "gitlab-duo",
     "claude",

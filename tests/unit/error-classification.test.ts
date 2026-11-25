@@ -17,7 +17,7 @@ test("getProviderCategory: OAuth providers return 'oauth'", () => {
   assert.equal(getProviderCategory("github"), "oauth");
   assert.equal(getProviderCategory("antigravity"), "oauth");
   assert.equal(getProviderCategory("cursor"), "oauth");
-  assert.equal(getProviderCategory("kiro"), "oauth");
+  assert.equal(getProviderCategory("trae"), "oauth");
   assert.equal(getProviderCategory("cline"), "oauth");
 });
 

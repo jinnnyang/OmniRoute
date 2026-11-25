@@ -490,9 +490,11 @@ test("chatCore integration: compression handles tool messages", async () => {
   }
 });
 
-test("chatCore integration: combo requests run proactive compression before Kiro translation", async () => {
-  const provider = "kiro";
-  const model = "claude-sonnet-4.5";
+test("chatCore integration: combo requests run proactive compression before upstream translation", async () => {
+  // glm/glm-4.5v resolves a 16k context window, so the large body below crosses
+  // the 70% proactive-compression threshold deterministically.
+  const provider = "glm";
+  const model = "glm-4.5v";
 
   await compressionDb.updateCompressionSettings({
     enabled: true,
@@ -508,7 +510,7 @@ test("chatCore integration: combo requests run proactive compression before Kiro
   const connectionId = connection.id;
 
   await combosDb.createCombo({
-    name: "test-kiro-compression-combo",
+    name: "test-glm-compression-combo",
     strategy: "priority",
     models: [
       {
@@ -520,7 +522,7 @@ test("chatCore integration: combo requests run proactive compression before Kiro
   });
 
   const body = {
-    model: "combo/test-kiro-compression-combo",
+    model: "combo/test-glm-compression-combo",
     stream: false,
     messages: [
       { role: "system", content: "You are helpful." },
@@ -560,7 +562,7 @@ test("chatCore integration: combo requests run proactive compression before Kiro
       clientRawRequest: { endpoint: "/v1/chat/completions", headers: new Map() },
       connectionId,
       isCombo: true,
-      comboName: "test-kiro-compression-combo",
+      comboName: "test-glm-compression-combo",
       onCredentialsRefreshed: () => {},
       onRequestSuccess: () => {},
       onStreamFailure: () => {},
@@ -568,30 +570,26 @@ test("chatCore integration: combo requests run proactive compression before Kiro
       userAgent: "test-agent",
     });
 
-    // Kiro response translation in this integration harness may fail depending on upstream
+    // Response translation in this integration harness may fail depending on upstream
     // payload shape, but the regression target is request-side behavior before translation.
     assert.ok(result, "Handler should return a result object");
     assert.ok(capturedTranslatedBody, "Translated body should be sent upstream");
 
-    // Ensure request was translated to Kiro shape (messages are not sent directly upstream).
-    const conversationState = capturedTranslatedBody?.conversationState as
-      Record<string, unknown> | undefined;
-    assert.ok(conversationState, "Kiro translated request should include conversationState");
+    // Ensure request was translated to the upstream shape (messages are not sent
+    // directly upstream): qoder is an openai-format provider, so the translated body
+    // carries the flattened `messages` array.
+    const translatedMessages = capturedTranslatedBody?.messages as unknown[] | undefined;
+    assert.ok(Array.isArray(translatedMessages), "Translated request should include messages");
 
-    const history = Array.isArray(conversationState?.history)
-      ? (conversationState.history as unknown[])
-      : [];
     assert.ok(
-      history.length < body.messages.length - 1,
-      "History should be reduced by proactive compression before translation"
+      translatedMessages.length < body.messages.length - 1,
+      "Messages should be reduced by proactive compression before translation"
     );
 
-    const currentMessage = conversationState?.currentMessage as Record<string, unknown> | undefined;
-    const userInputMessage = currentMessage?.userInputMessage as
-      Record<string, unknown> | undefined;
-    const currentContent =
-      typeof userInputMessage?.content === "string" ? userInputMessage.content : "";
-    assert.match(currentContent, /Please summarize everything\./);
+    const lastMessage = translatedMessages[translatedMessages.length - 1] as
+      { role?: string; content?: unknown } | undefined;
+    assert.equal(lastMessage?.role, "user");
+    assert.match(String(lastMessage?.content ?? ""), /Please summarize everything\./);
   } finally {
     globalThis.fetch = originalFetch;
   }

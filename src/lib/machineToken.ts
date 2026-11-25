@@ -7,7 +7,10 @@ declare const require: NodeRequire | undefined;
 // preserves the serverExternalPackages boundary only for static require calls.
 // A dynamic createRequire(argv[1])(...) gets rewritten to `(void 0)(...)` in the
 // standalone bundle, throws, and silently yields an empty machine ID.
-function loadMachineIdModule(): { machineIdSync?: (original?: boolean) => string; default?: { machineIdSync?: (original?: boolean) => string } } {
+function loadMachineIdModule(): {
+  machineIdSync?: (original?: boolean) => string;
+  default?: { machineIdSync?: (original?: boolean) => string };
+} {
   if (typeof require === "function") {
     return require("node-machine-id");
   }
@@ -17,7 +20,7 @@ function loadMachineIdModule(): { machineIdSync?: (original?: boolean) => string
 let machineIdSync: (original?: boolean) => string;
 try {
   const mod = loadMachineIdModule();
-  machineIdSync = mod.machineIdSync || mod.default?.machineIdSync;
+  machineIdSync = mod.machineIdSync || mod.default?.machineIdSync || (() => "");
 } catch {
   machineIdSync = () => "";
 }

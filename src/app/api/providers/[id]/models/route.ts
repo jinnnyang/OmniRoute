@@ -34,7 +34,6 @@ import {
   fetchGitHubCopilotModels,
   fetchGheCopilotModels,
 } from "@omniroute/open-sse/services/githubCopilotModels.ts";
-import { fetchKiroAvailableModels } from "@omniroute/open-sse/services/kiroModels.ts";
 import {
   buildGlmCodingHeaders,
   buildGlmModelsUrl,
@@ -1685,66 +1684,6 @@ export async function GET(
         models: [],
         source: "local_catalog",
         warning: "GHE Copilot models API unavailable — using local catalog",
-      });
-    }
-
-    if (provider === "kiro") {
-      // Kiro's catalog is per-account / per-tier (free vs Pro vs Power) and, for
-      // IAM Identity Center orgs, an admin-curated approved list. The static
-      // registry catalog can't reflect that. Discover the live list from the
-      // CodeWhisperer ListAvailableModels API with the stored OAuth token
-      // (works for Builder ID / social AND IAM Identity Center accounts); fall
-      // back to the static registry catalog when the token is missing/expired or
-      // the upstream is unavailable so import never breaks.
-      const cachedResponse = maybeReturnCachedDiscovery();
-      if (cachedResponse) return cachedResponse;
-
-      const autoFetchDisabledResponse = maybeReturnAutoFetchDisabled();
-      if (autoFetchDisabledResponse) return autoFetchDisabledResponse;
-
-      if (!accessToken) {
-        const fallback = buildDiscoveryFallbackResponse({
-          cacheWarning: "OAuth token unavailable — using cached catalog",
-          localWarning: "OAuth token unavailable — using local catalog",
-        });
-        if (fallback) return fallback;
-        return buildResponse({
-          provider,
-          connectionId,
-          models: toLocalCatalogModels(),
-          source: "local_catalog",
-          warning: "OAuth token unavailable — using local catalog",
-        });
-      }
-
-      const discovery = await fetchKiroAvailableModels({
-        accessToken,
-        providerSpecificData: connection.providerSpecificData,
-        fetchImpl: (url, init) =>
-          safeOutboundFetch(url as string, {
-            ...SAFE_OUTBOUND_FETCH_PRESETS.modelsDiscovery,
-            guard: getProviderOutboundGuard(),
-            proxyConfig: proxy,
-            ...(init as Record<string, unknown>),
-          }),
-        fallbackModels: toLocalCatalogModels(),
-      });
-
-      if (discovery.source === "api" && discovery.models.length > 0) {
-        return buildApiDiscoveryResponse(discovery.models);
-      }
-
-      const fallback = buildDiscoveryFallbackResponse({
-        cacheWarning: "Kiro models API unavailable — using cached catalog",
-        localWarning: "Kiro models API unavailable — using local catalog",
-      });
-      if (fallback) return fallback;
-      return buildResponse({
-        provider,
-        connectionId,
-        models: discovery.models,
-        source: "local_catalog",
-        warning: "Kiro models API unavailable — using local catalog",
       });
     }
 

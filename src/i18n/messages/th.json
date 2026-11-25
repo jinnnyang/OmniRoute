@@ -2873,9 +2873,8 @@
       "cursor": "ใช้เมื่อเขียนโค้ดในเคอร์เซอร์และคุณต้องการโมเดลที่เข้ากันได้กับ OpenAI แบบกำหนดเองผ่าน OmniRoute",
       "continue": "ใช้เมื่อเรียกใช้ดำเนินการต่อใน IDE และคุณต้องกำหนดค่าผู้ให้บริการที่ใช้ JSON แบบพกพา",
       "opencode": "ใช้เมื่อคุณต้องการเรียกใช้ Terminal-Native Agent และใช้สคริปต์อัตโนมัติผ่าน OpenCode",
-      "kiro": "ใช้เมื่อรวม Kiro และควบคุมการกำหนดเส้นทางโมเดลจากส่วนกลางจาก OmniRoute",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "ใช้เมื่อต้องสกัดกั้นการรับส่งข้อมูล Antigravity/Kiro ผ่าน MITM และกำหนดเส้นทางไปยัง OmniRoute",
+      "antigravity": "ใช้เมื่อต้องสกัดกั้นการรับส่งข้อมูล Antigravity ผ่าน MITM และกำหนดเส้นทางไปยัง OmniRoute",
       "copilot": "ใช้เมื่อคุณต้องการ UX รูปแบบการแชทของ Copilot ในขณะที่บังคับใช้คีย์ OmniRoute และกฎการกำหนดเส้นทาง",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "ใช้เมื่อคุณต้องการผู้ช่วย AI แบบเนทิฟเทอร์มินัลน้ำหนักเบาสำหรับงานที่รวดเร็ว",
@@ -2895,7 +2894,6 @@
       "cursor": "ตัวแก้ไขรหัสเคอร์เซอร์ AI",
       "continue": "ดำเนินการต่อผู้ช่วย AI",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode ต้องมีการกำหนดค่าคีย์ API",
           "1": "ตั้งค่า URL พื้นฐานเป็นจุดสิ้นสุด OmniRoute ของคุณ"
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro ต้องการบัญชี Amazon"
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "รีเวิร์สพร็อกซี g4f.space ฟรีแบบไม่ต้องใช้คีย์ไปยัง Pollinations จำกัด 5 คำขอต่อนาที",
       "mixedbread": "สร้าง embeddings ด้วย Mixedbread API",
       "segmind": "สร้างรูปภาพและวิดีโอด้วยโมเดลที่โฮสต์ของ Segmind",
-      "amazon-q": "ใช้ AWS Builder ID หรือโฟลว์ refresh-token ที่นำเข้าแบบเดียวกับ Kiro แต่แยกการเชื่อมต่อ Amazon Q ต่างหาก",
+      "amazon-q": "ใช้ AWS Builder ID หรือโฟลว์ refresh-token ที่นำเข้าแต่แยกการเชื่อมต่อ Amazon Q ต่างหาก",
       "antigravity": "เชื่อมต่อ Antigravity ด้วยโฟลว์ OAuth ที่มีอยู่",
       "agy": "นำเข้าการเข้าสู่ระบบ Antigravity CLI (`agy`) ของคุณ (วาง/อัปโหลดไฟล์โทเค็น), ตรวจหาการเข้าสู่ระบบ CLI ในเครื่องโดยอัตโนมัติ หรือลงชื่อเข้าใช้ด้วย Google แชร์แบ็กเอนด์ Antigravity (รวมถึงโมเดล Claude)",
       "claude": "เชื่อมต่อ Claude Code ด้วยโฟลว์ OAuth ที่มีอยู่",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "แอปพลิเคชัน OAuth ที่มีขอบเขต ai_features + read_user กำหนดค่า GITLAB_DUO_OAUTH_CLIENT_ID และ GITLAB_DUO_OAUTH_CLIENT_SECRET (ไม่บังคับ) บนอินสแตนซ์ OmniRoute นี้",
       "kilocode": "เชื่อมต่อ Kilo Code ด้วยโฟลว์ OAuth ที่มีอยู่",
       "kimi-coding": "เชื่อมต่อ Kimi Coding ด้วยโฟลว์ OAuth ที่มีอยู่",
-      "kiro": "ระดับฟรี: 50 เครดิต/เดือน (~25K–100K โทเค็น) ⚠️ ToS ของ Kiro ห้ามใช้พร็อกซี/harness ของบุคคลที่สาม",
       "codex": "เชื่อมต่อ OpenAI Codex ด้วยโฟลว์ OAuth ที่มีอยู่",
       "qwen": "เชื่อมต่อ Qwen Code ด้วยโฟลว์ OAuth ที่มีอยู่",
       "github-models": "สร้าง GitHub PAT ที่มีขอบเขต 'models: read' ที่ github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "บัญชี Google",
     "githubAccount": "บัญชี GitHub",
     "importToken": "นำเข้าโทเค็น",
-    "pasteToken": "วางโทเค็นการรีเฟรชจาก Kiro IDE",
+    "pasteToken": "วางโทเค็นการรีเฟรช",
     "awsRegion": "ภูมิภาค AWS",
     "autoDetecting": "กำลังตรวจจับโทเค็นอัตโนมัติ...",
     "readingFromCache": "อ่านจากแคช AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "สถานะระบบ"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "เชื่อมต่อ {providerLabel}",
-    "chooseMethod": "เลือกวิธีการตรวจสอบสิทธิ์ของคุณ:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "แนะนำสำหรับผู้ใช้ส่วนใหญ่ ลงชื่อเข้าใช้ด้วยบัญชี AWS ที่เชื่อมโยงกับ {providerLabel}",
-    "organization": "องค์กรของคุณ (AWS IAM Identity Center)",
-    "organizationDescription": "ใช้ URL เริ่มต้น SSO ของบริษัทคุณ (ตัวอย่าง: {url}).",
-    "googleAccount": "บัญชี Google",
-    "googleDescription": "เข้าสู่ระบบด้วยบัญชี Google ของคุณ.",
-    "githubAccount": "บัญชี GitHub",
-    "githubDescription": "เข้าสู่ระบบด้วยบัญชี GitHub ของคุณ.",
-    "importToken": "นำเข้าท็อกเกน",
-    "importDescription": "วางโทเค็นรีเฟรชที่ส่งออกจาก {providerLabel}",
-    "apiKey": "คีย์ API",
-    "apiKeyDescription": "วางคีย์ API {providerLabel} / CodeWhisperer ที่มีอายุยาวนาน มันถูกเก็บเป็นข้อมูลรับรองแบบ bearer โดยไม่มีโทเค็นการรีเฟรช; การค้นหาโปรไฟล์จะทำอย่างดีที่สุด.",
-    "idcStartUrl": "URL เริ่มต้น IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL ของ AWS IAM Identity Center ขององค์กรของคุณ",
-    "awsRegion": "ภูมิภาค AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "ภูมิภาค AWS สำหรับ Identity Center ของคุณ (ค่าเริ่มต้น: us-east-1)",
-    "continue": "ดำเนินการต่อ",
-    "back": "กลับ",
-    "autoDetecting": "กำลังตรวจสอบโทเค็นโดยอัตโนมัติ...",
-    "readingCredentials": "กำลังอ่านข้อมูลรับรอง {providerLabel} จากแคช AWS SSO",
-    "tokenNotDetected": "ไม่พบโทเค็น {providerLabel} โดยอัตโนมัติ กรุณาวางโทเค็นรีเฟรชของคุณด้วยตนเอง",
-    "refreshToken": "รีเฟรชโทเคน",
-    "tokenPlaceholder": "โทเค็นจะถูกกรอกโดยอัตโนมัติ...",
-    "importing": "กำลังนำเข้า...",
-    "apiKeyPlaceholder": "วางคีย์ API {providerLabel} ของคุณ...",
-    "apiKeyStoredDescription": "เก็บข้อมูลที่เข้ารหัสเป็นข้อมูลประจำตัวที่มีอายุยาวนาน ไม่มีการไหลของการรีเฟรช。",
-    "apiKeyRegionDescription": "ภูมิภาค AWS สำหรับกุญแจ (ค่าเริ่มต้น: us-east-1)",
-    "validating": "กำลังตรวจสอบ...",
-    "validateAndSaveApiKey": "ตรวจสอบและบันทึก API Key",
-    "errorAutoDetect": "ไม่สามารถตรวจจับโทเค็นโดยอัตโนมัติได้",
-    "errorAutoDetectFailed": "ไม่สามารถตรวจจับโทเค็นโดยอัตโนมัติได้",
-    "errorRefreshTokenRequired": "กรุณาใส่โทเค็นรีเฟรช",
-    "errorImportFailed": "นำเข้าล้มเหลว",
-    "errorApiKeyRequired": "กรุณาใส่ Kiro API key",
-    "errorApiKeyImportFailed": "การนำเข้าคีย์ API ล้มเหลว",
-    "errorIdcStartUrlRequired": "กรุณาใส่ URL เริ่มต้น IDC ของคุณ"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "เชื่อมต่อ {providerLabel} ผ่าน {providerName}",
-    "errorStartAuthorization": "ไม่สามารถเริ่มการอนุญาตได้",
-    "errorAuthorizationExpired": "การอนุญาตหมดอายุแล้ว เริ่มกระบวนการเข้าสู่ระบบอีกครั้ง.",
-    "errorAuthorizationFailed": "การอนุญาตล้มเหลว",
-    "initializing": "กำลังเริ่มต้น...",
-    "settingUp": "กำลังตั้งค่าการตรวจสอบสิทธิ์ {providerName}",
-    "openIncognito": "เปิดลิงก์นี้ในหน้าต่าง Incognito",
-    "incognitoDescription": "ใช้หน้าต่าง Incognito/Private เพื่อหลีกเลี่ยงความขัดแย้งของเซสชันกับบัญชีที่มีอยู่.",
-    "copyLink": "คัดลอกลิงก์",
-    "verificationCode": "รหัสยืนยัน",
-    "waiting": "รอการอนุญาต...",
-    "cancel": "ยกเลิก",
-    "successTitle": "เชื่อมต่อสำเร็จแล้ว!",
-    "successMessage": "บัญชี {providerLabel} ของคุณผ่าน {providerName} ได้เชื่อมต่อแล้ว",
-    "done": "เสร็จสิ้น",
-    "errorTitle": "การเชื่อมต่อล้มเหลว",
-    "close": "ปิด"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "การอนุญาตล้มเหลว",

@@ -25,7 +25,6 @@ const ROTATION_LOCK_GROUP: Record<string, string> = {
   openai: "openai-auth0",
   claude: "anthropic-oauth",
   "gitlab-duo": "gitlab-duo",
-  kiro: "kiro",
   "kimi-coding": "kimi-coding",
 };
 

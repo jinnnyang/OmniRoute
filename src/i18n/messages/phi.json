@@ -2873,9 +2873,8 @@
       "cursor": "Gamitin kapag nagko-coding sa Cursor at kailangan mo ng mga custom na modelong katugma sa OpenAI sa pamamagitan ng OmniRoute.",
       "continue": "Gamitin kapag nagpapatakbo ng Magpatuloy sa mga IDE at kailangan mo ng portable JSON-based na configuration ng provider.",
       "opencode": "Gamitin kapag mas gusto mo ang terminal-native agent run at scripted automation sa pamamagitan ng OpenCode.",
-      "kiro": "Gamitin kapag isinasama ang Kiro at kinokontrol ang pagruruta ng modelo sa gitna mula sa OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Gamitin kapag ang trapiko ng Antigravity/Kiro ay dapat ma-intercept sa MITM at iruta sa OmniRoute.",
+      "antigravity": "Gamitin kapag ang trapiko ng Antigravity ay dapat ma-intercept sa MITM at iruta sa OmniRoute.",
       "copilot": "Gamitin kapag gusto mong Copilot chat style UX habang ipinapatupad ang mga OmniRoute key at mga panuntunan sa pagruruta.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Gamitin kapag kailangan mo ng magaan na terminal-native AI assistant para sa mga mabilisang gawain.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Ipagpatuloy ang AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "Nangangailangan ang OpenCode ng configuration ng API key.",
           "1": "Itakda ang base URL sa iyong OmniRoute endpoint."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Ang Kiro ay nangangailangan ng Amazon account."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Libreng no-key na g4f.space reverse proxy sa Pollinations, limitado sa 5 kahilingan bawat minuto.",
       "mixedbread": "Gumawa ng mga embedding gamit ang Mixedbread API.",
       "segmind": "Bumuo ng mga larawan at video gamit ang mga naka-host na modelo ng Segmind.",
-      "amazon-q": "Gumagamit ng parehong AWS Builder ID o na-import na refresh-token flow tulad ng Kiro, ngunit pinapanatiling hiwalay ang mga koneksyon sa Amazon Q.",
+      "amazon-q": "Gumagamit ng AWS Builder ID o na-import na refresh-token flow, ngunit pinapanatiling hiwalay ang mga koneksyon sa Amazon Q.",
       "antigravity": "Ikonekta ang Antigravity gamit ang umiiral na OAuth flow.",
       "agy": "I-import ang iyong Antigravity CLI (`agy`) login (i-paste/i-upload ang token file nito), awtomatikong i-detect ang isang lokal na CLI login, o mag-sign in gamit ang Google. Ibinabahagi ang Antigravity backend (kasama ang mga Claude model).",
       "claude": "Ikonekta ang Claude Code gamit ang umiiral na OAuth flow.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth application na may ai_features + read_user scopes. I-configure ang GITLAB_DUO_OAUTH_CLIENT_ID at opsyonal ang GITLAB_DUO_OAUTH_CLIENT_SECRET sa OmniRoute instance na ito.",
       "kilocode": "Ikonekta ang Kilo Code gamit ang umiiral na OAuth flow.",
       "kimi-coding": "Ikonekta ang Kimi Coding gamit ang umiiral na OAuth flow.",
-      "kiro": "Libreng tier: 50 credits/buwan (~25K–100K tokens). ⚠️ Ipinagbabawal ng Kiro ToS ang paggamit ng third-party proxy/harness.",
       "codex": "Ikonekta ang OpenAI Codex gamit ang umiiral na OAuth flow.",
       "qwen": "Ikonekta ang Qwen Code gamit ang umiiral na OAuth flow.",
       "github-models": "Gumawa ng GitHub PAT na may 'models: read' na scope sa github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Account",
     "githubAccount": "GitHub Account",
     "importToken": "Mag-import ng Token",
-    "pasteToken": "I-paste ang refresh token mula sa Kiro IDE.",
+    "pasteToken": "I-paste ang refresh token.",
     "awsRegion": "Rehiyon ng AWS",
     "autoDetecting": "Awtomatikong pagtukoy ng mga token...",
     "readingFromCache": "Pagbabasa mula sa AWS SSO cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Katayuan ng Sistema"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Ikonekta ang {providerLabel}",
-    "chooseMethod": "Pumili ng iyong paraan ng pagpapatotoo:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Inirerekomenda para sa karamihan ng mga gumagamit. Mag-sign in gamit ang AWS account na naka-link sa {providerLabel}.",
-    "organization": "Ang Iyong Organisasyon (AWS IAM Identity Center)",
-    "organizationDescription": "Gamitin ang start URL ng SSO ng iyong kumpanya (halimbawa: {url}).",
-    "googleAccount": "Google Account",
-    "googleDescription": "Mag-login gamit ang iyong Google account.",
-    "githubAccount": "GitHub Account",
-    "githubDescription": "Mag-login gamit ang iyong GitHub account.",
-    "importToken": "Mag-import ng Token",
-    "importDescription": "I-paste ang isang refresh token na na-export mula sa {providerLabel}.",
-    "apiKey": "API Key",
-    "apiKeyDescription": "I-paste ang isang pangmatagalang {providerLabel} / CodeWhisperer API key. Ito ay naka-imbak bilang bearer credential na walang refresh token; ang pagtuklas ng profile ay best-effort.",
-    "idcStartUrl": "IDC Simulan na URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL ng AWS IAM Identity Center ng iyong organisasyon",
-    "awsRegion": "AWS Rehiyon",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS rehiyon para sa iyong Identity Center (default: us-east-1)",
-    "continue": "Magpatuloy",
-    "back": "Bumalik",
-    "autoDetecting": "Awtomatikong tinutukoy ang token...",
-    "readingCredentials": "Binabasa ang {providerLabel} na kredensyal mula sa AWS SSO cache",
-    "tokenNotDetected": "Hindi na-auto-detect ang {providerLabel} token. Mangyaring i-paste ang iyong refresh token nang manu-mano.",
-    "refreshToken": "I-refresh ang Token",
-    "tokenPlaceholder": "Awtomatikong pupunan ang token...",
-    "importing": "Nag-iimport...",
-    "apiKeyPlaceholder": "I-paste ang iyong {providerLabel} API key...",
-    "apiKeyStoredDescription": "Naka-imbak na naka-encrypt bilang isang pangmatagalang bearer credential. Walang refresh flow.",
-    "apiKeyRegionDescription": "AWS rehiyon para sa susi (default: us-east-1)",
-    "validating": "Ninvalidate...",
-    "validateAndSaveApiKey": "I-validate at I-save ang API Key",
-    "errorAutoDetect": "Hindi ma-auto-detect ang token",
-    "errorAutoDetectFailed": "Nabigong ma-auto-detect ang token",
-    "errorRefreshTokenRequired": "Pakisok ang isang refresh token",
-    "errorImportFailed": "Nabigong i-import",
-    "errorApiKeyRequired": "Pakisok ang isang Kiro API key",
-    "errorApiKeyImportFailed": "Nabigong i-import ang API key",
-    "errorIdcStartUrlRequired": "Pakisok ang iyong IDC start URL"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Ikonekta ang {providerLabel} sa pamamagitan ng {providerName}",
-    "errorStartAuthorization": "Nabigong simulan ang awtorisasyon",
-    "errorAuthorizationExpired": "Nawalan ng bisa ang awtorisasyon. Magsimula muli sa proseso ng pag-login.",
-    "errorAuthorizationFailed": "Nabigong awtorisasyon",
-    "initializing": "Nagsisimula...",
-    "settingUp": "Nagsasaayos ng {providerName} na pagpapatotoo",
-    "openIncognito": "Buksan ang link na ito sa isang Incognito na bintana",
-    "incognitoDescription": "Gumamit ng Incognito/Private na bintana upang maiwasan ang mga salungatan sa sesyon sa mga umiiral na account.",
-    "copyLink": "Kopyahin ang link",
-    "verificationCode": "Kodigo ng Beripikasyon",
-    "waiting": "Naghihintay para sa awtorisasyon...",
-    "cancel": "Kanselahin",
-    "successTitle": "Matagumpay na Nakakonekta!",
-    "successMessage": "Ang iyong {providerLabel} account sa pamamagitan ng {providerName} ay nakakonekta na.",
-    "done": "Tapos",
-    "errorTitle": "Nabigong Kumonekta",
-    "close": "Isara"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Nabigong awtorisasyon",

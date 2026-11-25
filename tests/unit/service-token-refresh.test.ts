@@ -51,7 +51,6 @@ describe("tokenRefresh helpers", () => {
       assert.equal(mod.supportsTokenRefresh("claude"), true);
       assert.equal(mod.supportsTokenRefresh("codex"), true);
       assert.equal(mod.supportsTokenRefresh("github"), true);
-      assert.equal(mod.supportsTokenRefresh("kiro"), true);
       assert.equal(mod.supportsTokenRefresh("cline"), true);
       assert.equal(mod.supportsTokenRefresh("devin-desktop"), false);
       assert.equal(mod.supportsTokenRefresh("devin-cli"), false);

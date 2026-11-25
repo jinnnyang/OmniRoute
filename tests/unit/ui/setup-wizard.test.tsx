@@ -34,20 +34,20 @@ const mockServerState = {
 };
 
 const mockTarget = {
-  id: "kiro" as const,
-  name: "Kiro",
-  icon: "smart_toy",
-  color: "#FF9900",
-  hosts: ["prod.kiro.aws"],
+  id: "trae" as const,
+  name: "Trae",
+  icon: "construction",
+  color: "#94A3B8",
+  hosts: ["trae.invalid"],
   port: 443,
   endpointPatterns: ["/v1/chat/completions"],
   defaultModels: [],
   setupTutorial: {
-    steps: ["Install Kiro", "Enable trust cert", "Activate DNS"],
-    detection: { command: "which kiro", platform: "all" as const },
+    steps: ["Install Trae", "Enable trust cert", "Activate DNS"],
+    detection: { command: "which trae", platform: "all" as const },
   },
   handler: () => Promise.resolve({ default: class {} as never }),
-  riskNoticeKey: "providers.riskNotice.oauth",
+  riskNoticeKey: "providers.riskNotice.investigating",
 };
 
 describe("SetupWizard", { timeout: 30000 }, () => {
@@ -64,9 +64,8 @@ describe("SetupWizard", { timeout: 30000 }, () => {
   });
 
   it("renders step 1 (verify) on open", async () => {
-    const { SetupWizard } = await import(
-      "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard"
-    );
+    const { SetupWizard } =
+      await import("../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard");
 
     const container = makeContainer();
     await act(async () => {
@@ -91,9 +90,8 @@ describe("SetupWizard", { timeout: 30000 }, () => {
   }, 30000);
 
   it("navigates to step 2 when Next clicked", async () => {
-    const { SetupWizard } = await import(
-      "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard"
-    );
+    const { SetupWizard } =
+      await import("../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard");
 
     const container = makeContainer();
     await act(async () => {
@@ -125,9 +123,8 @@ describe("SetupWizard", { timeout: 30000 }, () => {
   }, 30000);
 
   it("calls onDnsToggle when enabling DNS in step 2", async () => {
-    const { SetupWizard } = await import(
-      "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard"
-    );
+    const { SetupWizard } =
+      await import("../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard");
 
     const onDnsToggle = vi.fn().mockResolvedValue(undefined);
     const container = makeContainer();
@@ -138,7 +135,7 @@ describe("SetupWizard", { timeout: 30000 }, () => {
         React.createElement(SetupWizard, {
           target: mockTarget,
           agentState: {
-            agent_id: "kiro",
+            agent_id: "trae",
             dns_enabled: false,
             cert_trusted: false,
             setup_completed: false,
@@ -171,13 +168,12 @@ describe("SetupWizard", { timeout: 30000 }, () => {
       enableDnsBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
-    expect(onDnsToggle).toHaveBeenCalledWith("kiro", true);
+    expect(onDnsToggle).toHaveBeenCalledWith("trae", true);
   }, 30000);
 
   it("calls onClose when Cancel clicked on step 1", async () => {
-    const { SetupWizard } = await import(
-      "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard"
-    );
+    const { SetupWizard } =
+      await import("../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/SetupWizard");
 
     const onClose = vi.fn();
     const container = makeContainer();

@@ -2873,9 +2873,8 @@
       "cursor": "Verwenden Sie diese Option, wenn Sie in Cursor codieren und benutzerdefinierte OpenAI-kompatible Modelle über OmniRoute benötigen.",
       "continue": "Verwenden Sie diese Option, wenn Sie Continue in IDEs ausführen und eine portable JSON-basierte Anbieterkonfiguration benötigen.",
       "opencode": "Verwenden Sie diese Option, wenn Sie terminalnative Agentenausführungen und Skriptautomatisierung über OpenCode bevorzugen.",
-      "kiro": "Zur Verwendung bei der Integration von Kiro und der zentralen Steuerung des Modellroutings über OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Wird verwendet, wenn Antigravity/Kiro-Verkehr über MITM abgefangen und an OmniRoute weitergeleitet werden muss.",
+      "antigravity": "Wird verwendet, wenn Antigravity-Verkehr über MITM abgefangen und an OmniRoute weitergeleitet werden muss.",
       "copilot": "Verwenden Sie diese Option, wenn Sie eine UX im Copilot-Chat-Stil wünschen und gleichzeitig OmniRoute-Schlüssel und Routing-Regeln durchsetzen möchten.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Verwenden Sie es, wenn Sie einen leichten terminal-nativen KI-Assistenten für schnelle Aufgaben benötigen.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor-KI-Code-Editor",
       "continue": "Weiter AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode erfordert API-Schlüssel-Konfiguration.",
           "1": "Base URL auf Ihren OmniRoute-Endpunkt setzen."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro erfordert ein Amazon-Konto."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Kostenloser, schlüsselloser g4f.space-Reverse-Proxy zu Pollinations, begrenzt auf 5 Anfragen pro Minute.",
       "mixedbread": "Embeddings mit der Mixedbread-API erstellen.",
       "segmind": "Bilder und Videos mit den gehosteten Modellen von Segmind generieren.",
-      "amazon-q": "Verwendet dieselbe AWS Builder ID oder denselben importierten Refresh-Token-Flow wie Kiro, hält aber die Amazon Q-Verbindungen getrennt.",
+      "amazon-q": "Verwendet AWS Builder ID oder importierten Refresh-Token-Flow, hält aber die Amazon Q-Verbindungen getrennt.",
       "antigravity": "Antigravity mit dem bestehenden OAuth-Flow verbinden.",
       "agy": "Importieren Sie Ihren Antigravity-CLI-Login (`agy`) (Token-Datei einfügen/hochladen), erkennen Sie einen lokalen CLI-Login automatisch oder melden Sie sich mit Google an. Teilt das Antigravity-Backend (inkl. Claude-Modellen).",
       "claude": "Claude Code mit dem bestehenden OAuth-Flow verbinden.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth-Anwendung mit den Scopes ai_features + read_user. Konfigurieren Sie GITLAB_DUO_OAUTH_CLIENT_ID und optional GITLAB_DUO_OAUTH_CLIENT_SECRET auf dieser OmniRoute-Instanz.",
       "kilocode": "Kilo Code mit dem bestehenden OAuth-Flow verbinden.",
       "kimi-coding": "Kimi Coding mit dem bestehenden OAuth-Flow verbinden.",
-      "kiro": "Kostenlose Stufe: 50 Credits/Monat (~25K–100K Token). ⚠️ Die Nutzungsbedingungen von Kiro verbieten die Nutzung von Drittanbieter-Proxys/Harnesses.",
       "codex": "OpenAI Codex mit dem bestehenden OAuth-Flow verbinden.",
       "qwen": "Qwen Code mit dem bestehenden OAuth-Flow verbinden.",
       "github-models": "Erstellen Sie einen GitHub-PAT mit dem Scope 'models: read' unter github.com/settings/tokens"
@@ -9588,7 +9564,7 @@
     "googleAccount": "Google-Konto",
     "githubAccount": "GitHub-Konto",
     "importToken": "Token importieren",
-    "pasteToken": "Aktualisierungstoken aus der Kiro-IDE einfügen.",
+    "pasteToken": "Aktualisierungstoken einfügen.",
     "awsRegion": "AWS-Region",
     "autoDetecting": "Automatische Erkennung von Token...",
     "readingFromCache": "Lesen aus dem AWS SSO-Cache",
@@ -13556,67 +13532,6 @@
         "secondaryAction": "Systemstatus"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Verbinden {providerLabel}",
-    "chooseMethod": "Wählen Sie Ihre Authentifizierungsmethode:",
-    "builderId": "AWS Builder-ID",
-    "builderDescription": "Empfohlen für die meisten Benutzer. Melden Sie sich mit dem AWS-Konto an, das mit {providerLabel} verknüpft ist.",
-    "organization": "Ihre Organisation (AWS IAM Identity Center)",
-    "organizationDescription": "Verwenden Sie die Start-URL Ihrer Unternehmens-SSO (Beispiel: {url}).",
-    "googleAccount": "Google-Konto",
-    "googleDescription": "Melden Sie sich mit Ihrem Google-Konto an.",
-    "githubAccount": "GitHub-Konto",
-    "githubDescription": "Melden Sie sich mit Ihrem GitHub-Konto an.",
-    "importToken": "Token importieren",
-    "importDescription": "Fügen Sie ein Refresh-Token ein, das von {providerLabel} exportiert wurde.",
-    "apiKey": "API-Schlüssel",
-    "apiKeyDescription": "Fügen Sie einen langlebigen {providerLabel} / CodeWhisperer API-Schlüssel ein. Er wird als Bearer-Anmeldeinformation ohne Aktualisierungstoken gespeichert; die Profilerkennung erfolgt nach bestem Bemühen.",
-    "idcStartUrl": "IDC Start-URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "Die URL des AWS IAM Identity Centers Ihrer Organisation",
-    "awsRegion": "AWS-Region",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS-Region für Ihr Identity Center (Standard: us-east-1)",
-    "continue": "Fortfahren",
-    "back": "Zurück",
-    "autoDetecting": "Token wird automatisch erkannt...",
-    "readingCredentials": "Lese {providerLabel} Anmeldeinformationen aus dem AWS SSO-Cache",
-    "tokenNotDetected": "{providerLabel} Token wurde nicht automatisch erkannt. Bitte fügen Sie Ihr Aktualisierungstoken manuell ein.",
-    "refreshToken": "Aktualisiere Token",
-    "tokenPlaceholder": "Token wird automatisch ausgefüllt...",
-    "importing": "Importiere...",
-    "apiKeyPlaceholder": "Fügen Sie Ihren {providerLabel} API-Schlüssel ein...",
-    "apiKeyStoredDescription": "Als langanhaltendes Träger-Zugangsdokument gespeichert und verschlüsselt. Es gibt keinen Aktualisierungsfluss.",
-    "apiKeyRegionDescription": "AWS-Region für den Schlüssel (Standard: us-east-1)",
-    "validating": "Validiere...",
-    "validateAndSaveApiKey": "API-Schlüssel validieren und speichern",
-    "errorAutoDetect": "Konnte Token nicht automatisch erkennen",
-    "errorAutoDetectFailed": "Token konnte nicht automatisch erkannt werden",
-    "errorRefreshTokenRequired": "Bitte geben Sie ein Aktualisierungstoken ein",
-    "errorImportFailed": "Import fehlgeschlagen",
-    "errorApiKeyRequired": "Bitte geben Sie einen Kiro API-Schlüssel ein",
-    "errorApiKeyImportFailed": "Import der API-Schlüssel fehlgeschlagen",
-    "errorIdcStartUrlRequired": "Bitte geben Sie Ihre IDC-Start-URL ein"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Verbinden Sie {providerLabel} über {providerName}",
-    "errorStartAuthorization": "Fehler beim Starten der Autorisierung",
-    "errorAuthorizationExpired": "Die Autorisierung ist abgelaufen. Starten Sie den Anmeldevorgang erneut.",
-    "errorAuthorizationFailed": "Autorisierung fehlgeschlagen",
-    "initializing": "Initialisiere...",
-    "settingUp": "Einrichten der {providerName} Authentifizierung",
-    "openIncognito": "Öffne diesen Link in einem Inkognito-Fenster",
-    "incognitoDescription": "Verwenden Sie ein Inkognito-/Privatfenster, um Sitzungsprobleme mit bestehenden Konten zu vermeiden.",
-    "copyLink": "Link kopieren",
-    "verificationCode": "Bestätigungscode",
-    "waiting": "Warten auf Autorisierung...",
-    "cancel": "Abbrechen",
-    "successTitle": "Erfolgreich verbunden!",
-    "successMessage": "Ihr {providerLabel}-Konto über {providerName} wurde verbunden.",
-    "done": "Fertig",
-    "errorTitle": "Verbindung fehlgeschlagen",
-    "close": "Schließen"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autorisierung fehlgeschlagen",

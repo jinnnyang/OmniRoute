@@ -87,7 +87,7 @@ function buildProviderRequest(
   credentials: ProviderCredentials
 ): unknown {
   if (provider === ZED_PROVIDER.anthropic) {
-    return openaiToClaudeRequest(model, body, true);
+    return openaiToClaudeRequest(model, body as Record<string, unknown>, true);
   }
   if (provider === ZED_PROVIDER.google) {
     return openaiToGeminiRequest(model, body as Record<string, unknown>, true, credentials);
@@ -106,7 +106,7 @@ function initProviderState(provider: ZedProviderName, model: string): Record<str
   if (provider === ZED_PROVIDER.anthropic) return initState(FORMATS.CLAUDE);
   if (provider === ZED_PROVIDER.google) return initState(FORMATS.GEMINI);
   if (provider === ZED_PROVIDER.openai) return initState(FORMATS.OPENAI_RESPONSES);
-  const state = initState(FORMATS.OPENAI);
+  const state: Record<string, unknown> = initState(FORMATS.OPENAI);
   state.model = model;
   return state;
 }

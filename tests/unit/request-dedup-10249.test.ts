@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeRequestHash, deduplicate, clearInflight } from "../../open-sse/services/requestDedup.ts";
+import {
+  computeRequestHash,
+  deduplicate,
+  clearInflight,
+} from "../../open-sse/services/requestDedup.ts";
 
 // Regression tests for #10249: the dedup hash used to read only `body.messages`,
 // so translated (target-format) bodies that carry the prompt under a different
@@ -16,7 +20,9 @@ test("Gemini-format translated bodies with different prompts must NOT collide on
     temperature: 0,
   };
   const bodyB = {
-    contents: [{ role: "user", parts: [{ text: "Extract every invoice number from the attached PDF." }] }],
+    contents: [
+      { role: "user", parts: [{ text: "Extract every invoice number from the attached PDF." }] },
+    ],
     temperature: 0,
   };
   const hashA = computeRequestHash({ ...bodyA, model: "gemini/gemini-2.5-flash", stream: false });
@@ -35,11 +41,15 @@ test("Gemini-format translated bodies with different prompts must NOT collide on
 test("Responses-API input-format translated bodies with different prompts must NOT collide", async () => {
   clearInflight();
   const bodyA = {
-    input: [{ role: "user", content: [{ type: "input_text", text: "What is the capital of France?" }] }],
+    input: [
+      { role: "user", content: [{ type: "input_text", text: "What is the capital of France?" }] },
+    ],
     temperature: 0,
   };
   const bodyB = {
-    input: [{ role: "user", content: [{ type: "input_text", text: "Explain quantum entanglement." }] }],
+    input: [
+      { role: "user", content: [{ type: "input_text", text: "Explain quantum entanglement." }] },
+    ],
     temperature: 0,
   };
   const hashA = computeRequestHash({ ...bodyA, model: "openai/gpt-4.1", stream: false });
@@ -66,7 +76,7 @@ test("Sanity: OpenAI-format bodies with different prompts DO get distinct hashes
 // Regression tests for #10438: the flat `messages ?? contents ?? input`
 // fallback chain from #10249 still missed the NESTED prompt shapes that
 // `openai-to-gemini.ts::wrapInCloudCodeEnvelope` (Antigravity) and
-// `openai-to-kiro.ts::buildKiroPayload` (Kiro) actually produce, and never
+// actually produce, and never
 // looked at the system/instruction fields (`system` for Claude, `instructions`
 // for the Responses API, `systemInstruction` for Gemini) at all — two
 // requests with the same user message but a different system prompt hashed
@@ -102,37 +112,6 @@ test("Antigravity Cloud Code envelope bodies with different prompts must NOT col
   assert.equal(resB.wasDeduplicated, false);
 });
 
-test("Kiro conversationState bodies with different prompts must NOT collide on dedup hash", async () => {
-  clearInflight();
-  const buildPayload = (content: string) => ({
-    conversationState: {
-      chatTriggerType: "MANUAL",
-      conversationId: "conv-1",
-      currentMessage: {
-        userInputMessage: {
-          content,
-          modelId: "kiro-claude-sonnet",
-          origin: "AI_EDITOR",
-        },
-      },
-      history: [],
-    },
-  });
-  const bodyA = buildPayload("[Context: Current time is 2026-08-17]\n\nWhat is the capital of France?");
-  const bodyB = buildPayload("[Context: Current time is 2026-08-17]\n\nExplain quantum entanglement.");
-  const hashA = computeRequestHash({ ...bodyA, model: "kiro/claude-sonnet-4.5", stream: false });
-  const hashB = computeRequestHash({ ...bodyB, model: "kiro/claude-sonnet-4.5", stream: false });
-  assert.notEqual(hashA, hashB, "Different prompts must have different dedup hashes");
-
-  const [resA, resB] = await Promise.all([
-    deduplicate(hashA, async () => "RESPONSE_A"),
-    deduplicate(hashB, async () => "RESPONSE_B"),
-  ]);
-  assert.equal(resA.result, "RESPONSE_A");
-  assert.equal(resB.result, "RESPONSE_B");
-  assert.equal(resB.wasDeduplicated, false);
-});
-
 test("Claude-translated bodies with the same messages but different `system` prompts must NOT collide", () => {
   const bodyA = {
     messages: [{ role: "user", content: [{ type: "text", text: "Hello" }] }],
@@ -144,9 +123,21 @@ test("Claude-translated bodies with the same messages but different `system` pro
     system: [{ type: "text", text: "You are a formal legal assistant." }],
     temperature: 0,
   };
-  const hashA = computeRequestHash({ ...bodyA, model: "anthropic/claude-sonnet-4.5", stream: false });
-  const hashB = computeRequestHash({ ...bodyB, model: "anthropic/claude-sonnet-4.5", stream: false });
-  assert.notEqual(hashA, hashB, "Same messages with a different system prompt must hash differently");
+  const hashA = computeRequestHash({
+    ...bodyA,
+    model: "anthropic/claude-sonnet-4.5",
+    stream: false,
+  });
+  const hashB = computeRequestHash({
+    ...bodyB,
+    model: "anthropic/claude-sonnet-4.5",
+    stream: false,
+  });
+  assert.notEqual(
+    hashA,
+    hashB,
+    "Same messages with a different system prompt must hash differently"
+  );
 });
 
 test("Responses-API-translated bodies with the same input but different `instructions` must NOT collide", () => {
@@ -176,7 +167,11 @@ test("Gemini-translated bodies with the same contents but different `systemInstr
   };
   const hashA = computeRequestHash({ ...bodyA, model: "gemini/gemini-2.5-flash", stream: false });
   const hashB = computeRequestHash({ ...bodyB, model: "gemini/gemini-2.5-flash", stream: false });
-  assert.notEqual(hashA, hashB, "Same contents with different systemInstruction must hash differently");
+  assert.notEqual(
+    hashA,
+    hashB,
+    "Same contents with different systemInstruction must hash differently"
+  );
 });
 
 test("Genuinely identical requests still hash identically and get deduplicated (perf feature preserved)", async () => {
@@ -196,10 +191,7 @@ test("Genuinely identical requests still hash identically and get deduplicated (
     return "SHARED_RESPONSE";
   };
 
-  const [resA, resB] = await Promise.all([
-    deduplicate(hash1, slowFn),
-    deduplicate(hash2, slowFn),
-  ]);
+  const [resA, resB] = await Promise.all([deduplicate(hash1, slowFn), deduplicate(hash2, slowFn)]);
   assert.equal(resA.result, "SHARED_RESPONSE");
   assert.equal(resB.result, "SHARED_RESPONSE");
   assert.equal(callCount, 1, "Identical concurrent requests must share a single upstream call");

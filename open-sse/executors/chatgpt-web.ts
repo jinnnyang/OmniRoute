@@ -1584,7 +1584,7 @@ function buildStreamingResponse(
     ((conversationId: string, resumeToken: string) => Promise<FinalAssistantAnswer | null>) | null,
   // Legacy fallback for handoffs that omit the conduit token.
   pollFinalAnswer: ((conversationId: string) => Promise<FinalAssistantAnswer | null>) | null,
-  log: { warn?: (tag: string, msg: string) => void } | null,
+  log?: { warn?: (tag: string, msg: string) => void } | null,
   signal?: AbortSignal | null
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
@@ -1934,7 +1934,7 @@ async function buildNonStreamingResponse(
   resumeFinalAnswer:
     ((conversationId: string, resumeToken: string) => Promise<FinalAssistantAnswer | null>) | null,
   pollFinalAnswer: ((conversationId: string) => Promise<FinalAssistantAnswer | null>) | null,
-  log: { warn?: (tag: string, msg: string) => void } | null,
+  log?: { warn?: (tag: string, msg: string) => void } | null,
   signal?: AbortSignal | null
 ): Promise<Response> {
   let fullAnswer = "";
@@ -2136,7 +2136,7 @@ function deriveHeaderBaseUrl(clientHeaders?: Record<string, string> | null): str
  */
 function derivePublicBaseUrl(
   clientHeaders?: Record<string, string> | null,
-  log?: { debug?: (tag: string, msg: string) => void }
+  log?: { debug?: (tag: string, msg: string) => void } | null
 ): string {
   const explicitPublicBase = normalizePublicBaseUrl(process.env.OMNIROUTE_PUBLIC_BASE_URL);
   if (explicitPublicBase) {
@@ -2183,7 +2183,7 @@ interface ResolverContext {
   deviceId: string;
   cookie: string;
   signal?: AbortSignal | null;
-  log?: Partial<Record<"debug" | "info" | "warn", (tag: string, msg: string) => void>>;
+  log?: Partial<Record<"debug" | "info" | "warn", (tag: string, msg: string) => void>> | null;
   /**
    * Absolute base URL that downstream clients should use to fetch cached
    * images served by /v1/chatgpt-web/image/<id>. Derived from the inbound

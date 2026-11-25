@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import {
   BaseExecutor,
   ExecuteInput,
+  type ExecutorLog,
   type ProviderConfig,
   type ProviderCredentials,
 } from "./base.ts";
@@ -119,7 +120,7 @@ export class GithubExecutor extends BaseExecutor {
         "https://api.githubcopilot.com/responses"
       );
     }
-    return this.config.baseUrl;
+    return this.config.baseUrl ?? "";
   }
 
   injectResponseFormat(messages: Array<Record<string, any>>, responseFormat: any) {
@@ -335,8 +336,7 @@ export class GithubExecutor extends BaseExecutor {
     const headers: Record<string, string> = {
       ...getGitHubCopilotChatHeaders(stream ? "text/event-stream" : "application/json", initiator),
       Authorization: `Bearer ${token}`,
-      "x-request-id":
-        crypto.randomUUID?.() || randomIdFallback(),
+      "x-request-id": crypto.randomUUID?.() || randomIdFallback(),
     };
 
     // Per-call / per-conversation / per-turn correlation ids the @github/copilot
@@ -344,13 +344,12 @@ export class GithubExecutor extends BaseExecutor {
     // id (getGitHubCopilotMachineId) is stable per-install; these three are
     // fresh uuids. A Copilot-aware client may pin the session/task ids across a
     // conversation via its own headers — honor those when present, else mint.
-    const genId = () =>
-      crypto.randomUUID?.() || randomIdFallback();
-    headers["x-interaction-id"] = this.readClientHeader(clientHeaders, "x-interaction-id") || genId();
+    const genId = () => crypto.randomUUID?.() || randomIdFallback();
+    headers["x-interaction-id"] =
+      this.readClientHeader(clientHeaders, "x-interaction-id") || genId();
     headers["x-client-session-id"] =
       this.readClientHeader(clientHeaders, "x-client-session-id") || genId();
-    headers["x-agent-task-id"] =
-      this.readClientHeader(clientHeaders, "x-agent-task-id") || genId();
+    headers["x-agent-task-id"] = this.readClientHeader(clientHeaders, "x-agent-task-id") || genId();
     // Repository correlation sentinels. The CLI sends the working repo's nwo/host
     // or these literals when there is no repository context. OmniRoute is not
     // repo-scoped, so forward a client-supplied value when present, else sentinel.
@@ -376,7 +375,10 @@ export class GithubExecutor extends BaseExecutor {
     // /v1/messages proxy returns an empty content block for image turns unless
     // copilot-vision-request:true is present; a Copilot-aware harness that sends
     // it should have it honored rather than stripped.
-    if ((this.readClientHeader(clientHeaders, "copilot-vision-request") || "").toLowerCase() === "true") {
+    if (
+      (this.readClientHeader(clientHeaders, "copilot-vision-request") || "").toLowerCase() ===
+      "true"
+    ) {
       headers["copilot-vision-request"] = "true";
     }
 
@@ -439,7 +441,7 @@ export class GithubExecutor extends BaseExecutor {
     }
   }
 
-  async refreshGitHubToken(refreshToken, log) {
+  async refreshGitHubToken(refreshToken: string, log?: ExecutorLog | null) {
     try {
       // GitHub Copilot is a public device-flow client: send the public client_id, and
       // only attach client_secret when one is actually configured — never the literal
@@ -447,7 +449,7 @@ export class GithubExecutor extends BaseExecutor {
       const params = new URLSearchParams({
         grant_type: "refresh_token",
         refresh_token: refreshToken,
-        client_id: this.config.clientId,
+        client_id: this.config.clientId || "",
       });
       if (this.config.clientSecret) {
         params.set("client_secret", this.config.clientSecret);

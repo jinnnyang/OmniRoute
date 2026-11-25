@@ -6,17 +6,13 @@ const require = createRequire(import.meta.url);
 const routing = require("../../src/mitm/_internal/standaloneRouting.cjs");
 const aliasConfigShim = require("../../src/mitm/_internal/aliasConfig.cjs");
 
-test("standalone MITM route config maps Claude Code and Kiro messages to /v1/messages", () => {
+test("standalone MITM route config maps Claude Code messages to /v1/messages", () => {
   const claude = routing.getAgentRouteConfig("claude-code");
-  const kiro = routing.getAgentRouteConfig("kiro");
   const antigravity = routing.getAgentRouteConfig("antigravity");
 
   assert.equal(claude.aliasKey, "claude-code");
   assert.deepEqual(claude.chatUrlPatterns, ["/v1/messages"]);
   assert.equal(claude.routerPath, "/v1/messages");
-  assert.equal(kiro.aliasKey, "kiro");
-  assert.deepEqual(kiro.chatUrlPatterns, ["/v1/messages"]);
-  assert.equal(kiro.routerPath, "/v1/messages");
   assert.deepEqual(antigravity.chatUrlPatterns, [":generateContent", ":streamGenerateContent"]);
   assert.equal(routing.getAgentRouteConfig("unknown"), antigravity);
 });
@@ -90,16 +86,16 @@ test("standalone MITM resolves structured aliases from the agent-specific namesp
 test("standalone MITM resolves legacy JSON aliases from the agent-specific namespace", () => {
   const legacyDb = {
     mitmAlias: {
-      kiro: {
-        "kiro-source": "kiro/claude-sonnet-5",
+      "claude-code": {
+        "cc-legacy-source": "claude-code/claude-sonnet-5",
       },
       antigravity: {
-        "kiro-source": "antigravity-should-not-win",
+        "cc-legacy-source": "antigravity-should-not-win",
       },
     },
   };
 
-  const override = routing.resolveMappedOverride("kiro-source", "kiro", {
+  const override = routing.resolveMappedOverride("cc-legacy-source", "claude-code", {
     fs: {
       existsSync: () => true,
       readFileSync: () => JSON.stringify(legacyDb),
@@ -109,5 +105,5 @@ test("standalone MITM resolves legacy JSON aliases from the agent-specific names
     aliasConfigShim,
   });
 
-  assert.deepEqual(override, { model: "kiro/claude-sonnet-5" });
+  assert.deepEqual(override, { model: "claude-code/claude-sonnet-5" });
 });

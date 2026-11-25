@@ -12,15 +12,12 @@ import {
   GITHUB_COPILOT_HARNESS_ID,
   GITHUB_COPILOT_REFRESH_PLUGIN_VERSION,
   GITHUB_COPILOT_REFRESH_USER_AGENT,
-  KIRO_AMZ_USER_AGENT,
-  KIRO_SDK_USER_AGENT,
   QWEN_CLI_VERSION,
   getGitHubCopilotMachineId,
   getQwenCliUserAgent,
   getGitHubCopilotChatHeaders,
   getGitHubCopilotInternalUserHeaders,
   getGitHubCopilotRefreshHeaders,
-  getKiroServiceHeaders,
   getQoderDashscopeCompatHeaders,
 } from "../../open-sse/config/providerHeaderProfiles.ts";
 
@@ -67,7 +64,7 @@ test("getGitHubCopilotMachineId is stable across calls and vision toggles the vi
   assert.equal(plain["x-client-machine-id"], vision["x-client-machine-id"]);
 });
 
-test("provider header profiles expose dedicated refresh, qoder and kiro variants", () => {
+test("provider header profiles expose dedicated refresh and qoder variants", () => {
   const refreshHeaders = getGitHubCopilotRefreshHeaders("token gh-access");
   assert.equal(refreshHeaders.Authorization, "token gh-access");
   assert.equal(refreshHeaders["User-Agent"], GITHUB_COPILOT_REFRESH_USER_AGENT);
@@ -81,11 +78,6 @@ test("provider header profiles expose dedicated refresh, qoder and kiro variants
     qoderHeaders["user-agent"],
     `QwenCode/${QWEN_CLI_VERSION} (${process.platform}; ${process.arch})`
   );
-
-  const kiroHeaders = getKiroServiceHeaders("application/json");
-  assert.equal(kiroHeaders.Accept, "application/json");
-  assert.equal(kiroHeaders["User-Agent"], KIRO_SDK_USER_AGENT);
-  assert.equal(kiroHeaders["X-Amz-User-Agent"], KIRO_AMZ_USER_AGENT);
 });
 
 test("provider header profiles tolerate browser-like process shims", async () => {

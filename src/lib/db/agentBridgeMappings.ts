@@ -8,7 +8,7 @@ import type { AgentBridgeMappingRow } from "./_rowTypes";
 import { setMitmAliasAll } from "./models/mitmAlias";
 
 /** Agents that have a registered alias key in standaloneRouting.cjs::AGENT_ROUTE_CONFIG. */
-const MITM_ALIAS_AGENTS = new Set(["antigravity", "claude-code", "kiro"]);
+const MITM_ALIAS_AGENTS = new Set(["antigravity", "claude-code"]);
 
 export function getMappingsForAgent(agentId: string): AgentBridgeMappingRow[] {
   const db = getDbInstance();
@@ -57,7 +57,7 @@ export function deleteMapping(agentId: string, source: string): void {
  * interception.
  *
  * Only syncs agents that have a dedicated alias key in
- * standaloneRouting.cjs::AGENT_ROUTE_CONFIG (antigravity, claude-code, kiro).
+ * standaloneRouting.cjs::AGENT_ROUTE_CONFIG (antigravity, claude-code).
  * Other agents fall through to the antigravity config and don't need their own
  * entry.
  *

@@ -13,7 +13,6 @@
 
 export const PROVIDER_COLORS = {
   github: { bg: "#6e40c9", text: "#fff", label: "GitHub" },
-  kiro: { bg: "#FF9900", text: "#000", label: "Kiro" },
   antigravity: { bg: "#4285F4", text: "#fff", label: "AG" },
   claude: { bg: "#D97757", text: "#fff", label: "Claude" },
   codex: { bg: "#10A37F", text: "#fff", label: "Codex" },

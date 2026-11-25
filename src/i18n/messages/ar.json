@@ -2873,9 +2873,8 @@
       "cursor": "استخدمه عند البرمجة في Cursor وتحتاج إلى نماذج مخصصة متوافقة مع OpenAI من خلال OmniRoute.",
       "continue": "استخدمه عند تشغيل متابعة في IDEs وتحتاج إلى تكوين موفر محمول يستند إلى JSON.",
       "opencode": "استخدمه عندما تفضل تشغيل الوكيل الأصلي للمحطة والأتمتة النصية عبر OpenCode.",
-      "kiro": "يُستخدم عند دمج Kiro والتحكم في توجيه النموذج مركزيًا من OmniRoute.",
       "windsurf": "استخدمه عندما تريد بيئة تطوير متكاملة مبنية للذكاء الاصطناعي مع توجيه نماذج Codeium/Windsurf عبر OmniRoute.",
-      "antigravity": "يُستخدم عندما يجب اعتراض حركة مرور Antigravity/Kiro عبر MITM وتوجيهها إلى OmniRoute.",
+      "antigravity": "يُستخدم عندما يجب اعتراض حركة مرور Antigravity عبر MITM وتوجيهها إلى OmniRoute.",
       "copilot": "استخدمه عندما تريد UX بأسلوب دردشة Copilot أثناء فرض مفاتيح OmniRoute وقواعد التوجيه.",
       "amp": "استخدمه عندما تريد توجيه Amp CLI عبر OmniRoute بأسماء مستعارة مختصرة ثابتة وإعداد متوافق مع OpenAI.",
       "hermes": "استخدمه عندما تحتاج إلى مساعد AI خفيف الوزن ومعتمد على الأجهزة الطرفية للقيام بالمهام السريعة.",
@@ -2895,7 +2894,6 @@
       "cursor": "محرر كود Cursor AI",
       "continue": "Continue مساعد الذكاء الاصطناعي",
       "opencode": "وكيل OpenCode للبرمجة بالذكاء الاصطناعي عبر الطرفية",
-      "kiro": "Amazon Kiro — بيئة تطوير متكاملة مدعومة بالذكاء الاصطناعي",
       "windsurf": "محرر الشيفرة Windsurf المدعوم بالذكاء الاصطناعي",
       "copilot": "مساعد GitHub Copilot بالذكاء الاصطناعي",
       "amp": "مساعد Sourcegraph Amp للبرمجة عبر سطر الأوامر",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "يتطلب OpenCode تكوين مفتاح API.",
           "1": "قم بتعيين عنوان URL الأساسي إلى نقطة نهاية OmniRoute الخاصة بك."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "فتح إعدادات Kiro",
-            "desc": "انتقل إلى الإعدادات ← مزوّد الذكاء الاصطناعي"
-          },
-          "2": {
-            "title": "عنوان URL الأساسي",
-            "desc": "الصق عنوان URL لنقطة نهاية OmniRoute"
-          },
-          "3": {
-            "title": "مفتاح API"
-          },
-          "4": {
-            "title": "اختيار النموذج"
-          }
-        },
-        "notes": {
-          "0": "يتطلب Kiro حساب Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "مكدس مجاني ($0)",
-    "templateFreeStackDesc": "توزيع دوري عبر جميع المزودين المجانيين: Kiro (Claude) وQoder (5 نماذج) وQwen (4 نماذج). بلا تكلفة ولا توقف عن البرمجة.",
+    "templateFreeStackDesc": "توزيع دوري عبر جميع المزودين المجانيين: Qoder (5 نماذج) وQwen (4 نماذج). بلا تكلفة ولا توقف عن البرمجة.",
     "auto": "مجموعة تلقائية",
     "autoDesc": "مجموعة توجيه ذكية ذاتية الإصلاح (محسّنة للأداء)",
     "lkgp": "وضع LKGP",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "وكيل عكسي مجاني بدون مفتاح من g4f.space إلى Pollinations، محدود بـ 5 طلبات في الدقيقة.",
       "mixedbread": "إنشاء تضمينات (embeddings) باستخدام واجهة برمجة تطبيقات Mixedbread.",
       "segmind": "توليد الصور ومقاطع الفيديو باستخدام نماذج Segmind المستضافة.",
-      "amazon-q": "يستخدم نفس معرف AWS Builder ID أو تدفق رمز التحديث (refresh-token) المستورد مثل Kiro، ولكنه يبقي اتصالات Amazon Q منفصلة.",
+      "amazon-q": "يستخدم معرف AWS Builder ID أو تدفق رمز التحديث (refresh-token) المستورد، ولكنه يبقي اتصالات Amazon Q منفصلة.",
       "antigravity": "ربط Antigravity باستخدام تدفق OAuth الحالي.",
       "agy": "استورد تسجيل دخول Antigravity CLI (`agy`) (الصق/ارفع ملف الرمز الخاص به)، أو اكتشف تلقائيًا تسجيل دخول CLI محلي، أو سجل الدخول باستخدام Google. يشارك الواجهة الخلفية لـ Antigravity (بما في ذلك نماذج Claude).",
       "claude": "ربط Claude Code باستخدام تدفق OAuth الحالي.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "تطبيق OAuth بنطاقات ai_features + read_user. قم بتكوين GITLAB_DUO_OAUTH_CLIENT_ID واختياريًا GITLAB_DUO_OAUTH_CLIENT_SECRET على مثيل OmniRoute هذا.",
       "kilocode": "ربط Kilo Code باستخدام تدفق OAuth الحالي.",
       "kimi-coding": "ربط Kimi Coding باستخدام تدفق OAuth الحالي.",
-      "kiro": "الفئة المجانية: 50 رصيدًا شهريًا (~25 ألف–100 ألف توكن). ⚠️ تحظر شروط خدمة Kiro استخدام وكيل/أداة خارجية.",
       "codex": "ربط OpenAI Codex باستخدام تدفق OAuth الحالي.",
       "qwen": "ربط Qwen Code باستخدام تدفق OAuth الحالي.",
       "github-models": "أنشئ رمز وصول شخصي (PAT) لـ GitHub بنطاق 'models: read' على github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "حساب Google",
     "githubAccount": "حساب Github",
     "importToken": "رمز الاستيراد",
-    "pasteToken": "قم بلصق رمز التحديث من Kiro IDE.",
+    "pasteToken": "قم بلصق رمز التحديث.",
     "awsRegion": "منطقة أوس",
     "autoDetecting": "الكشف التلقائي عن الرموز...",
     "readingFromCache": "القراءة من الذاكرة المؤقتة لـ AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "حالة النظام"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "اتصل بـ {providerLabel}",
-    "chooseMethod": "اختر طريقة المصادقة الخاصة بك:",
-    "builderId": "معرف منشئ AWS",
-    "builderDescription": "موصى به لمعظم المستخدمين. قم بتسجيل الدخول باستخدام حساب AWS المرتبط بـ {providerLabel}.",
-    "organization": "منظمتك (AWS IAM Identity Center)",
-    "organizationDescription": "استخدم عنوان URL لبدء SSO الخاص بشركتك (مثال: {url}).",
-    "googleAccount": "حساب Google",
-    "googleDescription": "تسجيل الدخول باستخدام حساب Google الخاص بك.",
-    "githubAccount": "حساب GitHub",
-    "githubDescription": "تسجيل الدخول باستخدام حساب GitHub الخاص بك.",
-    "importToken": "استيراد الرمز",
-    "importDescription": "الصق رمز التحديث الذي تم تصديره من {providerLabel}.",
-    "apiKey": "مفتاح API",
-    "apiKeyDescription": "الصق مفتاح API طويل الأمد لـ {providerLabel} / CodeWhisperer. يتم تخزينه كاعتماد حامل بدون رمز تحديث؛ اكتشاف الملف الشخصي يعتمد على الجهد الأفضل.",
-    "idcStartUrl": "رابط بدء IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "رابط مركز هوية AWS IAM الخاص بمنظمتك",
-    "awsRegion": "منطقة AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "منطقة AWS لمركز الهوية الخاص بك (افتراضي: us-east-1)",
-    "continue": "استمر",
-    "back": "رجوع",
-    "autoDetecting": "يتم الكشف عن الرمز تلقائيًا...",
-    "readingCredentials": "قراءة بيانات اعتماد {providerLabel} من ذاكرة التخزين المؤقت لـ AWS SSO",
-    "tokenNotDetected": "لم يتم اكتشاف رمز {providerLabel} تلقائيًا. يرجى لصق رمز التحديث الخاص بك يدويًا.",
-    "refreshToken": "تحديث الرمز",
-    "tokenPlaceholder": "سيتم ملء الرمز تلقائيًا...",
-    "importing": "جارٍ الاستيراد...",
-    "apiKeyPlaceholder": "الصق مفتاح API الخاص بك {providerLabel}...",
-    "apiKeyStoredDescription": "تم تخزينه مشفراً كاعتماد حاملي طويل الأمد. لا يوجد تدفق تحديث.",
-    "apiKeyRegionDescription": "منطقة AWS للمفتاح (افتراضي: us-east-1)",
-    "validating": "جارٍ التحقق...",
-    "validateAndSaveApiKey": "تحقق من مفتاح API واحفظه",
-    "errorAutoDetect": "تعذر الكشف التلقائي عن الرمز",
-    "errorAutoDetectFailed": "فشل في الكشف التلقائي عن الرمز",
-    "errorRefreshTokenRequired": "يرجى إدخال رمز التحديث",
-    "errorImportFailed": "فشل الاستيراد",
-    "errorApiKeyRequired": "يرجى إدخال مفتاح واجهة برمجة تطبيقات Kiro",
-    "errorApiKeyImportFailed": "فشل استيراد مفتاح API",
-    "errorIdcStartUrlRequired": "يرجى إدخال عنوان URL لبدء IDC الخاص بك"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "اتصل بـ {providerLabel} عبر {providerName}",
-    "errorStartAuthorization": "فشل في بدء التفويض",
-    "errorAuthorizationExpired": "انتهت صلاحية التفويض. ابدأ عملية تسجيل الدخول مرة أخرى.",
-    "errorAuthorizationFailed": "فشل التفويض",
-    "initializing": "جارٍ التهيئة...",
-    "settingUp": "إعداد مصادقة {providerName}",
-    "openIncognito": "افتح هذا الرابط في نافذة التصفح المتخفي",
-    "incognitoDescription": "استخدم نافذة التصفح المتخفي/الخاص لتجنب تعارضات الجلسة مع الحسابات الموجودة.",
-    "copyLink": "نسخ الرابط",
-    "verificationCode": "رمز التحقق",
-    "waiting": "في انتظار التفويض...",
-    "cancel": "إلغاء",
-    "successTitle": "تم الاتصال بنجاح!",
-    "successMessage": "تم ربط حسابك {providerLabel} عبر {providerName}.",
-    "done": "تمّ",
-    "errorTitle": "فشل الاتصال",
-    "close": "إغلاق"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "فشل التفويض",

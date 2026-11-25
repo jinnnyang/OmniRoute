@@ -43,9 +43,9 @@ export class CheaperInferenceExecutor extends BaseExecutor {
 
   buildUrl(model: string, _stream: boolean, _urlIndex = 0): string {
     if (this.usesResponsesEndpoint(model)) {
-      return this.config.responsesBaseUrl || this.config.baseUrl;
+      return this.config.responsesBaseUrl || this.config.baseUrl || "";
     }
-    return this.config.baseUrl;
+    return this.config.baseUrl ?? "";
   }
 
   transformRequest(

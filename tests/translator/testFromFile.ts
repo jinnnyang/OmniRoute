@@ -4,7 +4,7 @@
  * Test sending request from converted file directly to provider
  * Usage:
  *   node testFromFile.js <file-path>
- *   node testFromFile.js data/claude-to-kiro/3_converted_request.json
+ *   node testFromFile.js data/cache/converted_request.json
  */
 
 import fs from "fs";
@@ -20,7 +20,7 @@ if (args.length === 0 || args[0] === "--help" || args[0] === "-h") {
   console.log("  node testFromFile.js <file-path>");
   console.log("");
   console.log("Examples:");
-  console.log("  node testFromFile.js data/claude-to-kiro/3_converted_request.json");
+  console.log("  node testFromFile.js data/cache/converted_request.json");
   console.log("  node testFromFile.js ../logs/openai_codex_xxx/3_converted_request.json");
   console.log("");
   console.log("File format:");

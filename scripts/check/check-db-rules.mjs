@@ -86,7 +86,7 @@ export const KNOWN_UNEXPORTED = INTENTIONALLY_INTERNAL;
 
 // (c) Leituras de SQL contra bancos EXTERNOS, permitidas por design (#3500).
 // Esta rota NÃO consulta o DB do OmniRoute (getDbInstance) — ela abre o
-// SQLite de OUTRO aplicativo (Kiro) para auto-importar credenciais.
+// SQLite de OUTRO aplicativo para auto-importar credenciais.
 // Por isso NÃO pode viver em src/lib/db/ (que é o domínio do DB do OmniRoute):
 // é uma leitura read-only de um arquivo externo, com caminho/escopo próprio.
 // Continua no allowlist como exceção DOCUMENTADA — o gate ainda bloqueia
@@ -97,9 +97,7 @@ export const KNOWN_UNEXPORTED = INTENTIONALLY_INTERNAL;
 // precisa de entrada aqui: o SQL contra o state.vscdb externo do Cursor vive
 // em src/lib/cursor/tokenExtractor.ts, fora do escopo desta checagem (que só
 // varre src/app/api/**/route.ts e open-sse/handlers/*.ts).
-const EXTERNAL_DB_ALLOWED = new Set([
-  "src/app/api/oauth/kiro/auto-import/route.ts", // read-only no SQLite do Kiro (DB externo)
-]);
+const EXTERNAL_DB_ALLOWED = new Set([]);
 
 // Alias de retrocompatibilidade (testes/consumidores que importam KNOWN_RAW_SQL).
 // Comportamento do gate idêntico — só o nome e o enquadramento mudaram (#3500).

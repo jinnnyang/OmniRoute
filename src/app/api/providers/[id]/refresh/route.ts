@@ -55,7 +55,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     // Codex/OpenAI multi-account family-revocation cascade guard.
     // These two providers share the same Auth0 client_id and can revoke sibling
     // accounts when several refresh_tokens are rotated proactively. Other
-    // serialized providers (for example Kiro) still support safe manual refresh;
+    // serialized providers still support safe manual refresh;
     // the serializer only prevents concurrent sibling refreshes.
     const rotationGroup = rotationGroupFor(provider);
     if (rotationGroup === "openai-auth0") {

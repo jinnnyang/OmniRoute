@@ -692,28 +692,6 @@ test("provider models route returns the updated local catalog for GitHub Copilot
   );
 });
 
-test("provider models route returns the expanded local catalog for Kiro", async () => {
-  const connection = await seedConnection("kiro", {
-    authType: "oauth",
-    apiKey: null,
-    accessToken: "kiro-access",
-  });
-
-  const response = await callRoute(connection.id);
-  const body = (await response.json()) as any;
-
-  assert.equal(response.status, 200);
-  assert.equal(body.provider, "kiro");
-  assert.equal(body.source, "local_catalog");
-  const kiroIds = new Set(body.models.map((model) => model.id)); // #6170: real upstream lineup
-  assert.ok(
-    kiroIds.has("claude-sonnet-5") &&
-      kiroIds.has("claude-sonnet-4.5") &&
-      kiroIds.has("claude-haiku-4.5")
-  );
-  assert.equal(kiroIds.has("claude-opus-4.7") || kiroIds.has("claude-sonnet-4.6"), false); // fabricated ids removed
-});
-
 test("provider models route returns the local catalog for new built-in chat-openai-compat providers", async () => {
   const connection = await seedConnection("deepinfra", {
     apiKey: "deepinfra-key",

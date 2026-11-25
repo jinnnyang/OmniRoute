@@ -83,8 +83,8 @@ export function filterToOpenAIFormat(body, opts: FilterToOpenAIFormatOptions = {
 
     // Handle array content
     if (Array.isArray(msg.content)) {
-      const filteredContent = [];
-      let thinkingText = null;
+      const filteredContent: Array<Record<string, unknown>> = [];
+      let thinkingText: string | null = null;
 
       for (const block of msg.content) {
         // Extract thinking blocks as reasoning_content (OpenAI extended thinking)
@@ -104,9 +104,7 @@ export function filterToOpenAIFormat(body, opts: FilterToOpenAIFormatOptions = {
           // honors OpenAI-format cache breakpoints and preservation was requested (#2069).
           const { signature, cache_control, ...rest } = block;
           const cleanBlock =
-            preserveCacheControl && cache_control !== undefined
-              ? { ...rest, cache_control }
-              : rest;
+            preserveCacheControl && cache_control !== undefined ? { ...rest, cache_control } : rest;
           if (
             cleanBlock.type === "text" &&
             typeof cleanBlock.text === "string" &&

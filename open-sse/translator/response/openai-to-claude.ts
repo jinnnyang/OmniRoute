@@ -21,6 +21,75 @@ interface XmlToolCall {
   args: Record<string, string>;
 }
 
+// OpenAI Chat Completions streaming chunk, as consumed by this translator.
+type OpenAIToClaudeDelta = {
+  content?: string | null;
+  reasoning_content?: string;
+  reasoning?: string;
+  reasoning_details?: Array<{ text?: unknown; content?: unknown }>;
+  tool_calls?: Array<{
+    index?: number;
+    id?: string;
+    function?: { name?: string; arguments?: string };
+  }>;
+};
+
+type OpenAIToClaudeUsage = {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  prompt_tokens_details?: {
+    cached_tokens?: number;
+    cache_creation_tokens?: number;
+  };
+  completion_tokens_details?: { reasoning_tokens?: number };
+};
+
+type OpenAIToClaudeChunk = {
+  id?: string;
+  model?: string;
+  choices?: Array<{
+    index?: number;
+    delta?: OpenAIToClaudeDelta;
+    finish_reason: string | null;
+  }>;
+  usage?: OpenAIToClaudeUsage | null;
+  extend_fields?: { requestId?: string; traceId?: string };
+};
+
+// Per-tool accumulation entry in state.toolCalls.
+type OpenAIToClaudeToolInfo = {
+  id: string;
+  name: string;
+  blockIndex: number;
+  shimmed: boolean;
+  argBuffer: string;
+  startEmitted: boolean;
+};
+
+type OpenAIToClaudeState = {
+  _xmlInvokeBuffer?: string;
+  _pendingXmlToolCalls: XmlToolCall[];
+  messageId: string;
+  messageStartSent?: boolean;
+  model: string;
+  nextBlockIndex: number;
+  usage?: {
+    input_tokens: number;
+    output_tokens: number;
+    cache_read_input_tokens?: number;
+    cache_creation_input_tokens?: number;
+  };
+  thinkingBlockIndex: number;
+  thinkingBlockStarted?: boolean;
+  textBlockIndex: number;
+  textBlockStarted?: boolean;
+  textBlockClosed?: boolean;
+  toolCalls: Map<number, OpenAIToClaudeToolInfo>;
+  toolNameMap?: Map<string, string> | null;
+  claudeFinishEmitted?: boolean;
+  finishReason?: string | null;
+};
+
 /**
  * Extract complete XML <invoke> blocks from text content.
  * Some models (e.g. nvidia/abacusai/dracarys) emit tool calls as
@@ -31,7 +100,7 @@ interface XmlToolCall {
  */
 function extractXmlInvokeBlocks(
   text: string,
-  state
+  state: OpenAIToClaudeState
 ): { cleaned: string; toolCalls: XmlToolCall[] } {
   const toolCalls: XmlToolCall[] = [];
   const combined = (state._xmlInvokeBuffer || "") + text;
@@ -46,10 +115,22 @@ function extractXmlInvokeBlocks(
     const toolCallTextMatch = remaining.match(/TOOL_CALL\s+([A-Za-z0-9_]+):\s*/);
 
     const matches = [
-      invokeMatch ? { type: "invoke" as const, index: invokeMatch.index!, data: invokeMatch } : null,
-      toolCallTagMatch ? { type: "tool_call_tag" as const, index: toolCallTagMatch.index!, data: toolCallTagMatch } : null,
-      toolCallTextMatch ? { type: "tool_call_text" as const, index: toolCallTextMatch.index!, data: toolCallTextMatch } : null,
-    ].filter(Boolean).sort((a, b) => a!.index - b!.index);
+      invokeMatch
+        ? { type: "invoke" as const, index: invokeMatch.index!, data: invokeMatch }
+        : null,
+      toolCallTagMatch
+        ? { type: "tool_call_tag" as const, index: toolCallTagMatch.index!, data: toolCallTagMatch }
+        : null,
+      toolCallTextMatch
+        ? {
+            type: "tool_call_text" as const,
+            index: toolCallTextMatch.index!,
+            data: toolCallTextMatch,
+          }
+        : null,
+    ]
+      .filter(Boolean)
+      .sort((a, b) => a!.index - b!.index);
 
     if (matches.length === 0) {
       cleaned += remaining;
@@ -94,9 +175,7 @@ function extractXmlInvokeBlocks(
         const name = (parsed.name || parsed.tool_name || "") as string;
         const rawArgs = parsed.arguments || parsed.args || parsed.parameters || {};
         const args: Record<string, string> =
-          typeof rawArgs === "string"
-            ? JSON.parse(rawArgs)
-            : (rawArgs as Record<string, string>);
+          typeof rawArgs === "string" ? JSON.parse(rawArgs) : (rawArgs as Record<string, string>);
         if (name) {
           toolCalls.push({ id: `toolu_txt_${Date.now()}_${toolCalls.length}`, name, args });
         }
@@ -114,12 +193,27 @@ function extractXmlInvokeBlocks(
       let jsonEndIndex = -1;
       for (let i = 0; i < afterPrefix.length; i++) {
         const c = afterPrefix[i];
-        if (escape) { escape = false; continue; }
-        if (c === "\\" && inString) { escape = true; continue; }
-        if (c === '"') { inString = !inString; continue; }
+        if (escape) {
+          escape = false;
+          continue;
+        }
+        if (c === "\\" && inString) {
+          escape = true;
+          continue;
+        }
+        if (c === '"') {
+          inString = !inString;
+          continue;
+        }
         if (!inString) {
           if (c === "{") depth++;
-          else if (c === "}") { depth--; if (depth === 0) { jsonEndIndex = i + 1; break; } }
+          else if (c === "}") {
+            depth--;
+            if (depth === 0) {
+              jsonEndIndex = i + 1;
+              break;
+            }
+          }
         }
       }
       if (jsonEndIndex === -1) {
@@ -142,7 +236,7 @@ function extractXmlInvokeBlocks(
 }
 
 // Helper: stop thinking block if started
-function stopThinkingBlock(state, results) {
+function stopThinkingBlock(state: OpenAIToClaudeState, results: Array<Record<string, unknown>>) {
   if (!state.thinkingBlockStarted) return;
   results.push({
     type: "content_block_stop",
@@ -152,7 +246,7 @@ function stopThinkingBlock(state, results) {
 }
 
 // Helper: stop text block if started
-function stopTextBlock(state, results) {
+function stopTextBlock(state: OpenAIToClaudeState, results: Array<Record<string, unknown>>) {
   if (!state.textBlockStarted || state.textBlockClosed) return;
   state.textBlockClosed = true;
   results.push({
@@ -163,10 +257,13 @@ function stopTextBlock(state, results) {
 }
 
 // Convert OpenAI stream chunk to Claude format
-export function openaiToClaudeResponse(chunk, state) {
+export function openaiToClaudeResponse(
+  chunk: OpenAIToClaudeChunk | null,
+  state: OpenAIToClaudeState
+) {
   if (!chunk || !chunk.choices?.[0]) return null;
 
-  const results = [];
+  const results: Array<Record<string, unknown>> = [];
   const choice = chunk.choices[0];
   const delta = choice.delta;
 
@@ -519,7 +616,7 @@ export function openaiToClaudeResponse(chunk, state) {
 }
 
 // Convert OpenAI finish_reason to Claude stop_reason
-function convertFinishReason(reason) {
+function convertFinishReason(reason: string) {
   switch (reason) {
     case "stop":
       return "end_turn";

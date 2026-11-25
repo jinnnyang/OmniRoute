@@ -11,7 +11,6 @@
  */
 import type { AgentId, DetectionResult } from "../types";
 import { detectAntigravity } from "./antigravity";
-import { detectKiro } from "./kiro";
 import { detectCopilot } from "./copilot";
 import { detectCodex } from "./codex";
 import { detectCursor } from "./cursor";
@@ -21,7 +20,6 @@ import { detectOpenCode } from "./openCode";
 
 export const DETECTORS: Record<AgentId, () => DetectionResult> = {
   antigravity: detectAntigravity,
-  kiro: detectKiro,
   copilot: detectCopilot,
   codex: detectCodex,
   cursor: detectCursor,
@@ -43,7 +41,6 @@ export function detectAgent(id: AgentId): DetectionResult {
 
 export {
   detectAntigravity,
-  detectKiro,
   detectCopilot,
   detectCodex,
   detectCursor,

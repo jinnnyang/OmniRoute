@@ -192,7 +192,10 @@ export class CopilotWebExecutor extends BaseExecutor {
   /**
    * Get or create a session. Rotates when remainingTurns is low or blocked.
    */
-  private async getSession(accessToken?: string, signal?: AbortSignal): Promise<CopilotSession> {
+  private async getSession(
+    accessToken?: string,
+    signal?: AbortSignal | null
+  ): Promise<CopilotSession> {
     const poolKey = sessionPoolKey(accessToken);
 
     const existing = sessionPool.get(poolKey);
@@ -224,7 +227,10 @@ export class CopilotWebExecutor extends BaseExecutor {
   /**
    * Create a fresh session with new cookies and conversationId.
    */
-  private async createSession(accessToken?: string, signal?: AbortSignal): Promise<CopilotSession> {
+  private async createSession(
+    accessToken?: string,
+    signal?: AbortSignal | null
+  ): Promise<CopilotSession> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       "User-Agent": COPILOT_USER_AGENT,
@@ -278,7 +284,7 @@ export class CopilotWebExecutor extends BaseExecutor {
     prompt: string,
     mode: string,
     accessToken?: string,
-    signal?: AbortSignal
+    signal?: AbortSignal | null
   ): Promise<ReadableStream<Uint8Array>> {
     const wsUrl = buildCopilotWebSocketUrl(accessToken);
 

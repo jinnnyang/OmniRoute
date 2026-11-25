@@ -733,7 +733,12 @@ export class VeoAIFreeWebExecutor extends BaseExecutor {
     if (intent === "tts") {
       const voiceMatch = systemText.match(/voice:\s*(\S+)/);
       const langMatch = systemText.match(/lang:\s*(\S+)/);
-      const resp = await handleTTS(prompt, voiceMatch?.[1], langMatch?.[1], input.signal);
+      const resp = await handleTTS(
+        prompt,
+        voiceMatch?.[1],
+        langMatch?.[1],
+        input.signal ?? undefined
+      );
       return { response: resp, url: TTS_URL, headers: {}, transformedBody: { intent, model } };
     }
 

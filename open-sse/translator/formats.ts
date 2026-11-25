@@ -7,6 +7,5 @@ export const FORMATS = {
   GEMINI: "gemini",
   CODEX: "codex",
   ANTIGRAVITY: "antigravity",
-  KIRO: "kiro",
   CURSOR: "cursor",
 };

@@ -62,8 +62,8 @@ test("different rotation groups run concurrently (not serialized against each ot
       active--;
     });
 
-  await Promise.all([run("codex"), run("claude"), run("kiro")]);
-  assert.equal(maxActive, 3, "codex / claude / kiro are independent groups");
+  await Promise.all([run("codex"), run("claude"), run("qoder")]);
+  assert.equal(maxActive, 3, "codex / claude / qoder are independent groups");
 });
 
 test("non-rotating providers are not serialized", async () => {

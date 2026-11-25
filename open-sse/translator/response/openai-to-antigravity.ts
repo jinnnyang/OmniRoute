@@ -17,11 +17,45 @@ type AntigravityUsageMetadata = {
   cachedContentTokenCount?: number;
 };
 
+// OpenAI Chat Completions streaming chunk, as consumed by this translator.
+type AntigravityOpenAIDelta = {
+  content?: string | null;
+  reasoning_content?: string;
+  tool_calls?: Array<{
+    index?: number;
+    id?: string;
+    function?: { name?: string; arguments?: string };
+  }>;
+};
+
+type AntigravityOpenAIChunk = {
+  id?: string;
+  model?: string;
+  choices?: Array<{ delta?: AntigravityOpenAIDelta; finish_reason?: string | null }>;
+  usage?: {
+    prompt_tokens?: number;
+    completion_tokens?: number;
+    total_tokens?: number;
+    prompt_tokens_details?: { cached_tokens?: number };
+    completion_tokens_details?: { reasoning_tokens?: number };
+  } | null;
+};
+
+type OpenAIToAntigravityState = {
+  _usage?: AntigravityOpenAIChunk["usage"];
+  _toolCallAccum?: Record<string, { id: string; name: string; arguments: string }>;
+  _responseId?: string;
+  _modelVersion?: string;
+};
+
 // Convert OpenAI SSE chunk to Antigravity SSE format
 // Real Antigravity format:
 //   data: {"response":{"candidates":[{"content":{"role":"model","parts":[...]}, "finishReason":"STOP"}], "usageMetadata":{...}, "modelVersion":"...", "responseId":"..."}}
 // Tool calls: OpenAI sends incremental args across chunks → accumulate and emit ONCE at finish
-export function openaiToAntigravityResponse(chunk, state) {
+export function openaiToAntigravityResponse(
+  chunk: AntigravityOpenAIChunk | null,
+  state: OpenAIToAntigravityState
+) {
   if (!chunk) return null;
 
   const choice = chunk.choices?.[0];
@@ -32,7 +66,7 @@ export function openaiToAntigravityResponse(chunk, state) {
     return null;
   }
 
-  const delta = choice.delta || {};
+  const delta: AntigravityOpenAIDelta = choice.delta || {};
   const finishReason = choice.finish_reason;
 
   // Init state
@@ -40,7 +74,7 @@ export function openaiToAntigravityResponse(chunk, state) {
   if (!state._responseId) state._responseId = chunk.id || `resp_${Date.now()}`;
   if (!state._modelVersion) state._modelVersion = chunk.model || "";
 
-  const parts = [];
+  const parts: Array<Record<string, unknown>> = [];
 
   // Thinking/reasoning → thought part
   if (delta.reasoning_content) {

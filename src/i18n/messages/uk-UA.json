@@ -2873,9 +2873,8 @@
       "cursor": "Використовуйте під час кодування в Cursor, і вам потрібні власні моделі, сумісні з OpenAI через OmniRoute.",
       "continue": "Використовуйте під час запуску Продовжити в IDE і вам потрібна портативна конфігурація постачальника на основі JSON.",
       "opencode": "Використовуйте, якщо ви віддаєте перевагу запуску агента на терміналі та автоматизації за сценарієм через OpenCode.",
-      "kiro": "Використовуйте під час інтеграції Kiro та централізованого керування маршрутизацією моделі з OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Використовуйте, коли трафік Antigravity/Kiro потрібно перехопити через MITM і направити на OmniRoute.",
+      "antigravity": "Використовуйте, коли трафік Antigravity потрібно перехопити через MITM і направити на OmniRoute.",
       "copilot": "Використовуйте, коли вам потрібен UX у стилі чату Copilot із застосуванням ключів OmniRoute і правил маршрутизації.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Використовуйте, коли вам потрібен легкий власний помічник зі штучним інтелектом для швидких завдань.",
@@ -2895,7 +2894,6 @@
       "cursor": "Редактор коду Cursor AI",
       "continue": "Продовжити AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode вимагає налаштування ключа API.",
           "1": "Установіть базову URL-адресу для кінцевої точки OmniRoute."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro потрібен обліковий запис Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Free no-key g4f.space reverse proxy to Pollinations, limited to 5 requests per minute.",
       "mixedbread": "Create embeddings with the Mixedbread API.",
       "segmind": "Generate images and videos with Segmind's hosted models.",
-      "amazon-q": "Uses the same AWS Builder ID or imported refresh-token flow as Kiro, but keeps Amazon Q connections separate.",
+      "amazon-q": "Uses an AWS Builder ID or imported refresh-token flow, and keeps Amazon Q connections separate.",
       "antigravity": "Connect Antigravity with the existing OAuth flow.",
       "agy": "Import your Antigravity CLI (`agy`) login (paste/upload its token file), auto-detect a local CLI login, or sign in with Google. Shares the Antigravity backend (incl. Claude models).",
       "claude": "Connect Claude Code with the existing OAuth flow.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth application with ai_features + read_user scopes. Configure GITLAB_DUO_OAUTH_CLIENT_ID and optionally GITLAB_DUO_OAUTH_CLIENT_SECRET on this OmniRoute instance.",
       "kilocode": "Connect Kilo Code with the existing OAuth flow.",
       "kimi-coding": "Connect Kimi Coding with the existing OAuth flow.",
-      "kiro": "Free tier: 50 credits/month (~25K–100K tokens). ⚠️ Kiro ToS prohibits third-party proxy/harness use.",
       "codex": "Connect OpenAI Codex with the existing OAuth flow.",
       "qwen": "Connect Qwen Code with the existing OAuth flow.",
       "github-models": "Створіть GitHub PAT з областю видимості 'models: read' на github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Обліковий запис Google",
     "githubAccount": "Обліковий запис GitHub",
     "importToken": "Імпорт маркера",
-    "pasteToken": "Вставте маркер оновлення з Kiro IDE.",
+    "pasteToken": "Вставте маркер оновлення.",
     "awsRegion": "Регіон AWS",
     "autoDetecting": "Автоматичне визначення токенів...",
     "readingFromCache": "Читання з кешу AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Стан Системи"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Підключити {providerLabel}",
-    "chooseMethod": "Виберіть свій метод аутентифікації:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Рекомендується для більшості користувачів. Увійдіть за допомогою облікового запису AWS, пов'язаного з {providerLabel}.",
-    "organization": "Ваша організація (AWS IAM Identity Center)",
-    "organizationDescription": "Використовуйте URL-адресу початку SSO вашої компанії (наприклад: {url}).",
-    "googleAccount": "Обліковий запис Google",
-    "googleDescription": "Увійдіть за допомогою свого облікового запису Google.",
-    "githubAccount": "Обліковий запис GitHub",
-    "githubDescription": "Увійдіть за допомогою свого облікового запису GitHub.",
-    "importToken": "Імпортувати Токен",
-    "importDescription": "Вставте токен оновлення, експортований з {providerLabel}.",
-    "apiKey": "API Ключ",
-    "apiKeyDescription": "Вставте довгостроковий {providerLabel} / CodeWhisperer API ключ. Він зберігається як облікові дані типу bearer без токена оновлення; виявлення профілю здійснюється на основі найкращих зусиль.",
-    "idcStartUrl": "IDC Початкове URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL вашого AWS IAM Identity Center організації",
-    "awsRegion": "Регіон AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Регіон AWS для вашого Центру Ідентифікації (за замовчуванням: us-east-1)",
-    "continue": "Продовжити",
-    "back": "Назад",
-    "autoDetecting": "Автоматичне виявлення токена...",
-    "readingCredentials": "Читання облікових даних {providerLabel} з кешу AWS SSO",
-    "tokenNotDetected": "Токен {providerLabel} не був автоматично виявлений. Будь ласка, вставте свій токен оновлення вручну.",
-    "refreshToken": "Токен Оновлення",
-    "tokenPlaceholder": "Токен буде автоматично заповнено...",
-    "importing": "Імпортування...",
-    "apiKeyPlaceholder": "Вставте свій {providerLabel} API ключ...",
-    "apiKeyStoredDescription": "Зберігається зашифрованим як довгостроковий маркер доступу. Процесу оновлення немає.",
-    "apiKeyRegionDescription": "Регіон AWS для ключа (за замовчуванням: us-east-1)",
-    "validating": "Валідуючи...",
-    "validateAndSaveApiKey": "Перевірити та зберегти API-ключ",
-    "errorAutoDetect": "Не вдалося автоматично виявити токен",
-    "errorAutoDetectFailed": "Не вдалося автоматично виявити токен",
-    "errorRefreshTokenRequired": "Будь ласка, введіть токен оновлення",
-    "errorImportFailed": "Імпорт не вдався",
-    "errorApiKeyRequired": "Будь ласка, введіть ключ API Kiro",
-    "errorApiKeyImportFailed": "Імпорт ключа API не вдався",
-    "errorIdcStartUrlRequired": "Будь ласка, введіть ваше IDC початкове URL"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Підключити {providerLabel} через {providerName}",
-    "errorStartAuthorization": "Не вдалося розпочати авторизацію",
-    "errorAuthorizationExpired": "Термін дії авторизації закінчився. Розпочніть процес входу знову.",
-    "errorAuthorizationFailed": "Авторизація не вдалася",
-    "initializing": "Ініціалізація...",
-    "settingUp": "Налаштування автентифікації {providerName}",
-    "openIncognito": "Відкрийте це посилання в режимі Інкогніто",
-    "incognitoDescription": "Використовуйте вікно Інкогніто/Приватне, щоб уникнути конфліктів сесій з існуючими обліковими записами.",
-    "copyLink": "Скопіювати посилання",
-    "verificationCode": "Код підтвердження",
-    "waiting": "Очікування авторизації...",
-    "cancel": "Скасувати",
-    "successTitle": "Успішно підключено!",
-    "successMessage": "Ваш обліковий запис {providerLabel} через {providerName} був підключений.",
-    "done": "Готово",
-    "errorTitle": "З'єднання не вдалося",
-    "close": "Закрити"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Авторизація не вдалася",

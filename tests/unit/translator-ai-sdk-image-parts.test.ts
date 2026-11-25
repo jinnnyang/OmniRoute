@@ -7,7 +7,6 @@ import assert from "node:assert/strict";
 // sending images this way (e.g. OpenCode) lost them before reaching a vision provider.
 const gemini = await import("../../open-sse/translator/helpers/geminiHelper.ts");
 const claude = await import("../../open-sse/translator/request/openai-to-claude.ts");
-const kiro = await import("../../open-sse/translator/request/openai-to-kiro.ts");
 
 const DATA_URL = "data:image/png;base64,AAAABBBB";
 
@@ -28,9 +27,7 @@ test("#1330: Claude maps AI SDK image string to a base64 image source block", ()
   const out = claude.openaiToClaudeRequest(
     "claude-sonnet-4-6",
     {
-      messages: [
-        { role: "user", content: [{ type: "image", image: DATA_URL }] },
-      ],
+      messages: [{ role: "user", content: [{ type: "image", image: DATA_URL }] }],
     },
     false
   ) as { messages: { content: { type: string; source?: Record<string, unknown> }[] }[] };
@@ -42,20 +39,4 @@ test("#1330: Claude maps AI SDK image string to a base64 image source block", ()
     media_type: "image/png",
     data: "AAAABBBB",
   });
-});
-
-test("#1330: Kiro maps AI SDK image string to userInputMessage.images bytes", () => {
-  const payload = kiro.buildKiroPayload(
-    "kr/claude-sonnet-4.6",
-    {
-      messages: [
-        { role: "user", content: [{ type: "text", text: "describe" }, { type: "image", image: DATA_URL }] },
-      ],
-    },
-    false,
-    {}
-  );
-  const serialized = JSON.stringify(payload);
-  assert.ok(serialized.includes('"AAAABBBB"'), "expected the image bytes in the Kiro payload");
-  assert.ok(serialized.includes('"png"'), "expected the png format in the Kiro payload");
 });

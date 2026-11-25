@@ -89,7 +89,12 @@ function shouldUseNativeResponsesWebSearch(credentials: unknown): boolean {
 }
 
 // Convert Claude request to OpenAI format
-export function claudeToOpenAIRequest(model, body, stream, credentials: unknown = null) {
+export function claudeToOpenAIRequest(
+  model: string,
+  body: Record<string, unknown>,
+  stream: boolean,
+  credentials: unknown = null
+) {
   // #2069 — when the routed provider honors OpenAI-format cache_control breakpoints
   // (DashScope/alibaba, etc.) and the upstream caller requested preservation, keep
   // the client's cache_control markers on system + message text blocks instead of
@@ -139,7 +144,7 @@ export function claudeToOpenAIRequest(model, body, stream, credentials: unknown 
       body.system.some((s) => s && typeof s === "object" && s.cache_control !== undefined);
 
     const systemContent = systemHasCacheControl
-      ? body.system.map((s) => {
+      ? (body.system as Array<JsonRecord | string>).map((s) => {
           // body.system may be a mixed array — handle string elements (and
           // null/non-object) defensively so we never drop text or throw.
           if (typeof s === "string") return { type: "text", text: stripAnthropicBillingHeader(s) };
@@ -251,11 +256,13 @@ export function claudeToOpenAIRequest(model, body, stream, credentials: unknown 
   // Reasoning effort: map Claude-side thinking controls to OpenAI reasoning_effort.
   // Priority: output_config.effort (Claude Code) > thinking.budget_tokens (Claude native).
   // Budget buckets match the reverse mapping in thinkingBudget.ts::setCustomBudget.
-  const outputEffort = normalizeOpenAIReasoningEffort(body.output_config?.effort) || "";
+  const outputEffort =
+    normalizeOpenAIReasoningEffort((body.output_config as JsonRecord | undefined)?.effort) || "";
+  const thinking = body.thinking as { type?: unknown; budget_tokens?: unknown } | undefined;
   if (outputEffort) {
     result.reasoning_effort = outputEffort;
-  } else if (body.thinking?.type === "enabled" && typeof body.thinking.budget_tokens === "number") {
-    const budget = body.thinking.budget_tokens;
+  } else if (thinking?.type === "enabled" && typeof thinking.budget_tokens === "number") {
+    const budget = thinking.budget_tokens;
     if (budget <= 0) {
       // disabled — leave reasoning_effort unset
     } else if (budget <= 1024) {
@@ -365,7 +372,7 @@ function fixMissingToolResponses(messages) {
 }
 
 // Convert single Claude message - returns single message or array of messages
-function convertClaudeMessage(msg, preserveCacheControl = false) {
+function convertClaudeMessage(msg: JsonRecord, preserveCacheControl = false) {
   // Preserve system role for mid-conversation system turns (#6954).
   // Previously any role that wasn't "user" or "tool" was mapped to "assistant",
   // which misattributed system messages as assistant output.
@@ -383,10 +390,10 @@ function convertClaudeMessage(msg, preserveCacheControl = false) {
 
   // Array content
   if (Array.isArray(msg.content)) {
-    const parts = [];
-    const toolCalls = [];
-    const toolResults = [];
-    let reasoningContent = null;
+    const parts: JsonRecord[] = [];
+    const toolCalls: JsonRecord[] = [];
+    const toolResults: JsonRecord[] = [];
+    let reasoningContent: string | null = null;
 
     for (const block of msg.content) {
       switch (block.type) {
@@ -554,4 +561,4 @@ function convertToolChoice(choice, hasServerWebSearch = false) {
 }
 
 // Register
-register(FORMATS.CLAUDE, FORMATS.OPENAI, claudeToOpenAIRequest, null);
+register(FORMATS.CLAUDE, FORMATS.OPENAI, claudeToOpenAIRequest, undefined);

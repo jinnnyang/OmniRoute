@@ -2873,9 +2873,8 @@
       "cursor": "Bruk når du koder i Cursor og du trenger tilpassede OpenAI-kompatible modeller gjennom OmniRoute.",
       "continue": "Bruk når du kjører Continue i IDEer og du trenger bærbar JSON-basert leverandørkonfigurasjon.",
       "opencode": "Bruk når du foretrekker terminal-native agentkjøringer og skriptautomatisering via OpenCode.",
-      "kiro": "Brukes når du integrerer Kiro og kontrollerer modellruting sentralt fra OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Brukes når Antigravity/Kiro-trafikk må avskjæres gjennom MITM og rutes til OmniRoute.",
+      "antigravity": "Brukes når Antigravity-trafikk må avskjæres gjennom MITM og rutes til OmniRoute.",
       "copilot": "Bruk når du vil ha Copilot chat-stil UX mens du håndhever OmniRoute-nøkler og rutingsregler.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Bruk når du trenger en lett terminal-native AI-assistent for raske oppgaver.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Fortsett AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode krever API-nøkkelkonfigurasjon.",
           "1": "Angi basis-URL til OmniRoute-endepunktet."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro krever Amazon-konto."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Gratis nøkkelfri g4f.space reverse proxy til Pollinations, begrenset til 5 forespørsler per minutt.",
       "mixedbread": "Opprett embeddings med Mixedbread-API-et.",
       "segmind": "Generer bilder og videoer med Segminds hostede modeller.",
-      "amazon-q": "Bruker samme AWS Builder ID eller importerte refresh-token-flyt som Kiro, but holder Amazon Q-tilkoblinger separate.",
+      "amazon-q": "Bruker AWS Builder ID eller importerte refresh-token-flyt, but holder Amazon Q-tilkoblinger separate.",
       "antigravity": "Koble til Antigravity med den eksisterende OAuth-flyten.",
       "agy": "Importer din Antigravity CLI (`agy`)-innlogging (lim inn/last opp token-filen), gjenkjenn en lokal CLI-innlogging automatisk, eller logg inn med Google. Deler Antigravity-backend (inkl. Claude-modeller).",
       "claude": "Koble til Claude Code med den eksisterende OAuth-flyten.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth-applikasjon med ai_features + read_user-scopes. Konfigurer GITLAB_DUO_OAUTH_CLIENT_ID og eventuelt GITLAB_DUO_OAUTH_CLIENT_SECRET på denne OmniRoute-instansen.",
       "kilocode": "Koble til Kilo Code med den eksisterende OAuth-flyten.",
       "kimi-coding": "Koble til Kimi Coding med den eksisterende OAuth-flyten.",
-      "kiro": "Gratisnivå: 50 kreditter/måned (~25K–100K tokens). ⚠️ Kiros brukervilkår forbyr bruk av tredjeparts proxy/harness.",
       "codex": "Koble til OpenAI Codex med den eksisterende OAuth-flyten.",
       "qwen": "Koble til Qwen Code med den eksisterende OAuth-flyten.",
       "github-models": "Opprett et GitHub PAT med 'models: read'-omfang på github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google-konto",
     "githubAccount": "GitHub-konto",
     "importToken": "Importer token",
-    "pasteToken": "Lim inn oppdateringstoken fra Kiro IDE.",
+    "pasteToken": "Lim inn oppdateringstoken.",
     "awsRegion": "AWS-regionen",
     "autoDetecting": "Automatisk oppdager tokens...",
     "readingFromCache": "Leser fra AWS SSO-cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Systemstatus"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Koble til {providerLabel}",
-    "chooseMethod": "Velg din autentiseringsmetode:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Anbefalt for de fleste brukere. Logg inn med AWS-kontoen knyttet til {providerLabel}.",
-    "organization": "Din organisasjon (AWS IAM Identity Center)",
-    "organizationDescription": "Bruk start-URL-en for selskapets SSO (for eksempel: {url}).",
-    "googleAccount": "Google-konto",
-    "googleDescription": "Logg inn med Google-kontoen din.",
-    "githubAccount": "GitHub-konto",
-    "githubDescription": "Logg inn med GitHub-kontoen din.",
-    "importToken": "Importer Token",
-    "importDescription": "Lim inn en oppfriskningstoken eksportert fra {providerLabel}.",
-    "apiKey": "API-nøkkel",
-    "apiKeyDescription": "Lim inn en langvarig {providerLabel} / CodeWhisperer API-nøkkel. Den lagres som en bærerlegitimasjon uten oppdateringsnøkkel; profiloppdagelse er best-effort.",
-    "idcStartUrl": "IDC Start URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "Din organisasjons AWS IAM Identity Center-URL",
-    "awsRegion": "AWS-region",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS-region for din Identity Center (standard: us-east-1)",
-    "continue": "Fortsett",
-    "back": "Tilbake",
-    "autoDetecting": "Automatisk oppdagelse av token...",
-    "readingCredentials": "Leser {providerLabel} legitimasjon fra AWS SSO-cache",
-    "tokenNotDetected": "{providerLabel} token ble ikke automatisk oppdaget. Vennligst lim inn refresh-tokenet ditt manuelt.",
-    "refreshToken": "Oppdater Token",
-    "tokenPlaceholder": "Token vil bli automatisk fylt ut...",
-    "importing": "Importerer...",
-    "apiKeyPlaceholder": "Lim inn din {providerLabel} API-nøkkel...",
-    "apiKeyStoredDescription": "Lagrert kryptert som en langvarig bærerlegitimasjon. Det er ingen oppdateringsflyt.",
-    "apiKeyRegionDescription": "AWS-region for nøkkelen (standard: us-east-1)",
-    "validating": "Validerer...",
-    "validateAndSaveApiKey": "Valider og Lagre API-nøkkel",
-    "errorAutoDetect": "Kunne ikke automatisk oppdage token",
-    "errorAutoDetectFailed": "Kunne ikke automatisk oppdage token",
-    "errorRefreshTokenRequired": "Vennligst skriv inn en oppfriskningstoken",
-    "errorImportFailed": "Importen mislyktes",
-    "errorApiKeyRequired": "Vennligst skriv inn en Kiro API-nøkkel",
-    "errorApiKeyImportFailed": "Import av API-nøkkel mislyktes",
-    "errorIdcStartUrlRequired": "Vennligst skriv inn din IDC start-URL"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Koble {providerLabel} via {providerName}",
-    "errorStartAuthorization": "Kunne ikke starte autorisasjon",
-    "errorAuthorizationExpired": "Autorisasjonen har utløpt. Start påloggingsprosessen på nytt.",
-    "errorAuthorizationFailed": "Autorisasjon mislyktes",
-    "initializing": "Initialiserer...",
-    "settingUp": "Setter opp {providerName} autentisering",
-    "openIncognito": "Åpne denne lenken i et inkognitovindu",
-    "incognitoDescription": "Bruk et inkognito-/privatvindu for å unngå sesjonskonflikter med eksisterende kontoer.",
-    "copyLink": "Kopier lenke",
-    "verificationCode": "Bekreftelseskode",
-    "waiting": "Venter på autorisasjon...",
-    "cancel": "Avbryt",
-    "successTitle": "Koblet til med suksess!",
-    "successMessage": "Din {providerLabel}-konto via {providerName} har blitt koblet til.",
-    "done": "Ferdig",
-    "errorTitle": "Tilkobling Mislyktes",
-    "close": "Lukk"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autorisasjon mislyktes",

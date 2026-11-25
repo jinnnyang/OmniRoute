@@ -67,10 +67,10 @@ test("GET /detected-models: returns unique source models from intercepted traffi
     {
       id: "req4",
       source: "agent-bridge",
-      agent: "kiro",
+      agent: "codex",
       timestamp: new Date().toISOString(),
       method: "POST",
-      host: "api.kiro.ai",
+      host: "chatgpt.com",
       path: "/v1/chat/completions",
       requestHeaders: {},
       requestBody: null,

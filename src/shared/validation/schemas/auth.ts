@@ -193,27 +193,6 @@ export const raycastImportSchema = z.object({
   sigSecret: z.string().trim().optional(),
 });
 
-export const kiroImportSchema = z.object({
-  refreshToken: z.string().trim().min(1, "Refresh token is required"),
-  region: z.string().trim().default("us-east-1"),
-  // IDC (organization) token fields — present when auto-detected from an IDC SSO
-  // cache token with a clientIdHash (#2059). Optional for backward compatibility.
-  clientId: z.string().optional(),
-  clientSecret: z.string().optional(),
-  authMethod: z.string().optional(),
-  profileArn: z.string().optional(),
-  // External IdP ("Your organization" / Microsoft Entra) token fields — present
-  // when authMethod === "external_idp". The token is refreshed via a public-client
-  // OAuth2 grant against `tokenEndpoint` using `clientId` + `scopes` (no secret).
-  tokenEndpoint: z.string().optional(),
-  scopes: z.union([z.string(), z.array(z.string())]).optional(),
-});
-
-export const kiroApiKeyImportSchema = z.object({
-  apiKey: z.string().trim().min(1, "API key is required"),
-  region: z.string().trim().default("us-east-1"),
-});
-
 export const zedImportSchema = z.object({
   confirmedAccounts: z.array(confirmedAccountSchema),
 });

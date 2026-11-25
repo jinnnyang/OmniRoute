@@ -2873,9 +2873,8 @@
       "cursor": "Use when coding in Cursor and you need custom OpenAI-compatible models through OmniRoute.",
       "continue": "Use when running Continue in IDEs and you need portable JSON-based provider configuration.",
       "opencode": "Use when you prefer terminal-native agent runs and scripted automation via OpenCode.",
-      "kiro": "Use when integrating Kiro and controlling model routing centrally from OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Use when Antigravity/Kiro traffic must be intercepted through MITM and routed to OmniRoute.",
+      "antigravity": "Use when Antigravity traffic must be intercepted through MITM and routed to OmniRoute.",
       "copilot": "Use when you want Copilot chat style UX while enforcing OmniRoute keys and routing rules.",
       "amp": "Use when you want Amp shorthand workflows but still need OmniRoute alias and routing rules enforcement.",
       "hermes": "Use when you need a lightweight terminal-native AI assistant for quick tasks.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Continue AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode requires API key configuration.",
           "1": "Set the base URL to your OmniRoute endpoint."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro requires Amazon account."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Intelligent Auto",
     "autoDesc": "Self-healing smart routing pool with multi-factor scoring",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Pollinations-a pulsuz, açarsız g4f.space tərs proksisi, dəqiqədə 5 sorğu ilə məhdudlaşdırılıb.",
       "mixedbread": "Mixedbread API ilə embedding-lər yaradın.",
       "segmind": "Segmind-in host olunan modelləri ilə şəkillər və videolar yaradın.",
-      "amazon-q": "Kiro ilə eyni AWS Builder ID və ya idxal edilmiş refresh-token axınından istifadə edir, lakin Amazon Q bağlantılarını ayrı saxlayır.",
+      "amazon-q": "Eyni AWS Builder ID və ya idxal edilmiş refresh-token axınından istifadə edir, lakin Amazon Q bağlantılarını ayrı saxlayır.",
       "antigravity": "Antigravity-ni mövcud OAuth axını ilə qoşun.",
       "agy": "Antigravity CLI (`agy`) girişinizi idxal edin (onun token faylını yapışdırın/yükləyin), yerli CLI girişini avtomatik aşkar edin və ya Google ilə daxil olun. Antigravity backend-ini (Claude modelləri daxil olmaqla) paylaşır.",
       "claude": "Claude Code-u mövcud OAuth axını ilə qoşun.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "ai_features + read_user əhatə dairələri olan OAuth tətbiqi. Bu OmniRoute instansiyasında GITLAB_DUO_OAUTH_CLIENT_ID və istəyə bağlı olaraq GITLAB_DUO_OAUTH_CLIENT_SECRET konfiqurasiya edin.",
       "kilocode": "Kilo Code-u mövcud OAuth axını ilə qoşun.",
       "kimi-coding": "Kimi Coding-i mövcud OAuth axını ilə qoşun.",
-      "kiro": "Free tier: 50 credits/month (~25K–100K tokens). ⚠️ Kiro ToS prohibits third-party proxy/harness use.",
       "codex": "Connect OpenAI Codex with the existing OAuth flow.",
       "qwen": "Connect Qwen Code with the existing OAuth flow.",
       "github-models": "github.com/settings/tokens ünvanında 'models: read' əhatə dairəsi ilə GitHub PAT yaradın"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Account",
     "githubAccount": "GitHub Account",
     "importToken": "Import Token",
-    "pasteToken": "Paste refresh token from Kiro IDE.",
+    "pasteToken": "Paste refresh token.",
     "awsRegion": "AWS Region",
     "autoDetecting": "Auto-detecting tokens...",
     "readingFromCache": "Reading from AWS SSO cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Sistem Statusu"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "{providerLabel} ilə əlaqə qurun",
-    "chooseMethod": "Təsdiq metodunuzu seçin:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Əksər istifadəçilər üçün tövsiyə olunur. {providerLabel} ilə bağlı AWS hesabı ilə daxil olun.",
-    "organization": "Sizin Təşkilatınız (AWS IAM Kimlik Mərkəzi)",
-    "organizationDescription": "Şirkətinizin SSO başlanğıc URL-sindən istifadə edin (məsələn: {url}).",
-    "googleAccount": "Google Hesabı",
-    "googleDescription": "Google hesabınızla daxil olun.",
-    "githubAccount": "GitHub Hesabı",
-    "githubDescription": "GitHub hesabınızla daxil olun.",
-    "importToken": "Token İdxal Et",
-    "importDescription": "{providerLabel} tərəfindən ixrac edilmiş yeniləmə tokenini yapışdırın.",
-    "apiKey": "API Açarı",
-    "apiKeyDescription": "Uzun müddətli {providerLabel} / CodeWhisperer API açarını yapışdırın. Bu, yeniləmə tokeni olmadan daşıyıcı etibarnaməsi kimi saxlanılır; profil aşkar etmə ən yaxşı cəhdlə həyata keçirilir.",
-    "idcStartUrl": "IDC Başlanğıc URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "Sizin təşkilatınızın AWS IAM İdentlik Mərkəzi URL-i",
-    "awsRegion": "AWS Region",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Kimlik Mərkəziniz üçün AWS bölgəsi (default: us-east-1)",
-    "continue": "Davam et",
-    "back": "Geri",
-    "autoDetecting": "Token avtomatik aşkarlanır...",
-    "readingCredentials": "AWS SSO keşindən {providerLabel} etimadnamələrini oxuyur",
-    "tokenNotDetected": "{providerLabel} token avtomatik olaraq aşkar edilmədi. Zəhmət olmasa, yeniləmə tokeninizi əl ilə yapışdırın.",
-    "refreshToken": "Təzələmə Tokeni",
-    "tokenPlaceholder": "Token avtomatik doldurulacaq...",
-    "importing": "İdxal edilir...",
-    "apiKeyPlaceholder": "{providerLabel} API açarınızı yapışdırın...",
-    "apiKeyStoredDescription": "Uzunmüddətli daşıyıcı etibarnamə kimi şifrələnmiş saxlanılır. Yeniləmə axını yoxdur.",
-    "apiKeyRegionDescription": "Açar üçün AWS bölgəsi (default: us-east-1)",
-    "validating": "Təsdiqlənir...",
-    "validateAndSaveApiKey": "API Açarını Doğrula və Saxla",
-    "errorAutoDetect": "Token avtomatik olaraq aşkar edilə bilmədi",
-    "errorAutoDetectFailed": "Token avtomatik olaraq aşkar edilə bilmədi",
-    "errorRefreshTokenRequired": "Zəhmət olmasa, yeniləmə tokenini daxil edin",
-    "errorImportFailed": "İdxal uğursuz oldu",
-    "errorApiKeyRequired": "Zəhmət olmasa, Kiro API açarını daxil edin",
-    "errorApiKeyImportFailed": "API açarının idxalı uğursuz oldu",
-    "errorIdcStartUrlRequired": "Zəhmət olmasa, IDC başlanğıc URL-nizi daxil edin"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "{providerLabel} {providerName} vasitəsilə qoşulun",
-    "errorStartAuthorization": "Təsdiqləmə başlaya bilmədi",
-    "errorAuthorizationExpired": "Təsdiq müddəti bitdi. Yenidən giriş prosesini başladın.",
-    "errorAuthorizationFailed": "Təsdiq uğursuz oldu",
-    "initializing": "İlkinləşdirilir...",
-    "settingUp": "{providerName} autentifikasiyasını qurmaq",
-    "openIncognito": "Bu linki Gizli pəncərədə açın",
-    "incognitoDescription": "Mövcud hesablarla sessiya münaqişələrindən qaçmaq üçün İncognito/Özəl pəncərədən istifadə edin.",
-    "copyLink": "Bağlantını kopyala",
-    "verificationCode": "Təsdiq kodu",
-    "waiting": "Təsdiq üçün gözləyir...",
-    "cancel": "İmtina et",
-    "successTitle": "Uğurla Bağlandı!",
-    "successMessage": "Sizin {providerName} vasitəsilə {providerLabel} hesabınız qoşulmuşdur.",
-    "done": "Tamamlandı",
-    "errorTitle": "Bağlantı Uğursuz Oldu",
-    "close": "Bağla"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Təsdiq uğursuz oldu",

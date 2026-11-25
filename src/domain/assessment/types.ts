@@ -37,9 +37,7 @@ export type ProbeLevel = "quick" | "standard" | "deep";
 
 /** Scope for assessment runs */
 export type AssessmentScope =
-  | { type: "all" }
-  | { type: "provider"; providerId: string }
-  | { type: "model"; modelId: string };
+  { type: "all" } | { type: "provider"; providerId: string } | { type: "model"; modelId: string };
 
 /** Complete assessment result for a model/provider pair */
 export interface ModelAssessment {
@@ -47,7 +45,7 @@ export interface ModelAssessment {
   id: string;
   /** Model identifier (e.g., "claude-sonnet-4.5") */
   modelId: string;
-  /** Provider identifier (e.g., "kiro") */
+  /** Provider identifier (e.g., "anthropic") */
   providerId: string;
   /** Current assessment status */
   status: AssessmentStatus;
@@ -93,11 +91,7 @@ export interface ModelAssessment {
 
 /** Trigger source for an assessment run */
 export type AssessmentTrigger =
-  | "scheduled"
-  | "on_demand"
-  | "on_provider_change"
-  | "on_error"
-  | "startup";
+  "scheduled" | "on_demand" | "on_provider_change" | "on_error" | "startup";
 
 /** Record of a single assessment run */
 export interface AssessmentRun {
@@ -353,8 +347,7 @@ export const AUTO_COMBO_TEMPLATES: AutoComboTemplate[] = [
     categories: ["coding", "chat", "fast"],
     tiers: ["free"],
     strategy: "weighted",
-    systemMessage:
-      "You are a helpful coding assistant. Write clean, efficient code.",
+    systemMessage: "You are a helpful coding assistant. Write clean, efficient code.",
   },
 ];
 

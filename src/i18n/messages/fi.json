@@ -2873,9 +2873,8 @@
       "cursor": "Käytä koodattaessa Cursorissa ja tarvitset mukautettuja OpenAI-yhteensopivia malleja OmniRouten kautta.",
       "continue": "Käytä, kun käytät Continuea IDE:issä ja tarvitset kannettavan JSON-pohjaisen palveluntarjoajan määrityksen.",
       "opencode": "Käytä, kun haluat käyttää päätealustaisia ​​agentteja ja komentosarjottua automaatiota OpenCoden kautta.",
-      "kiro": "Käytä integroitaessa Kiroa ja ohjattaessa mallin reititystä keskitetysti OmniRoutesta.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Käytä, kun Antigravity/Kiro-liikenne on siepattava MITM:n kautta ja ohjattava OmniRouteen.",
+      "antigravity": "Käytä, kun Antigravity-liikenne on siepattava MITM:n kautta ja ohjattava OmniRouteen.",
       "copilot": "Käytä, kun haluat Copilot-chat-tyylisen UX:n ja pakota OmniRoute-avaimia ja reitityssääntöjä.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Käytä, kun tarvitset kevyen pääte-alkuperäisen AI-avustajan nopeisiin tehtäviin.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Jatka AI Assistantia",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode vaatii API-avaimen määrityksen.",
           "1": "Aseta perus-URL-osoite OmniRoute-päätepisteellesi."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro vaatii Amazon-tilin."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Ilmainen avaimeton g4f.space-käänteisvälityspalvelin Pollinationsiin, rajoitettu 5 pyyntöön minuutissa.",
       "mixedbread": "Luo upotuksia Mixedbread API:lla.",
       "segmind": "Luo kuvia ja videoita Segmindin isännöidyillä malleilla.",
-      "amazon-q": "Käyttää samaa AWS Builder ID- tai tuotua refresh-token-työnkulkua kuin Kiro, mutta pitää Amazon Q -yhteydet erillään.",
+      "amazon-q": "Käyttää AWS Builder ID- tai tuotua refresh-token-työnkulkua, mutta pitää Amazon Q -yhteydet erillään.",
       "antigravity": "Yhdistä Antigravity olemassa olevalla OAuth-työnkululla.",
       "agy": "Tuo Antigravity CLI (`agy`) -kirjautumisesi (liitä/lataa sen token-tiedosto), tunnista paikallinen CLI-kirjautuminen automaattisesti tai kirjaudu sisään Googlella. Jakaa Antigravity-taustajärjestelmän (ml. Claude-mallit).",
       "claude": "Yhdistä Claude Code olemassa olevalla OAuth-työnkululla.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth-sovellus ai_features + read_user -käyttöoikeuksilla. Määritä GITLAB_DUO_OAUTH_CLIENT_ID ja valinnaisesti GITLAB_DUO_OAUTH_CLIENT_SECRET tälle OmniRoute-instanssille.",
       "kilocode": "Yhdistä Kilo Code olemassa olevalla OAuth-työnkululla.",
       "kimi-coding": "Yhdistä Kimi Coding olemassa olevalla OAuth-työnkululla.",
-      "kiro": "Free tier: 50 credits/month (~25K–100K tokens). ⚠️ Kiro ToS prohibits third-party proxy/harness use.",
       "codex": "Yhdistä OpenAI Codex olemassa olevalla OAuth-työnkululla.",
       "qwen": "Yhdistä Qwen Code olemassa olevalla OAuth-työnkululla.",
       "github-models": "Luo GitHub PAT -tunniste 'models: read' -käyttöoikeudella osoitteessa github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google-tili",
     "githubAccount": "GitHub-tili",
     "importToken": "Tuo tunnus",
-    "pasteToken": "Liitä päivitystunnus Kiro IDE:stä.",
+    "pasteToken": "Liitä päivitystunnus.",
     "awsRegion": "AWS-alue",
     "autoDetecting": "Tunnistetaan automaattisesti...",
     "readingFromCache": "Lukee AWS SSO -välimuistista",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Järjestelmän tila"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Yhdistä {providerLabel}",
-    "chooseMethod": "Valitse todennusmenetelmäsi:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Suositeltu useimmille käyttäjille. Kirjaudu sisään AWS-tilillä, joka on liitetty {providerLabel}.",
-    "organization": "Organisaatiosi (AWS IAM Identity Center)",
-    "organizationDescription": "Käytä yrityksesi SSO-käynnistys-URL-osoitetta (esimerkki: {url}).",
-    "googleAccount": "Google-tili",
-    "googleDescription": "Kirjaudu sisään Google-tililläsi.",
-    "githubAccount": "GitHub-tili",
-    "githubDescription": "Kirjaudu sisään GitHub-tililläsi.",
-    "importToken": "Tuonti Token",
-    "importDescription": "Liitä {providerLabel} -palvelusta viety päivitystunnus.",
-    "apiKey": "API-avain",
-    "apiKeyDescription": "Liitä pitkäikäinen {providerLabel} / CodeWhisperer API-avain. Se tallennetaan bearer-todistuksena ilman refresh-tokenia; profiilin löytäminen on parhaimmillaan.",
-    "idcStartUrl": "IDC Käynnistys-URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "Organisaatiosi AWS IAM Identity Center -URL",
-    "awsRegion": "AWS-alue",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS-alue Identiteettikeskuksellesi (oletus: us-east-1)",
-    "continue": "Jatka",
-    "back": "Takaisin",
-    "autoDetecting": "Automaattinen tunnistaminen...",
-    "readingCredentials": "Luen {providerLabel} tunnistetiedot AWS SSO välimuistista",
-    "tokenNotDetected": "{providerLabel} tokenia ei havaittu automaattisesti. Ole hyvä ja liitä päivitystokenisi manuaalisesti.",
-    "refreshToken": "Päivitä tunnus",
-    "tokenPlaceholder": "Token täytetään automaattisesti...",
-    "importing": "Tuodaan...",
-    "apiKeyPlaceholder": "Liitä {providerLabel} API-avain...",
-    "apiKeyStoredDescription": "Tallennettu salattuna pitkäaikaisena käyttöoikeustodistuksena. Uudistamisprosessia ei ole.",
-    "apiKeyRegionDescription": "AWS-alue avaimelle (oletus: us-east-1)",
-    "validating": "Vahvistetaan...",
-    "validateAndSaveApiKey": "Vahvista ja Tallenna API-avain",
-    "errorAutoDetect": "Ei voitu automaattisesti tunnistaa tokenia",
-    "errorAutoDetectFailed": "Tokenin automaattinen tunnistus epäonnistui",
-    "errorRefreshTokenRequired": "Ole hyvä ja syötä päivitystunnus",
-    "errorImportFailed": "Tuonti epäonnistui",
-    "errorApiKeyRequired": "Ole hyvä ja syötä Kiro API -avain",
-    "errorApiKeyImportFailed": "API-avaimen tuonti epäonnistui",
-    "errorIdcStartUrlRequired": "Ole hyvä ja syötä IDC:n aloitus-URL-osoite"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Yhdistä {providerLabel} kautta {providerName}",
-    "errorStartAuthorization": "Valtuutuksen käynnistäminen epäonnistui",
-    "errorAuthorizationExpired": "Valtuutus on vanhentunut. Aloita kirjautumisprosessi uudelleen.",
-    "errorAuthorizationFailed": "Valtuutus epäonnistui",
-    "initializing": "Alustetaan...",
-    "settingUp": "Asetetaan {providerName} -todennusta",
-    "openIncognito": "Avaa tämä linkki Incognito-ikkunassa",
-    "incognitoDescription": "Käytä Incognito/Private-ikkunaa välttääksesi istuntokonflikteja olemassa olevien tilien kanssa.",
-    "copyLink": "Kopioi linkki",
-    "verificationCode": "Vahvistuskoodi",
-    "waiting": "Odotetaan valtuutusta...",
-    "cancel": "Peruuta",
-    "successTitle": "Yhdistetty onnistuneesti!",
-    "successMessage": "{providerLabel}-tilisi {providerName}:n kautta on yhdistetty.",
-    "done": "Valmis",
-    "errorTitle": "Yhteyden muodostaminen epäonnistui",
-    "close": "Sulje"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Valtuutus epäonnistui",

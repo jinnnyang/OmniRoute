@@ -14,7 +14,6 @@ export const FALLBACK_ALIAS_TO_PROVIDER = {
   gh: "github",
   kc: "kilocode",
   kmc: "kimi-coding",
-  kr: "kiro",
 };
 
 export function buildAliasMaps() {

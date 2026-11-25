@@ -257,7 +257,7 @@ type LogFn = {
 };
 
 /** Static Direct-chat allowlist only — no arena.ai network call. */
-export async function getLMArenaModels(log?: LogFn): Promise<LMArenaModelMetadata[]> {
+export async function getLMArenaModels(log?: LogFn | null): Promise<LMArenaModelMetadata[]> {
   const { LMARENA_DIRECT_MODEL_ENTRIES } =
     await import("../../config/providers/registry/lmarena/directModels.ts");
   // Chat path only — Image rows live in IMAGE_PROVIDERS (imageRegistry).
@@ -286,7 +286,7 @@ export async function getLMArenaModels(log?: LogFn): Promise<LMArenaModelMetadat
   return models;
 }
 
-export async function resolveLMArenaModelId(model: string, log?: LogFn): Promise<string> {
+export async function resolveLMArenaModelId(model: string, log?: LogFn | null): Promise<string> {
   const requested = stripLMArenaModelPrefix(model);
   if (LMARENA_MODEL_ID_RE.test(requested)) return requested;
 

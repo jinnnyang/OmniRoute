@@ -3,7 +3,11 @@ import { FORMATS } from "../formats.ts";
 import { adjustMaxTokens } from "../helpers/maxTokensHelper.ts";
 
 // Convert Gemini request to OpenAI format
-export function geminiToOpenAIRequest(model, body, stream) {
+export function geminiToOpenAIRequest(
+  model: string,
+  body: Record<string, unknown>,
+  stream: boolean
+) {
   const result: {
     model: string;
     messages: Array<Record<string, unknown>>;
@@ -20,7 +24,12 @@ export function geminiToOpenAIRequest(model, body, stream) {
 
   // Generation config
   if (body.generationConfig) {
-    const config = body.generationConfig;
+    const config = body.generationConfig as {
+      maxOutputTokens?: number;
+      temperature?: number;
+      topP?: number;
+      tools?: unknown;
+    };
     if (config.maxOutputTokens) {
       const tempBody = { max_tokens: config.maxOutputTokens, tools: body.tools };
       result.max_tokens = adjustMaxTokens(tempBody);
@@ -85,7 +94,7 @@ export function geminiToOpenAIRequest(model, body, stream) {
 // first to keep tool-result-before-next-turn ordering) plus one content for
 // the remaining non-functionResponse parts.
 function splitCoLocatedFunctionResponses(contents) {
-  const out = [];
+  const out: Array<Record<string, unknown>> = [];
   for (const content of contents) {
     if (!content || !Array.isArray(content.parts)) {
       out.push(content);
@@ -109,15 +118,15 @@ function splitCoLocatedFunctionResponses(contents) {
   return out;
 }
 
-function convertGeminiContent(content) {
+function convertGeminiContent(content: Record<string, unknown>) {
   const role = content.role === "user" ? "user" : "assistant";
 
   if (!content.parts || !Array.isArray(content.parts)) {
     return null;
   }
 
-  const parts = [];
-  const toolCalls = [];
+  const parts: Array<{ type: string; text?: string; image_url?: { url: string } }> = [];
+  const toolCalls: Array<Record<string, unknown>> = [];
 
   for (const part of content.parts) {
     if (part.text !== undefined) {
@@ -188,13 +197,13 @@ function convertGeminiContent(content) {
 // prevents Reasoning Replay Cache (docs/routing/REASONING_REPLAY.md) from ever seeing
 // it as `reasoning_content`. Split thought parts out first and re-attach the joined
 // text as `reasoning_content` on the resulting message instead.
-function convertGeminiContentWithReasoning(content) {
+function convertGeminiContentWithReasoning(content: Record<string, unknown>) {
   if (!content || !Array.isArray(content.parts)) {
     return convertGeminiContent(content);
   }
 
   let reasoningContent = "";
-  const visibleParts = [];
+  const visibleParts: unknown[] = [];
   for (const part of content.parts) {
     if (part && part.thought === true) {
       if (typeof part.text === "string") reasoningContent += part.text;
@@ -234,4 +243,4 @@ function extractGeminiText(content) {
 }
 
 // Register
-register(FORMATS.GEMINI, FORMATS.OPENAI, geminiToOpenAIRequest, null);
+register(FORMATS.GEMINI, FORMATS.OPENAI, geminiToOpenAIRequest, undefined);

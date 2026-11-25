@@ -264,7 +264,7 @@ import {
  *
  * Two mechanisms, applied to any tool with a string `model`:
  * 1. Versioned built-in types (`type` matches `_\d{8}$`): strip the last path
- *    segment (`model.split("/").pop()`), matching legacy behavior for kiro/ etc.
+ *    segment (`model.split("/").pop()`), matching legacy behavior.
  * 2. Any tool whose model starts with a 9router Claude provider prefix
  *    (`cc/`, `claude/`): strip exactly that prefix (`slice`), preserving foreign
  *    providers such as `openrouter/anthropic/...` — mirrors upstream

@@ -2873,9 +2873,8 @@
       "cursor": "Gunakan semasa pengekodan dalam Kursor dan anda memerlukan model serasi OpenAI tersuai melalui OmniRoute.",
       "continue": "Gunakan semasa menjalankan Teruskan dalam IDE dan anda memerlukan konfigurasi pembekal berasaskan JSON mudah alih.",
       "opencode": "Gunakan apabila anda lebih suka ejen terminal-native run dan automasi skrip melalui OpenCode.",
-      "kiro": "Gunakan apabila menyepadukan Kiro dan mengawal penghalaan model secara berpusat daripada OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Gunakan apabila trafik Antigraviti/Kiro mesti dipintas melalui MITM dan dihalakan ke OmniRoute.",
+      "antigravity": "Gunakan apabila trafik Antigraviti mesti dipintas melalui MITM dan dihalakan ke OmniRoute.",
       "copilot": "Gunakan apabila anda mahu Copilot gaya sembang UX sambil menguatkuasakan kekunci OmniRoute dan peraturan penghalaan.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Gunakan apabila anda memerlukan pembantu AI asli terminal yang ringan untuk tugasan pantas.",
@@ -2895,7 +2894,6 @@
       "cursor": "Editor Kod AI Kursor",
       "continue": "Teruskan AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode memerlukan konfigurasi kunci API.",
           "1": "Tetapkan URL asas kepada titik akhir OmniRoute anda."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro memerlukan akaun Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Proksi terbalik g4f.space tanpa kunci percuma ke Pollinations, terhad kepada 5 permintaan seminit.",
       "mixedbread": "Cipta pembenaman dengan API Mixedbread.",
       "segmind": "Jana imej dan video dengan model dihoskan Segmind.",
-      "amazon-q": "Menggunakan AWS Builder ID atau aliran refresh-token yang diimport yang sama seperti Kiro, tetapi memastikan sambungan Amazon Q berasingan.",
+      "amazon-q": "Menggunakan AWS Builder ID atau aliran refresh-token yang diimport, tetapi memastikan sambungan Amazon Q berasingan.",
       "antigravity": "Sambungkan Antigravity dengan aliran OAuth sedia ada.",
       "agy": "Import log masuk CLI Antigravity (`agy`) anda (tampal/muat naik fail tokennya), kesan secara automatik log masuk CLI tempatan, atau log masuk dengan Google. Berkongsi bahagian belakang Antigravity (termasuk model Claude).",
       "claude": "Sambungkan Claude Code dengan aliran OAuth sedia ada.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "Aplikasi OAuth dengan skop ai_features + read_user. Konfigurasikan GITLAB_DUO_OAUTH_CLIENT_ID dan secara pilihan GITLAB_DUO_OAUTH_CLIENT_SECRET pada tika OmniRoute ini.",
       "kilocode": "Sambungkan Kilo Code dengan aliran OAuth sedia ada.",
       "kimi-coding": "Sambungkan Kimi Coding dengan aliran OAuth sedia ada.",
-      "kiro": "Peringkat percuma: 50 kredit/bulan (~25K–100K token). ⚠️ ToS Kiro melarang penggunaan proksi/harness pihak ketiga.",
       "codex": "Sambungkan OpenAI Codex dengan aliran OAuth sedia ada.",
       "qwen": "Sambungkan Qwen Code dengan aliran OAuth sedia ada.",
       "github-models": "Cipta PAT GitHub dengan skop 'models: read' di github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Akaun Google",
     "githubAccount": "Akaun GitHub",
     "importToken": "Import Token",
-    "pasteToken": "Tampalkan token muat semula daripada Kiro IDE.",
+    "pasteToken": "Tampalkan token muat semula.",
     "awsRegion": "Wilayah AWS",
     "autoDetecting": "Token pengesan automatik...",
     "readingFromCache": "Membaca daripada cache AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Status Sistem"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Sambung {providerLabel}",
-    "chooseMethod": "Pilih kaedah pengesahan anda:",
-    "builderId": "ID Pembina AWS",
-    "builderDescription": "Disyorkan untuk kebanyakan pengguna. Log masuk dengan akaun AWS yang dikaitkan dengan {providerLabel}.",
-    "organization": "Organisasi Anda (AWS IAM Identity Center)",
-    "organizationDescription": "Gunakan URL permulaan SSO syarikat anda (contoh: {url}).",
-    "googleAccount": "Akaun Google",
-    "googleDescription": "Log masuk dengan akaun Google anda.",
-    "githubAccount": "Akaun GitHub",
-    "githubDescription": "Log masuk dengan akaun GitHub anda.",
-    "importToken": "Import Token",
-    "importDescription": "Tampal token penyegaran yang dieksport dari {providerLabel}.",
-    "apiKey": "Kunci API",
-    "apiKeyDescription": "Tampal kunci API {providerLabel} / CodeWhisperer yang tahan lama. Ia disimpan sebagai kelayakan pembawa tanpa token penyegaran; penemuan profil adalah usaha terbaik.",
-    "idcStartUrl": "URL Mula IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL Pusat Identiti AWS IAM Organisasi Anda",
-    "awsRegion": "Wilayah AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Wilayah AWS untuk Pusat Identiti anda (lalai: us-east-1)",
-    "continue": "Teruskan",
-    "back": "Kembali",
-    "autoDetecting": "Mengesan token secara automatik...",
-    "readingCredentials": "Membaca kelayakan {providerLabel} dari cache AWS SSO",
-    "tokenNotDetected": "Token {providerLabel} tidak dikesan secara automatik. Sila tampal token penyegaran anda secara manual.",
-    "refreshToken": "Token Segar",
-    "tokenPlaceholder": "Token akan diisi secara automatik...",
-    "importing": "Mengimport...",
-    "apiKeyPlaceholder": "Tampal kunci API {providerLabel} anda...",
-    "apiKeyStoredDescription": "Disimpan secara terenkripsi sebagai kelayakan pembawa yang tahan lama. Tiada aliran penyegaran.",
-    "apiKeyRegionDescription": "Wilayah AWS untuk kunci (lalai: us-east-1)",
-    "validating": "Mengesahkan...",
-    "validateAndSaveApiKey": "Sahkan dan Simpan Kunci API",
-    "errorAutoDetect": "Tidak dapat mengesan token secara automatik",
-    "errorAutoDetectFailed": "Gagal untuk mengesan token secara automatik",
-    "errorRefreshTokenRequired": "Sila masukkan token penyegaran",
-    "errorImportFailed": "Import gagal",
-    "errorApiKeyRequired": "Sila masukkan kunci API Kiro",
-    "errorApiKeyImportFailed": "Pengimportan kunci API gagal",
-    "errorIdcStartUrlRequired": "Sila masukkan URL permulaan IDC anda"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Sambung {providerLabel} melalui {providerName}",
-    "errorStartAuthorization": "Gagal untuk memulakan pengesahan",
-    "errorAuthorizationExpired": "Kebenaran telah tamat. Mulakan aliran log masuk semula.",
-    "errorAuthorizationFailed": "Kebenaran gagal",
-    "initializing": "Memulakan...",
-    "settingUp": "Mengatur pengesahan {providerName}",
-    "openIncognito": "Buka pautan ini dalam tetingkap Incognito",
-    "incognitoDescription": "Gunakan tetingkap Incognito/Peribadi untuk mengelakkan konflik sesi dengan akaun yang sedia ada.",
-    "copyLink": "Salin pautan",
-    "verificationCode": "Kod pengesahan",
-    "waiting": "Menunggu untuk pengesahan...",
-    "cancel": "Batal",
-    "successTitle": "Sambungan Berjaya!",
-    "successMessage": "Akaun {providerLabel} anda melalui {providerName} telah disambungkan.",
-    "done": "Selesai",
-    "errorTitle": "Sambungan Gagal",
-    "close": "Tutup"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Kebenaran gagal",

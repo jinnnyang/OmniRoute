@@ -9,9 +9,8 @@ import assert from "node:assert/strict";
 
 await import("../../open-sse/translator/bootstrap.ts");
 const { translateRequest, initState } = await import("../../open-sse/translator/index.ts");
-const { openaiToOpenAIResponsesResponse } = await import(
-  "../../open-sse/translator/response/openai-responses.ts"
-);
+const { openaiToOpenAIResponsesResponse } =
+  await import("../../open-sse/translator/response/openai-responses.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 type NamespaceIdentity = { namespace: string; name: string };
@@ -58,8 +57,8 @@ function identityOf(body: Record<string, unknown>) {
   return map as Map<string, NamespaceIdentity>;
 }
 
-test("#9780: namespace identity survives the openai-responses -> kiro pivot", () => {
-  const identity = identityOf(pivot("kiro"));
+test("#9780: namespace identity survives the openai-responses -> codex pivot", () => {
+  const identity = identityOf(pivot("codex"));
 
   assert.equal(identity.size, 1);
   assert.deepEqual(identity.get("functions__exec"), { namespace: "functions", name: "exec" });
@@ -100,7 +99,7 @@ test("#9780: same-format openai-responses request is not flattened at all", () =
 });
 
 test("#9780: the identity channel is non-enumerable and never serializes", () => {
-  const body = pivot("kiro");
+  const body = pivot("codex");
 
   assert.ok(body._namespaceToolIdentityMap instanceof Map);
   assert.equal(
@@ -113,7 +112,7 @@ test("#9780: the identity channel is non-enumerable and never serializes", () =>
 // End-to-end: request pivot + response seam, i.e. what the Codex adjudicator
 // actually receives. Before the fix every target emitted `functions__exec` with
 // no namespace, which is the reported `unsupported call`.
-for (const target of ["kiro", "cursor", "claude", "gemini"]) {
+for (const target of ["codex", "cursor", "claude", "gemini"]) {
   test(`#9780: ${target} round-trip returns the declared name and its namespace`, () => {
     const body = pivot(target);
     const state = initState(FORMATS.OPENAI_RESPONSES) as Record<string, unknown>;

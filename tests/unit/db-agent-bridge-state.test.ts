@@ -82,9 +82,9 @@ test("upsertAgentBridgeState updates an existing row", () => {
 
 test("setLastStarted persists timestamp and auto-creates row if missing", () => {
   const ts = new Date().toISOString();
-  mod.setLastStarted("kiro", ts);
+  mod.setLastStarted("trae", ts);
 
-  const row = mod.getAgentBridgeState("kiro");
+  const row = mod.getAgentBridgeState("trae");
   assert.ok(row);
   assert.equal(row.last_started_at, ts);
 });

@@ -13,9 +13,8 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 
 const { registerExecutor, getRegisteredExecutor, hasRegisteredExecutor, listExecutorAliases } =
   await import("../../open-sse/executors/registry.ts");
-const { getExecutor, hasSpecializedExecutor, BaseExecutor, DefaultExecutor } = await import(
-  "../../open-sse/executors/index.ts"
-);
+const { getExecutor, hasSpecializedExecutor, BaseExecutor, DefaultExecutor } =
+  await import("../../open-sse/executors/index.ts");
 
 test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
@@ -24,7 +23,7 @@ test.after(() => {
 test("built-ins are registered at module load and resolve through the registry", async () => {
   const aliases = listExecutorAliases();
   assert.ok(aliases.length >= 100, `expected the built-in table, got ${aliases.length} aliases`);
-  for (const alias of ["antigravity", "kiro", "glm", "9router", "conol-web"]) {
+  for (const alias of ["antigravity", "qoder", "glm", "9router", "conol-web"]) {
     assert.ok(hasRegisteredExecutor(alias), `missing built-in: ${alias}`);
     assert.equal(await getExecutor(alias), getRegisteredExecutor(alias));
     assert.ok((await getExecutor(alias)) instanceof BaseExecutor);
@@ -32,8 +31,8 @@ test("built-ins are registered at module load and resolve through the registry",
 });
 
 test("registerExecutor throws on duplicate alias", () => {
-  assert.throws(() => registerExecutor("kiro", getRegisteredExecutor("kiro")!), {
-    message: /already registered: "kiro"/,
+  assert.throws(() => registerExecutor("qoder", getRegisteredExecutor("qoder")!), {
+    message: /already registered: "qoder"/,
   });
 });
 

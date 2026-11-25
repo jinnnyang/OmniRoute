@@ -56,7 +56,7 @@ export interface TlsFetchOptions {
   method?: string;
   headers?: Record<string, string>;
   body?: string;
-  signal?: AbortSignal;
+  signal?: AbortSignal | null;
   timeoutMs?: number;
   stream?: boolean;
   streamEofSymbol?: string;

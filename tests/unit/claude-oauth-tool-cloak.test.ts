@@ -357,12 +357,12 @@ describe("native claude OAuth path — versioned built-in tool model prefix stri
   it("strips cc/ prefix from advisor_20260301 model field", () => {
     const tools: AnyRecord[] = [
       { type: "advisor_20260301", name: "advisor", model: "cc/claude-opus-4-8" },
-      { type: "bash_20250124", name: "Bash", model: "kiro/claude-opus-4.8" },
+      { type: "bash_20250124", name: "Bash", model: "qoder/claude-opus-4.8" },
       { name: "Read", input_schema: { type: "object", properties: {} } },
     ];
     stripVersionedToolModelPrefix(tools);
     assert.equal(tools[0].model, "claude-opus-4-8", "cc/ prefix stripped from advisor model");
-    assert.equal(tools[1].model, "claude-opus-4.8", "kiro/ prefix stripped from bash model");
+    assert.equal(tools[1].model, "claude-opus-4.8", "qoder/ prefix stripped from bash model");
     assert.equal("model" in tools[2], false, "regular tool untouched");
   });
 

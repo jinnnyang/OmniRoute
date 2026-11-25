@@ -8,7 +8,7 @@ type CloudflareCredentials = {
   providerSpecificData?: {
     accountId?: string;
   } | null;
-} | null;
+};
 
 /**
  * CloudflareAIExecutor — handles dynamic URL construction with accountId.
@@ -31,7 +31,7 @@ export class CloudflareAIExecutor extends BaseExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    credentials: CloudflareCredentials = null
+    credentials: CloudflareCredentials | null = null
   ): string {
     // Account ID can be stored in providerSpecificData or at top level credentials
     const accountId =

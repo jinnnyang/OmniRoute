@@ -143,7 +143,6 @@ const KNOWN_SVGS = new Set([
   "kilo-gateway",
   "kilocode",
   "kimi",
-  "kiro",
   "krutrim",
   "lambda",
   "leonardo",

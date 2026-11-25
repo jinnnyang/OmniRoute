@@ -405,8 +405,8 @@ describe("modelsDevSync — mapProviderId", () => {
     assert.deepEqual(mapProviderId("some-new-provider"), ["some-new-provider"]);
   });
 
-  it("maps bedrock to [kiro, kr]", () => {
-    assert.deepEqual(mapProviderId("bedrock"), ["kiro", "kr"]);
+  it("maps bedrock to the canonical id only", () => {
+    assert.deepEqual(mapProviderId("bedrock"), ["bedrock"]);
   });
 
   it("maps moonshot to the canonical provider plus Kimi aliases", () => {

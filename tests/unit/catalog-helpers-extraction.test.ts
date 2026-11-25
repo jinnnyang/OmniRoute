@@ -15,7 +15,6 @@ import {
   intersectStringArrays,
   minKnownNumber,
   maybeOmitCatalogModelName,
-  getThinkingCapabilityFields,
   getConnectionScopedEffortTiers,
 } from "../../src/app/api/v1/models/catalogHelpers.ts";
 import {
@@ -73,16 +72,6 @@ test("catalogHelpers: intersectStringArrays (dedup + common)", () => {
   );
   assert.deepEqual(intersectStringArrays([]), []);
   assert.deepEqual(intersectStringArrays([["a"], []]), []);
-});
-
-test("catalogHelpers: Kiro GPT-5.6 models expose the native Max tier", () => {
-  for (const model of ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"]) {
-    assert.deepEqual(getThinkingCapabilityFields("kr", model, true), {
-      thinking: true,
-      supportsThinking: true,
-      effort_tiers: ["none", "low", "medium", "high", "xhigh", "max"],
-    });
-  }
 });
 
 test("catalogHelpers: connection-scoped combo efforts honor dynamic, pinned, and allowlisted scopes", () => {
@@ -241,7 +230,7 @@ test("catalogProviderMaps: buildAliasMaps seeds the fallback aliases", () => {
     assert.equal(aliasToProviderId[alias], providerId, `alias ${alias} -> ${providerId}`);
   }
   assert.equal(aliasToProviderId["cx"], "codex");
-  assert.equal(aliasToProviderId["kr"], "kiro");
+  assert.equal(aliasToProviderId["cc"], "claude");
 });
 
 test("catalogRequest: isCodexModelCatalogClient detects codex originator/user-agent", () => {

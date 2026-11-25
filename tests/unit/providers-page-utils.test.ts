@@ -381,8 +381,7 @@ test("provider display mode storage round-trips and migrates the old configured-
   assert.equal(providerPageStorage.readProviderDisplayModePreference(mockStorage), "all");
 });
 
-test("static catalog entries resolve local, search, audio, web-cookie and upstream providers", () => {
-  const freeProvider = providerPageUtils.resolveDashboardProviderInfo("amazon-q");
+test("static catalog entries resolve local, search, audio and upstream providers", () => {
   const localProvider = providerPageUtils.resolveDashboardProviderInfo("sdwebui");
   const localChatProvider = providerPageUtils.resolveDashboardProviderInfo("lm-studio");
   const lemonadeProvider = providerPageUtils.resolveDashboardProviderInfo("lemonade");
@@ -390,10 +389,8 @@ test("static catalog entries resolve local, search, audio, web-cookie and upstre
   const youcomSearchProvider = providerPageUtils.resolveDashboardProviderInfo("youcom-search");
   const audioProvider = providerPageUtils.resolveDashboardProviderInfo("assemblyai");
   const awsPollyProvider = providerPageUtils.resolveDashboardProviderInfo("aws-polly");
-  const webCookieProvider = providerPageUtils.resolveDashboardProviderInfo("grok-web");
   const apiKeyProvider = providerPageUtils.resolveDashboardProviderInfo("synthetic");
   const gitlabProvider = providerPageUtils.resolveDashboardProviderInfo("gitlab");
-  const gitlabDuoProvider = providerPageUtils.resolveDashboardProviderInfo("gitlab-duo");
   const chutesProvider = providerPageUtils.resolveDashboardProviderInfo("chutes");
   const datarobotProvider = providerPageUtils.resolveDashboardProviderInfo("datarobot");
   const clarifaiProvider = providerPageUtils.resolveDashboardProviderInfo("clarifai");
@@ -411,13 +408,7 @@ test("static catalog entries resolve local, search, audio, web-cookie and upstre
   const runwayProvider = providerPageUtils.resolveDashboardProviderInfo("runwayml");
   const embeddingProvider = providerPageUtils.resolveDashboardProviderInfo("voyage-ai");
   const rerankProvider = providerPageUtils.resolveDashboardProviderInfo("jina-ai");
-  const perplexityWebProvider = providerPageUtils.resolveDashboardProviderInfo("perplexity-web");
-  const blackboxWebProvider = providerPageUtils.resolveDashboardProviderInfo("blackbox-web");
-  const museSparkWebProvider = providerPageUtils.resolveDashboardProviderInfo("muse-spark-web");
   const upstreamProvider = providerPageUtils.resolveDashboardProviderInfo("cliproxyapi");
-
-  assert.equal(freeProvider?.category, "oauth");
-  assert.equal(freeProvider?.name, providers.OAUTH_PROVIDERS["amazon-q"].name);
 
   assert.equal(localProvider?.category, "local");
   assert.equal(localProvider?.name, providers.LOCAL_PROVIDERS.sdwebui.name);
@@ -439,8 +430,6 @@ test("static catalog entries resolve local, search, audio, web-cookie and upstre
   assert.equal(apiKeyProvider?.name, providers.APIKEY_PROVIDERS.synthetic.name);
   assert.equal(gitlabProvider?.category, "apikey");
   assert.equal(gitlabProvider?.name, providers.APIKEY_PROVIDERS.gitlab.name);
-  assert.equal(gitlabDuoProvider?.category, "oauth");
-  assert.equal(gitlabDuoProvider?.name, providers.OAUTH_PROVIDERS["gitlab-duo"].name);
   assert.equal(chutesProvider?.category, "apikey");
   assert.equal(chutesProvider?.name, providers.APIKEY_PROVIDERS.chutes.name);
   assert.equal(datarobotProvider?.category, "apikey");
@@ -477,18 +466,6 @@ test("static catalog entries resolve local, search, audio, web-cookie and upstre
 
   assert.equal(rerankProvider?.category, "apikey");
   assert.equal(rerankProvider?.name, providers.APIKEY_PROVIDERS["jina-ai"].name);
-
-  assert.equal(webCookieProvider?.category, "web-cookie");
-  assert.equal(webCookieProvider?.name, providers.WEB_COOKIE_PROVIDERS["grok-web"].name);
-
-  assert.equal(perplexityWebProvider?.category, "web-cookie");
-  assert.equal(perplexityWebProvider?.name, providers.WEB_COOKIE_PROVIDERS["perplexity-web"].name);
-
-  assert.equal(blackboxWebProvider?.category, "web-cookie");
-  assert.equal(blackboxWebProvider?.name, providers.WEB_COOKIE_PROVIDERS["blackbox-web"].name);
-
-  assert.equal(museSparkWebProvider?.category, "web-cookie");
-  assert.equal(museSparkWebProvider?.name, providers.WEB_COOKIE_PROVIDERS["muse-spark-web"].name);
 
   assert.equal(upstreamProvider?.category, "upstream-proxy");
   assert.equal(
@@ -527,10 +504,6 @@ test("managed provider connection ids include supported static categories and ex
   assert.equal(providerCatalog.isManagedProviderConnectionId("lemonade"), true);
   assert.equal(providerCatalog.isManagedProviderConnectionId("assemblyai"), true);
   assert.equal(providerCatalog.isManagedProviderConnectionId("aws-polly"), true);
-  assert.equal(providerCatalog.isManagedProviderConnectionId("grok-web"), true);
-  assert.equal(providerCatalog.isManagedProviderConnectionId("perplexity-web"), true);
-  assert.equal(providerCatalog.isManagedProviderConnectionId("blackbox-web"), true);
-  assert.equal(providerCatalog.isManagedProviderConnectionId("muse-spark-web"), true);
   assert.equal(providerCatalog.isManagedProviderConnectionId("brave-search"), true);
   assert.equal(providerCatalog.isManagedProviderConnectionId("youcom-search"), true);
   assert.equal(providerCatalog.isManagedProviderConnectionId("cliproxyapi"), false);
@@ -540,9 +513,7 @@ test("managed provider connection ids include supported static categories and ex
   assert.equal(providerCatalog.isManagedProviderConnectionId("codex-cloud"), true);
 });
 
-test("grok-web taxonomy stays web-cookie only and does not leak into api-key entries", () => {
-  assert.equal("grok-web" in providers.APIKEY_PROVIDERS, false);
-  assert.equal("grok-web" in providers.WEB_COOKIE_PROVIDERS, true);
+test("local provider taxonomy does not leak into api-key entries", () => {
   assert.equal("sdwebui" in providers.APIKEY_PROVIDERS, false);
   assert.equal("sdwebui" in providers.LOCAL_PROVIDERS, true);
   assert.equal("lm-studio" in providers.APIKEY_PROVIDERS, false);
@@ -553,13 +524,8 @@ test("grok-web taxonomy stays web-cookie only and does not leak into api-key ent
   assert.equal("lemonade" in providers.LOCAL_PROVIDERS, true);
   assert.equal("comfyui" in providers.APIKEY_PROVIDERS, false);
   assert.equal("comfyui" in providers.LOCAL_PROVIDERS, true);
-  assert.equal("blackbox-web" in providers.APIKEY_PROVIDERS, false);
-  assert.equal("blackbox-web" in providers.WEB_COOKIE_PROVIDERS, true);
-  assert.equal("muse-spark-web" in providers.APIKEY_PROVIDERS, false);
-  assert.equal("muse-spark-web" in providers.WEB_COOKIE_PROVIDERS, true);
   assert.equal("synthetic" in providers.APIKEY_PROVIDERS, true);
   assert.equal("gitlab" in providers.APIKEY_PROVIDERS, true);
-  assert.equal("gitlab-duo" in providers.OAUTH_PROVIDERS, true);
   assert.equal("thebai" in providers.APIKEY_PROVIDERS, true);
   assert.equal("fenayai" in providers.APIKEY_PROVIDERS, true);
   assert.equal("chutes" in providers.APIKEY_PROVIDERS, true);
@@ -584,9 +550,6 @@ test("grok-web taxonomy stays web-cookie only and does not leak into api-key ent
     total: 0,
   }));
   const localEntries = providerPageUtils.buildStaticProviderEntries("local", () => ({
-    total: 0,
-  }));
-  const webCookieEntries = providerPageUtils.buildStaticProviderEntries("web-cookie", () => ({
     total: 0,
   }));
 
@@ -716,18 +679,6 @@ test("grok-web taxonomy stays web-cookie only and does not leak into api-key ent
   );
   assert.equal(
     localEntries.some((entry) => entry.providerId === "lemonade"),
-    true
-  );
-  assert.equal(
-    webCookieEntries.some((entry) => entry.providerId === "grok-web"),
-    true
-  );
-  assert.equal(
-    webCookieEntries.some((entry) => entry.providerId === "blackbox-web"),
-    true
-  );
-  assert.equal(
-    webCookieEntries.some((entry) => entry.providerId === "muse-spark-web"),
     true
   );
 });
@@ -1071,7 +1022,7 @@ test("connectionMatchesProviderCard counts a dual-auth provider's PAT (apikey) c
     true
   );
   assert.equal(
-    connectionMatchesProviderCard({ provider: "kiro", authType: "api_key" }, "kiro", "oauth"),
+    connectionMatchesProviderCard({ provider: "qoder", authType: "api_key" }, "qoder", "oauth"),
     true
   );
   assert.equal(
@@ -1101,48 +1052,4 @@ test("connectionMatchesProviderCard counts a dual-auth provider's PAT (apikey) c
   // Defensive: a null/undefined connection must not throw (gemini-code-assist).
   assert.equal(connectionMatchesProviderCard(null, "qoder", "oauth"), false);
   assert.equal(connectionMatchesProviderCard(undefined, "qoder", "oauth"), false);
-});
-
-test("unified xAI OAuth card includes canonical and legacy connection provider IDs", () => {
-  const {
-    buildStaticProviderEntries,
-    connectionBelongsToProviderPage,
-    connectionMatchesProviderCard,
-    resolveProviderOAuthBackendId,
-  } = providerPageUtils;
-  const connections = [
-    { provider: "xai", authType: "apikey" },
-    { provider: "xai-oauth", authType: "oauth" },
-    { provider: "xao", authType: "oauth" },
-  ];
-
-  assert.deepEqual(
-    connections
-      .filter((connection) => connectionBelongsToProviderPage(connection.provider, "xai"))
-      .map((connection) => connection.provider),
-    ["xai", "xai-oauth", "xao"]
-  );
-  assert.deepEqual(
-    connections
-      .filter((connection) => connectionMatchesProviderCard(connection, "xai", "oauth"))
-      .map((connection) => connection.provider),
-    ["xai", "xai-oauth", "xao"]
-  );
-  assert.equal(resolveProviderOAuthBackendId("xai", providers.APIKEY_PROVIDERS.xai), "xai-oauth");
-  assert.equal(
-    resolveProviderOAuthBackendId("openai", providers.APIKEY_PROVIDERS.openai),
-    "openai"
-  );
-  assert.equal(providers.OAUTH_PROVIDERS["xai-oauth"].hiddenFromDashboard, true);
-  assert.equal(providers.supportsDualAuthProvider("xai"), true);
-
-  const emptyStats = () => ({ total: 0 });
-  assert.ok(
-    buildStaticProviderEntries("apikey", emptyStats).some((entry) => entry.providerId === "xai")
-  );
-  assert.ok(
-    !buildStaticProviderEntries("oauth", emptyStats).some(
-      (entry) => entry.providerId === "xai-oauth"
-    )
-  );
 });

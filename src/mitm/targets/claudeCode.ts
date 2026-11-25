@@ -4,9 +4,8 @@
  * Hosts: `api.anthropic.com`.
  * Format: Anthropic Messages API on `/v1/messages`.
  *
- * NOTE: shares the host `api.anthropic.com` with the Kiro target. The DNS-routing
- * tutorial therefore is opt-in: the user explicitly enables interception when
- * they want Claude Code traffic captured.
+ * NOTE: the DNS-routing tutorial is opt-in: the user explicitly enables
+ * interception when they want Claude Code traffic captured.
  */
 import type { MitmTarget } from "../types";
 
@@ -31,7 +30,6 @@ export const CLAUDE_CODE_TARGET: MitmTarget = {
     ],
     detection: { command: "which claude", platform: "all" },
   },
-  handler: () =>
-    import("../handlers/claudeCode").then((m) => ({ default: m.ClaudeCodeHandler })),
+  handler: () => import("../handlers/claudeCode").then((m) => ({ default: m.ClaudeCodeHandler })),
   riskNoticeKey: "providers.riskNotice.oauth",
 };

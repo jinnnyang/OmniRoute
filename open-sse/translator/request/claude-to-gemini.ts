@@ -1,9 +1,6 @@
 import { register } from "../registry.ts";
 import { FORMATS } from "../formats.ts";
-import {
-  DEFAULT_SAFETY_SETTINGS,
-  cleanJSONSchemaForAntigravity,
-} from "../helpers/geminiHelper.ts";
+import { DEFAULT_SAFETY_SETTINGS, cleanJSONSchemaForAntigravity } from "../helpers/geminiHelper.ts";
 import { buildGeminiTools, sanitizeGeminiToolName } from "../helpers/geminiToolsSanitizer.ts";
 import {
   buildGeminiThoughtSignatureKey,
@@ -16,6 +13,7 @@ import {
   buildHistoricalToolResultContext,
   mergeConsecutiveSameRoleContents,
   type GeminiContent,
+  type GeminiPart,
 } from "./openai-to-gemini/helpers.ts";
 
 /**
@@ -23,7 +21,12 @@ import {
  * Converts Claude Messages API body directly to Gemini format,
  * skipping the OpenAI hub intermediate step.
  */
-export function claudeToGeminiRequest(model, body, stream, credentials = null) {
+export function claudeToGeminiRequest(
+  model: string,
+  body: Record<string, unknown>,
+  stream: boolean,
+  credentials: Record<string, unknown> | null = null
+) {
   const toolNameMap = new Map<string, string>();
   const sanitizeToolName = (name: string) =>
     sanitizeGeminiToolName(name, {
@@ -77,7 +80,7 @@ export function claudeToGeminiRequest(model, body, stream, credentials = null) {
     result.generationConfig.topK = body.top_k;
   }
   if (body.max_tokens !== undefined) {
-    const maxOutputTokens = capMaxOutputTokens(model, body.max_tokens);
+    const maxOutputTokens = capMaxOutputTokens(model, body.max_tokens as number | undefined);
     if (maxOutputTokens !== null) {
       result.generationConfig.maxOutputTokens = maxOutputTokens;
     }
@@ -135,7 +138,7 @@ export function claudeToGeminiRequest(model, body, stream, credentials = null) {
     // matching tool_result becomes text instead of a Gemini-400'd functionResponse.
     const omittedToolCallIds = new Set<string>();
     for (const msg of body.messages) {
-      const parts = [];
+      const parts: GeminiPart[] = [];
 
       if (Array.isArray(msg.content)) {
         for (const block of msg.content) {
@@ -242,15 +245,17 @@ export function claudeToGeminiRequest(model, body, stream, credentials = null) {
 
   // ── Thinking config ────────────────────────────────────────────
   // Priority: thinking.budget_tokens (Claude native) > output_config.effort (Claude Code).
+  const thinking = body.thinking as { type?: string; budget_tokens?: number } | undefined;
+  const outputConfig = body.output_config as { effort?: string } | undefined;
   if (model.startsWith("gemma-4")) {
     // gemma-4 models returns - 400: Thinking budget is not supported for this model
-  } else if (body.thinking?.type === "enabled" && typeof body.thinking.budget_tokens === "number") {
+  } else if (thinking?.type === "enabled" && typeof thinking.budget_tokens === "number") {
     // typeof check ensures only numeric budget_tokens triggers the thinking path;
     // non-numeric values (e.g. string "auto") fall through to the effort-based path.
     // #6813: a truthy check here dropped `budget_tokens: 0` (dynamic thinking).
     // `undefined` (no budget specified) still falls through to the effort branch.
     // #3842: cap to the model's real thinking-budget limit.
-    const cappedBudget = capThinkingBudget(model, body.thinking.budget_tokens);
+    const cappedBudget = capThinkingBudget(model, thinking.budget_tokens);
     // Only send thinkingConfig if the model supports thinking via budget.
     // Models with thinkingBudgetCap:0 (e.g. gemini-3-flash) reject
     // thinkingConfig even when capped to 0. The supportsThinking flag
@@ -268,8 +273,8 @@ export function claudeToGeminiRequest(model, body, stream, credentials = null) {
         includeThoughts: true,
       };
     }
-  } else if (typeof body.output_config?.effort === "string") {
-    const effort = body.output_config.effort.toLowerCase();
+  } else if (typeof outputConfig?.effort === "string") {
+    const effort = outputConfig.effort.toLowerCase();
     const effortBudgetMap: Record<string, number> = {
       none: 0,
       low: 1024,
@@ -318,4 +323,4 @@ export function claudeToGeminiRequest(model, body, stream, credentials = null) {
 // Register direct path only for plain Gemini API.
 // Antigravity requires Cloud Code envelope wrapping,
 // so they must use the existing hub path (Claude -> OpenAI -> target).
-register(FORMATS.CLAUDE, FORMATS.GEMINI, claudeToGeminiRequest, null);
+register(FORMATS.CLAUDE, FORMATS.GEMINI, claudeToGeminiRequest, undefined);

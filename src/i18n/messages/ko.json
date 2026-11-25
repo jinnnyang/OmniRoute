@@ -2873,9 +2873,8 @@
       "cursor": "Cursor에서 코딩하면서 OmniRoute를 통해 사용자 정의 OpenAI 호환 모델이 필요할 때 사용하세요.",
       "continue": "IDE에서 Continue를 실행하면서 이식 가능한 JSON 기반 공급자 구성이 필요할 때 사용하세요.",
       "opencode": "OpenCode를 통해 터미널 기반 에이전트 실행 및 스크립트 자동화를 선호할 때 사용하세요.",
-      "kiro": "Kiro를 통합하고 OmniRoute에서 중앙에서 모델 라우팅을 제어할 때 사용합니다.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Antigravity/Kiro 트래픽이 MITM을 통해 가로채어 OmniRoute로 라우팅되어야 하는 경우에 사용합니다.",
+      "antigravity": "Antigravity 트래픽이 MITM을 통해 가로채어 OmniRoute로 라우팅되어야 하는 경우에 사용합니다.",
       "copilot": "OmniRoute 키와 라우팅 규칙을 적용하면서 Copilot 채팅 스타일 UX를 원할 때 사용하세요.",
       "amp": "Amp 단축 워크플로를 원하면서도 OmniRoute 별칭 및 라우팅 규칙 적용이 필요할 때 사용하세요.",
       "hermes": "빠른 작업을 위해 경량 터미널 기반 AI 도우미가 필요할 때 사용하세요.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI 코드 편집기",
       "continue": "Continue AI 어시스턴트",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode는 API 키 구성이 필요합니다.",
           "1": "기본 URL을 OmniRoute 엔드포인트로 설정하세요."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro는 Amazon 계정이 필요합니다."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "키가 필요 없는 무료 g4f.space Pollinations 리버스 프록시(분당 5회 요청으로 제한).",
       "mixedbread": "Mixedbread API로 임베딩을 생성합니다.",
       "segmind": "Segmind의 호스팅 모델로 이미지와 비디오를 생성합니다.",
-      "amazon-q": "Kiro와 동일한 AWS Builder ID 또는 가져온 refresh-token 흐름을 사용하지만, Amazon Q 연결은 별도로 유지합니다.",
+      "amazon-q": "AWS Builder ID 또는 가져온 refresh-token 흐름을 사용하지만, Amazon Q 연결은 별도로 유지합니다.",
       "antigravity": "기존 OAuth 흐름으로 Antigravity를 연결합니다.",
       "agy": "Antigravity CLI(`agy`) 로그인을 가져오거나(토큰 파일 붙여넣기/업로드), 로컬 CLI 로그인을 자동 감지하거나, Google로 로그인합니다. Antigravity 백엔드(Claude 모델 포함)를 공유합니다.",
       "claude": "기존 OAuth 흐름으로 Claude Code를 연결합니다.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "ai_features + read_user 스코프가 있는 OAuth 애플리케이션입니다. 이 OmniRoute 인스턴스에서 GITLAB_DUO_OAUTH_CLIENT_ID 및 선택적으로 GITLAB_DUO_OAUTH_CLIENT_SECRET을 구성하세요.",
       "kilocode": "기존 OAuth 흐름으로 Kilo Code를 연결합니다.",
       "kimi-coding": "기존 OAuth 흐름으로 Kimi Coding를 연결합니다.",
-      "kiro": "무료 티어: 월 50 크레딧(~25K–100K 토큰). ⚠️ Kiro ToS는 서드파티 프록시/하네스 사용을 금지합니다.",
       "codex": "기존 OAuth 흐름으로 OpenAI Codex를 연결합니다.",
       "qwen": "기존 OAuth 흐름으로 Qwen Code를 연결합니다.",
       "github-models": "github.com/settings/tokens 에서 'models: read' 범위(scope)를 가진 GitHub PAT를 생성하세요."
@@ -9586,7 +9562,7 @@
     "googleAccount": "구글 계정",
     "githubAccount": "GitHub 계정",
     "importToken": "토큰 가져오기",
-    "pasteToken": "Kiro IDE에서 새로 고침 토큰을 붙여넣습니다.",
+    "pasteToken": "새로 고침 토큰을 붙여넣습니다.",
     "awsRegion": "AWS 리전",
     "autoDetecting": "토큰 자동 감지 중...",
     "readingFromCache": "AWS SSO 캐시에서 읽기",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "시스템 상태"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "{providerLabel} 연결",
-    "chooseMethod": "인증 방법을 선택하세요:",
-    "builderId": "AWS 빌더 ID",
-    "builderDescription": "대부분의 사용자에게 권장됩니다. {providerLabel}에 연결된 AWS 계정으로 로그인하세요.",
-    "organization": "귀하의 조직 (AWS IAM 아이덴티티 센터)",
-    "organizationDescription": "회사의 SSO 시작 URL을 사용하세요 (예: {url}).",
-    "googleAccount": "구글 계정",
-    "googleDescription": "Google 계정으로 로그인하세요.",
-    "githubAccount": "GitHub 계정",
-    "githubDescription": "GitHub 계정으로 로그인하세요.",
-    "importToken": "토큰 가져오기",
-    "importDescription": "{providerLabel}에서 내보낸 새로 고침 토큰을 붙여넣으세요.",
-    "apiKey": "API 키",
-    "apiKeyDescription": "장기 사용 가능한 {providerLabel} / CodeWhisperer API 키를 붙여넣으세요. 이 키는 새로 고침 토큰 없이 베어러 자격 증명으로 저장되며, 프로필 검색은 최선의 노력으로 수행됩니다.",
-    "idcStartUrl": "IDC 시작 URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "귀하의 조직의 AWS IAM Identity Center URL",
-    "awsRegion": "AWS 리전",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Identity Center의 AWS 리전(기본값: us-east-1)",
-    "continue": "계속하다",
-    "back": "뒤로",
-    "autoDetecting": "토큰 자동 감지 중...",
-    "readingCredentials": "AWS SSO 캐시에서 {providerLabel} 자격 증명을 읽는 중입니다.",
-    "tokenNotDetected": "{providerLabel} 토큰이 자동으로 감지되지 않았습니다. 새로 고침 토큰을 수동으로 붙여넣어 주십시오.",
-    "refreshToken": "리프레시 토큰",
-    "tokenPlaceholder": "토큰이 자동으로 채워집니다...",
-    "importing": "가져오는 중...",
-    "apiKeyPlaceholder": "{providerLabel} API 키를 붙여넣으세요...",
-    "apiKeyStoredDescription": "장기 지속되는 베어러 자격 증명으로 암호화되어 저장됩니다. 새로 고침 흐름이 없습니다.",
-    "apiKeyRegionDescription": "키에 대한 AWS 리전(기본값: us-east-1)",
-    "validating": "유효성 검사 중...",
-    "validateAndSaveApiKey": "API 키 검증 및 저장",
-    "errorAutoDetect": "토큰을 자동으로 감지할 수 없습니다.",
-    "errorAutoDetectFailed": "토큰 자동 감지에 실패했습니다.",
-    "errorRefreshTokenRequired": "새로 고침 토큰을 입력해 주세요",
-    "errorImportFailed": "가져오기 실패",
-    "errorApiKeyRequired": "Kiro API 키를 입력해 주세요",
-    "errorApiKeyImportFailed": "API 키 가져오기에 실패했습니다",
-    "errorIdcStartUrlRequired": "IDC 시작 URL을 입력해 주세요."
-  },
-  "kiroSocialOAuthModal": {
-    "title": "{providerName}를 통해 {providerLabel} 연결",
-    "errorStartAuthorization": "인증 시작에 실패했습니다.",
-    "errorAuthorizationExpired": "권한이 만료되었습니다. 로그인 흐름을 다시 시작하세요.",
-    "errorAuthorizationFailed": "권한 부여 실패",
-    "initializing": "초기화 중...",
-    "settingUp": "{providerName} 인증 설정 중",
-    "openIncognito": "이 링크를 시크릿 창에서 열기",
-    "incognitoDescription": "세션 충돌을 피하기 위해 Incognito/Private 창을 사용하세요.",
-    "copyLink": "링크 복사",
-    "verificationCode": "인증 코드",
-    "waiting": "승인을 기다리는 중...",
-    "cancel": "취소",
-    "successTitle": "연결되었습니다!",
-    "successMessage": "귀하의 {providerLabel} 계정이 {providerName}를 통해 연결되었습니다.",
-    "done": "완료",
-    "errorTitle": "연결 실패",
-    "close": "닫기"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "인증에 실패했습니다",

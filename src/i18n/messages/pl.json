@@ -2873,9 +2873,8 @@
       "cursor": "Do stosowania podczas kodowania w Cursor, gdy potrzebne są niestandardowe models zgodne z OpenAI za pośrednictwem OmniRoute.",
       "continue": "Do stosowania przy uruchamianiu Continue w IDE, gdy potrzebna jest przenośna konfiguracja provider oparta na JSON.",
       "opencode": "Do stosowania przy preferencji uruchamiania agentów bezpośrednio w terminalu i skryptowej automatyzacji przez OpenCode.",
-      "kiro": "Do stosowania przy integracji z Kiro i centralnym kontrolowaniu routingu model z poziomu OmniRoute.",
       "windsurf": "Do stosowania w środowisku IDE nastawionym na AI, z models Codeium/Windsurf kierowanymi przez OmniRoute.",
-      "antigravity": "Do stosowania, gdy ruch z Antigravity/Kiro musi być przechwytywany przez MITM i kierowany do OmniRoute.",
+      "antigravity": "Do stosowania, gdy ruch z Antigravity musi być przechwytywany przez MITM i kierowany do OmniRoute.",
       "copilot": "Do stosowania przy chęci korzystania z interfejsu w stylu Copilot chat z jednoczesnym wymuszaniem kluczy i reguł routingu OmniRoute.",
       "amp": "Do stosowania przy chęci korzystania ze skróconych procesów roboczych Amp z zachowaniem wymuszania aliasów i reguł routingu OmniRoute.",
       "hermes": "Do stosowania, gdy potrzebny jest lekki asystent AI działający w terminalu do szybkich zadań.",
@@ -2895,7 +2894,6 @@
       "cursor": "Edytor kodu Cursor AI",
       "continue": "Asystent AI Continue",
       "opencode": "Agent kodujący AI OpenCode (Terminal)",
-      "kiro": "Amazon Kiro — IDE oparte na AI",
       "windsurf": "Edytor kodu Windsurf AI",
       "copilot": "Asystent AI GitHub Copilot",
       "amp": "CLI asystenta kodowania Sourcegraph Amp",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode wymaga konfiguracji API key.",
           "1": "Ustaw base URL na swój endpoint OmniRoute."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Otwórz Kiro Settings",
-            "desc": "Przejdź do Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Wklej URL swojego endpoint OmniRoute"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Wybierz model"
-          }
-        },
-        "notes": {
-          "0": "Kiro wymaga konta Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin po wszystkich darmowych providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zerowy koszt, nigdy nie przestaje kodować.",
+    "templateFreeStackDesc": "Round-robin po wszystkich darmowych providers: Qoder (5 models), Qwen (4 models). Zerowy koszt, nigdy nie przestaje kodować.",
     "auto": "Inteligentne Auto",
     "autoDesc": "Samonaprawiająca się inteligentna pula routingu z ocenianiem wieloczynnikowym",
     "lkgp": "Tryb LKGP",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Darmowe, niewymagające klucza odwrotne proxy g4f.space do Pollinations, ograniczone do 5 żądań na minutę.",
       "mixedbread": "Twórz embeddingi za pomocą API Mixedbread.",
       "segmind": "Generuj obrazy i filmy za pomocą hostowanych modeli Segmind.",
-      "amazon-q": "Używa tego samego AWS Builder ID lub zaimportowanego przepływu refresh-token co Kiro, ale utrzymuje połączenia Amazon Q oddzielnie.",
+      "amazon-q": "Używa AWS Builder ID lub zaimportowanego przepływu refresh-token, ale utrzymuje połączenia Amazon Q oddzielnie.",
       "antigravity": "Połącz Antigravity za pomocą istniejącego przepływu OAuth.",
       "agy": "Zaimportuj dane logowania Antigravity CLI (`agy`) (wklej/prześlij plik tokena), wykryj automatycznie lokalne logowanie CLI lub zaloguj się przez Google. Współdzieli backend Antigravity (w tym modele Claude).",
       "claude": "Połącz Claude Code za pomocą istniejącego przepływu OAuth.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "Aplikacja OAuth z zakresami ai_features + read_user. Skonfiguruj GITLAB_DUO_OAUTH_CLIENT_ID i opcjonalnie GITLAB_DUO_OAUTH_CLIENT_SECRET w tej instancji OmniRoute.",
       "kilocode": "Połącz Kilo Code za pomocą istniejącego przepływu OAuth.",
       "kimi-coding": "Połącz Kimi Coding za pomocą istniejącego przepływu OAuth.",
-      "kiro": "Darmowy plan: 50 kredytów/miesiąc (~25K–100K tokenów). ⚠️ ToS Kiro zabrania korzystania z zewnętrznych proxy/harness.",
       "codex": "Połącz OpenAI Codex za pomocą istniejącego przepływu OAuth.",
       "qwen": "Połącz Qwen Code za pomocą istniejącego przepływu OAuth.",
       "github-models": "Utwórz token GitHub PAT z zakresem 'models: read' na github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Konto Google",
     "githubAccount": "Konto GitHub",
     "importToken": "Importuj token",
-    "pasteToken": "Wklej token odświeżania z Kiro IDE.",
+    "pasteToken": "Wklej token odświeżania.",
     "awsRegion": "AWS Region",
     "autoDetecting": "Automatyczne wykrywanie tokens...",
     "readingFromCache": "Odczytywanie z pamięci podręcznej AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Stan systemu"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Połącz {providerLabel}",
-    "chooseMethod": "Wybierz swoją metodę uwierzytelniania:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Zalecane dla większości użytkowników. Zaloguj się za pomocą konta AWS powiązanego z {providerLabel}.",
-    "organization": "Twoja organizacja (AWS IAM Identity Center)",
-    "organizationDescription": "Użyj swojego adresu URL startowego SSO firmy (przykład: {url}).",
-    "googleAccount": "Konto Google",
-    "googleDescription": "Zaloguj się za pomocą swojego konta Google.",
-    "githubAccount": "Konto GitHub",
-    "githubDescription": "Zaloguj się za pomocą swojego konta GitHub.",
-    "importToken": "Importuj Token",
-    "importDescription": "Wklej token odświeżania wyeksportowany z {providerLabel}.",
-    "apiKey": "Klucz API",
-    "apiKeyDescription": "Wklej długoterminowy klucz API {providerLabel} / CodeWhisperer. Jest on przechowywany jako poświadczenie typu bearer bez tokena odświeżającego; odkrywanie profilu odbywa się na zasadzie najlepszych starań.",
-    "idcStartUrl": "URL początkowy IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL Twojego organizacji AWS IAM Identity Center",
-    "awsRegion": "Region AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Region AWS dla Twojego Centrum Tożsamości (domyślnie: us-east-1)",
-    "continue": "Kontynuuj",
-    "back": "Wstecz",
-    "autoDetecting": "Automatyczne wykrywanie tokena...",
-    "readingCredentials": "Odczytywanie poświadczeń {providerLabel} z pamięci podręcznej AWS SSO",
-    "tokenNotDetected": "Token {providerLabel} nie został automatycznie wykryty. Proszę wkleić swój token odświeżający ręcznie.",
-    "refreshToken": "Odśwież Token",
-    "tokenPlaceholder": "Token zostanie automatycznie wypełniony...",
-    "importing": "Importowanie...",
-    "apiKeyPlaceholder": "Wklej swój klucz API {providerLabel}...",
-    "apiKeyStoredDescription": "Przechowywane zaszyfrowane jako długoterminowe poświadczenie nosiciela. Nie ma przepływu odświeżania.",
-    "apiKeyRegionDescription": "Region AWS dla klucza (domyślnie: us-east-1)",
-    "validating": "Walidacja...",
-    "validateAndSaveApiKey": "Zatwierdź i Zapisz Klucz API",
-    "errorAutoDetect": "Nie można automatycznie wykryć tokena",
-    "errorAutoDetectFailed": "Nie udało się automatycznie wykryć tokena",
-    "errorRefreshTokenRequired": "Proszę wprowadzić token odświeżania",
-    "errorImportFailed": "Import nie powiódł się",
-    "errorApiKeyRequired": "Proszę wprowadzić klucz API Kiro",
-    "errorApiKeyImportFailed": "Importowanie klucza API nie powiodło się",
-    "errorIdcStartUrlRequired": "Proszę wprowadzić swój adres URL początkowego IDC"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Połącz {providerLabel} za pomocą {providerName}",
-    "errorStartAuthorization": "Nie udało się rozpocząć autoryzacji",
-    "errorAuthorizationExpired": "Autoryzacja wygasła. Rozpocznij ponownie proces logowania.",
-    "errorAuthorizationFailed": "Autoryzacja nie powiodła się",
-    "initializing": "Inicjowanie...",
-    "settingUp": "Konfigurowanie uwierzytelniania {providerName}",
-    "openIncognito": "Otwórz ten link w oknie incognito",
-    "incognitoDescription": "Użyj okna incognito/prywatnego, aby uniknąć konfliktów sesji z istniejącymi kontami.",
-    "copyLink": "Skopiuj link",
-    "verificationCode": "Kod weryfikacyjny",
-    "waiting": "Oczekiwanie na autoryzację...",
-    "cancel": "Anuluj",
-    "successTitle": "Połączono pomyślnie!",
-    "successMessage": "Twoje konto {providerLabel} za pośrednictwem {providerName} zostało połączone.",
-    "done": "Zrobione",
-    "errorTitle": "Połączenie nie powiodło się",
-    "close": "Zamknij"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autoryzacja nie powiodła się",

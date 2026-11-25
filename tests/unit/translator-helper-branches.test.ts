@@ -616,7 +616,7 @@ test("fallbackToolCallId returns the right id shape with and without an index", 
   assert.match(
     noIndex,
     /^call_\d+$/,
-    "no-index form must be `call_<ts>` (matches kiro/openai-responses fallback shape)"
+    "no-index form must be `call_<ts>` (matches openai-responses fallback shape)"
   );
 
   const withIndex = toolCallHelper.fallbackToolCallId(2);

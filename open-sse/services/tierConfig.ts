@@ -46,7 +46,6 @@ export const tierConfigSchema = z.object({
  * in `NOAUTH_PROVIDERS` with `noAuth: true` instead of editing this list.
  */
 export const LEGACY_FREE_PROVIDERS: readonly string[] = [
-  "kiro",
   "qoder",
   "pollinations",
   "longcat",

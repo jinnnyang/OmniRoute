@@ -2873,9 +2873,8 @@
       "cursor": "Utilizați când codați în Cursor și aveți nevoie de modele personalizate compatibile cu OpenAI prin OmniRoute.",
       "continue": "Utilizați atunci când rulați Continue în IDE-uri și aveți nevoie de o configurație portabilă a furnizorului bazată pe JSON.",
       "opencode": "Utilizați atunci când preferați rulările de agent nativ terminal și automatizarea prin script prin OpenCode.",
-      "kiro": "Utilizați atunci când integrați Kiro și controlați rutarea modelului central din OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Utilizați atunci când traficul Antigravity/Kiro trebuie interceptat prin MITM și direcționat către OmniRoute.",
+      "antigravity": "Utilizați atunci când traficul Antigravity trebuie interceptat prin MITM și direcționat către OmniRoute.",
       "copilot": "Utilizați atunci când doriți UX în stilul de chat Copilot, în timp ce aplicați cheile și regulile de rutare OmniRoute.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Utilizați atunci când aveți nevoie de un asistent AI nativ pentru terminale ușor pentru sarcini rapide.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Continuați Asistentul AI",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode necesită configurarea cheii API.",
           "1": "Setați adresa URL de bază la punctul final OmniRoute."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro necesită un cont Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Reverse proxy gratuit fără cheie g4f.space către Pollinations, limitat la 5 cereri pe minut.",
       "mixedbread": "Creați embeddings cu API-ul Mixedbread.",
       "segmind": "Generați imagini și videoclipuri cu modelele găzduite de Segmind.",
-      "amazon-q": "Folosește același flux AWS Builder ID sau refresh-token importat ca Kiro, dar păstrează conexiunile Amazon Q separate.",
+      "amazon-q": "Folosește flux AWS Builder ID sau refresh-token importat, dar păstrează conexiunile Amazon Q separate.",
       "antigravity": "Conectați Antigravity cu fluxul OAuth existent.",
       "agy": "Importați autentificarea Antigravity CLI (`agy`) (lipiți/încărcați fișierul său de token), detectați automat o autentificare CLI locală sau conectați-vă cu Google. Partajează backend-ul Antigravity (incl. modelele Claude).",
       "claude": "Conectați Claude Code cu fluxul OAuth existent.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "Aplicație OAuth cu permisiunile ai_features + read_user. Configurați GITLAB_DUO_OAUTH_CLIENT_ID și opțional GITLAB_DUO_OAUTH_CLIENT_SECRET pe această instanță OmniRoute.",
       "kilocode": "Conectați Kilo Code cu fluxul OAuth existent.",
       "kimi-coding": "Conectați Kimi Coding cu fluxul OAuth existent.",
-      "kiro": "Nivel gratuit: 50 de credite/lună (~25K–100K tokenuri). ⚠️ Kiro ToS interzice utilizarea de proxy/harness terțe.",
       "codex": "Conectați OpenAI Codex cu fluxul OAuth existent.",
       "qwen": "Conectați Qwen Code cu fluxul OAuth existent.",
       "github-models": "Creați un GitHub PAT cu scope-ul 'models: read' la github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Cont Google",
     "githubAccount": "Cont GitHub",
     "importToken": "Import Token",
-    "pasteToken": "Lipiți indicativul de reîmprospătare din Kiro IDE.",
+    "pasteToken": "Lipiți indicativul de reîmprospătare.",
     "awsRegion": "Regiunea AWS",
     "autoDetecting": "Se detectează automat jetoanele...",
     "readingFromCache": "Citirea din memoria cache AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Starea Sistemului"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Conectează {providerLabel}",
-    "chooseMethod": "Alegeți metoda de autentificare:",
-    "builderId": "ID-ul Builder AWS",
-    "builderDescription": "Recomandat pentru cei mai mulți utilizatori. Conectați-vă cu contul AWS legat de {providerLabel}.",
-    "organization": "Organizația Ta (AWS IAM Identity Center)",
-    "organizationDescription": "Utilizați URL-ul de start SSO al companiei dvs. (exemplu: {url}).",
-    "googleAccount": "Cont Google",
-    "googleDescription": "Conectați-vă cu contul dvs. Google.",
-    "githubAccount": "Cont GitHub",
-    "githubDescription": "Conectează-te cu contul tău GitHub.",
-    "importToken": "Importă Token",
-    "importDescription": "Lipește un token de reîmprospătare exportat din {providerLabel}.",
-    "apiKey": "Cheie API",
-    "apiKeyDescription": "Introduceți o cheie API {providerLabel} / CodeWhisperer pe termen lung. Aceasta este stocată ca un acreditiv bearer fără token de reîmprospătare; descoperirea profilului se face cu cel mai bun efort.",
-    "idcStartUrl": "IDC Start URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL-ul Centrului de Identitate AWS IAM al organizației dumneavoastră",
-    "awsRegion": "Regiune AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Regiunea AWS pentru Centrul tău de Identitate (implicit: us-east-1)",
-    "continue": "Continuă",
-    "back": "Înapoi",
-    "autoDetecting": "Detectare automată a tokenului...",
-    "readingCredentials": "Citirea acreditivelor {providerLabel} din cache-ul AWS SSO",
-    "tokenNotDetected": "Tokenul {providerLabel} nu a fost detectat automat. Vă rugăm să lipiți manual tokenul de reîmprospătare.",
-    "refreshToken": "Token de Refresh",
-    "tokenPlaceholder": "Tokenul va fi completat automat...",
-    "importing": "Importare...",
-    "apiKeyPlaceholder": "Lipește cheia ta API {providerLabel}...",
-    "apiKeyStoredDescription": "Stocat criptat ca un credential de tip bearer cu o durată lungă de viață. Nu există un flux de reîmprospătare.",
-    "apiKeyRegionDescription": "Regiunea AWS pentru cheie (implicit: us-east-1)",
-    "validating": "Validare...",
-    "validateAndSaveApiKey": "Validează și Salvează Cheia API",
-    "errorAutoDetect": "Nu s-a putut detecta automat tokenul",
-    "errorAutoDetectFailed": "Nu s-a reușit detectarea automată a tokenului",
-    "errorRefreshTokenRequired": "Vă rugăm să introduceți un token de reîmprospătare",
-    "errorImportFailed": "Importul a eșuat",
-    "errorApiKeyRequired": "Vă rugăm să introduceți o cheie API Kiro",
-    "errorApiKeyImportFailed": "Importarea cheii API a eșuat",
-    "errorIdcStartUrlRequired": "Vă rugăm să introduceți URL-ul de început IDC"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Conectează {providerLabel} prin {providerName}",
-    "errorStartAuthorization": "Autorizarea a eșuat la pornire",
-    "errorAuthorizationExpired": "Autorizarea a expirat. Începe din nou fluxul de autentificare.",
-    "errorAuthorizationFailed": "Autorizarea a eșuat",
-    "initializing": "Se inițializează...",
-    "settingUp": "Configurarea autentificării {providerName}",
-    "openIncognito": "Deschide acest link într-o fereastră Incognito",
-    "incognitoDescription": "Folosește o fereastră Incognito/Privată pentru a evita conflictele de sesiune cu conturile existente.",
-    "copyLink": "Copiază linkul",
-    "verificationCode": "Cod de verificare",
-    "waiting": "Așteptând autorizarea...",
-    "cancel": "Anulează",
-    "successTitle": "Conectat cu succes!",
-    "successMessage": "Contul dumneavoastră {providerLabel} prin {providerName} a fost conectat.",
-    "done": "Finalizat",
-    "errorTitle": "Conexiune Eșuată",
-    "close": "Închide"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autorizarea a eșuat",

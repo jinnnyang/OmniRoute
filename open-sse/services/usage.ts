@@ -44,9 +44,6 @@ import { getCursorUsage } from "./usage/cursor.ts";
 import { getKimiUsage } from "./usage/kimi.ts";
 import { getCodexUsage } from "./usage/codex.ts";
 import { getClaudeUsage, getClaudePlanLabel } from "./usage/claude.ts";
-import { getKiroUsage, buildKiroUsageResult, discoverKiroProfileArn } from "./usage/kiro.ts";
-// Re-exported para os testes kiro-* (importam de services/usage).
-export { buildKiroUsageResult, discoverKiroProfileArn } from "./usage/kiro.ts";
 import { getAdobeFireflyUsage } from "./usage/adobeFirefly.ts";
 import { getOpenrouterUsage } from "./usage/openrouter.ts";
 import { getOllamaCloudUsage, getOpenCodeGoUsage } from "./opencodeOllamaUsage.ts";
@@ -99,8 +96,6 @@ export const USAGE_FETCHER_PROVIDERS = [
   "claude",
   "codex",
   "cursor",
-  "kiro",
-  "amazon-q",
   "kimi-coding",
   "kimi-coding-apikey",
   "qoder",
@@ -179,9 +174,6 @@ export async function getUsageForProvider(
       return await getCodexUsage(accessToken, providerSpecificData);
     case "cursor":
       return await getCursorUsage(accessToken || "", providerSpecificData);
-    case "kiro":
-    case "amazon-q":
-      return await getKiroUsage(accessToken, providerSpecificData);
     case "vertex":
     case "vertex-partner":
       return await getVertexUsage(id || "", provider);
@@ -294,5 +286,4 @@ export const __testing = {
   mapCodeAssistTierIdToLabel,
   mapSubscriptionTierStringToPlanLabel,
   toDisplayLabel,
-  getKiroUsage,
 };

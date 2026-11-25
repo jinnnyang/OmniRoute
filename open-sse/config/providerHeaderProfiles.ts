@@ -42,11 +42,6 @@ export const QWEN_STAINLESS_LANG = "js";
 
 export const QODER_DEFAULT_USER_AGENT = "Qoder-Cli";
 
-export const KIRO_SDK_USER_AGENT = "AWS-SDK-JS/3.0.0 kiro-ide/1.0.0";
-export const KIRO_AMZ_USER_AGENT = "aws-sdk-js/3.0.0 kiro-ide/1.0.0";
-export const KIRO_STREAMING_TARGET =
-  "AmazonCodeWhispererStreamingService.GenerateAssistantResponse";
-
 export const CURSOR_REGISTRY_VERSION = "3.9";
 
 export function getGitHubCopilotChatHeaders(
@@ -175,18 +170,6 @@ export function getAntigravityProviderHeaders(
   profile: AntigravityClientProfile = "ide"
 ): Record<string, string> {
   return getAntigravityContentHeaders(profile);
-}
-
-export function getKiroServiceHeaders(
-  accept = "application/vnd.amazon.eventstream"
-): Record<string, string> {
-  return {
-    "Content-Type": "application/json",
-    Accept: accept,
-    "X-Amz-Target": KIRO_STREAMING_TARGET,
-    "User-Agent": KIRO_SDK_USER_AGENT,
-    "X-Amz-User-Agent": KIRO_AMZ_USER_AGENT,
-  };
 }
 
 export function getCursorUserAgent(version: string): string {

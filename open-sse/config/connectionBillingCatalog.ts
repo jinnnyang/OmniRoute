@@ -77,8 +77,8 @@ export interface ConnectionBillingEntry {
  * overage, not `hard-stop`, because the strict grouping's entire promise is
  * that it cannot surprise you.
  *
- * Providers already classified free by the economic tier resolver (`kiro`,
- * `qoder`, and the rest of `LEGACY_FREE_PROVIDERS` /
+ * Providers already classified free by the economic tier resolver (`qoder` and
+ * the rest of `LEGACY_FREE_PROVIDERS` /
  * `deriveNoAuthFreeProviders()` in `open-sse/services/tierConfig.ts`) are
  * deliberately NOT listed here: they land on the ladder's `free` rung through
  * `classifyTier()` and would only be double-claimed by an entry here.

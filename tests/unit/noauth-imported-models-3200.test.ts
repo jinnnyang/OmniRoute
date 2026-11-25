@@ -67,11 +67,11 @@ test("#3200 imported model on a noAuth provider (theoldllm) appears in /api/v1/m
 });
 
 test("#3200 custom/imported models on auth providers still appear (no regression)", async () => {
-  // kiro is an auth provider; with a manual custom model added, the alias-prefixed id
+  // zai is an auth provider; with a manual custom model added, the alias-prefixed id
   // must still be present (the active-connection eligibility path is unchanged).
-  // No connection seeded here — kiro custom models require an eligible connection, so
+  // No connection seeded here — zai custom models require an eligible connection, so
   // this guards that the fix does NOT make auth-provider custom models appear without one.
-  await modelsDb.addCustomModel("kiro", "custom-kiro-3200", "Custom Kiro");
+  await modelsDb.addCustomModel("zai", "custom-zai-3200", "Custom Zai");
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models")
@@ -82,7 +82,7 @@ test("#3200 custom/imported models on auth providers still appear (no regression
   assert.equal(response.status, 200);
   // Auth provider with NO active connection → custom model must NOT leak in.
   assert.equal(
-    ids.has("kiro/custom-kiro-3200"),
+    ids.has("zai/custom-zai-3200"),
     false,
     "auth-provider custom model must stay gated behind an eligible connection"
   );

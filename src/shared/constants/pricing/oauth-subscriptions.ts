@@ -1,5 +1,5 @@
 /**
- * Pricing data — oauth-subscriptions family (OAuth / IDE subscription aliases (cc, codex, antigravity, copilot, kiro…)).
+ * Pricing data — oauth-subscriptions family (OAuth / IDE subscription aliases (cc, codex, antigravity, copilot…)).
  * Pure data; merged by default-pricing.ts via spread (god-file decomposition; semantic split).
  */
 import {
@@ -422,77 +422,5 @@ export const DEFAULT_PRICING_OAUTH = {
       reasoning: 3.0,
       cache_creation: 0.5,
     },
-  },
-  kiro: {
-    "claude-sonnet-4.5": {
-      input: 3.0,
-      output: 15.0,
-      cached: 1.5,
-      reasoning: 15.0,
-      cache_creation: 3.0,
-    },
-    "claude-haiku-4.5": {
-      input: 0.5,
-      output: 2.5,
-      cached: 0.25,
-      reasoning: 2.5,
-      cache_creation: 0.5,
-    },
-    "claude-sonnet-5": {
-      input: 3.0,
-      output: 15.0,
-      cached: 1.5,
-      reasoning: 15.0,
-      cache_creation: 3.0,
-    },
-    "deepseek-v3.2": {
-      input: 0.27,
-      output: 1.1,
-      cached: 0.07,
-      reasoning: 1.1,
-      cache_creation: 0.27,
-    },
-    // Registry exposes this model as "deepseek-3.2" (no "v") — keep both keys priced.
-    "deepseek-3.2": {
-      input: 0.27,
-      output: 1.1,
-      cached: 0.07,
-      reasoning: 1.1,
-      cache_creation: 0.27,
-    },
-    "minimax-m2.1": {
-      input: 0.4,
-      output: 1.6,
-      cached: 0.1,
-      reasoning: 1.6,
-      cache_creation: 0.4,
-    },
-    // MiniMax M2.5 — cheaper than M2.1, reasoning + tools
-    "minimax-m2.5": {
-      input: 0.27,
-      output: 0.95,
-      cached: 0.135,
-      reasoning: 1.425,
-      cache_creation: 0.27,
-    },
-    "glm-5": {
-      input: 1.0,
-      output: 3.2,
-      cached: 0.2,
-      reasoning: 4.8,
-      cache_creation: 1.0,
-    },
-    "qwen3-coder-next": {
-      input: 2.0,
-      output: 8.0,
-      cached: 0.5,
-      reasoning: 8.0,
-      cache_creation: 2.0,
-    },
-    // Kiro's GPT-5.6 family (kiro.dev/changelog/models, 2026-07-14) — same
-    // per-tier rates the codex/openai aliases already bill at.
-    "gpt-5.6-sol": GPT_5_6_SOL_PRICING,
-    "gpt-5.6-terra": GPT_5_6_TERRA_PRICING,
-    "gpt-5.6-luna": GPT_5_6_LUNA_PRICING,
   },
 };

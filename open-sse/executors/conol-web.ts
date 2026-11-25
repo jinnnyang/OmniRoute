@@ -522,7 +522,7 @@ async function uploadConolImages(
         cookie,
         {
           accept: "application/json",
-          "content-type": image.mimeType,
+          "content-type": image.mimeType ?? "application/octet-stream",
         },
         sessionId
       ),

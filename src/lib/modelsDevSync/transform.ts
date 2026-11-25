@@ -135,7 +135,6 @@ export const MODELS_DEV_PROVIDER_MAP: Record<string, string[]> = {
   openrouter: ["openrouter"],
   perplexity: ["pplx", "perplexity"],
   // OAuth / special providers
-  bedrock: ["kiro", "kr"], // kr = Kiro (AWS Bedrock)
   "github-copilot": ["github", "gh"],
   kilo: ["kilocode", "kc", "kilo-gateway"],
   kilocode: ["kilocode", "kc", "kilo-gateway"],

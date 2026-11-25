@@ -214,13 +214,11 @@ export const KNOWN_TRANSLATOR_PAIRS: readonly string[] = [
   "cursor:openai",
   "gemini:claude",
   "gemini:openai",
-  "kiro:openai",
   "openai-responses:openai",
   "openai:antigravity",
   "openai:claude",
   "openai:cursor",
   "openai:gemini",
-  "openai:kiro",
   "openai:openai-responses",
 ];
 

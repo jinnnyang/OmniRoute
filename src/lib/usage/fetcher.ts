@@ -2,10 +2,7 @@
  * Usage Fetcher - Get usage data from provider APIs
  */
 
-import {
-  getGitHubCopilotInternalUserHeaders,
-  getKiroServiceHeaders,
-} from "@omniroute/open-sse/config/providerHeaderProfiles.ts";
+import { getGitHubCopilotInternalUserHeaders } from "@omniroute/open-sse/config/providerHeaderProfiles.ts";
 import {
   applyAntigravityClientProfileHeaders,
   getAntigravityClientProfile,
@@ -50,9 +47,6 @@ export async function getUsageForProvider(connection) {
       return await getCodexUsage(accessToken, providerSpecificData);
     case "qoder":
       return await getQoderUsage(accessToken);
-    case "kiro":
-    case "amazon-q":
-      return await getKiroUsage(accessToken);
     default:
       return { message: `Usage API not implemented for ${provider}` };
   }
@@ -414,56 +408,5 @@ async function getQoderUsage(accessToken) {
     return { message: "Qoder connected. Usage tracked per request." };
   } catch (error) {
     return { message: "Unable to fetch Qoder usage." };
-  }
-}
-
-/**
- * Kiro Credits
- * Fetches credit balance from Kiro's AWS CodeWhisperer backend.
- * The endpoint mirrors what Kiro IDE uses internally for the credit badge.
- */
-async function getKiroUsage(accessToken: string) {
-  try {
-    const response = await fetch("https://codewhisperer.us-east-1.amazonaws.com/getUserCredits", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...getKiroServiceHeaders("application/json"),
-      },
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      // 401/403 = expired token, show user-friendly message
-      if (response.status === 401 || response.status === 403) {
-        return { message: "Kiro token expired. Please reconnect in Dashboard → Providers → Kiro." };
-      }
-      throw new Error(`Kiro credits API error (${response.status}): ${errText}`);
-    }
-
-    const data = await response.json();
-
-    // Response shape: { remainingCredits, totalCredits, resetDate, subscriptionType }
-    const remaining = data.remainingCredits ?? data.remaining_credits ?? null;
-    const total = data.totalCredits ?? data.total_credits ?? null;
-    const resetDate = data.resetDate ?? data.reset_date ?? null;
-    const plan = data.subscriptionType ?? data.subscription_type ?? "unknown";
-
-    if (remaining === null) {
-      return { message: "Kiro connected. Credit data unavailable — check Kiro IDE for balance." };
-    }
-
-    return {
-      plan,
-      credits: {
-        remaining,
-        total: total ?? remaining,
-        used: total != null ? total - remaining : 0,
-        unlimited: total === null || total === 0,
-        resetDate,
-      },
-    };
-  } catch (error: any) {
-    return { message: `Unable to fetch Kiro credits: ${error.message}` };
   }
 }

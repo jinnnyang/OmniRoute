@@ -214,8 +214,8 @@ function handleArenaEventLine(
 export function createOpenAIArenaStream(opts: {
   reader: ReadableStreamDefaultReader<Uint8Array>;
   model: string;
-  signal?: AbortSignal;
-  log?: { error?: (scope: string, msg: string) => void };
+  signal?: AbortSignal | null;
+  log?: { error?: (scope: string, msg: string) => void } | null;
 }): ReadableStream<Uint8Array> {
   const { reader, model, signal, log } = opts;
   const decoder = new TextDecoder();

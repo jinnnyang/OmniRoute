@@ -2873,9 +2873,8 @@
       "cursor": "Použite pri kódovaní v Cursore a potrebujete vlastné modely kompatibilné s OpenAI cez OmniRoute.",
       "continue": "Použite pri spustení Continue in IDE a potrebujete prenosnú konfiguráciu poskytovateľa založenú na JSON.",
       "opencode": "Použite, ak uprednostňujete spúšťanie natívneho agenta a skriptovanú automatizáciu cez OpenCode.",
-      "kiro": "Použite pri integrácii Kiro a centrálnom riadení smerovania modelu z OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Použite, keď musí byť premávka Antigravity/Kiro zachytená cez MITM a nasmerovaná na OmniRoute.",
+      "antigravity": "Použite, keď musí byť premávka Antigravity zachytená cez MITM a nasmerovaná na OmniRoute.",
       "copilot": "Použite, keď chcete UX v štýle chatu Copilot pri presadzovaní kľúčov OmniRoute a pravidiel smerovania.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Použite, keď potrebujete ľahkého terminálového natívneho asistenta AI na rýchle úlohy.",
@@ -2895,7 +2894,6 @@
       "cursor": "Editor kódu AI kurzora",
       "continue": "Pokračovať v Asistentovi AI",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode vyžaduje konfiguráciu kľúča API.",
           "1": "Nastavte základnú URL na váš koncový bod OmniRoute."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro vyžaduje účet Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Bezplatný reverzný proxy server g4f.space bez kľúča pre Pollinations, obmedzený na 5 požiadaviek za minútu.",
       "mixedbread": "Vytvárajte embeddingy pomocou Mixedbread API.",
       "segmind": "Generujte obrázky a videá pomocou hostovaných modelov od Segmind.",
-      "amazon-q": "Používa rovnaké AWS Builder ID alebo importovaný tok obnovovacieho tokenu (refresh-token flow) ako Kiro, ale pripojenia Amazon Q uchováva oddelene.",
+      "amazon-q": "Používa AWS Builder ID alebo importovaný tok obnovovacieho tokenu (refresh-token flow), ale pripojenia Amazon Q uchováva oddelene.",
       "antigravity": "Pripojte Antigravity pomocou existujúceho toku OAuth.",
       "agy": "Importujte svoje prihlásenie do Antigravity CLI (`agy`) (prilepte/nahrajte jeho súbor s tokenom), automaticky detegujte lokálne prihlásenie CLI alebo sa prihláste cez Google. Zdieľa backend Antigravity (vrátane modelov Claude).",
       "claude": "Pripojte Claude Code pomocou existujúceho toku OAuth.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "Aplikácia OAuth s rozsahmi (scopes) ai_features + read_user. Nakonfigurujte GITLAB_DUO_OAUTH_CLIENT_ID a voliteľne GITLAB_DUO_OAUTH_CLIENT_SECRET na tejto inštancii OmniRoute.",
       "kilocode": "Pripojte Kilo Code pomocou existujúceho toku OAuth.",
       "kimi-coding": "Pripojte Kimi Coding pomocou existujúceho toku OAuth.",
-      "kiro": "Bezplatná úroveň: 50 kreditov/mesiac (~25k – 100k tokenov). ⚠️ Podmienky používania (ToS) Kiro zakazujú používanie proxy/harness tretích strán.",
       "codex": "Pripojte OpenAI Codex pomocou existujúceho toku OAuth.",
       "qwen": "Pripojte Qwen Code pomocou existujúceho toku OAuth.",
       "github-models": "Vytvorte si GitHub PAT s rozsahom 'models: read' na adrese github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "účet Google",
     "githubAccount": "Účet GitHub",
     "importToken": "Importovať token",
-    "pasteToken": "Prilepte obnovovací token z Kiro IDE.",
+    "pasteToken": "Prilepte obnovovací token.",
     "awsRegion": "Región AWS",
     "autoDetecting": "Automatické zisťovanie tokenov...",
     "readingFromCache": "Čítanie z vyrovnávacej pamäte AWS SSO",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Stav systému"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Pripojiť {providerLabel}",
-    "chooseMethod": "Vyberte si svoju metódu autentifikácie:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Odporúčané pre väčšinu používateľov. Prihláste sa pomocou účtu AWS prepojeného s {providerLabel}.",
-    "organization": "Vaša organizácia (AWS IAM Identity Center)",
-    "organizationDescription": "Použite štartovaciu URL adresu SSO vašej spoločnosti (príklad: {url}).",
-    "googleAccount": "Účet Google",
-    "googleDescription": "Prihláste sa pomocou svojho účtu Google.",
-    "githubAccount": "Účet GitHub",
-    "githubDescription": "Prihláste sa pomocou svojho účtu GitHub.",
-    "importToken": "Importovať Token",
-    "importDescription": "Vložte obnovený token exportovaný z {providerLabel}.",
-    "apiKey": "API Kľúč",
-    "apiKeyDescription": "Vložte dlhodobý {providerLabel} / CodeWhisperer API kľúč. Ukladá sa ako bearer poverenie bez tokenu na obnovenie; objavovanie profilu je na základe najlepšieho úsilia.",
-    "idcStartUrl": "IDC Štartovacia URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL identitného centra AWS IAM vašej organizácie",
-    "awsRegion": "AWS Región",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS región pre vaše Identity Center (predvolené: us-east-1)",
-    "continue": "Pokračovať",
-    "back": "Späť",
-    "autoDetecting": "Automatické zistenie tokenu...",
-    "readingCredentials": "Čítanie poverení {providerLabel} z cache AWS SSO",
-    "tokenNotDetected": "Token {providerLabel} nebol automaticky zistený. Prosím, vložte svoj obnovovací token ručne.",
-    "refreshToken": "Obnoviť token",
-    "tokenPlaceholder": "Token bude automaticky vyplnený...",
-    "importing": "Importovanie...",
-    "apiKeyPlaceholder": "Vložte svoj {providerLabel} API kľúč...",
-    "apiKeyStoredDescription": "Uložené šifrované ako dlhodobá nositeľská poverenie. Neexistuje žiadny tok obnovenia.",
-    "apiKeyRegionDescription": "AWS región pre kľúč (predvolené: us-east-1)",
-    "validating": "Overovanie...",
-    "validateAndSaveApiKey": "Overiť a uložiť API kľúč",
-    "errorAutoDetect": "Nepodarilo sa automaticky zistiť token",
-    "errorAutoDetectFailed": "Nepodarilo sa automaticky zistiť token",
-    "errorRefreshTokenRequired": "Prosím, zadajte obnovovací token",
-    "errorImportFailed": "Import zlyhal",
-    "errorApiKeyRequired": "Zadajte prosím Kiro API kľúč",
-    "errorApiKeyImportFailed": "Importovanie API kľúča zlyhalo",
-    "errorIdcStartUrlRequired": "Zadajte prosím svoju URL adresu pre začiatok IDC"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Pripojiť {providerLabel} cez {providerName}",
-    "errorStartAuthorization": "Nepodarilo sa spustiť autorizáciu",
-    "errorAuthorizationExpired": "Autorizácia vypršala. Začnite proces prihlásenia znova.",
-    "errorAuthorizationFailed": "Autorizácia zlyhala",
-    "initializing": "Inicializácia...",
-    "settingUp": "Nastavenie autentifikácie {providerName}",
-    "openIncognito": "Otvorte tento odkaz v okne Inkognito",
-    "incognitoDescription": "Použite okno Incognito/Private, aby ste predišli konfliktom relácií s existujúcimi účtami.",
-    "copyLink": "Kopírovať odkaz",
-    "verificationCode": "Overovací kód",
-    "waiting": "Čakám na autorizáciu...",
-    "cancel": "Zrušiť",
-    "successTitle": "Úspešne pripojené!",
-    "successMessage": "Váš účet {providerLabel} cez {providerName} bol pripojený.",
-    "done": "Hotovo",
-    "errorTitle": "Pripojenie zlyhalo",
-    "close": "Zavrieť"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autorizácia zlyhala",

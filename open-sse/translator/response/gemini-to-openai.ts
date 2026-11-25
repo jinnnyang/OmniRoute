@@ -18,6 +18,12 @@ import { stripAnsiCodes } from "../../utils/streamHelpers.ts";
 type GeminiToOpenAIState = {
   functionIndex: number;
   finishReason?: string;
+  upstreamError?: {
+    status: number;
+    type: string;
+    code: string;
+    message: string;
+  } | null;
   groundingProcessed?: boolean;
   hasEmittedContent?: boolean;
   messageId: string;
@@ -305,7 +311,7 @@ export function geminiToOpenAIResponse(chunk, state) {
   const modelVersion =
     typeof response.modelVersion === "string" ? response.modelVersion.toLowerCase() : "";
   const parseTextualReasoningTags = !chunk.response && !modelVersion.startsWith("antigravity/");
-  const results = [];
+  const results: Array<Record<string, unknown>> = [];
   const candidate = response.candidates?.[0];
 
   if (!candidate) {
@@ -613,7 +619,7 @@ export function geminiToOpenAIResponse(chunk, state) {
   // Grounding Metadata (Google Search)
   const grounding = candidate.groundingMetadata || candidate.grounding_metadata;
   if (grounding && !state.groundingProcessed) {
-    const citations = [];
+    const citations: Array<{ title: unknown; url: unknown }> = [];
     if (grounding.groundingChunks || grounding.grounding_chunks) {
       const chunks = grounding.groundingChunks || grounding.grounding_chunks;
       for (const chunk of chunks) {

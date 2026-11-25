@@ -8,8 +8,24 @@ type JsonRecord = Record<string, unknown>;
 
 // Convert Antigravity request to OpenAI format
 // Antigravity body: { project, model, userAgent, requestType, requestId, request: { contents, systemInstruction, tools, toolConfig, generationConfig, sessionId } }
-export function antigravityToOpenAIRequest(model, body, stream) {
-  const req = body.request || body;
+export function antigravityToOpenAIRequest(
+  model: string,
+  body: Record<string, unknown>,
+  stream: boolean
+) {
+  const req = (body.request || body) as {
+    generationConfig?: {
+      maxOutputTokens?: unknown;
+      temperature?: unknown;
+      topP?: unknown;
+      topK?: unknown;
+      thinkingConfig?: { thinkingBudget?: number } | null;
+    };
+    systemInstruction?: unknown;
+    contents?: unknown;
+    tools?: Array<{ functionDeclarations?: Array<Record<string, unknown>> }>;
+    [key: string]: unknown;
+  };
   const result: {
     model: string;
     messages: JsonRecord[];
@@ -220,12 +236,15 @@ function preserveRequired(obj: unknown): void {
     return;
   }
   const record = obj as JsonRecord;
-  if (Array.isArray(record.required) && record.properties && typeof record.properties === "object") {
+  if (
+    Array.isArray(record.required) &&
+    record.properties &&
+    typeof record.properties === "object"
+  ) {
     const properties = record.properties as JsonRecord;
     const valid = (record.required as unknown[]).filter(
       (field) =>
-        typeof field === "string" &&
-        Object.prototype.hasOwnProperty.call(properties, field)
+        typeof field === "string" && Object.prototype.hasOwnProperty.call(properties, field)
     );
     if (valid.length === 0) {
       delete record.required;
@@ -240,7 +259,7 @@ function preserveRequired(obj: unknown): void {
 
 // Convert Antigravity content to OpenAI message
 // Handles: text, thought, thoughtSignature, functionCall, functionResponse, inlineData
-function convertContent(content) {
+function convertContent(content: Record<string, unknown>) {
   const role =
     content.role === "model" ? "assistant" : content.role === "user" ? "user" : content.role;
 
@@ -248,9 +267,9 @@ function convertContent(content) {
     return null;
   }
 
-  const textParts = [];
-  const toolCalls = [];
-  const toolResults = [];
+  const textParts: Array<Record<string, unknown>> = [];
+  const toolCalls: Array<Record<string, unknown>> = [];
+  const toolResults: Array<Record<string, unknown>> = [];
   let reasoningContent = "";
 
   for (const part of content.parts) {
@@ -316,9 +335,7 @@ function convertContent(content) {
       const assistantMsg: JsonRecord = { role: "assistant" };
       if (textParts.length > 0) {
         assistantMsg.content =
-          textParts.length === 1 && textParts[0].type === "text"
-            ? textParts[0].text
-            : textParts;
+          textParts.length === 1 && textParts[0].type === "text" ? textParts[0].text : textParts;
       }
       if (reasoningContent) {
         assistantMsg.reasoning_content = reasoningContent;
@@ -371,4 +388,4 @@ function extractText(instruction) {
 }
 
 // Register
-register(FORMATS.ANTIGRAVITY, FORMATS.OPENAI, antigravityToOpenAIRequest, null);
+register(FORMATS.ANTIGRAVITY, FORMATS.OPENAI, antigravityToOpenAIRequest, undefined);

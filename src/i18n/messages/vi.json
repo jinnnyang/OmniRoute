@@ -2873,9 +2873,8 @@
       "cursor": "Sử dụng khi lập trình trong Cursor và bạn cần các mô hình tương thích với OpenAI tùy chỉnh thông qua OmniRoute.",
       "continue": "Sử dụng khi chạy Continue trong các IDE và bạn cần cấu hình nhà cung cấp dựa trên JSON có thể chuyển đổi.",
       "opencode": "Sử dụng khi bạn thích chạy tác nhân trực tiếp trong terminal và tự động hóa bằng kịch bản qua OpenCode.",
-      "kiro": "Sử dụng khi tích hợp Kiro và điều khiển định tuyến mô hình tập trung từ OmniRoute.",
       "windsurf": "Sử dụng khi bạn muốn có một IDE ưu tiên AI với các mô hình Codeium/Windsurf được định tuyến thông qua OmniRoute.",
-      "antigravity": "Sử dụng khi lưu lượng truy cập Antigravity/Kiro cần được chặn bắt qua MITM và định tuyến đến OmniRoute.",
+      "antigravity": "Sử dụng khi lưu lượng truy cập Antigravity cần được chặn bắt qua MITM và định tuyến đến OmniRoute.",
       "copilot": "Sử dụng khi bạn muốn trải nghiệm trò chuyện kiểu Copilot đồng thời áp dụng các khóa OmniRoute và quy tắc định tuyến.",
       "amp": "Sử dụng khi bạn muốn các quy trình làm việc viết tắt của Amp nhưng vẫn cần áp dụng bí danh và quy tắc định tuyến của OmniRoute.",
       "hermes": "Sử dụng khi bạn cần một trợ lý AI gọn nhẹ hoạt động trực tiếp trong terminal cho các tác vụ nhanh.",
@@ -2895,7 +2894,6 @@
       "cursor": "Trình chỉnh sửa mã AI Cursor",
       "continue": "Trợ lý AI Continue",
       "opencode": "Tác nhân lập trình AI OpenCode (Terminal)",
-      "kiro": "Amazon Kiro — IDE tích hợp AI",
       "windsurf": "Trình chỉnh sửa mã AI Windsurf",
       "copilot": "Trợ lý AI GitHub Copilot",
       "amp": "CLI trợ lý lập trình Sourcegraph Amp",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode yêu cầu cấu hình khóa API.",
           "1": "Đặt URL cơ sở thành endpoint OmniRoute của bạn."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Mở Cài đặt Kiro",
-            "desc": "Đi tới Cài đặt → Nhà cung cấp AI"
-          },
-          "2": {
-            "title": "URL cơ sở",
-            "desc": "Dán URL endpoint của OmniRoute"
-          },
-          "3": {
-            "title": "Khóa API"
-          },
-          "4": {
-            "title": "Chọn mô hình"
-          }
-        },
-        "notes": {
-          "0": "Kiro yêu cầu tài khoản Amazon."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Bộ miễn phí ($0)",
-    "templateFreeStackDesc": "Định tuyến xoay vòng qua tất cả nhà cung cấp miễn phí: Kiro (Claude), Qoder (5 mô hình), Qwen (4 mô hình). Không tốn chi phí, không bao giờ ngừng lập trình.",
+    "templateFreeStackDesc": "Định tuyến xoay vòng qua tất cả nhà cung cấp miễn phí: Qoder (5 mô hình), Qwen (4 mô hình). Không tốn chi phí, không bao giờ ngừng lập trình.",
     "auto": "Tự động thông minh",
     "autoDesc": "Nhóm định tuyến thông minh tự phục hồi với tính điểm đa yếu tố",
     "lkgp": "Chế độ LKGP",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Proxy ngược g4f.space miễn phí, không cần khóa cho Pollinations, giới hạn 5 yêu cầu mỗi phút.",
       "mixedbread": "Tạo embedding bằng API Mixedbread.",
       "segmind": "Tạo hình ảnh và video bằng các mô hình được lưu trữ trên Segmind.",
-      "amazon-q": "Dùng cùng AWS Builder ID hoặc luồng refresh-token đã nhập như Kiro, nhưng giữ các kết nối Amazon Q riêng biệt.",
+      "amazon-q": "Dùng AWS Builder ID hoặc luồng refresh-token đã nhập, nhưng giữ các kết nối Amazon Q riêng biệt.",
       "antigravity": "Kết nối Antigravity bằng luồng OAuth hiện có.",
       "agy": "Nhập đăng nhập Antigravity CLI (`agy`) (dán/tải lên tập tin token), tự phát hiện đăng nhập CLI cục bộ hoặc đăng nhập bằng Google. Dùng chung backend Antigravity (gồm các mô hình Claude).",
       "claude": "Kết nối Claude Code bằng luồng OAuth hiện có.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "Ứng dụng OAuth với phạm vi ai_features + read_user. Cấu hình GITLAB_DUO_OAUTH_CLIENT_ID và tùy chọn GITLAB_DUO_OAUTH_CLIENT_SECRET trên instance OmniRoute này.",
       "kilocode": "Kết nối Kilo Code bằng luồng OAuth hiện có.",
       "kimi-coding": "Kết nối Kimi Coding bằng luồng OAuth hiện có.",
-      "kiro": "Gói miễn phí: 50 tín dụng/tháng (khoảng 25–100 nghìn token). ⚠️ Điều khoản Kiro cấm sử dụng proxy/harness của bên thứ ba.",
       "codex": "Kết nối OpenAI Codex bằng luồng OAuth hiện có.",
       "qwen": "Kết nối Qwen Code bằng luồng OAuth hiện có.",
       "github-models": "Tạo GitHub PAT với phạm vi 'models: read' tại github.com/settings/tokens"
@@ -9588,7 +9564,7 @@
     "googleAccount": "Tài khoản Google",
     "githubAccount": "Tài khoản GitHub",
     "importToken": "Nhập token",
-    "pasteToken": "Dán token làm mới từ Kiro IDE.",
+    "pasteToken": "Dán token làm mới.",
     "awsRegion": "Khu vực AWS",
     "autoDetecting": "Đang tự động phát hiện token...",
     "readingFromCache": "Đang đọc từ cache AWS SSO",
@@ -13556,67 +13532,6 @@
         "secondaryAction": "Trạng thái hệ thống"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Kết nối {providerLabel}",
-    "chooseMethod": "Chọn phương thức xác thực của bạn:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Được khuyến nghị cho hầu hết người dùng. Đăng nhập bằng tài khoản AWS được liên kết với {providerLabel}.",
-    "organization": "Tổ chức của bạn (AWS IAM Identity Center)",
-    "organizationDescription": "Sử dụng URL bắt đầu SSO của công ty bạn (ví dụ: {url}).",
-    "googleAccount": "Tài khoản Google",
-    "googleDescription": "Đăng nhập bằng tài khoản Google của bạn.",
-    "githubAccount": "Tài khoản GitHub",
-    "githubDescription": "Đăng nhập bằng tài khoản GitHub của bạn.",
-    "importToken": "Nhập Token",
-    "importDescription": "Dán refresh token được xuất từ {providerLabel}.",
-    "apiKey": "Khóa API",
-    "apiKeyDescription": "Dán khóa API {providerLabel} / CodeWhisperer dùng dài hạn. Khóa này được lưu dưới dạng thông tin xác thực bearer, không có refresh token; việc phát hiện hồ sơ chỉ được thực hiện ở mức tốt nhất có thể.",
-    "idcStartUrl": "URL bắt đầu IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL AWS IAM Identity Center của tổ chức bạn",
-    "awsRegion": "Khu vực AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Khu vực AWS cho Identity Center của bạn (mặc định: us-east-1)",
-    "continue": "Tiếp tục",
-    "back": "Quay lại",
-    "autoDetecting": "Đang tự động phát hiện token...",
-    "readingCredentials": "Đang đọc thông tin xác thực {providerLabel} từ bộ nhớ đệm AWS SSO",
-    "tokenNotDetected": "Không thể tự động phát hiện token {providerLabel}. Vui lòng dán refresh token theo cách thủ công.",
-    "refreshToken": "Refresh Token",
-    "tokenPlaceholder": "Token sẽ được tự động điền...",
-    "importing": "Đang nhập...",
-    "apiKeyPlaceholder": "Dán khóa API {providerLabel} của bạn...",
-    "apiKeyStoredDescription": "Được lưu trữ dưới dạng thông tin xác thực bearer dài hạn và mã hóa. Không có luồng refresh.",
-    "apiKeyRegionDescription": "Khu vực AWS cho khóa (mặc định: us-east-1)",
-    "validating": "Đang xác thực...",
-    "validateAndSaveApiKey": "Xác thực và lưu khóa API",
-    "errorAutoDetect": "Không thể tự động phát hiện token",
-    "errorAutoDetectFailed": "Tự động phát hiện token thất bại",
-    "errorRefreshTokenRequired": "Vui lòng nhập refresh token",
-    "errorImportFailed": "Nhập thất bại",
-    "errorApiKeyRequired": "Vui lòng nhập khóa API Kiro",
-    "errorApiKeyImportFailed": "Nhập khóa API thất bại",
-    "errorIdcStartUrlRequired": "Vui lòng nhập URL bắt đầu IDC của bạn"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Kết nối {providerLabel} qua {providerName}",
-    "errorStartAuthorization": "Không thể bắt đầu ủy quyền",
-    "errorAuthorizationExpired": "Ủy quyền đã hết hạn. Hãy bắt đầu lại luồng đăng nhập.",
-    "errorAuthorizationFailed": "Ủy quyền thất bại",
-    "initializing": "Đang khởi tạo...",
-    "settingUp": "Đang thiết lập xác thực {providerName}",
-    "openIncognito": "Mở liên kết này trong cửa sổ Ẩn danh",
-    "incognitoDescription": "Sử dụng cửa sổ Ẩn danh/Riêng tư để tránh xung đột phiên với các tài khoản hiện có.",
-    "copyLink": "Sao chép liên kết",
-    "verificationCode": "Mã xác minh",
-    "waiting": "Đang chờ ủy quyền...",
-    "cancel": "Hủy",
-    "successTitle": "Đã kết nối thành công!",
-    "successMessage": "Tài khoản {providerLabel} của bạn qua {providerName} đã được kết nối.",
-    "done": "Xong",
-    "errorTitle": "Kết nối thất bại",
-    "close": "Đóng"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Ủy quyền thất bại",

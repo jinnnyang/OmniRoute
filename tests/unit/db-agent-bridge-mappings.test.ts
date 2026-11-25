@@ -4,9 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-db-agent-bridge-mappings-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-db-agent-bridge-mappings-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
@@ -95,9 +93,9 @@ test("setMappings with empty array clears all mappings for agent", () => {
 });
 
 test("setMappings does not affect mappings for other agents", () => {
-  mod.setMappings("kiro", [{ source: "gpt-4", target: "openai/gpt-4.1" }]);
+  mod.setMappings("trae", [{ source: "gpt-4", target: "openai/gpt-4.1" }]);
   mod.setMappings("codex", [{ source: "o3", target: "openai/o3" }]);
-  mod.setMappings("kiro", [{ source: "gpt-4o", target: "openai/gpt-4o" }]);
+  mod.setMappings("trae", [{ source: "gpt-4o", target: "openai/gpt-4o" }]);
 
   const codexRows = mod.getMappingsForAgent("codex");
   assert.equal(codexRows.length, 1);

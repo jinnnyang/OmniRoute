@@ -286,7 +286,7 @@ export function buildGrokToolRegistry(body: Record<string, unknown>): GrokToolRe
   }
 
   const functionTools: GrokFunctionToolSummary[] = tools
-    .map((tool) => {
+    .map((tool): GrokFunctionToolSummary | null => {
       const fn = tool?.function;
       if (tool?.type !== "function" || !fn || typeof fn !== "object") return null;
       const record = fn as Record<string, unknown>;

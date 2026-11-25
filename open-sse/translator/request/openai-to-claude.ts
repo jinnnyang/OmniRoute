@@ -74,6 +74,54 @@ type ClaudeTool = {
   defer_loading?: boolean;
 };
 
+// OpenAI Chat Completions wire shapes read by this translator. Declared fields are
+// the ones the conversion logic touches; the index signature carries the rest.
+type OpenAIContentPart = {
+  type?: string;
+  text?: unknown;
+  tool_use_id?: string;
+  content?: unknown;
+  is_error?: boolean;
+  file?: { file_data?: unknown; data?: unknown; filename?: unknown };
+  signature?: unknown;
+  data?: unknown;
+  id?: string;
+  name?: string;
+  input?: unknown;
+  [key: string]: unknown;
+};
+type OpenAIChatMessage = {
+  role?: string;
+  content?: string | OpenAIContentPart[] | null;
+  tool_calls?: Array<{
+    id?: string;
+    type?: unknown;
+    function?: { name?: string; arguments?: unknown };
+    [key: string]: unknown;
+  }>;
+  tool_call_id?: unknown;
+  reasoning_content?: unknown;
+  [key: string]: unknown;
+};
+type OpenAIToolEntry = {
+  function?: { name?: string; description?: unknown; parameters?: unknown; input_schema?: unknown };
+  [key: string]: unknown;
+};
+type OpenAIChatRequestBody = {
+  _disableToolPrefix?: unknown;
+  temperature?: unknown;
+  top_p?: unknown;
+  stop?: unknown;
+  thinking?: { type?: unknown; budget_tokens?: number; max_tokens?: number } | null;
+  reasoning_effort?: unknown;
+  messages?: OpenAIChatMessage[];
+  tools?: OpenAIToolEntry[];
+  tool_choice?: unknown;
+  response_format?: { type?: string; json_schema?: { schema?: unknown } } | null;
+  system?: unknown;
+  [key: string]: unknown;
+};
+
 /**
  * T02: Recursively strips empty text blocks from content arrays.
  * Anthropic returns 400 "text content blocks must be non-empty" when a
@@ -129,10 +177,15 @@ export function normalizeContentToString(content: string | unknown[] | null | un
 }
 
 // Convert OpenAI request to Claude format
-export function openaiToClaudeRequest(model, body, stream, credentials = null) {
+export function openaiToClaudeRequest(
+  model: string,
+  body: OpenAIChatRequestBody,
+  stream: boolean,
+  credentials: Record<string, unknown> | null = null
+) {
   // Check if tool prefix should be disabled (configured per-provider or global)
   const disableToolPrefix = body?._disableToolPrefix === true;
-  const routedProvider = credentials?._provider;
+  const routedProvider = credentials?._provider as string | undefined;
   const isKimiCoding = routedProvider === "kimi-coding" || routedProvider === "kimi-coding-apikey";
 
   // Tool name mapping for Claude OAuth (capitalizedName → originalName)
@@ -297,10 +350,10 @@ export function openaiToClaudeRequest(model, body, stream, credentials = null) {
   // Whether the OUTBOUND request actually has extended thinking enabled. Anthropic's
   // schema only requires a precursor thinking/redacted_thinking block before a tool_use
   // block when thinking mode is active for THIS request — never unconditionally (#5945).
-  const thinkingEnabledForRequest = Boolean(result.thinking) && result.thinking.type !== "disabled";
+  const thinkingEnabledForRequest = result.thinking != null && result.thinking.type !== "disabled";
 
   // Messages
-  const systemParts = [];
+  const systemParts: string[] = [];
 
   if (body.messages && Array.isArray(body.messages)) {
     // Extract system messages (T15: handle both string and array content)
@@ -432,8 +485,11 @@ export function openaiToClaudeRequest(model, body, stream, credentials = null) {
 
         // Normalize input_schema: Anthropic requires `properties` when type is "object" (#595).
         // MCP tools (e.g. pencil, computer_use) may omit properties on object-type schemas.
-        const rawSchema: Record<string, unknown> = toolData.parameters ||
-          toolData.input_schema || { type: "object", properties: {}, required: [] };
+        const fallbackSchema = { type: "object", properties: {}, required: [] };
+        const rawSchema: Record<string, unknown> =
+          (toolData.parameters as Record<string, unknown> | undefined) ||
+          (toolData.input_schema as Record<string, unknown> | undefined) ||
+          fallbackSchema;
         const normalizedSchema =
           rawSchema.type === "object" && !rawSchema.properties
             ? { ...rawSchema, properties: {} }
@@ -441,7 +497,7 @@ export function openaiToClaudeRequest(model, body, stream, credentials = null) {
 
         return {
           name: toolName,
-          description: toolData.description || "",
+          description: (toolData.description as string | undefined) || "",
           input_schema: normalizedSchema,
         };
       })
@@ -529,13 +585,13 @@ export function openaiToClaudeRequest(model, body, stream, credentials = null) {
 
 // Get content blocks from single message
 function getContentBlocksFromMessage(
-  msg,
+  msg: OpenAIChatMessage,
   toolNameMap = new Map(),
   disableToolPrefix = false,
   thinkingEnabledForRequest = false,
   isKimiCoding = false
 ) {
-  const blocks = [];
+  const blocks: ClaudeContentBlock[] = [];
 
   if (msg.role === "tool") {
     const sanitizedToolUseId = sanitizeToolResultId(msg.tool_call_id); // #7705
@@ -670,7 +726,7 @@ function getContentBlocksFromMessage(
             type: "tool_use",
             id: sanitizeToolId(tc.id),
             name: toolName,
-            input: tryParseJSON(tc.function.arguments),
+            input: tryParseJSON(tc.function?.arguments),
           });
         }
       }
@@ -777,7 +833,11 @@ function stripCacheControl(value: unknown): unknown {
 }
 
 // OpenAI -> Claude format for Antigravity (without system prompt modifications)
-function openaiToClaudeRequestForAntigravity(model, body, stream) {
+function openaiToClaudeRequestForAntigravity(
+  model: string,
+  body: OpenAIChatRequestBody,
+  stream: boolean
+) {
   const result = stripCacheControl(openaiToClaudeRequest(model, body, stream)) as ReturnType<
     typeof openaiToClaudeRequest
   >;
@@ -829,4 +889,4 @@ function openaiToClaudeRequestForAntigravity(model, body, stream) {
 export { openaiToClaudeRequestForAntigravity };
 
 // Register
-register(FORMATS.OPENAI, FORMATS.CLAUDE, openaiToClaudeRequest, null);
+register(FORMATS.OPENAI, FORMATS.CLAUDE, openaiToClaudeRequest, undefined);

@@ -74,7 +74,7 @@ type GeminiFunctionCallingConfig = {
 
 type GeminiRequest = {
   model: string;
-  contents?: GeminiContent[];
+  contents: GeminiContent[];
   [key: string]: unknown;
   generationConfig: GeminiGenerationConfig;
   safetySettings?: unknown;
@@ -670,7 +670,11 @@ export function openaiToCloudCodeGeminiRequest(
   return request;
 }
 
-function wrapInCloudCodeEnvelope(model, cloudCodeRequest, credentials = null) {
+function wrapInCloudCodeEnvelope(
+  model: string,
+  cloudCodeRequest: GeminiRequest,
+  credentials: Record<string, unknown> | null = null
+) {
   // Fall back to providerSpecificData.projectId — some connections (and post-refresh
   // credentials) store it there rather than at the top level, which otherwise produced a
   // spurious 422 "Missing Google projectId" on the Antigravity /v1beta path (#2480).
@@ -678,7 +682,7 @@ function wrapInCloudCodeEnvelope(model, cloudCodeRequest, credentials = null) {
     credentials?.providerSpecificData as { projectId?: unknown } | undefined
   )?.projectId;
   let projectId =
-    credentials?.projectId ||
+    (credentials?.projectId as string | undefined) ||
     (typeof providerSpecificProjectId === "string" ? providerSpecificProjectId : "");
 
   if (!projectId) {
@@ -776,7 +780,12 @@ function getAntigravityClaudeOutputTokens(body: Record<string, unknown>): number
 }
 
 // OpenAI -> Antigravity (Sandbox Cloud Code with wrapper)
-export function openaiToAntigravityRequest(model, body, stream, credentials = null) {
+export function openaiToAntigravityRequest(
+  model: string,
+  body: Record<string, unknown>,
+  stream: boolean,
+  credentials: Record<string, unknown> | null = null
+) {
   const isClaude = model.toLowerCase().includes("claude");
   // All modern Gemini models (2.5+, 3.x, pro-agent, etc.) use thinking by default
   // and require thought_signature for multi-turn tool calls.
@@ -843,6 +852,6 @@ register(
     openaiToGeminiRequest(model, body, stream, credentials, {
       signaturelessToolCallMode: "context",
     }),
-  null
+  undefined
 );
-register(FORMATS.OPENAI, FORMATS.ANTIGRAVITY, openaiToAntigravityRequest, null);
+register(FORMATS.OPENAI, FORMATS.ANTIGRAVITY, openaiToAntigravityRequest, undefined);

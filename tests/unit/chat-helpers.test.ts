@@ -375,7 +375,7 @@ test("handleNoCredentials still leaks 404 (combo fall-through) only when combo",
   const combo = handleNoCredentials(
     null,
     null,
-    "kiro",
+    "qoder",
     "claude-opus-5",
     null,
     null,
@@ -450,13 +450,13 @@ test("handleNoCredentials returns structured model_cooldown when every credentia
 });
 
 test("handleNoCredentials returns 401 with re-auth hint when every connection is in a terminal state", async () => {
-  // Classic scenario: AWS SSO refresh tokens hit their 90-day TTL, every Kiro
-  // connection flips to is_active=0 + testStatus=banned/expired. Surface as
+  // Classic scenario: OAuth refresh tokens hit their TTL, every connection of
+  // the provider flips to is_active=0 + testStatus=banned/expired. Surface as
   // 401 with a reconnect hint instead of the misleading 400 "No credentials".
   const response = handleNoCredentials(
     { allExpired: true, expiredCount: 1, expiredStatus: "banned" },
     null,
-    "kiro",
+    "qoder",
     "claude-sonnet-4.6",
     null,
     null
@@ -464,7 +464,7 @@ test("handleNoCredentials returns 401 with re-auth hint when every connection is
   const json = (await response.json()) as any;
 
   assert.equal(response.status, 401);
-  assert.match(json.error.message, /\[kiro\]/);
+  assert.match(json.error.message, /\[qoder\]/);
   assert.match(json.error.message, /banned by upstream/);
   assert.match(json.error.message, /please reconnect/i);
 });

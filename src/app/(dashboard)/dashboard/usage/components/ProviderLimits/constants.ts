@@ -1,7 +1,6 @@
 export const PROVIDER_LABEL: Record<string, string> = {
   antigravity: "Antigravity",
   github: "GitHub Copilot",
-  kiro: "Kiro AI",
   "amazon-q": "Amazon Q",
   codex: "OpenAI Codex",
   claude: "Claude Code",
@@ -25,7 +24,6 @@ export const PROVIDER_ORDER: Record<string, number> = {
   github: 3,
   codex: 4,
   claude: 5,
-  kiro: 6,
   glm: 7,
   zai: 8,
   glmt: 9,

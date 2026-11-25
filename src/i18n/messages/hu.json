@@ -2873,9 +2873,8 @@
       "cursor": "Használja a Kurzorban való kódoláshoz, és egyéni OpenAI-kompatibilis modellekre van szüksége az OmniRoute-on keresztül.",
       "continue": "Használja a Continue futtatásakor az IDE-ben, és hordozható JSON-alapú szolgáltatói konfigurációra van szüksége.",
       "opencode": "Akkor használja, ha a terminál-natív ügynökfuttatásokat és az OpenCode-on keresztüli parancsfájl-automatizálást részesíti előnyben.",
-      "kiro": "Használja a Kiro integrálásához és a modell-útválasztás központi vezérléséhez az OmniRoute-ból.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Akkor használja, ha az Antigravity/Kiro forgalmat MITM-en keresztül kell elfogni, és az OmniRoute-hoz kell irányítani.",
+      "antigravity": "Akkor használja, ha az Antigravity forgalmat MITM-en keresztül kell elfogni, és az OmniRoute-hoz kell irányítani.",
       "copilot": "Használja, ha másodpilóta csevegési stílusú UX-et szeretne, miközben betartja az OmniRoute kulcsokat és útválasztási szabályokat.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Használja, ha könnyű, terminál-natív AI-asszisztensre van szüksége a gyors feladatokhoz.",
@@ -2895,7 +2894,6 @@
       "cursor": "Kurzor AI kódszerkesztő",
       "continue": "Az AI-asszisztens folytatása",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "Az OpenCode API-kulcs-konfigurációt igényel.",
           "1": "Állítsa be az alap URL-t az OmniRoute végpontra."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "A Kiro Amazon-fiókot igényel."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Ingyenes, kulcs nélküli g4f.space fordított proxy a Pollinations-höz, percenként legfeljebb 5 kéréssel.",
       "mixedbread": "Beágyazások (embeddings) létrehozása a Mixedbread API-val.",
       "segmind": "Képek és videók generálása a Segmind hosztolt modelljeivel.",
-      "amazon-q": "Ugyanazt az AWS Builder ID-t vagy importált refresh-token folyamatot használja, mint a Kiro, de az Amazon Q kapcsolatokat külön kezeli.",
+      "amazon-q": "Az AWS Builder ID-t vagy importált refresh-token folyamatot használja, de az Amazon Q kapcsolatokat külön kezeli.",
       "antigravity": "Az Antigravity összekapcsolása a meglévő OAuth-folyamattal.",
       "agy": "Importálja az Antigravity CLI (`agy`) bejelentkezését (illessze be/töltse fel a tokenfájlját), észlelje automatikusan a helyi CLI-bejelentkezést, vagy jelentkezzen be a Google-lel. Megosztja az Antigravity hátteret (beleértve a Claude modelleket is).",
       "claude": "A Claude Code összekapcsolása a meglévő OAuth-folyamattal.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth alkalmazás ai_features + read_user hatókörökkel. Konfigurálja a GITLAB_DUO_OAUTH_CLIENT_ID és opcionálisan a GITLAB_DUO_OAUTH_CLIENT_SECRET változókat ezen az OmniRoute példányon.",
       "kilocode": "A Kilo Code összekapcsolása a meglévő OAuth-folyamattal.",
       "kimi-coding": "A Kimi Coding összekapcsolása a meglévő OAuth-folyamattal.",
-      "kiro": "Free tier: 50 credits/month (~25K–100K tokens). ⚠️ Kiro ToS prohibits third-party proxy/harness use.",
       "codex": "Connect OpenAI Codex with the existing OAuth flow.",
       "qwen": "Connect Qwen Code with the existing OAuth flow.",
       "github-models": "Hozzon létre egy GitHub PAT-ot 'models: read' hatókörrel a github.com/settings/tokens oldalon"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Fiók",
     "githubAccount": "GitHub fiók",
     "importToken": "Token importálása",
-    "pasteToken": "Illessze be a Kiro IDE frissítési tokent.",
+    "pasteToken": "Illessze be a frissítési tokent.",
     "awsRegion": "AWS régió",
     "autoDetecting": "Tokenek automatikus felismerése...",
     "readingFromCache": "Olvasás az AWS SSO gyorsítótárból",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Rendszerállapot"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Csatlakozás {providerLabel}",
-    "chooseMethod": "Válaszd ki az azonosítási módszered:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Ajánlott a legtöbb felhasználónak. Jelentkezzen be a {providerLabel} -hoz kapcsolódó AWS fiókjával.",
-    "organization": "A Szervezeted (AWS IAM Identity Center)",
-    "organizationDescription": "Használja a cég SSO kezdő URL-jét (példa: {url}).",
-    "googleAccount": "Google Fiók",
-    "googleDescription": "Jelentkezz be a Google-fiókoddal.",
-    "githubAccount": "GitHub Fiók",
-    "githubDescription": "Jelentkezz be a GitHub fiókoddal.",
-    "importToken": "Token Importálása",
-    "importDescription": "Illessze be a {providerLabel} által exportált frissítési tokent.",
-    "apiKey": "API Kulcs",
-    "apiKeyDescription": "Illessze be a hosszú élettartamú {providerLabel} / CodeWhisperer API kulcsot. Ez egy bearer hitelesítőként van tárolva, frissítő token nélkül; a profil felfedezése legjobb igyekezet alapján történik.",
-    "idcStartUrl": "IDC Indító URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "A szervezet AWS IAM Identity Center URL-je",
-    "awsRegion": "AWS Régió",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS régió az Ön Identitásközpontjához (alapértelmezett: us-east-1)",
-    "continue": "Folytatás",
-    "back": "Vissza",
-    "autoDetecting": "Token automatikus észlelése...",
-    "readingCredentials": "{providerLabel} hitelesítő adatok olvasása az AWS SSO gyorsítótárból",
-    "tokenNotDetected": "A {providerLabel} token nem volt automatikusan észlelve. Kérjük, illessze be a frissítő tokent manuálisan.",
-    "refreshToken": "Frissítő Token",
-    "tokenPlaceholder": "A token automatikusan kitöltésre kerül...",
-    "importing": "Importálás...",
-    "apiKeyPlaceholder": "Illessze be a {providerLabel} API kulcsát...",
-    "apiKeyStoredDescription": "Tartósan titkosítva tárolva, mint egy hosszú élettartamú jogosultsági hitelesítő. Nincs frissítési folyamat.",
-    "apiKeyRegionDescription": "AWS régió a kulcshoz (alapértelmezett: us-east-1)",
-    "validating": "Érvényesítés...",
-    "validateAndSaveApiKey": "API Kulcs Érvényesítése és Mentése",
-    "errorAutoDetect": "Nem sikerült automatikusan észlelni a tokent",
-    "errorAutoDetectFailed": "Nem sikerült automatikusan észlelni a tokent",
-    "errorRefreshTokenRequired": "Kérjük, adjon meg egy frissítő tokent",
-    "errorImportFailed": "Importálás nem sikerült",
-    "errorApiKeyRequired": "Kérjük, adja meg a Kiro API kulcsot",
-    "errorApiKeyImportFailed": "API kulcs importálása nem sikerült",
-    "errorIdcStartUrlRequired": "Kérjük, adja meg az IDC kezdő URL-jét"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Csatlakozás a {providerLabel} szolgáltatáshoz a {providerName} segítségével",
-    "errorStartAuthorization": "Sikertelen hitelesítés indítása",
-    "errorAuthorizationExpired": "A jogosultság lejárt. Indítsa újra a bejelentkezési folyamatot.",
-    "errorAuthorizationFailed": "Az engedélyezés meghiúsult",
-    "initializing": "Inicializálás...",
-    "settingUp": "{providerName} hitelesítés beállítása",
-    "openIncognito": "Nyisd meg ezt a linket egy Inkognitó ablakban",
-    "incognitoDescription": "Használj inkognitó/privát ablakot, hogy elkerüld a meglévő fiókokkal való munkamenet-ütközéseket.",
-    "copyLink": "Link másolása",
-    "verificationCode": "Ellenőrző kód",
-    "waiting": "Várakozás az engedélyezésre...",
-    "cancel": "Mégse",
-    "successTitle": "Sikeresen csatlakozva!",
-    "successMessage": "A {providerName} által biztosított {providerLabel} fiók csatlakoztatva lett.",
-    "done": "Kész",
-    "errorTitle": "Kapcsolódás Sikertelen",
-    "close": "Bezárás"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Az engedélyezés meghiúsult",

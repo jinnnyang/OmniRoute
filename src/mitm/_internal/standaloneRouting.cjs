@@ -11,11 +11,6 @@ const AGENT_ROUTE_CONFIG = {
     chatUrlPatterns: ["/v1/messages"],
     routerPath: "/v1/messages",
   },
-  kiro: {
-    aliasKey: "kiro",
-    chatUrlPatterns: ["/v1/messages"],
-    routerPath: "/v1/messages",
-  },
 };
 
 function getAgentRouteConfig(agentId) {

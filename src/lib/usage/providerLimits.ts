@@ -82,7 +82,6 @@ const PROVIDER_LIMITS_APIKEY_PROVIDERS = new Set([
   "vertex",
   "vertex-partner",
   "kimi-coding-apikey",
-  "kiro",
   // Qoder connections are PAT-based (authType "apikey"); the usage fetcher
   // exchanges the PAT for a job token and reads openapi.qoder.sh/user/status.
   "qoder",

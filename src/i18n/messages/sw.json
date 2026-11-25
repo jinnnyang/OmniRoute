@@ -2873,9 +2873,8 @@
       "cursor": "Use when coding in Cursor and you need custom OpenAI-compatible models through OmniRoute.",
       "continue": "Use when running Continue in IDEs and you need portable JSON-based provider configuration.",
       "opencode": "Use when you prefer terminal-native agent runs and scripted automation via OpenCode.",
-      "kiro": "Use when integrating Kiro and controlling model routing centrally from OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Use when Antigravity/Kiro traffic must be intercepted through MITM and routed to OmniRoute.",
+      "antigravity": "Use when Antigravity traffic must be intercepted through MITM and routed to OmniRoute.",
       "copilot": "Use when you want Copilot chat style UX while enforcing OmniRoute keys and routing rules.",
       "amp": "Use when you want Amp shorthand workflows but still need OmniRoute alias and routing rules enforcement.",
       "hermes": "Use when you need a lightweight terminal-native AI assistant for quick tasks.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Continue AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode requires API key configuration.",
           "1": "Set the base URL to your OmniRoute endpoint."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro requires Amazon account."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Intelligent Auto",
     "autoDesc": "Self-healing smart routing pool with multi-factor scoring",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Reverse proxy ya bure isiyo na ufunguo ya g4f.space kwenda Pollinations, yenye kikomo cha maombi 5 kwa dakika.",
       "mixedbread": "Unda vipachiko kwa kutumia Mixedbread API.",
       "segmind": "Zalisha picha na video kwa kutumia miundo iliyopangishwa ya Segmind.",
-      "amazon-q": "Hutumia AWS Builder ID ile ile au mtiririko wa refresh-token ulioingizwa kama Kiro, lakini huweka miunganisho ya Amazon Q kando.",
+      "amazon-q": "Hutumia AWS Builder ID ile ile au mtiririko wa refresh-token ulioingizwa, lakini huweka miunganisho ya Amazon Q kando.",
       "antigravity": "Unganisha Antigravity kwa mtiririko uliopo wa OAuth.",
       "agy": "Ingiza kuingia kwako kwa Antigravity CLI (`agy`) (bandika/pakia faili yake ya tokeni), tambua kiotomatiki kuingia kwa CLI ya ndani, au ingia kwa kutumia Google. Inashiriki mfumo wa nyuma wa Antigravity (ikijumuisha miundo ya Claude).",
       "claude": "Unganisha Claude Code kwa mtiririko uliopo wa OAuth.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "Programu ya OAuth yenye upeo wa ai_features + read_user. Sanidi GITLAB_DUO_OAUTH_CLIENT_ID na kwa hiari GITLAB_DUO_OAUTH_CLIENT_SECRET kwenye instansi hii ya OmniRoute.",
       "kilocode": "Unganisha Kilo Code kwa mtiririko uliopo wa OAuth.",
       "kimi-coding": "Unganisha Kimi Coding kwa mtiririko uliopo wa OAuth.",
-      "kiro": "Kiwango cha bure: mikopo 50/mwezi (~tokeni 25K–100K). ⚠️ Kiro ToS inakataza matumizi ya proksi/harness ya wahusika wengine.",
       "codex": "Unganisha OpenAI Codex na mtiririko uliopo wa OAuth.",
       "qwen": "Unganisha Qwen Code na mtiririko uliopo wa OAuth.",
       "github-models": "Unda PAT ya GitHub yenye upeo wa 'models: read' kwenye github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Account",
     "githubAccount": "GitHub Account",
     "importToken": "Import Token",
-    "pasteToken": "Paste refresh token from Kiro IDE.",
+    "pasteToken": "Paste refresh token.",
     "awsRegion": "AWS Region",
     "autoDetecting": "Auto-detecting tokens...",
     "readingFromCache": "Reading from AWS SSO cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Hali ya Mfumo"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Unganisha {providerLabel}",
-    "chooseMethod": "Chagua njia yako ya uthibitishaji:",
-    "builderId": "Kitambulisho cha Mjenzi wa AWS",
-    "builderDescription": "Inapendekezwa kwa watumiaji wengi. Ingia na akaunti ya AWS iliyoambatanishwa na {providerLabel}.",
-    "organization": "Shirika Lako (AWS IAM Identity Center)",
-    "organizationDescription": "Tumia URL ya kuanzia SSO ya kampuni yako (mfano: {url}).",
-    "googleAccount": "Akaunti ya Google",
-    "googleDescription": "Ingia na akaunti yako ya Google.",
-    "githubAccount": "Akaunti ya GitHub",
-    "githubDescription": "Ingia na akaunti yako ya GitHub.",
-    "importToken": "Ingiza Token",
-    "importDescription": "Bandika tokeni ya kufufua iliyosafirishwa kutoka {providerLabel}.",
-    "apiKey": "Funguo la API",
-    "apiKeyDescription": "Pasta funguo ya {providerLabel} / CodeWhisperer API inayodumu kwa muda mrefu. Inahifadhiwa kama akidi ya bearer bila token ya kusasisha; ugunduzi wa wasifu ni juhudi bora.",
-    "idcStartUrl": "IDC Anza URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "URL ya Kituo cha Utambulisho wa AWS IAM ya shirika lako",
-    "awsRegion": "Eneo la AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "Kanda ya AWS kwa Kituo Chako cha Utambulisho (chaguo-msingi: us-east-1)",
-    "continue": "Endelea",
-    "back": "Rudi",
-    "autoDetecting": "Inagundua token kiotomatiki...",
-    "readingCredentials": "Kusoma akreditivu za {providerLabel} kutoka kwenye cache ya AWS SSO",
-    "tokenNotDetected": "{providerLabel} token haikuja kugunduliwa kiotomatiki. Tafadhali bandika token yako ya kuhuisha kwa mikono.",
-    "refreshToken": "Fungua Tokeni",
-    "tokenPlaceholder": "Token itajazwa kiotomatiki...",
-    "importing": "Inakabiliwa na uagizaji...",
-    "apiKeyPlaceholder": "Bandika funguo yako ya API ya {providerLabel}...",
-    "apiKeyStoredDescription": "Imehifadhiwa kwa njia ya usimbaji kama akidi ya kubeba inayodumu kwa muda mrefu. Hakuna mchakato wa kusasisha.",
-    "apiKeyRegionDescription": "Eneo la AWS kwa funguo (chaguo-msingi: us-east-1)",
-    "validating": "Inathibitisha...",
-    "validateAndSaveApiKey": "Thibitisha na Hifadhi Funguo la API",
-    "errorAutoDetect": "Haiwezekani kugundua token kiotomatiki",
-    "errorAutoDetectFailed": "Imeshindikana kugundua tokeni kiotomatiki",
-    "errorRefreshTokenRequired": "Tafadhali ingiza tokeni ya kusasisha",
-    "errorImportFailed": "Uagizaji umeshindikana",
-    "errorApiKeyRequired": "Tafadhali ingiza funguo ya API ya Kiro",
-    "errorApiKeyImportFailed": "Uagizaji wa funguo za API umeshindwa",
-    "errorIdcStartUrlRequired": "Tafadhali ingiza URL yako ya kuanzia ya IDC"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Unganisha {providerLabel} kupitia {providerName}",
-    "errorStartAuthorization": "Imeshindikana kuanzisha uthibitisho",
-    "errorAuthorizationExpired": "Idhini imeisha. Anza mchakato wa kuingia tena.",
-    "errorAuthorizationFailed": "Uidhinishaji umeshindikana",
-    "initializing": "Inaanza...",
-    "settingUp": "Kuweka uthibitisho wa {providerName}",
-    "openIncognito": "Fungua kiungo hiki katika dirisha la Incognito",
-    "incognitoDescription": "Tumia dirisha la Incognito/Private ili kuepuka migongano ya kikao na akaunti zilizopo.",
-    "copyLink": "Nakili kiungo",
-    "verificationCode": "Nambari ya uthibitisho",
-    "waiting": "Inasubiri idhini...",
-    "cancel": "Ghairi",
-    "successTitle": "Imepangwa kwa Mafanikio!",
-    "successMessage": "Akaunti yako ya {providerLabel} kupitia {providerName} imeunganishwa.",
-    "done": "Imekamilika",
-    "errorTitle": "Muunganisho Umeshindikana",
-    "close": "Funga"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Uidhinishaji umeshindikana",

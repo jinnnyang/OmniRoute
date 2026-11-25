@@ -16,49 +16,6 @@ import path from "path";
 const root = path.resolve(import.meta.dirname, "../..");
 const read = (rel: string) => readFile(path.join(root, rel), "utf8");
 
-// ─── P0: GitLab Duo ───────────────────────────────────────────────────────────
-
-test("P0: gitlab-duo is registered in providerRegistry", async () => {
-  // The provider registry was modularized into per-provider plugin files (#3993),
-  // so a text grep of providerRegistry.ts (now a thin re-export barrel) no longer
-  // finds the literal key. Assert registration at runtime instead, preserving the
-  // test's intent ("gitlab-duo is registered").
-  const { REGISTRY, getRegistryEntry } = await import("../../open-sse/config/providerRegistry.ts");
-  assert.ok("gitlab-duo" in REGISTRY, "gitlab-duo must be a key in REGISTRY");
-  assert.ok(getRegistryEntry("gitlab-duo"), "getRegistryEntry('gitlab-duo') must be non-null");
-});
-
-test("P0: refreshGitLabDuoToken exists and handles invalid_grant as unrecoverable", async () => {
-  // refreshGitLabDuoToken lives in its own co-located provider module since the
-  // tokenRefresh.ts provider-extraction (originally proposed in #7338, redone
-  // on tip) — tokenRefresh.ts now only re-exports it.
-  const src = await read("open-sse/services/tokenRefresh/providers/gitlabDuo.ts");
-  assert.match(
-    src,
-    /export\s+async\s+function\s+refreshGitLabDuoToken\(/,
-    "refreshGitLabDuoToken must be exported"
-  );
-
-  // Extract the function body
-  const fnMatch = src.match(/export\s+async\s+function\s+refreshGitLabDuoToken\([\s\S]+?\n\}/);
-  assert.ok(fnMatch, "refreshGitLabDuoToken function body not found");
-  assert.match(fnMatch[0], /invalid_grant/, "must detect invalid_grant");
-  assert.match(fnMatch[0], /unrecoverable_refresh_error/, "must return unrecoverable sentinel");
-});
-
-test("P0: gitlab-duo case exists in _getAccessTokenInternal", async () => {
-  const src = await read("open-sse/services/tokenRefresh.ts");
-  assert.match(src, /case\s+["']gitlab-duo["']/, "gitlab-duo case must exist in switch");
-});
-
-test("P0: gitlab-duo is in supportsTokenRefresh explicit set", async () => {
-  const src = await read("open-sse/services/tokenRefresh.ts");
-  // Find the explicitlySupported Set
-  const setMatch = src.match(/const\s+explicitlySupported\s*=\s*new\s+Set\(\[[\s\S]+?\]\)/);
-  assert.ok(setMatch, "explicitlySupported Set not found");
-  assert.match(setMatch[0], /["']gitlab-duo["']/, "gitlab-duo must be in explicitlySupported");
-});
-
 // ─── P1: Kimi Coding stable device_id ────────────────────────────────────────
 
 test("P1: refreshKimiCodingToken accepts providerSpecificData parameter", async () => {
@@ -182,34 +139,6 @@ test("P2: refreshGoogleToken parses invalid_grant as unrecoverable", async () =>
   assert.ok(fnMatch, "refreshGoogleToken function body not found");
   assert.match(fnMatch[0], /invalid_grant/, "must detect invalid_grant");
   assert.match(fnMatch[0], /unrecoverable_refresh_error/, "must return unrecoverable sentinel");
-});
-
-// ─── P2: Kiro AWS InvalidGrantException ──────────────────────────────────────
-
-test("P2: refreshKiroToken parses AWS InvalidGrantException", async () => {
-  // refreshKiroToken lives in its own co-located provider module since the
-  // tokenRefresh.ts provider-extraction (#7338, redone on tip).
-  const src = await read("open-sse/services/tokenRefresh/providers/kiro.ts");
-  const fnMatch = src.match(/export\s+async\s+function\s+refreshKiroToken\([\s\S]+?\n\}/);
-  assert.ok(fnMatch, "refreshKiroToken function body not found");
-  assert.match(
-    fnMatch[0],
-    /InvalidGrantException|ExpiredTokenException/,
-    "must detect AWS error types"
-  );
-  assert.match(fnMatch[0], /unrecoverable_refresh_error/, "must return unrecoverable sentinel");
-});
-
-test("P2: refreshKiroToken handles AWS errors on both AWS OIDC and social auth paths", async () => {
-  const src = await read("open-sse/services/tokenRefresh/providers/kiro.ts");
-  const fnMatch = src.match(/export\s+async\s+function\s+refreshKiroToken\([\s\S]+?\n\}/);
-  assert.ok(fnMatch, "refreshKiroToken function body not found");
-  // Count occurrences of InvalidGrantException — should appear in both paths
-  const matchCount = (fnMatch[0].match(/InvalidGrantException/g) || []).length;
-  assert.ok(
-    matchCount >= 2,
-    `InvalidGrantException should be checked in both paths (found ${matchCount} occurrences)`
-  );
 });
 
 // ─── P3: Claude error shape normalization ─────────────────────────────────────

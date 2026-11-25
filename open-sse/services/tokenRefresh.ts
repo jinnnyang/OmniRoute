@@ -48,7 +48,6 @@ import { persistDiscoveredAntigravityProjectId } from "./antigravityProjectPersi
 import { refreshCodexToken } from "./tokenRefresh/providers/codex.ts";
 import { refreshCursorToken } from "./tokenRefresh/providers/cursor.ts";
 import { refreshOpenferenceToken } from "./tokenRefresh/providers/openference.ts";
-import { refreshKiroToken } from "./tokenRefresh/providers/kiro.ts";
 import { refreshQoderToken } from "./tokenRefresh/providers/qoder.ts";
 import { refreshGitHubToken } from "./tokenRefresh/providers/github.ts";
 import { refreshCopilotToken } from "./tokenRefresh/providers/copilot.ts";
@@ -61,7 +60,6 @@ export {
   refreshCodexToken,
   refreshCursorToken,
   refreshOpenferenceToken,
-  refreshKiroToken,
   refreshQoderToken,
   refreshGitHubToken,
   refreshCopilotToken,
@@ -105,7 +103,6 @@ export const REFRESH_LEAD_MS: Record<string, number> = {
   codex: 5 * 60 * 1000, // 5 minutes
   openai: 5 * 60 * 1000, // same Auth0 backend as codex
   claude: 5 * 60 * 1000, // Anthropic OAuth rotates refresh_tokens (user-reported)
-  kiro: 5 * 60 * 1000, // AWS SSO OIDC issues one-time-use refresh tokens
   "kimi-coding": 5 * 60 * 1000, // Moonshot rotates per-refresh
   // Google OAuth refresh_tokens are permanent (non-rotating) — longer lead
   // is safe and reduces unnecessary upstream chatter.
@@ -394,15 +391,6 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
     case "github":
       return await refreshGitHubToken(credentials.refreshToken, log, proxyConfig);
 
-    case "kiro":
-    case "amazon-q":
-      return await refreshKiroToken(
-        credentials.refreshToken,
-        credentials.providerSpecificData,
-        log,
-        proxyConfig
-      );
-
     case "cline":
     case "clinepass": // reuses the Cline WorkOS refresh flow (clinepass: cline)
       return await refreshClineToken(credentials.refreshToken, log, proxyConfig);
@@ -434,8 +422,6 @@ export function supportsTokenRefresh(provider) {
     "openference",
     "qoder",
     "github",
-    "kiro",
-    "amazon-q",
     "cline",
     "kimi-coding",
     // Devin auth is not refreshable here: devin-desktop accepts an imported API

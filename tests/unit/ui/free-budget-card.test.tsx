@@ -16,8 +16,26 @@ const data: FreeBudgetData = {
   modelCount: 530,
   poolCount: 50,
   perModel: [
-    { provider: "mistral", modelId: "mistral-large", displayName: "Mistral Large", monthlyTokens: 1_000_000_000, creditTokens: 0, freeType: "recurring-monthly", poolKey: "mistral", tos: "caution" },
-    { provider: "kiro", modelId: "kiro", displayName: "Kiro", monthlyTokens: 25_000, creditTokens: 0, freeType: "recurring-monthly", poolKey: "kiro", tos: "avoid" },
+    {
+      provider: "mistral",
+      modelId: "mistral-large",
+      displayName: "Mistral Large",
+      monthlyTokens: 1_000_000_000,
+      creditTokens: 0,
+      freeType: "recurring-monthly",
+      poolKey: "mistral",
+      tos: "caution",
+    },
+    {
+      provider: "agy",
+      modelId: "agy-free",
+      displayName: "AGY",
+      monthlyTokens: 25_000,
+      creditTokens: 0,
+      freeType: "recurring-monthly",
+      poolKey: "agy",
+      tos: "avoid",
+    },
   ],
 };
 
@@ -43,10 +61,37 @@ describe("FreeBudgetView", () => {
       poolCount: 1,
       perModel: [
         // Two models in the same pool — should produce only 1 bar segment
-        { provider: "gemini", modelId: "gemini-flash", displayName: "Gemini Flash", monthlyTokens: 1_000_000_000, creditTokens: 0, freeType: "recurring-monthly", poolKey: "gemini-pool", tos: "ok" },
-        { provider: "gemini", modelId: "gemini-pro", displayName: "Gemini Pro", monthlyTokens: 500_000_000, creditTokens: 0, freeType: "recurring-monthly", poolKey: "gemini-pool", tos: "ok" },
+        {
+          provider: "gemini",
+          modelId: "gemini-flash",
+          displayName: "Gemini Flash",
+          monthlyTokens: 1_000_000_000,
+          creditTokens: 0,
+          freeType: "recurring-monthly",
+          poolKey: "gemini-pool",
+          tos: "ok",
+        },
+        {
+          provider: "gemini",
+          modelId: "gemini-pro",
+          displayName: "Gemini Pro",
+          monthlyTokens: 500_000_000,
+          creditTokens: 0,
+          freeType: "recurring-monthly",
+          poolKey: "gemini-pool",
+          tos: "ok",
+        },
         // One standalone model (poolKey null)
-        { provider: "openai", modelId: "gpt-free", displayName: "GPT Free", monthlyTokens: 200_000_000, creditTokens: 0, freeType: "keyless", poolKey: null, tos: "ok" },
+        {
+          provider: "openai",
+          modelId: "gpt-free",
+          displayName: "GPT Free",
+          monthlyTokens: 200_000_000,
+          creditTokens: 0,
+          freeType: "keyless",
+          poolKey: null,
+          tos: "ok",
+        },
       ],
     };
 
@@ -79,15 +124,69 @@ const layoutData: FreeBudgetData = {
   // Server-derived: which of these providers route with nothing configured.
   noCredentialProviders: ["pollinations"],
   perModel: [
-    { provider: "mistral", modelId: "mistral-small", displayName: "Mistral Small 4", monthlyTokens: 1_000_000_000, creditTokens: 0, freeType: "recurring-monthly", poolKey: "mistral", tos: "caution" },
-    { provider: "llm7", modelId: "llm7", displayName: "LLM7 pool", monthlyTokens: 150_000_000, creditTokens: 0, freeType: "recurring-daily", poolKey: "llm7", tos: "caution" },
-    { provider: "kiro", modelId: "kiro", displayName: "Kiro Auto", monthlyTokens: 25_000, creditTokens: 0, freeType: "recurring-monthly", poolKey: "kiro", tos: "avoid" },
-    { provider: "together", modelId: "together-signup", displayName: "Together credit", monthlyTokens: 0, creditTokens: 25_000_000, freeType: "one-time-initial", poolKey: "together-signup", tos: "caution" },
-    { provider: "kimi", modelId: "kimi-free", displayName: "Kimi Free", monthlyTokens: 50_000_000, creditTokens: 0, freeType: "keyless", poolKey: null, tos: "ok" },
+    {
+      provider: "mistral",
+      modelId: "mistral-small",
+      displayName: "Mistral Small 4",
+      monthlyTokens: 1_000_000_000,
+      creditTokens: 0,
+      freeType: "recurring-monthly",
+      poolKey: "mistral",
+      tos: "caution",
+    },
+    {
+      provider: "llm7",
+      modelId: "llm7",
+      displayName: "LLM7 pool",
+      monthlyTokens: 150_000_000,
+      creditTokens: 0,
+      freeType: "recurring-daily",
+      poolKey: "llm7",
+      tos: "caution",
+    },
+    {
+      provider: "agy",
+      modelId: "agy-auto",
+      displayName: "AGY Auto",
+      monthlyTokens: 25_000,
+      creditTokens: 0,
+      freeType: "recurring-monthly",
+      poolKey: "agy",
+      tos: "avoid",
+    },
+    {
+      provider: "together",
+      modelId: "together-signup",
+      displayName: "Together credit",
+      monthlyTokens: 0,
+      creditTokens: 25_000_000,
+      freeType: "one-time-initial",
+      poolKey: "together-signup",
+      tos: "caution",
+    },
+    {
+      provider: "kimi",
+      modelId: "kimi-free",
+      displayName: "Kimi Free",
+      monthlyTokens: 50_000_000,
+      creditTokens: 0,
+      freeType: "keyless",
+      poolKey: null,
+      tos: "ok",
+    },
     // Real provider that routes anonymously — the "no API key" section is
     // derived from routing behaviour, so a made-up id would (correctly) count
     // as credentialed and never appear there.
-    { provider: "pollinations", modelId: "openai-fast", displayName: "Pollinations Fast", monthlyTokens: 30_000_000, creditTokens: 0, freeType: "keyless", poolKey: "pollinations", tos: "caution" },
+    {
+      provider: "pollinations",
+      modelId: "openai-fast",
+      displayName: "Pollinations Fast",
+      monthlyTokens: 30_000_000,
+      creditTokens: 0,
+      freeType: "keyless",
+      poolKey: "pollinations",
+      tos: "caution",
+    },
   ],
 };
 
@@ -131,31 +230,37 @@ const tableOf = (h: string) => h.slice(h.indexOf('data-testid="budget-table"'));
 describe("FreeBudgetView — filters", () => {
   it("hideAvoid drops ToS-restricted rows from the table but keeps the count callout", () => {
     const shown = renderToStaticMarkup(<FreeBudgetView data={layoutData} hideAvoid={false} />);
-    expect(tableOf(shown)).toMatch(/Kiro Auto/);
+    expect(tableOf(shown)).toMatch(/AGY Auto/);
     const hidden = renderToStaticMarkup(<FreeBudgetView data={layoutData} hideAvoid={true} />);
-    expect(tableOf(hidden)).not.toMatch(/Kiro Auto/);
+    expect(tableOf(hidden)).not.toMatch(/AGY Auto/);
     // the 1-model ToS-restricted callout still reflects the underlying data
     expect(hidden).toMatch(/1 model.*ToS-restricted/i);
   });
 
   it("sort=name orders the table rows alphabetically by display name", () => {
     const t = tableOf(renderToStaticMarkup(<FreeBudgetView data={layoutData} sort="name" />));
-    // Kiro Auto should appear before Mistral Small 4 in the table body when sorted by name
-    expect(t.indexOf("Kiro Auto")).toBeLessThan(t.indexOf("Mistral Small 4"));
+    // AGY Auto should appear before Mistral Small 4 in the table body when sorted by name
+    expect(t.indexOf("AGY Auto")).toBeLessThan(t.indexOf("Mistral Small 4"));
   });
 
   it("search filters rows by model name, model id, and provider (case-insensitive)", () => {
-    const byName = tableOf(renderToStaticMarkup(<FreeBudgetView data={layoutData} search="kimi" />));
+    const byName = tableOf(
+      renderToStaticMarkup(<FreeBudgetView data={layoutData} search="kimi" />)
+    );
     expect(byName).toMatch(/Kimi Free/);
     expect(byName).not.toMatch(/Mistral Small 4/);
 
-    const byProvider = tableOf(renderToStaticMarkup(<FreeBudgetView data={layoutData} search="LLM7" />));
+    const byProvider = tableOf(
+      renderToStaticMarkup(<FreeBudgetView data={layoutData} search="LLM7" />)
+    );
     expect(byProvider).toMatch(/LLM7 pool/);
     expect(byProvider).not.toMatch(/Kimi Free/);
   });
 
   it("providerFilter restricts the table to a single provider", () => {
-    const t = tableOf(renderToStaticMarkup(<FreeBudgetView data={layoutData} providerFilter="kimi" />));
+    const t = tableOf(
+      renderToStaticMarkup(<FreeBudgetView data={layoutData} providerFilter="kimi" />)
+    );
     expect(t).toMatch(/Kimi Free/);
     expect(t).not.toMatch(/Mistral Small 4/);
     expect(t).not.toMatch(/LLM7 pool/);
@@ -165,7 +270,9 @@ describe("FreeBudgetView — filters", () => {
     // Filters on the server-derived noCredentialProviders list, NOT on
     // freeType: "keyless" — "Kimi Free" is catalogued keyless yet is not in
     // that list, exactly the case that used to mislead users.
-    const t = tableOf(renderToStaticMarkup(<FreeBudgetView data={layoutData} keylessOnly={true} />));
+    const t = tableOf(
+      renderToStaticMarkup(<FreeBudgetView data={layoutData} keylessOnly={true} />)
+    );
     expect(t).toMatch(/Pollinations Fast/);
     expect(t).not.toMatch(/Kimi Free/);
     expect(t).not.toMatch(/Mistral Small 4/);
@@ -173,7 +280,9 @@ describe("FreeBudgetView — filters", () => {
   });
 
   it("shows an empty-state row when no model matches the current filters", () => {
-    const t = tableOf(renderToStaticMarkup(<FreeBudgetView data={layoutData} search="no-such-model-xyz" />));
+    const t = tableOf(
+      renderToStaticMarkup(<FreeBudgetView data={layoutData} search="no-such-model-xyz" />)
+    );
     expect(t).toMatch(/No models match the current filters/);
   });
 });
@@ -197,7 +306,8 @@ describe("FreeBudgetView — keyless section and badges", () => {
 
   it("badges the keyless free-type distinctly from other free types", () => {
     const html = renderToStaticMarkup(<FreeBudgetView data={layoutData} />);
-    const badges = html.match(/data-testid="free-type-badge"[^>]*>[^<]*(?:<[^>]*>[^<]*)*<\/span>/g) ?? [];
+    const badges =
+      html.match(/data-testid="free-type-badge"[^>]*>[^<]*(?:<[^>]*>[^<]*)*<\/span>/g) ?? [];
     expect(badges.some((b) => b.includes("keyless"))).toBe(true);
     expect(badges.some((b) => b.includes("daily"))).toBe(true);
   });

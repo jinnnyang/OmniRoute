@@ -628,7 +628,7 @@ test("usage service covers Claude default-plan fallback, legacy org denial and f
   assert.match(fetchFailure.message, /Unable to fetch usage: claude usage offline/i);
 });
 
-test("usage service covers Codex, Kiro and Kimi usage parsing and error branches", async () => {
+test("usage service covers Codex and Kimi usage parsing and error branches", async () => {
   globalThis.fetch = async (url, init = {}) => {
     if (String(url).includes("/backend-api/wham/usage")) {
       assert.equal((init as any).headers["chatgpt-account-id"], "workspace-123");
@@ -667,27 +667,6 @@ test("usage service covers Codex, Kiro and Kimi usage parsing and error branches
                   used_percent: 20,
                   reset_after_seconds: 600,
                 },
-              },
-            },
-          ],
-        }),
-        { status: 200 }
-      );
-    }
-
-    if (String(url) === "https://codewhisperer.us-east-1.amazonaws.com") {
-      return new Response(
-        JSON.stringify({
-          subscriptionInfo: { subscriptionTitle: "Kiro Pro" },
-          nextDateReset: new Date(Date.now() + 300_000).toISOString(),
-          usageBreakdownList: [
-            {
-              resourceType: "AGENTIC_REQUEST",
-              currentUsageWithPrecision: 12,
-              usageLimitWithPrecision: 20,
-              freeTrialInfo: {
-                currentUsageWithPrecision: 2,
-                usageLimitWithPrecision: 5,
               },
             },
           ],
@@ -742,33 +721,6 @@ test("usage service covers Codex, Kiro and Kimi usage parsing and error branches
   assert.equal(codex.quotas.gpt_5_3_codex_spark_weekly.remaining, 80);
   assert.equal(codex.quotas.gpt_5_3_codex_spark_weekly.displayName, "GPT-5.3-Codex-Spark Weekly");
 
-  const kiroNoArn: any = await usageService.getUsageForProvider({
-    provider: "kiro",
-    accessToken: "kiro-token",
-    providerSpecificData: { authMethod: "builder-id", region: "us-east-1" },
-  });
-  assert.equal(kiroNoArn.plan, "Kiro Pro");
-  assert.equal(kiroNoArn.quotas.agentic_request.used, 12);
-  assert.equal(kiroNoArn.quotas.agentic_request_freetrial.remaining, 3);
-
-  const kiro: any = await usageService.getUsageForProvider({
-    provider: "kiro",
-    accessToken: "kiro-token",
-    providerSpecificData: { profileArn: "arn:test:kiro" },
-  });
-  assert.equal(kiro.plan, "Kiro Pro");
-  assert.equal(kiro.quotas.agentic_request.used, 12);
-  assert.equal(kiro.quotas.agentic_request_freetrial.remaining, 3);
-
-  const amazonQ: any = await usageService.getUsageForProvider({
-    provider: "amazon-q",
-    accessToken: "amazon-q-token",
-    providerSpecificData: { profileArn: "arn:test:amazon-q" },
-  });
-  assert.equal(amazonQ.plan, "Kiro Pro");
-  assert.equal(amazonQ.quotas.agentic_request.used, 12);
-  assert.equal(amazonQ.quotas.agentic_request_freetrial.remaining, 3);
-
   const kimi: any = await usageService.getUsageForProvider({
     provider: "kimi-coding",
     accessToken: "kimi-token",
@@ -805,7 +757,7 @@ test("usage service covers Codex, Kiro and Kimi usage parsing and error branches
   assert.match(kimiInvalidJson.message, /Invalid JSON response/i);
 });
 
-test("usage service covers Codex auth failures, Kiro hard failures and Kimi no-quota fallbacks", async () => {
+test("usage service covers Codex auth failures and Kimi no-quota fallbacks", async () => {
   globalThis.fetch = async (url) => {
     if (String(url).includes("/backend-api/wham/usage")) {
       return new Response("nope", { status: 401 });
@@ -829,22 +781,6 @@ test("usage service covers Codex auth failures, Kiro hard failures and Kimi no-q
     accessToken: "codex-broken",
   });
   assert.match(codexBroken.message, /Codex API error: 500/i);
-
-  globalThis.fetch = async (url) => {
-    if (String(url) === "https://codewhisperer.us-east-1.amazonaws.com") {
-      return new Response("bad request", { status: 400 });
-    }
-    throw new Error(`unexpected fetch: ${url}`);
-  };
-  await assert.rejects(
-    () =>
-      usageService.getUsageForProvider({
-        provider: "kiro",
-        accessToken: "kiro-broken",
-        providerSpecificData: { profileArn: "arn:test:broken" },
-      }),
-    /Failed to fetch Kiro usage: Kiro API error \(400\): bad request/
-  );
 
   globalThis.fetch = async (url) => {
     if (String(url).includes("/coding/v1/usages")) {

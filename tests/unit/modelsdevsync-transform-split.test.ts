@@ -23,7 +23,7 @@ describe("modelsDevSync/transform split-guard", () => {
     assert.deepEqual(mapProviderId("openai"), ["openai", "cx"]);
     assert.deepEqual(mapProviderId("anthropic"), ["anthropic", "cc"]);
     assert.deepEqual(mapProviderId("zai"), ["zai", "glm"]);
-    assert.deepEqual(mapProviderId("bedrock"), ["kiro", "kr"]);
+    assert.deepEqual(mapProviderId("bedrock"), ["bedrock"]);
     assert.deepEqual(mapProviderId("opencode"), ["opencode", "opencode-zen"]);
   });
 

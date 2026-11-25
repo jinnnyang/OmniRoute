@@ -4,7 +4,6 @@ import type { AgentId } from "@/mitm/types";
 
 const AGENT_COLORS: Record<AgentId, { emoji: string; label: string; color: string }> = {
   antigravity: { emoji: "🔵", label: "AG", color: "text-blue-400" },
-  kiro: { emoji: "🟠", label: "KR", color: "text-orange-400" },
   copilot: { emoji: "🟢", label: "CP", color: "text-green-400" },
   "ghe-copilot": { emoji: "🟩", label: "GHE", color: "text-emerald-400" },
   codex: { emoji: "🟣", label: "CD", color: "text-purple-400" },

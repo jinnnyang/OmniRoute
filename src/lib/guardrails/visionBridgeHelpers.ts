@@ -120,7 +120,7 @@ export async function resolveSelfLoopApiKey(resolver?: () => Promise<string>): P
  *      `openrouter/...`, etc.) instead of being limited to OpenAI/Anthropic.
  *   2. `OPENAI_API_URL` env var (legacy)
  *   3. OmniRoute self-loop (`http://localhost:20128/v1`) — auto-detected when
- *      the model uses a known OmniRoute-internal provider (e.g. `kr/`, `if/`,
+ *      the model uses a known OmniRoute-internal provider (e.g. `if/`,
  *      `pol/`, `groq/`, etc.) instead of a direct OpenAI/Anthropic endpoint.
  *   4. `https://api.openai.com/v1` (fallback when the model is `openai/*` or
  *      unprefixed — works only when the operator actually has an OpenAI

@@ -434,15 +434,15 @@ test("shouldMarkAccountExhaustedFrom429 skips connection poisoning for compatibl
 
 test("shouldMarkAccountExhaustedFrom429 does not poison quota cache for transient 429s", () => {
   assert.equal(
-    shouldMarkAccountExhaustedFrom429("kiro", "claude-opus-4.7", undefined, "rate_limit"),
+    shouldMarkAccountExhaustedFrom429("trae", "claude-opus-4.7", undefined, "rate_limit"),
     false
   );
   assert.equal(
-    shouldMarkAccountExhaustedFrom429("kiro", "claude-opus-4.7", undefined, "transient"),
+    shouldMarkAccountExhaustedFrom429("trae", "claude-opus-4.7", undefined, "transient"),
     false
   );
   assert.equal(
-    shouldMarkAccountExhaustedFrom429("kiro", "claude-opus-4.7", undefined, "quota_exhausted"),
+    shouldMarkAccountExhaustedFrom429("trae", "claude-opus-4.7", undefined, "quota_exhausted"),
     true
   );
 });

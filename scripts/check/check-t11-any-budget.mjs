@@ -57,7 +57,6 @@ const budget = [
   // forced tool use. The checker strips comments but not strings, and there are zero
   // actual TypeScript `any` types in this file. Budget set to the matched count.
   { file: "open-sse/executors/base.ts", maxAny: 2 },
-  { file: "open-sse/executors/kiro.ts", maxAny: 0 },
   // 3 FALSE POSITIVES: the word "any" appears in #3104's tool-commit / output-
   // constraint prompt STRINGS ("not any other tool", "any text", "any of these
   // sequences"). The checker strips comments but not strings, and there are zero
@@ -101,10 +100,8 @@ const budget = [
   { file: "open-sse/translator/request/gemini-to-openai.ts", maxAny: 0 },
   { file: "open-sse/translator/request/openai-to-claude.ts", maxAny: 1 }, // 1 = string literal "any" (Claude tool_choice value, not a TS type) — #1072
   { file: "open-sse/translator/request/openai-to-cursor.ts", maxAny: 0 },
-  { file: "open-sse/translator/request/openai-to-kiro.ts", maxAny: 0 },
   { file: "open-sse/translator/response/claude-to-openai.ts", maxAny: 0 },
   { file: "open-sse/translator/response/gemini-to-openai.ts", maxAny: 0 },
-  { file: "open-sse/translator/response/kiro-to-openai.ts", maxAny: 0 },
   { file: "open-sse/translator/response/openai-responses.ts", maxAny: 0 },
   { file: "open-sse/translator/response/openai-to-antigravity.ts", maxAny: 0 },
   { file: "open-sse/utils/bypassHandler.ts", maxAny: 0 },

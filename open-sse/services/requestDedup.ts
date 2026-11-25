@@ -52,13 +52,10 @@ function asRecord(value: unknown): Record<string, unknown> | null {
  *   - Antigravity-translated bodies (`openai-to-gemini.ts`
  *     `openaiToAntigravityRequest` / `wrapInCloudCodeEnvelope`): nested under
  *     `request.contents` (a Cloud Code envelope wrapper)
- *   - Kiro-translated bodies (`openai-to-kiro.ts` `buildKiroPayload`): nested
- *     under `conversationState.currentMessage.userInputMessage.content` (the
- *     current turn) plus `conversationState.history` (prior turns)
  *
  * Falling back to only `messages` made every non-OpenAI-format body hash the
  * prompt as `null`, colliding different prompts onto the same dedup hash
- * (#10249). The Antigravity/Kiro nesting was still missed by the flat
+ * (#10249). The Antigravity nesting was still missed by the flat
  * `messages ?? contents ?? input` fallback chain, so different prompts
  * targeting those two providers still collided (#10438).
  */
@@ -71,20 +68,6 @@ function extractPromptContent(body: Record<string, unknown>): unknown {
   const request = asRecord(body.request);
   if (request && request.contents !== undefined) {
     return request.contents;
-  }
-
-  // Kiro conversationState envelope:
-  // { conversationState: { currentMessage: { userInputMessage: { content } }, history } }
-  const conversationState = asRecord(body.conversationState);
-  if (conversationState) {
-    const currentMessage = asRecord(conversationState.currentMessage);
-    const userInputMessage = asRecord(currentMessage?.userInputMessage);
-    if (userInputMessage || conversationState.history !== undefined) {
-      return {
-        content: userInputMessage?.content ?? null,
-        history: conversationState.history ?? null,
-      };
-    }
   }
 
   return null;

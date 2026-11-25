@@ -64,7 +64,7 @@ test("full manifest routing flow overhead is minimal", async () => {
 test("tier resolver module loads without error", async () => {
   const { classifyTier, clearTierCache } = await import("../../open-sse/services/tierResolver.ts");
   clearTierCache();
-  const result = classifyTier("kiro", "claude-sonnet-4.5");
+  const result = classifyTier("qoder", "claude-sonnet-4.5");
   assert.equal(result.tier, "free");
 });
 

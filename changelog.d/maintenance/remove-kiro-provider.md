@@ -1,0 +1,1 @@
+- **maintenance(providers):** remove Kiro provider (AWS CodeWhisperer / `amazon-q` alias) — 0 active connections in this deployment; removes the executor, both translators, token-refresh, usage, mitm capture and validation surfaces

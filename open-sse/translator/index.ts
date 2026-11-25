@@ -309,9 +309,9 @@ export function translateRequest(
   model,
   body,
   stream = true,
-  credentials = null,
-  provider = null,
-  reqLogger = null,
+  credentials: Record<string, unknown> | null = null,
+  provider: string | null | undefined = null,
+  reqLogger: { logOpenAIRequest?: (body: unknown) => void } | null = null,
   options?: {
     normalizeToolCallId?: boolean;
     preserveDeveloperRole?: boolean;
@@ -800,7 +800,7 @@ export function translateResponse(targetFormat, sourceFormat, chunk, state) {
   }
 
   let results = [chunk];
-  let openaiResults = null; // Store OpenAI intermediate results
+  let openaiResults: unknown[] | null = null; // Store OpenAI intermediate results
 
   // Check for direct translation path first (e.g., Gemini → Claude)
   const directTranslator = getResponseTranslator(targetFormat, sourceFormat);
@@ -832,7 +832,7 @@ export function translateResponse(targetFormat, sourceFormat, chunk, state) {
   if (sourceFormat !== FORMATS.OPENAI) {
     const fromOpenAI = getResponseTranslator(FORMATS.OPENAI, sourceFormat);
     if (fromOpenAI) {
-      const finalResults = [];
+      const finalResults: unknown[] = [];
       for (const r of results) {
         const converted = fromOpenAI(r, state);
         if (converted) {
@@ -861,12 +861,12 @@ export function translateResponse(targetFormat, sourceFormat, chunk, state) {
 }
 
 // Check if translation needed
-export function needsTranslation(sourceFormat, targetFormat) {
+export function needsTranslation(sourceFormat: string, targetFormat: string) {
   return sourceFormat !== targetFormat;
 }
 
 // Initialize state for streaming response based on format
-export function initState(sourceFormat) {
+export function initState(sourceFormat: string | undefined) {
   // Base state for all formats
   const base = {
     messageId: null,

@@ -56,7 +56,7 @@ export function TierTour() {
           colorClass="border-indigo-500/60 bg-indigo-500/[0.06]"
           label={t("tier3.label")}
           description={t("tier3.description")}
-          examples={["Kiro", "OpenCode", "Antigravity CLI", "Vertex"]}
+          examples={["OpenCode", "Antigravity CLI", "Vertex"]}
         />
       </div>
 

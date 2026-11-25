@@ -400,7 +400,6 @@ export const FORMAT_META = {
   claude: { label: "Claude", color: "orange", icon: "psychology" },
   gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
   antigravity: { label: "Antigravity", color: "purple", icon: "rocket_launch" },
-  kiro: { label: "Kiro", color: "cyan", icon: "terminal" },
   cursor: { label: "Cursor", color: "pink", icon: "edit" },
 };
 

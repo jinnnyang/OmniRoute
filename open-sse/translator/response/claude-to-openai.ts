@@ -15,8 +15,62 @@ type OpenAIUsage = {
   };
 };
 
+type ClaudeToOpenAIDelta = {
+  role?: string;
+  content?: string;
+  reasoning_content?: string;
+  tool_calls?: Array<{
+    index: number;
+    id?: string;
+    type?: string;
+    function: { name?: string; arguments: string };
+  }>;
+};
+
+// Usage as reported by Claude SSE events (message_start / message_delta shapes).
+type ClaudeToOpenAIToolCall = {
+  index: number;
+  id?: string;
+  type?: string;
+  function: { name?: string; arguments: string };
+};
+
+// OpenAI usage shape accumulated in state across the stream.
+type ClaudeToOpenAIStateUsage = {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  input_tokens?: number;
+  output_tokens?: number;
+  reasoning_tokens?: number;
+  completion_tokens_details?: { reasoning_tokens: number };
+  output_tokens_details?: { thinking_tokens: number };
+  cache_read_input_tokens?: number;
+  cache_creation_input_tokens?: number;
+};
+
+type ClaudeToOpenAIState = {
+  messageId: string;
+  model: string | undefined;
+  toolCallIndex: number;
+  toolCalls: Map<number, ClaudeToOpenAIToolCall>;
+  toolNameMap?: Map<string, string> | null;
+  usage?: ClaudeToOpenAIStateUsage;
+  textBlockStarted?: boolean;
+  thinkingBlockStarted?: boolean;
+  inThinkingBlock?: boolean;
+  currentBlockIndex?: number | null;
+  pendingThinkClose?: boolean;
+  suppressThinkClose?: boolean;
+  finishReason?: string | null;
+  finishReasonSent?: boolean;
+};
+
 // Create OpenAI chunk helper
-function createChunk(state, delta, finishReason = null) {
+function createChunk(
+  state: ClaudeToOpenAIState,
+  delta: ClaudeToOpenAIDelta,
+  finishReason: string | null = null
+) {
   return {
     id: `chatcmpl-${state.messageId}`,
     object: "chat.completion.chunk",
@@ -36,7 +90,7 @@ function createChunk(state, delta, finishReason = null) {
 export function claudeToOpenAIResponse(chunk, state) {
   if (!chunk) return null;
 
-  const results = [];
+  const results: Array<Record<string, unknown>> = [];
   const event = chunk.type;
 
   switch (event) {
@@ -172,7 +226,8 @@ export function claudeToOpenAIResponse(chunk, state) {
       // Extract usage from message_delta event (Claude native format)
       // Normalize to OpenAI format (prompt_tokens/completion_tokens) for consistent logging
       if (chunk.usage && typeof chunk.usage === "object") {
-        const previousUsage = state.usage && typeof state.usage === "object" ? state.usage : {};
+        const previousUsage: ClaudeToOpenAIStateUsage =
+          state.usage && typeof state.usage === "object" ? state.usage : {};
         const previousInputTokens =
           typeof previousUsage.input_tokens === "number"
             ? previousUsage.input_tokens
@@ -260,7 +315,7 @@ export function claudeToOpenAIResponse(chunk, state) {
           id: string;
           object: string;
           created: number;
-          model: string;
+          model: string | undefined;
           choices: Array<{
             index: number;
             delta: { content?: string };
@@ -386,7 +441,7 @@ export function claudeToOpenAIResponse(chunk, state) {
 }
 
 // Convert Claude stop_reason to OpenAI finish_reason
-function convertStopReason(reason) {
+function convertStopReason(reason: string) {
   switch (reason) {
     case "end_turn":
       return "stop";

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import { BaseExecutor, type ExecuteInput } from "./base.ts";
+import { BaseExecutor, type ExecuteInput, type ProviderCredentials } from "./base.ts";
 import { mapNvidiaGlm52ReasoningParams } from "./base/reasoningEffort.ts";
 import { PROVIDERS, OAUTH_ENDPOINTS } from "../config/constants.ts";
 import { getAccessToken } from "../services/tokenRefresh.ts";
@@ -149,13 +149,18 @@ export class DefaultExecutor extends BaseExecutor {
     }
   }
 
-  buildUrl(model, stream, urlIndex = 0, credentials = null) {
+  buildUrl(
+    model: string,
+    stream: boolean,
+    urlIndex = 0,
+    credentials: ProviderCredentials | null = null
+  ) {
     void model;
     void stream;
     void urlIndex;
     if (this.provider?.startsWith?.("openai-compatible-")) {
       const psd = credentials?.providerSpecificData;
-      const baseUrl = psd?.baseUrl || "https://api.openai.com/v1";
+      const baseUrl = (psd?.baseUrl as string | undefined) || "https://api.openai.com/v1";
       const normalized = baseUrl.replace(/\/$/, "");
       const customPath = typeof psd?.chatPath === "string" && psd.chatPath ? psd.chatPath : null;
       if (customPath) return `${normalized}${customPath}`;
@@ -168,7 +173,7 @@ export class DefaultExecutor extends BaseExecutor {
     }
     if (this.provider?.startsWith?.("anthropic-compatible-")) {
       const psd = credentials?.providerSpecificData;
-      const baseUrl = psd?.baseUrl || "https://api.anthropic.com/v1";
+      const baseUrl = (psd?.baseUrl as string | undefined) || "https://api.anthropic.com/v1";
       const customPath = typeof psd?.chatPath === "string" && psd.chatPath ? psd.chatPath : null;
       if (isClaudeCodeCompatible(this.provider)) {
         return joinClaudeCodeCompatibleUrl(
@@ -210,7 +215,9 @@ export class DefaultExecutor extends BaseExecutor {
           credentials.providerSpecificData.baseUrl.trim()
             ? (credentials.providerSpecificData.baseUrl as string)
             : null;
-        const chatUrl = customBaseUrl ? normalizeOpenAIChatUrl(customBaseUrl) : this.config.baseUrl;
+        const chatUrl = customBaseUrl
+          ? normalizeOpenAIChatUrl(customBaseUrl)
+          : this.config.baseUrl || "";
         if (getModelTargetFormat("openai", model) === "openai-responses") {
           return chatUrl.replace(/\/chat\/completions\/?$/, "/responses");
         }
@@ -369,7 +376,7 @@ export class DefaultExecutor extends BaseExecutor {
         if (psd?._omnirouteForceResponsesUpstream === true && this.config.responsesBaseUrl) {
           return this.config.responsesBaseUrl;
         }
-        return this.config.baseUrl;
+        return this.config.baseUrl ?? "";
       }
       case "claude":
       case "glm":
@@ -379,7 +386,7 @@ export class DefaultExecutor extends BaseExecutor {
       case "agentrouter":
         return this.usesClaudeCodeProtocol(credentials)
           ? `${this.config.baseUrl}?beta=true`
-          : this.config.baseUrl;
+          : (this.config.baseUrl ?? "");
       case "gemini":
         return `${this.config.baseUrl}/${model}:${stream ? "streamGenerateContent?alt=sse" : "generateContent"}`;
       default: {
@@ -398,7 +405,7 @@ export class DefaultExecutor extends BaseExecutor {
         if (customBaseUrl && isOpenAIFormat) {
           return normalizeOpenAIChatUrl(customBaseUrl);
         }
-        const url = this.config.baseUrl;
+        const url = this.config.baseUrl ?? "";
         const entry = getRegistryEntry(this.provider);
         return entry?.urlSuffix ? `${url}${entry.urlSuffix}` : url;
       }

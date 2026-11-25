@@ -8,11 +8,10 @@ test("resolveTarget — antigravity host resolves to antigravity target", () => 
   assert.equal(t?.id, "antigravity");
 });
 
-test("resolveTarget — kiro host resolves to kiro target (Anthropic)", () => {
-  // api.anthropic.com is shared by kiro and claude-code; the first match wins.
+test("resolveTarget — claude-code host resolves to the claude-code target (Anthropic)", () => {
   const t = resolveTarget("api.anthropic.com");
   assert.ok(t);
-  assert.ok(t?.id === "kiro" || t?.id === "claude-code");
+  assert.equal(t?.id, "claude-code");
 });
 
 test("resolveTarget — copilot host resolves", () => {
@@ -32,12 +31,11 @@ test("resolveTarget — unknown host returns null", () => {
   assert.equal(resolveTarget(""), null);
 });
 
-test("ALL_TARGETS — registers exactly ten targets", () => {
-  assert.equal(ALL_TARGETS.length, 10);
+test("ALL_TARGETS — registers exactly nine targets", () => {
+  assert.equal(ALL_TARGETS.length, 9);
   const ids = new Set(ALL_TARGETS.map((t) => t.id));
-  assert.equal(ids.size, 10);
+  assert.equal(ids.size, 9);
   assert.ok(ids.has("antigravity"));
-  assert.ok(ids.has("kiro"));
   assert.ok(ids.has("copilot"));
   assert.ok(ids.has("ghe-copilot"));
   assert.ok(ids.has("codex"));

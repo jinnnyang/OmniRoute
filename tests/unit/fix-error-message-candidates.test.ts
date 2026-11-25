@@ -13,7 +13,7 @@ test("handleNoCredentials includes candidate aliases hint when supplied", async 
   const res = handleNoCredentials(
     /* credentials */ {},
     /* excludeConnectionId */ null,
-    /* provider */ "kiro",
+    /* provider */ "qoder",
     /* model */ "claude-opus-5",
     /* lastError */ null,
     /* lastStatus */ null,
@@ -26,7 +26,7 @@ test("handleNoCredentials includes candidate aliases hint when supplied", async 
   const message = body?.error?.message ?? "";
   assert.match(
     message,
-    /No active credentials for provider: kiro/,
+    /No active credentials for provider: qoder/,
     "must keep the original error prefix"
   );
   assert.match(
@@ -40,7 +40,7 @@ test("handleNoCredentials omits hint when no candidates supplied", async () => {
   const res = handleNoCredentials(
     {},
     null,
-    "kiro",
+    "qoder",
     "claude-opus-5",
     null,
     null,
@@ -52,7 +52,7 @@ test("handleNoCredentials omits hint when no candidates supplied", async () => {
   assert.equal(res.status, 404);
   const body = (await res.json()) as { error?: { message?: string } };
   const message = body?.error?.message ?? "";
-  assert.match(message, /No active credentials for provider: kiro/);
+  assert.match(message, /No active credentials for provider: qoder/);
   assert.doesNotMatch(
     message,
     /Try one of:/,
@@ -64,7 +64,7 @@ test("handleNoCredentials trims candidate list to top 3", async () => {
   const res = handleNoCredentials(
     {},
     null,
-    "kiro",
+    "qoder",
     "claude-opus-5",
     null,
     null,

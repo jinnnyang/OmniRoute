@@ -2873,9 +2873,8 @@
       "cursor": "השתמש בעת קידוד בסמן ואתה צריך מודלים מותאמים אישית תואמי OpenAI דרך OmniRoute.",
       "continue": "השתמש בעת הפעלת Continue ב-IDEs ואתה זקוק לתצורת ספק ניידת מבוססת JSON.",
       "opencode": "השתמש כאשר אתה מעדיף ריצות סוכנים מקוריים ומאוטומציה של סקריפטים באמצעות OpenCode.",
-      "kiro": "השתמש בעת שילוב Kiro ושליטה בניתוב מודלים באופן מרכזי מ- OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "השתמש כאשר יש ליירט תעבורת Antigravity/Kiro דרך MITM ולנתב אל OmniRoute.",
+      "antigravity": "השתמש כאשר יש ליירט תעבורת Antigravity דרך MITM ולנתב אל OmniRoute.",
       "copilot": "השתמש כאשר אתה רוצה UX בסגנון צ'אט Copilot תוך אכיפת מפתחות וכללי ניתוב OmniRoute.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "השתמש כאשר אתה צריך עוזר AI קל משקל יליד מסוף למשימות מהירות.",
@@ -2895,7 +2894,6 @@
       "cursor": "עורך קוד AI של הסמן",
       "continue": "המשך עוזר AI",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode דורש תצורת מפתח API.",
           "1": "הגדר את כתובת האתר הבסיסית לנקודת הקצה של OmniRoute שלך."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro דורש חשבון אמזון."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "פרוקסי הפוך חינמי ללא מפתח מ-g4f.space ל-Pollinations, מוגבל ל-5 בקשות לדקה.",
       "mixedbread": "צור embeddings באמצעות ה-API של Mixedbread.",
       "segmind": "צור תמונות וסרטונים באמצעות המודלים המתארחים של Segmind.",
-      "amazon-q": "משתמש באותו תהליך של AWS Builder ID או refresh-token מיובא כמו Kiro, אך שומר על חיבורי Amazon Q נפרדים.",
+      "amazon-q": "משתמש בתהליך של AWS Builder ID או refresh-token מיובא, אך שומר על חיבורי Amazon Q נפרדים.",
       "antigravity": "חבר את Antigravity באמצעות תהליך ה-OAuth הקיים.",
       "agy": "ייבא את פרטי ההתחברות של Antigravity CLI (`agy`) (הדבק/העלה את קובץ הטוקן שלו), זהה אוטומטית התחברות CLI מקומית, או התחבר באמצעות Google. משתף את ה-backend של Antigravity (כולל מודלי Claude).",
       "claude": "חבר את Claude Code באמצעות תהליך ה-OAuth הקיים.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "יישום OAuth עם הרשאות (scopes) של ai_features + read_user. הגדר את GITLAB_DUO_OAUTH_CLIENT_ID ואופציונלית את GITLAB_DUO_OAUTH_CLIENT_SECRET במופע OmniRoute זה.",
       "kilocode": "חבר את Kilo Code באמצעות תהליך ה-OAuth הקיים.",
       "kimi-coding": "חבר את Kimi Coding באמצעות תהליך ה-OAuth הקיים.",
-      "kiro": "מסלול חינמי: 50 קרדיטים לחודש (~25K–100K טוקנים). ⚠️ תנאי השימוש של Kiro אוסרים על שימוש בפרוקסי/harness של צד שלישי.",
       "codex": "חבר את OpenAI Codex באמצעות תהליך ה-OAuth הקיים.",
       "qwen": "חבר את Qwen Code באמצעות תהליך ה-OAuth הקיים.",
       "github-models": "צור GitHub PAT עם הרשאת 'models: read' ב-github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "חשבון Google",
     "githubAccount": "חשבון GitHub",
     "importToken": "ייבוא אסימון",
-    "pasteToken": "הדבק אסימון רענון מ-Kiro IDE.",
+    "pasteToken": "הדבק אסימון רענון.",
     "awsRegion": "אזור AWS",
     "autoDetecting": "מזהה אוטומטית אסימונים...",
     "readingFromCache": "קריאה ממטמון SSO של AWS",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "סטטוס מערכת"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "חבר את {providerLabel}",
-    "chooseMethod": "בחר את שיטת האימות שלך:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "מומלץ לרוב המשתמשים. התחבר עם חשבון ה-AWS הקשור ל-{providerLabel}.",
-    "organization": "הארגון שלך (AWS IAM Identity Center)",
-    "organizationDescription": "השתמש ב-SSO של החברה שלך בכתובת ההתחלה (דוגמה: {url}).",
-    "googleAccount": "חשבון Google",
-    "googleDescription": "התחבר עם חשבון Google שלך.",
-    "githubAccount": "חשבון GitHub",
-    "githubDescription": "התחבר עם חשבון ה-GitHub שלך.",
-    "importToken": "ייבוא טוקן",
-    "importDescription": "הדבק טוקן רענון שהוצא מ-{providerLabel}.",
-    "apiKey": "מפתח API",
-    "apiKeyDescription": "הדבק מפתח API ארוך טווח של {providerLabel} / CodeWhisperer. הוא מאוחסן כאסימון נשיאה ללא אסימון רענון; גילוי פרופיל הוא במאמץ הטוב ביותר.",
-    "idcStartUrl": "כתובת ה-URL של IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "כתובת ה-URL של מרכז הזהויות AWS IAM של הארגון שלך",
-    "awsRegion": "אזור AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "אזור AWS עבור מרכז הזהות שלך (ברירת מחדל: us-east-1)",
-    "continue": "להמשיך",
-    "back": "חזור",
-    "autoDetecting": "זיהוי אוטומטי של טוקן...",
-    "readingCredentials": "קורא את האישורים של {providerLabel} ממטמון AWS SSO",
-    "tokenNotDetected": "האסימון {providerLabel} לא זוהה אוטומטית. אנא הדבק את אסימון הרענון שלך ידנית.",
-    "refreshToken": "רענן טוקן",
-    "tokenPlaceholder": "האסימון יתמלא אוטומטית...",
-    "importing": "מייבא...",
-    "apiKeyPlaceholder": "הדבק את מפתח ה-API של {providerLabel} שלך...",
-    "apiKeyStoredDescription": "מאוחסן מוצפן כקרדנציה נושאת ארוכת טווח. אין זרימת רענון.",
-    "apiKeyRegionDescription": "אזור AWS עבור המפתח (ברירת מחדל: us-east-1)",
-    "validating": "מאמת...",
-    "validateAndSaveApiKey": "אמת ושמור את מפתח ה-API",
-    "errorAutoDetect": "לא ניתן לזהות אוטומטית את הטוקן",
-    "errorAutoDetectFailed": "נכשל בזיהוי אוטומטי של טוקן",
-    "errorRefreshTokenRequired": "אנא הזן טוקן רענון",
-    "errorImportFailed": "ייבוא נכשל",
-    "errorApiKeyRequired": "אנא הזן מפתח API של Kiro",
-    "errorApiKeyImportFailed": "ייבוא מפתח ה-API נכשל",
-    "errorIdcStartUrlRequired": "אנא הזן את כתובת ה-URL להתחלת IDC שלך"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "חבר את {providerLabel} דרך {providerName}",
-    "errorStartAuthorization": "כישלון בהתחלת האישור",
-    "errorAuthorizationExpired": "ההרשאה פגה. התחל את תהליך הכניסה שוב.",
-    "errorAuthorizationFailed": "אישור נכשל",
-    "initializing": "מאתחל...",
-    "settingUp": "הגדרת אימות {providerName}",
-    "openIncognito": "פתח קישור זה בחלון אינקוגניטו",
-    "incognitoDescription": "השתמש בחלון אינקוגניטו/פרטי כדי להימנע מעימותי סשן עם חשבונות קיימים.",
-    "copyLink": "העתק קישור",
-    "verificationCode": "קוד אימות",
-    "waiting": "ממתין לאישור...",
-    "cancel": "ביטול",
-    "successTitle": "מחובר בהצלחה!",
-    "successMessage": "החשבון שלך ב-{providerLabel} דרך {providerName} חובר.",
-    "done": "בוצע",
-    "errorTitle": "חיבור נכשל",
-    "close": "סגור"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "ההתחברות נכשלה",

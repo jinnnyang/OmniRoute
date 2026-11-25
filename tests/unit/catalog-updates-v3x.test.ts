@@ -38,18 +38,7 @@ test("NVIDIA catalog includes the verified 2026 additions and GPT OSS 20B alias 
   });
 });
 
-test("Fable 5 never reappears via Kiro (fabricated copy removed by #6170)", () => {
-  // claude-fable-5 is a real Claude flagship, but Kiro's upstream never served it — it
-  // had been copied verbatim into the Kiro registry from OmniRoute's own Anthropic
-  // catalog and returned upstream 400 "Invalid model". #6170 removed that copy; the
-  // guard stays even though the cc channel has moved on to the 5.5 generation.
-  const kiroIds = new Set(getModelsByProviderId("kiro").map((m) => m.id));
-  assert.equal(
-    kiroIds.has("claude-fable-5"),
-    false,
-    "kiro must NOT expose claude-fable-5 (fabricated)"
-  );
-
+test("cc channel exposes the current flagship Opus 5.5 with pricing", () => {
   const ccIds = new Set(getModelsByProviderId("cc").map((m) => m.id));
   assert.ok(ccIds.has("claude-opus-5.5"), "cc must expose the current flagship claude-opus-5.5");
 
@@ -59,7 +48,7 @@ test("Fable 5 never reappears via Kiro (fabricated copy removed by #6170)", () =
 
 test("Opus 5.5 is wired on the first-party Claude channel only", () => {
   // The claude (OAuth) channel moved to the 5.5 generation; no other shipped catalog
-  // advertises Opus 5.5 yet, and Kiro has never served any Opus at all.
+  // advertises Opus 5.5 yet.
   for (const providerId of ["cc", "claude"]) {
     const model = getModelsByProviderId(providerId).find((entry) => entry.id === "claude-opus-5.5");
     assert.ok(model, `${providerId} must expose claude-opus-5.5`);
@@ -72,9 +61,6 @@ test("Opus 5.5 is wired on the first-party Claude channel only", () => {
     getStaticModelsForProvider("claude")?.some((entry) => entry.id === "claude-opus-5.5"),
     "claude OAuth discovery must expose claude-opus-5.5"
   );
-
-  const kiroIds = new Set(getModelsByProviderId("kiro").map((entry) => entry.id));
-  assert.equal(kiroIds.has("claude-opus-5.5"), false, "do not fabricate Kiro availability");
 
   const price = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).cc[
     "claude-opus-5.5"
@@ -100,67 +86,6 @@ test("Sonnet 5.5 is wired on the first-party Claude channel with Sonnet-tier pri
   assert.ok(sonnet55Price, "cc pricing must include claude-sonnet-5.5");
   assert.equal(sonnet55Price.input, 3.0);
   assert.equal(sonnet55Price.output, 15.0);
-
-  // Kiro still serves the 5 generation; its Sonnet-tier sticker must not drift either.
-  const kiroSonnet5Price = (DEFAULT_PRICING as Record<string, Record<string, unknown>>).kiro[
-    "claude-sonnet-5"
-  ] as { input: number; output: number };
-  assert.ok(kiroSonnet5Price, "kiro pricing must include claude-sonnet-5");
-  assert.equal(kiroSonnet5Price.input, 3.0);
-  assert.equal(kiroSonnet5Price.output, 15.0);
-});
-
-test("Kiro catalog does NOT expose Claude Opus (fabricated — Kiro upstream has no Opus)", () => {
-  // Kiro's real upstream never served any Opus model; the Opus 4.8/4.7/4.6 ids had been
-  // copied into the Kiro registry from OmniRoute's Anthropic catalog and returned upstream
-  // 400 "Invalid model. Please select a different model". #6170 removed them.
-  const ids = new Set(getModelsByProviderId("kiro").map((model) => model.id));
-
-  assert.equal(
-    ids.has("claude-opus-4.8"),
-    false,
-    "kiro must NOT expose claude-opus-4.8 (fabricated)"
-  );
-  assert.equal(
-    ids.has("claude-opus-4.7"),
-    false,
-    "kiro must NOT expose claude-opus-4.7 (fabricated)"
-  );
-  assert.equal(
-    ids.has("claude-opus-4.6"),
-    false,
-    "kiro must NOT expose claude-opus-4.6 (fabricated)"
-  );
-});
-
-test("Every Kiro registry model resolves a non-zero pricing row (no $0.00 usage)", async () => {
-  const { getPricingForModel } = await import("../../src/shared/constants/pricing.ts");
-  const models = getModelsByProviderId("kiro");
-
-  assert.ok(models.length > 0, "kiro must expose models");
-
-  for (const model of models) {
-    const pricing = getPricingForModel("kiro", model.id) as {
-      input?: number;
-      output?: number;
-    } | null;
-    assert.ok(pricing, `kiro pricing must include "${model.id}"`);
-    assert.equal(
-      typeof pricing?.input === "number" && typeof pricing?.output === "number",
-      true,
-      `kiro pricing for "${model.id}" must have numeric input/output`
-    );
-  }
-
-  // Regression guard: Kiro's real Sonnet is 4.5 (the "4.6" id was fabricated — #6170) and
-  // must carry Sonnet-tier pricing ($3/$15).
-  const sonnet45 = getPricingForModel("kiro", "claude-sonnet-4.5") as {
-    input: number;
-    output: number;
-  } | null;
-  assert.ok(sonnet45, "kiro pricing must include claude-sonnet-4.5");
-  assert.equal(sonnet45?.input, 3.0);
-  assert.equal(sonnet45?.output, 15.0);
 });
 
 test("Every OpenAI registry model resolves a non-zero pricing row (alias: openai)", async () => {

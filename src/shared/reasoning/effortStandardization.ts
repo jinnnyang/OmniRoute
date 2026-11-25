@@ -12,8 +12,7 @@ import { z } from "zod";
  * mappers already read.
  *
  * The provider-agnostic vocabulary remains five values. Provider-native additions such as
- * Codex GPT-5.6 Max/Ultra and Kiro GPT-5.6 Max are exposed separately without widening this
- * request contract.
+ * Codex GPT-5.6 Max/Ultra are exposed separately without widening this request contract.
  */
 export const CANONICAL_EFFORT_VALUES = ["none", "low", "medium", "high", "xhigh"] as const;
 
@@ -30,18 +29,13 @@ export function extendCodexGpt56EffortValues(
   const normalizedModel = model
     ?.trim()
     .toLowerCase()
-    .replace(/^(?:codex|cx|kiro|kr)\//, "");
+    .replace(/^(?:codex|cx)\//, "");
   if (!normalizedModel) return values;
 
   const match = normalizedModel.match(
     /^gpt-5\.6-(sol|terra|luna)(?:-(?:none|low|medium|high|xhigh|max|ultra))?$/
   );
   if (!match) return values;
-
-  const isKiroProvider = normalizedProvider === "kiro" || normalizedProvider === "kr";
-  if (isKiroProvider) {
-    return values.includes("max") ? values : [...values, "max"];
-  }
 
   if (normalizedProvider !== "codex" && normalizedProvider !== "cx") return values;
 

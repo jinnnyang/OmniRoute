@@ -583,7 +583,7 @@ export class GitlabExecutor extends BaseExecutor {
 
       if (response.status === 401) {
         if (input.log) {
-          input.log.warn(
+          input.log.warn?.(
             "GITLAB-DUO",
             "direct_access exchange rejected (401); falling back to public completions endpoint"
           );

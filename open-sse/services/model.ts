@@ -95,13 +95,6 @@ const PROVIDER_MODEL_ALIASES: ProviderModelAliasMap = {
   // Antigravity public model ids already match the upstream wire ids. Keep this map
   // empty so the global resolver cannot rewrite them before routing or logging.
   antigravity: {},
-  kiro: {
-    "claude-opus-4-7": "claude-opus-4.7",
-    "claude-opus-4-6": "claude-opus-4.6",
-    "claude-sonnet-4-6": "claude-sonnet-4.6",
-    "claude-sonnet-4-5": "claude-sonnet-4.5",
-    "claude-haiku-4-5": "claude-haiku-4.5",
-  },
 };
 
 const CROSS_PROXY_MODEL_ALIASES: Record<string, string> = {

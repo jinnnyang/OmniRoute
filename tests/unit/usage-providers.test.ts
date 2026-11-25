@@ -74,17 +74,6 @@ test("getUsageForProvider handles cursor provider", async () => {
   assert.ok(result);
 });
 
-test("getUsageForProvider handles kiro provider", async () => {
-  globalThis.fetch = async () => new Response(JSON.stringify({}), { status: 200 });
-  const result = await usageModule.getUsageForProvider({
-    id: "test-kr",
-    provider: "kiro",
-    accessToken: "tok",
-    apiKey: "key",
-  });
-  assert.ok(result);
-});
-
 test("getUsageForProvider handles kimi-coding provider", async () => {
   globalThis.fetch = async () => new Response(JSON.stringify({}), { status: 200 });
   const result = await usageModule.getUsageForProvider({

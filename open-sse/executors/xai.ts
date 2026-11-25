@@ -62,12 +62,12 @@ export class XaiExecutor extends BaseExecutor {
     credentials: ProviderCredentials | null = null
   ) {
     if (getModelTargetFormat(this.provider, model) === "openai-responses") {
-      return this.config.responsesBaseUrl || this.config.baseUrl;
+      return this.config.responsesBaseUrl || this.config.baseUrl || "";
     }
     if (isResponsesEndpointPath(credentials?.requestEndpointPath)) {
-      return this.config.responsesBaseUrl || this.config.baseUrl;
+      return this.config.responsesBaseUrl || this.config.baseUrl || "";
     }
-    return this.config.baseUrl;
+    return this.config.baseUrl ?? "";
   }
 
   async refreshCredentials(

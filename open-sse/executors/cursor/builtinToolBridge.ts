@@ -81,7 +81,8 @@ export function selectCursorBridgeTools(
   ) {
     return undefined;
   }
-  return tools?.filter((tool) => tool.name === toolChoice.function.name);
+  const forcedFunctionName: string = toolChoice.function.name;
+  return tools?.filter((tool) => tool.name === forcedFunctionName);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

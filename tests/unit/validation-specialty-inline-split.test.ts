@@ -1,5 +1,5 @@
 // Characterization of the validation.ts specialty-inline split (god-file decomposition): the
-// inline SPECIALTY_VALIDATORS closures (v0-vercel, auggie, qoder, kiro wrapper, gitlab, vertex,
+// inline SPECIALTY_VALIDATORS closures (v0-vercel, auggie, qoder, gitlab, vertex,
 // vertex-partner, longcat, nvidia, zai, xiaomi-mimo, gitlawb factory) moved into
 // validation/specialtyInline.ts as top-level functions taking `isLocal` where the original
 // closure captured it. Behavior-preserving move — the locks here are module surface; the runtime
@@ -16,7 +16,6 @@ test("specialtyInline exposes the extracted leaf validators", () => {
     "validateV0VercelProvider",
     "validateAuggieProvider",
     "validateQoderProvider",
-    "validateKiroProvider",
     "validateGitlabProvider",
     "validateVertexProvider",
     "validateVertexPartnerProvider",

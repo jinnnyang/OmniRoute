@@ -18,6 +18,7 @@ const { extractProviderBlocks, loadAvailableProviders, COMMON_PROVIDERS } =
 
 test("extractProviderBlocks handles the shapes the real catalog files use", () => {
   const source = `
+    export const NOAUTH_PROVIDERS = {
     // A comment with a stray { brace } that must not confuse the walk.
       opencode: {
         id: "opencode",
@@ -105,11 +106,11 @@ test("loadAvailableProviders reads the decomposed catalog, not the 6-entry fallb
   assert.ok(providers.length > 200, `expected 200+ providers, got ${providers.length}`);
 
   const byId = new Map(providers.map((p) => [p.id, p]));
-  for (const id of ["cerebras", "groq", "gemini", "siliconflow", "opencode", "kiro"]) {
+  for (const id of ["cerebras", "groq", "gemini", "siliconflow", "opencode", "deepseek"]) {
     assert.ok(byId.has(id), `${id} missing from the catalog`);
   }
   assert.equal(byId.get("opencode")?.category, "noauth");
-  assert.equal(byId.get("kiro")?.category, "oauth");
+  assert.equal(byId.get("deepseek")?.category, "api-key");
   assert.equal(byId.get("cerebras")?.category, "api-key");
   assert.ok(providers.filter((p) => p.hasFree).length > 50, "free-tier flags should survive");
 

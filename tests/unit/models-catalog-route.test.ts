@@ -257,15 +257,12 @@ test("v1 models catalog includes combos and custom models while excluding hidden
     apiKey: null,
     accessToken: "claude-access",
   });
-  await seedConnection("kiro", {
-    authType: "oauth",
-    name: "kiro-custom",
-    apiKey: null,
-    accessToken: "kiro-access",
+  await seedConnection("deepseek", {
+    name: "deepseek-custom",
   });
 
   modelsDb.mergeModelCompatOverride("openai", "gpt-4o-mini", { isHidden: true });
-  await modelsDb.addCustomModel("kiro", "custom-kiro", "Custom Kiro");
+  await modelsDb.addCustomModel("deepseek", "custom-ds", "Custom DeepSeek");
   await combosDb.createCombo({
     name: "team-router",
     strategy: "priority",
@@ -280,8 +277,8 @@ test("v1 models catalog includes combos and custom models while excluding hidden
 
   assert.equal(response.status, 200);
   assert.ok(ids.has("team-router"));
-  assert.ok(ids.has("kr/custom-kiro"));
-  assert.ok(ids.has("kiro/custom-kiro"));
+  assert.ok(ids.has("ds/custom-ds"));
+  assert.ok(ids.has("deepseek/custom-ds"));
   assert.equal(ids.has("openai/gpt-4o-mini"), false);
   assert.equal(
     [...ids].some((id) => (id as any).startsWith("claude/") || (id as any).startsWith("cc/")),

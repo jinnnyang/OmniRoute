@@ -2873,9 +2873,8 @@
       "cursor": "Use when coding in Cursor and you need custom OpenAI-compatible models through OmniRoute.",
       "continue": "Use when running Continue in IDEs and you need portable JSON-based provider configuration.",
       "opencode": "Use when you prefer terminal-native agent runs and scripted automation via OpenCode.",
-      "kiro": "Use when integrating Kiro and controlling model routing centrally from OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Use when Antigravity/Kiro traffic must be intercepted through MITM and routed to OmniRoute.",
+      "antigravity": "Use when Antigravity traffic must be intercepted through MITM and routed to OmniRoute.",
       "copilot": "Use when you want Copilot chat style UX while enforcing OmniRoute keys and routing rules.",
       "amp": "Use when you want Amp shorthand workflows but still need OmniRoute alias and routing rules enforcement.",
       "hermes": "Use when you need a lightweight terminal-native AI assistant for quick tasks.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Continue AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode requires API key configuration.",
           "1": "Set the base URL to your OmniRoute endpoint."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro requires Amazon account."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Intelligent Auto",
     "autoDesc": "Self-healing smart routing pool with multi-factor scoring",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "پروکسی معکوس رایگان و بدون کلید g4f.space به Pollinations، محدود به 5 درخواست در دقیقه.",
       "mixedbread": "ایجاد امبدینگ‌ها با Mixedbread API.",
       "segmind": "تولید تصاویر و ویدیوها با مدل‌های میزبانی‌شده Segmind.",
-      "amazon-q": "از همان AWS Builder ID یا جریان refresh-token وارد شده مانند Kiro استفاده می‌کند، اما اتصالات Amazon Q را مجزا نگه می‌دارد.",
+      "amazon-q": "از AWS Builder ID یا جریان refresh-token وارد شده استفاده می‌کند، اما اتصالات Amazon Q را مجزا نگه می‌دارد.",
       "antigravity": "اتصال به Antigravity با جریان OAuth موجود.",
       "agy": "ورود به سیستم Antigravity CLI (`agy`) خود را وارد کنید (فایل توکن آن را جای‌گذاری/آپلود کنید)، یک ورود CLI محلی را به طور خودکار شناسایی کنید، یا با Google وارد شوید. بک‌اند Antigravity (شامل مدل‌های Claude) را به اشتراک می‌گذارد.",
       "claude": "اتصال به Claude Code با جریان OAuth موجود.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "برنامه OAuth با اسکوپ‌های ai_features + read_user. متغیرهای GITLAB_DUO_OAUTH_CLIENT_ID و به صورت اختیاری GITLAB_DUO_OAUTH_CLIENT_SECRET را روی این نمونه OmniRoute پیکربندی کنید.",
       "kilocode": "اتصال به Kilo Code با جریان OAuth موجود.",
       "kimi-coding": "اتصال به Kimi Coding با جریان OAuth موجود.",
-      "kiro": "طرح رایگان: ۵۰ اعتبار/ماه (~۲۵ هزار–۱۰۰ هزار توکن). ⚠️ شرایط خدمات Kiro استفاده از پروکسی/هارنس شخص ثالث را ممنوع می‌کند.",
       "codex": "اتصال OpenAI Codex با جریان OAuth موجود.",
       "qwen": "اتصال Qwen Code با جریان OAuth موجود.",
       "github-models": "یک GitHub PAT با محدوده (scope) 'models: read' در github.com/settings/tokens ایجاد کنید"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Account",
     "githubAccount": "GitHub Account",
     "importToken": "Import Token",
-    "pasteToken": "Paste refresh token from Kiro IDE.",
+    "pasteToken": "Paste refresh token.",
     "awsRegion": "AWS Region",
     "autoDetecting": "Auto-detecting tokens...",
     "readingFromCache": "Reading from AWS SSO cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "وضعیت سیستم"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "اتصال {providerLabel}",
-    "chooseMethod": "روش احراز هویت خود را انتخاب کنید:",
-    "builderId": "شناسه سازنده AWS",
-    "builderDescription": "برای بیشتر کاربران توصیه می‌شود. با حساب AWS مرتبط با {providerLabel} وارد شوید.",
-    "organization": "سازمان شما (AWS IAM Identity Center)",
-    "organizationDescription": "از URL شروع SSO شرکت خود استفاده کنید (مثال: {url}).",
-    "googleAccount": "حساب گوگل",
-    "googleDescription": "با حساب Google خود وارد شوید.",
-    "githubAccount": "حساب GitHub",
-    "githubDescription": "با حساب GitHub خود وارد شوید.",
-    "importToken": "وارد کردن توکن",
-    "importDescription": "توکن تازه‌سازی صادر شده از {providerLabel} را بچسبانید.",
-    "apiKey": "کلید API",
-    "apiKeyDescription": "کلید API {providerLabel} / CodeWhisperer با عمر طولانی را بچسبانید. این کلید به عنوان یک اعتبار Bearer ذخیره می‌شود و توکن تجدید ندارد؛ کشف پروفایل به صورت بهترین تلاش انجام می‌شود.",
-    "idcStartUrl": "آدرس شروع IDC",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "آدرس IAM Identity Center AWS سازمان شما",
-    "awsRegion": "منطقه AWS",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "منطقه AWS برای مرکز هویت شما (پیش‌فرض: us-east-1)",
-    "continue": "ادامه دهید",
-    "back": "بازگشت",
-    "autoDetecting": "شناسایی خودکار توکن...",
-    "readingCredentials": "خواندن اعتبارنامه‌های {providerLabel} از کش AWS SSO",
-    "tokenNotDetected": "توکن {providerLabel} به‌طور خودکار شناسایی نشد. لطفاً توکن تازه‌سازی خود را به‌صورت دستی وارد کنید.",
-    "refreshToken": "توکن تازه سازی",
-    "tokenPlaceholder": "توکن به‌طور خودکار پر خواهد شد...",
-    "importing": "در حال وارد کردن...",
-    "apiKeyPlaceholder": "کلید API {providerLabel} خود را بچسبانید...",
-    "apiKeyStoredDescription": "به‌صورت رمزنگاری‌شده به‌عنوان یک اعتبارنامه‌ی بلندمدت ذخیره شده است. جریانی برای تازه‌سازی وجود ندارد.",
-    "apiKeyRegionDescription": "منطقه AWS برای کلید (پیش‌فرض: us-east-1)",
-    "validating": "در حال اعتبارسنجی...",
-    "validateAndSaveApiKey": "اعتبارسنجی و ذخیره کلید API",
-    "errorAutoDetect": "نمی‌توان توکن را به‌طور خودکار شناسایی کرد",
-    "errorAutoDetectFailed": "شناسایی خودکار توکن ناموفق بود",
-    "errorRefreshTokenRequired": "لطفاً یک توکن تازه‌سازی وارد کنید",
-    "errorImportFailed": "واردات ناموفق بود",
-    "errorApiKeyRequired": "لطفاً یک کلید API کیرو وارد کنید",
-    "errorApiKeyImportFailed": "وارد کردن کلید API ناموفق بود",
-    "errorIdcStartUrlRequired": "لطفاً URL شروع IDC خود را وارد کنید"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "اتصال {providerLabel} از طریق {providerName}",
-    "errorStartAuthorization": "شروع تأیید هویت ناموفق بود",
-    "errorAuthorizationExpired": "مجوز منقضی شده است. دوباره فرآیند ورود را آغاز کنید.",
-    "errorAuthorizationFailed": "مجوز تأیید نشد",
-    "initializing": "در حال راه‌اندازی...",
-    "settingUp": "راه‌اندازی احراز هویت {providerName}",
-    "openIncognito": "این لینک را در یک پنجره ناشناس باز کنید",
-    "incognitoDescription": "از یک پنجره ناشناس/خصوصی استفاده کنید تا از تداخل جلسه با حساب‌های موجود جلوگیری کنید.",
-    "copyLink": "کپی لینک",
-    "verificationCode": "کد تأیید",
-    "waiting": "در حال انتظار برای تأیید...",
-    "cancel": "لغو",
-    "successTitle": "با موفقیت متصل شد!",
-    "successMessage": "حساب {providerLabel} شما از طریق {providerName} متصل شده است.",
-    "done": "انجام شد",
-    "errorTitle": "اتصال ناموفق",
-    "close": "بستن"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "مجوز تأیید نشد",

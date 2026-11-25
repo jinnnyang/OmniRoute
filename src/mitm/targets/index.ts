@@ -11,7 +11,6 @@
 import { shouldBypass } from "../passthrough";
 import type { MitmTarget } from "../types";
 import { ANTIGRAVITY_TARGET } from "./antigravity";
-import { KIRO_TARGET } from "./kiro";
 import { COPILOT_TARGET } from "./copilot";
 import { GHE_COPILOT_TARGET } from "./ghe-copilot";
 import { CODEX_TARGET } from "./codex";
@@ -25,7 +24,6 @@ export { GHE_COPILOT_TARGET } from "./ghe-copilot";
 
 export const ALL_TARGETS: MitmTarget[] = [
   ANTIGRAVITY_TARGET,
-  KIRO_TARGET,
   COPILOT_TARGET,
   GHE_COPILOT_TARGET,
   CODEX_TARGET,
@@ -64,10 +62,7 @@ export type ConnectionRoute =
  *   2. known target host — decrypt and dispatch to the matching handler
  *   3. anything else — passthrough (transparent TCP forward)
  */
-export function routeConnection(
-  hostname: string,
-  userBypass: string[] = []
-): ConnectionRoute {
+export function routeConnection(hostname: string, userBypass: string[] = []): ConnectionRoute {
   if (shouldBypass(hostname, userBypass)) {
     return { kind: "bypass", reason: "bypass" };
   }

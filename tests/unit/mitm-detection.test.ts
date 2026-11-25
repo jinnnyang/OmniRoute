@@ -7,7 +7,6 @@ import type { AgentId } from "../../src/mitm/types.ts";
 test("DETECTORS — provides an entry for every AgentId", () => {
   const ids: AgentId[] = [
     "antigravity",
-    "kiro",
     "copilot",
     "codex",
     "cursor",
@@ -61,7 +60,6 @@ test("detectAgent — gracefully handles thrown detectors", () => {
 test("detectAgent — runs all detectors without throwing", () => {
   const ids: AgentId[] = [
     "antigravity",
-    "kiro",
     "copilot",
     "codex",
     "cursor",

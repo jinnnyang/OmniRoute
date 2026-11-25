@@ -24,27 +24,44 @@ test("InterceptedRequestSchema — accepts valid payload", () => {
 });
 
 test("InterceptedRequestSchema — accepts in-flight status", () => {
-  assert.ok(InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, status: "in-flight" }).success);
+  assert.ok(
+    InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, status: "in-flight" }).success
+  );
 });
 
 test("InterceptedRequestSchema — accepts error status", () => {
-  assert.ok(InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, status: "error", error: "Connection timeout" }).success);
+  assert.ok(
+    InterceptedRequestSchema.safeParse({
+      ...validInterceptedRequest,
+      status: "error",
+      error: "Connection timeout",
+    }).success
+  );
 });
 
 test("InterceptedRequestSchema — rejects malformed uuid", () => {
-  assert.ok(!InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, id: "not-a-uuid" }).success);
+  assert.ok(
+    !InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, id: "not-a-uuid" }).success
+  );
 });
 
 test("InterceptedRequestSchema — rejects invalid source enum", () => {
-  assert.ok(!InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, source: "invalid-source" }).success);
+  assert.ok(
+    !InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, source: "invalid-source" })
+      .success
+  );
 });
 
 test("InterceptedRequestSchema — accepts the tproxy source (decrypt capture mode)", () => {
-  assert.ok(InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, source: "tproxy" }).success);
+  assert.ok(
+    InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, source: "tproxy" }).success
+  );
 });
 
 test("InterceptedRequestSchema — rejects negative requestSize", () => {
-  assert.ok(!InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, requestSize: -1 }).success);
+  assert.ok(
+    !InterceptedRequestSchema.safeParse({ ...validInterceptedRequest, requestSize: -1 }).success
+  );
 });
 
 const validMitmTarget = {
@@ -80,8 +97,21 @@ test("MitmTargetSchema — rejects invalid agent id", () => {
 });
 
 test("MitmTargetSchema — accepts all 9 valid agent ids", () => {
-  const ids = ["antigravity", "kiro", "copilot", "codex", "cursor", "zed", "claude-code", "open-code", "trae"];
+  const ids = [
+    "antigravity",
+    "ghe-copilot",
+    "copilot",
+    "codex",
+    "cursor",
+    "zed",
+    "claude-code",
+    "open-code",
+    "trae",
+  ];
   for (const id of ids) {
-    assert.ok(MitmTargetSchema.safeParse({ ...validMitmTarget, id }).success, `Should accept: ${id}`);
+    assert.ok(
+      MitmTargetSchema.safeParse({ ...validMitmTarget, id }).success,
+      `Should accept: ${id}`
+    );
   }
 });

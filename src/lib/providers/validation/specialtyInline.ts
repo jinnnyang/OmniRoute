@@ -8,7 +8,6 @@ import { resolveNvidiaValidationModel } from "@/lib/providers/nvidiaValidationMo
 import { normalizeBaseUrl } from "./urlHelpers";
 import { buildBearerHeaders, directHttpsRequest } from "./headers";
 import { toValidationErrorResult, validationRead, validationWrite } from "./transport";
-import { validateKiroApiKeyRuntimeProbe } from "./kiro";
 
 export async function validateV0VercelProvider({ apiKey, providerSpecificData, isLocal }: any) {
   try {
@@ -116,19 +115,6 @@ export async function validateQoderProvider({ apiKey, providerSpecificData }: an
     return { valid: true, error: null };
   } catch (err: unknown) {
     return toValidationErrorResult(err);
-  }
-}
-
-export async function validateKiroProvider({ apiKey, providerSpecificData }: any) {
-  try {
-    const region = providerSpecificData?.region || "us-east-1";
-    return await validateKiroApiKeyRuntimeProbe({
-      apiKey,
-      region,
-      profileArn: providerSpecificData?.profileArn,
-    });
-  } catch (error: any) {
-    return toValidationErrorResult(error);
   }
 }
 

@@ -27,7 +27,7 @@ const MAX_TOOL_NAME_LEN = 64;
  *   without adding a second `__` separator.
  * - Otherwise -> `${nsName}__${leaf}`.
  * - Names over the 64-char Chat limit are hash-truncated deterministically
- *   (same scheme as open-sse/utils/kiroSanitizer.ts) so the same input always
+ *   so the same input always
  *   produces the same truncated wire name.
  */
 export function flattenNamespaceToolName(nsName: string, leaf: string): string {

@@ -4,7 +4,6 @@ import { hasFixedQuotaOrder, hasCanonicalWindowOrder, sortQuotasByWindow } from 
 const PROVIDER_PLAN_FALLBACKS = new Set([
   "claude code",
   "kimi coding",
-  "kiro",
   "amazon q",
   "openai codex",
   "codex",

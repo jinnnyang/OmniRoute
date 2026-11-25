@@ -253,8 +253,8 @@ export class TraeExecutor extends BaseExecutor {
     const order: string[] = [];
     const thoughts: Record<string, string> = {};
     let sent = 0;
-    let usage: JsonRecord | null = null;
-    let errorEvent: JsonRecord | null = null;
+    let usage: JsonRecord | undefined;
+    let errorEvent: JsonRecord | undefined;
     const renderNewText = (data: JsonRecord): string => {
       const pid = data.id as string | undefined;
       if (!pid) return "";

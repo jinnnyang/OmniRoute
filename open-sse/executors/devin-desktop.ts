@@ -768,8 +768,8 @@ export class DevinDesktopExecutor extends BaseExecutor {
         let roleEmitted = false;
         let stopReason = 0;
         const toolCallIndexes = new Map<string, number>();
-        let usage: DevinUsage | null = null;
-        let trailerError: ConnectTrailerError | null = null;
+        let usage: DevinUsage | undefined;
+        let trailerError: ConnectTrailerError | undefined;
         let sawEndStream = false;
 
         try {
@@ -787,7 +787,7 @@ export class DevinDesktopExecutor extends BaseExecutor {
             if (flags & CONNECT_END_STREAM_FLAG) {
               if (sawEndStream) throw new Error("Duplicate Devin Desktop Connect end-stream frame");
               sawEndStream = true;
-              trailerError = parseConnectTrailerError(decodedPayload);
+              trailerError = parseConnectTrailerError(decodedPayload) ?? undefined;
               return true;
             }
             const response = decodeGetChatMessageResponse(decodedPayload);

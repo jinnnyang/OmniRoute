@@ -48,14 +48,3 @@ test("classify-pr-changes still accepts a workspace-relative list file", () => {
     fs.rmSync(cwd, { recursive: true, force: true });
   }
 });
-
-test("kiro auto-import awaits the async isCloudEnabled() gate (S6544)", () => {
-  const src = fs.readFileSync(
-    path.join(ROOT, "src", "app", "api", "oauth", "kiro", "auto-import", "route.ts"),
-    "utf8"
-  );
-  // `isCloudEnabled()` returns a Promise — a bare truthiness check is always true,
-  // which made syncToCloud() run even when cloud sync is disabled.
-  assert.doesNotMatch(src, /if\s*\(\s*isCloudEnabled\(\)/, "bare `if (isCloudEnabled())` found");
-  assert.match(src, /if\s*\(\s*await isCloudEnabled\(\)/);
-});

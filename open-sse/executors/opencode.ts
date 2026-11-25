@@ -348,14 +348,15 @@ export class OpencodeExecutor extends BaseExecutor {
   ): ExecutorExecuteResult {
     const model = String(input.model ?? "");
     if (!model.startsWith("muse-spark")) return result;
-    if (!("response" in result) || !result.response?.ok || !result.response.body) return result;
+    if (!("response" in result)) return result;
+    const response = result.response;
+    if (!response?.ok || !response.body) return result;
     const bodyObj =
       input.body && typeof input.body === "object" && !Array.isArray(input.body)
         ? (input.body as Record<string, unknown>)
         : null;
     const rawBudget = bodyObj?.max_tokens;
     const budget = typeof rawBudget === "number" && Number.isFinite(rawBudget) ? rawBudget : null;
-    const response = result.response;
     const isSse = response.headers.get("content-type")?.includes("event-stream") ?? false;
 
     if (!isSse) {
@@ -780,7 +781,7 @@ export class OpencodeExecutor extends BaseExecutor {
     // by the Chat endpoint in practice. Keep the workaround scoped to Muse.
     if (
       this._requestFormat === "openai-responses" &&
-      model.startsWith("muse-spark") &&
+      model?.startsWith("muse-spark") &&
       !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
         headers["x-opencode-session"] || ""
       )

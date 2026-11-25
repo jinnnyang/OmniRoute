@@ -54,7 +54,7 @@ export async function GET(request: Request): Promise<Response> {
     const serverReachable = status.running ? await probeTcp(port) : false;
 
     // Compute aggregate dnsConfigured when no agentId provided (matches state route)
-    // This fixes diagnose showing DNS ❌ for non-Antigravity agents (Kiro, Codex, Cursor)
+    // This fixes diagnose showing DNS ❌ for non-Antigravity agents (Codex, Cursor)
     let dnsConfigured = status.dnsConfigured;
     if (!agentId) {
       // Check if ANY agent has DNS configured (aggregate view)

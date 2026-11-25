@@ -2873,9 +2873,8 @@
       "cursor": "Gebruik dit bij het coderen in Cursor en u hebt aangepaste OpenAI-compatibele modellen nodig via OmniRoute.",
       "continue": "Gebruik dit wanneer u Doorgaan in IDE's uitvoert en u een draagbare, op JSON gebaseerde providerconfiguratie nodig hebt.",
       "opencode": "Gebruik dit wanneer u de voorkeur geeft aan terminal-native agentruns en scriptautomatisering via OpenCode.",
-      "kiro": "Te gebruiken bij het integreren van Kiro en het centraal beheren van modelrouting vanuit OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Gebruik wanneer Antigravity/Kiro-verkeer moet worden onderschept via MITM en naar OmniRoute moet worden gerouteerd.",
+      "antigravity": "Gebruik wanneer Antigravity-verkeer moet worden onderschept via MITM en naar OmniRoute moet worden gerouteerd.",
       "copilot": "Gebruik wanneer u UX in Copilot-chatstijl wilt terwijl u OmniRoute-sleutels en routeringsregels afdwingt.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Gebruik deze wanneer u een lichtgewicht terminal-native AI-assistent nodig heeft voor snelle taken.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI-code-editor",
       "continue": "Ga door met AI-assistent",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode vereist API-sleutelconfiguratie.",
           "1": "Stel de basis-URL in op uw OmniRoute-eindpunt."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Voor Kiro is een Amazon-account vereist."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Gratis no-key g4f.space reverse proxy naar Pollinations, beperkt tot 5 verzoeken per minuut.",
       "mixedbread": "Maak embeddings met de Mixedbread API.",
       "segmind": "Genereer afbeeldingen en video's met de gehoste modellen van Segmind.",
-      "amazon-q": "Gebruikt dezelfde AWS Builder ID of geïmporteerde refresh-token-flow als Kiro, maar houdt Amazon Q-verbindingen gescheiden.",
+      "amazon-q": "Gebruikt AWS Builder ID of geïmporteerde refresh-token-flow, maar houdt Amazon Q-verbindingen gescheiden.",
       "antigravity": "Verbind Antigravity met de bestaande OAuth-flow.",
       "agy": "Importeer je Antigravity CLI (`agy`)-login (plak/upload het tokenbestand), detecteer automatisch een lokale CLI-login of meld je aan met Google. Deelt de Antigravity-backend (incl. Claude-modellen).",
       "claude": "Verbind Claude Code met de bestaande OAuth-flow.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth-applicatie met ai_features + read_user scopes. Configureer GITLAB_DUO_OAUTH_CLIENT_ID en optioneel GITLAB_DUO_OAUTH_CLIENT_SECRET op deze OmniRoute-instantie.",
       "kilocode": "Verbind Kilo Code met de bestaande OAuth-flow.",
       "kimi-coding": "Verbind Kimi Coding met de bestaande OAuth-flow.",
-      "kiro": "Gratis tier: 50 credits/maand (~25K–100K tokens). ⚠️ Kiro ToS verbiedt het gebruik van externe proxy/harness.",
       "codex": "Verbind OpenAI Codex met de bestaande OAuth-flow.",
       "qwen": "Verbind Qwen Code met de bestaande OAuth-flow.",
       "github-models": "Maak een GitHub PAT aan met de scope 'models: read' op github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google-account",
     "githubAccount": "GitHub-account",
     "importToken": "Token importeren",
-    "pasteToken": "Plak het vernieuwingstoken uit Kiro IDE.",
+    "pasteToken": "Plak het vernieuwingstoken.",
     "awsRegion": "AWS-regio",
     "autoDetecting": "Tokens automatisch detecteren...",
     "readingFromCache": "Lezen uit AWS SSO-cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Systeemstatus"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Verbind {providerLabel}",
-    "chooseMethod": "Kies uw authenticatiemethode:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Aanbevolen voor de meeste gebruikers. Meld je aan met het AWS-account dat is gekoppeld aan {providerLabel}.",
-    "organization": "Uw Organisatie (AWS IAM Identiteitscentrum)",
-    "organizationDescription": "Gebruik de start-URL van uw bedrijfs-SSO (voorbeeld: {url}).",
-    "googleAccount": "Google-account",
-    "googleDescription": "Log in met je Google-account.",
-    "githubAccount": "GitHub-account",
-    "githubDescription": "Log in met je GitHub-account.",
-    "importToken": "Token Importeren",
-    "importDescription": "Plak een vernieuwings-token geëxporteerd van {providerLabel}.",
-    "apiKey": "API-sleutel",
-    "apiKeyDescription": "Plak een langdurige {providerLabel} / CodeWhisperer API-sleutel. Deze wordt opgeslagen als een bearer-credential zonder verversingstoken; profielontdekking is op beste inspanning.",
-    "idcStartUrl": "IDC Start URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "De URL van het AWS IAM Identity Center van uw organisatie",
-    "awsRegion": "AWS-regio",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS-regio voor uw Identity Center (standaard: us-east-1)",
-    "continue": "Doorgaan",
-    "back": "Terug",
-    "autoDetecting": "Token automatisch detecteren...",
-    "readingCredentials": "Lezen van {providerLabel} referenties uit de AWS SSO-cache",
-    "tokenNotDetected": "{providerLabel} token werd niet automatisch gedetecteerd. Gelieve uw verversingstoken handmatig in te voeren.",
-    "refreshToken": "Vernieuw Token",
-    "tokenPlaceholder": "Token wordt automatisch ingevuld...",
-    "importing": "Importeren...",
-    "apiKeyPlaceholder": "Plak uw {providerLabel} API-sleutel...",
-    "apiKeyStoredDescription": "Opgeslagen versleuteld als een langlevende draagbare referentie. Er is geen verversingsstroom.",
-    "apiKeyRegionDescription": "AWS-regio voor de sleutel (standaard: us-east-1)",
-    "validating": "Bezig met valideren...",
-    "validateAndSaveApiKey": "Valideer en Sla API-sleutel Op",
-    "errorAutoDetect": "Kon token niet automatisch detecteren",
-    "errorAutoDetectFailed": "Automatisch token detecteren mislukt",
-    "errorRefreshTokenRequired": "Voer een verversingstoken in",
-    "errorImportFailed": "Importeren mislukt",
-    "errorApiKeyRequired": "Voer een Kiro API-sleutel in",
-    "errorApiKeyImportFailed": "Importeren van API-sleutel mislukt",
-    "errorIdcStartUrlRequired": "Voer uw IDC-start-URL in"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Verbind {providerLabel} via {providerName}",
-    "errorStartAuthorization": "Mislukt om autorisatie te starten",
-    "errorAuthorizationExpired": "Autorisatie is verlopen. Start de inlogprocedure opnieuw.",
-    "errorAuthorizationFailed": "Autorisatie mislukt",
-    "initializing": "Initialiseren...",
-    "settingUp": "{providerName} authenticatie instellen",
-    "openIncognito": "Open deze link in een Incognito-venster",
-    "incognitoDescription": "Gebruik een Incognito/Privévenster om sessieconflicten met bestaande accounts te voorkomen.",
-    "copyLink": "Kopieer link",
-    "verificationCode": "Verificatiecode",
-    "waiting": "Wachten op autorisatie...",
-    "cancel": "Annuleren",
-    "successTitle": "Succesvol Verbonden!",
-    "successMessage": "Uw {providerLabel} account via {providerName} is verbonden.",
-    "done": "Klaar",
-    "errorTitle": "Verbinding Mislukt",
-    "close": "Sluiten"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autorisatie mislukt",

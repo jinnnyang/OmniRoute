@@ -30,11 +30,6 @@
       "configSource": "antigravity",
       "provider": "antigravity"
     },
-    "amazon-q": {
-      "className": "KiroExecutor",
-      "configSource": "kiro",
-      "provider": "amazon-q"
-    },
     "antigravity": {
       "className": "AntigravityExecutor",
       "configSource": "antigravity",
@@ -72,7 +67,7 @@
     },
     "cbcn": {
       "className": "CodeBuddyCnExecutor",
-      "configSource": "codebuddy-cn",
+      "configSource": "openai",
       "provider": "codebuddy-cn"
     },
     "cf": {
@@ -152,7 +147,7 @@
     },
     "codebuddy-cn": {
       "className": "CodeBuddyCnExecutor",
-      "configSource": "codebuddy-cn",
+      "configSource": "openai",
       "provider": "codebuddy-cn"
     },
     "codex": {
@@ -429,11 +424,6 @@
       "className": "KimiWebExecutor",
       "configSource": "<custom-config>",
       "provider": "kimi-web"
-    },
-    "kiro": {
-      "className": "KiroExecutor",
-      "configSource": "kiro",
-      "provider": "kiro"
     },
     "lma": {
       "className": "LMArenaExecutor",
@@ -721,6 +711,6 @@
       "provider": "zai-web"
     }
   },
-  "keyCount": 144,
+  "keyCount": 142,
   "sharedInstances": []
 }

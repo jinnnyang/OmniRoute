@@ -66,7 +66,7 @@ function buildToolResultBlock(toolName: string, toolCallId: string, resultText: 
 }
 
 function convertMessages(messages) {
-  const result = [];
+  const result: Array<Record<string, unknown>> = [];
   // Build a map of tool_call_id -> tool name from assistant tool calls.
   const toolCallMetaMap = new Map();
   const rememberToolMeta = (toolCallId: string, toolName: string) => {
@@ -214,7 +214,12 @@ function convertMessages(messages) {
  * Transform OpenAI request to Cursor format
  * Returns modified body with converted messages
  */
-export function buildCursorRequest(model, body, stream, credentials) {
+export function buildCursorRequest(
+  model: string,
+  body: Record<string, unknown>,
+  stream: boolean,
+  credentials?: Record<string, unknown> | null
+) {
   const messages = convertMessages(body.messages || []);
 
   return {
@@ -223,4 +228,4 @@ export function buildCursorRequest(model, body, stream, credentials) {
   };
 }
 
-register(FORMATS.OPENAI, FORMATS.CURSOR, buildCursorRequest, null);
+register(FORMATS.OPENAI, FORMATS.CURSOR, buildCursorRequest, undefined);

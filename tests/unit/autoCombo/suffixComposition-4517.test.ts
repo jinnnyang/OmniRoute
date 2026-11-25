@@ -6,7 +6,7 @@
  * Focus: the `:free` tier filter. Regression test for the bug where
  * opencode (noAuth, free) and mimocode (noAuth, free) were NOT being
  * included in the free pool because the legacy `freeProviders` list
- * only contained paid-API-key providers with free tiers (kiro, qoder, ...).
+ * only contained paid-API-key providers with free tiers (qoder, groq, ...).
  *
  * #4517.
  */
@@ -59,9 +59,8 @@ describe("suffixComposition :free tier (#4517)", () => {
   });
 
   it("buildAutoCandidateFilter keeps legacy free providers", () => {
-    // Don't break the existing list — kiro, qoder, groq, etc. must still pass.
+    // Don't break the existing list — qoder, groq, etc. must still pass.
     const filter = buildAutoCandidateFilter("coding", "free");
-    assert.equal(filter!({ provider: "kiro", model: "claude-sonnet-4-5" }), true);
     assert.equal(filter!({ provider: "groq", model: "llama-3.3-70b" }), true);
     assert.equal(filter!({ provider: "qoder", model: "qwen3-coder-plus" }), true);
   });

@@ -757,7 +757,7 @@ export class CursorExecutor extends BaseExecutor {
   }
 
   buildUrl() {
-    return PROVIDERS.cursor.baseUrl;
+    return PROVIDERS.cursor.baseUrl ?? "";
   }
 
   /**
@@ -1519,7 +1519,7 @@ export class CursorExecutor extends BaseExecutor {
     // Non-streaming: drive to completion, return chat.completion JSON.
     const ctx = newStreamCtx(model, () => {});
     try {
-      await this.driveH2(h2, ctx, mcpTools, blobStore, clientPlatform, todoHistory, signal);
+      await this.driveH2(h2!, ctx, mcpTools, blobStore!, clientPlatform, todoHistory, signal);
     } catch (err) {
       if (
         isCursorBenignCancelError(err) &&

@@ -127,13 +127,12 @@ const MODEL_UNAVAILABLE_FRAGMENTS = [
 export function isModelUnavailableError(
   status: number,
   errorMessage: string,
-  provider?: string | null
+  _provider?: string | null
 ): boolean {
   if (status === 404) return !isResourceNotFoundResponse(errorMessage);
   if (status !== 400 && status !== 403) return false;
 
   const msg = errorMessage.toLowerCase();
-  if (provider === "kiro" && msg.includes("improperly formed request")) return true;
   if (MODEL_UNAVAILABLE_FRAGMENTS.some((fragment) => msg.includes(fragment))) return true;
   return containsModelUnavailableMessage(errorMessage);
 }

@@ -6,10 +6,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const {
-  isClaudeWireFormatModel,
-  ensureBase64ImagesForClaudeWire,
-} = await import("../../../src/lib/guardrails/visionBridgeHelpers.ts");
+const { isClaudeWireFormatModel, ensureBase64ImagesForClaudeWire } =
+  await import("../../../src/lib/guardrails/visionBridgeHelpers.ts");
 
 test("isClaudeWireFormatModel: true for anthropic and claude-format registry providers", () => {
   assert.strictEqual(isClaudeWireFormatModel("anthropic/claude-sonnet-4"), true);
@@ -22,7 +20,7 @@ test("isClaudeWireFormatModel: false for openai-format providers", () => {
   assert.strictEqual(isClaudeWireFormatModel("openai/gpt-4o-mini"), false);
   // minimax deliberately moved claude→openai format so images work (#9463).
   assert.strictEqual(isClaudeWireFormatModel("minimax/MiniMax-M3"), false);
-  assert.strictEqual(isClaudeWireFormatModel("kiro/minimax-m2.5"), false);
+  assert.strictEqual(isClaudeWireFormatModel("qoder/minimax-m2.5"), false);
   assert.strictEqual(isClaudeWireFormatModel("auto/best-vision"), false);
   assert.strictEqual(isClaudeWireFormatModel(null), false);
 });
@@ -61,7 +59,8 @@ test("ensureBase64ImagesForClaudeWire: keeps data-URI images as-is", async () =>
 });
 
 test("ensureBase64ImagesForClaudeWire: resolves remote URLs to base64 for claude-wire targets", async () => {
-  const pngBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+  const pngBase64 =
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () =>
     new Response(new Uint8Array(Buffer.from(pngBase64, "base64")), {

@@ -400,28 +400,6 @@ export const CLI_TOOLS: Record<string, CliCatalogEntry> = {
     baseUrlSupport: "full",
     defaultCommand: "hermes",
   },
-  kiro: {
-    id: "kiro",
-    name: "Kiro AI",
-    image: "/providers/kiro.svg",
-    icon: "psychology_alt",
-    color: "#FF6B35",
-    description: "Amazon Kiro — AI-powered IDE with MITM intercept (plan 11 backlog)",
-    docsUrl: "/docs?section=cli-tools&tool=kiro",
-    // configType:"mitm" — fluxo MITM; baseUrlSupport:"none" → excluído das listas,
-    // acessível só via legacy /[id] route após F8
-    configType: "mitm",
-    category: "code",
-    vendor: "Amazon",
-    acpSpawnable: false,
-    baseUrlSupport: "none",
-    guideSteps: [
-      { step: 1, title: "Open Kiro Settings", desc: "Go to Settings → AI Provider" },
-      { step: 2, title: "Base URL", value: "{{baseUrl}}", copyable: true },
-      { step: 3, title: "API Key", type: "apiKeySelector" },
-      { step: 4, title: "Select Model", type: "modelSelector" },
-    ],
-  },
   qwen: {
     id: "qwen",
     name: "Qwen Code",

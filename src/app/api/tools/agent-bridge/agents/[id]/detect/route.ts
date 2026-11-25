@@ -10,7 +10,6 @@ import { createErrorResponse } from "@/lib/api/errorResponse";
 
 const VALID_IDS = new Set<AgentId>([
   "antigravity",
-  "kiro",
   "copilot",
   "codex",
   "cursor",

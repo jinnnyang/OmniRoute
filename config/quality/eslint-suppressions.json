@@ -154,16 +154,6 @@
       "count": 1
     }
   },
-  "open-sse/executors/kiro.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 3
-    }
-  },
-  "open-sse/executors/kiro/eventstream.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "open-sse/executors/muse-spark-web.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
@@ -716,7 +706,7 @@
   },
   "open-sse/services/usage.ts": {
     "@typescript-eslint/no-unused-vars": {
-      "count": 3
+      "count": 1
     }
   },
   "open-sse/services/usage/codebuddy-cn.ts": {
@@ -780,11 +770,6 @@
   "open-sse/translator/request/openai-to-gemini.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 5
-    }
-  },
-  "open-sse/translator/request/openai-to-kiro.ts": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 2
     }
   },
   "open-sse/translator/response/cursor-to-openai.ts": {
@@ -4969,11 +4954,6 @@
       "count": 2
     }
   },
-  "tests/unit/kiro-tool-args-streaming.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 1
-    }
-  },
   "tests/unit/lib/batches/csvToJsonl.test.ts": {
     "@typescript-eslint/no-unused-vars": {
       "count": 1
@@ -5360,7 +5340,7 @@
   },
   "tests/unit/provider-models-route.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 54
+      "count": 53
     }
   },
   "tests/unit/provider-models-token-limits.test.ts": {
@@ -6028,7 +6008,7 @@
   },
   "tests/unit/token-refresh-service.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 17
+      "count": 12
     },
     "@typescript-eslint/no-unused-vars": {
       "count": 3
@@ -6102,11 +6082,6 @@
   "tests/unit/translator-openai-to-gemini.test.ts": {
     "@typescript-eslint/no-explicit-any": {
       "count": 74
-    }
-  },
-  "tests/unit/translator-openai-to-kiro.test.ts": {
-    "@typescript-eslint/no-explicit-any": {
-      "count": 17
     }
   },
   "tests/unit/translator-redacted-thinking-model-aware-4479.test.ts": {
@@ -6291,7 +6266,7 @@
   },
   "tests/unit/usage-service-hardening.test.ts": {
     "@typescript-eslint/no-explicit-any": {
-      "count": 56
+      "count": 53
     }
   },
   "tests/unit/v1-ws-bridge.test.ts": {

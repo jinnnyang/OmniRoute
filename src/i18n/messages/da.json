@@ -2873,9 +2873,8 @@
       "cursor": "Brug, når du koder i Cursor, og du har brug for brugerdefinerede OpenAI-kompatible modeller gennem OmniRoute.",
       "continue": "Brug, når du kører Continue i IDE'er, og du har brug for bærbar JSON-baseret udbyderkonfiguration.",
       "opencode": "Brug, når du foretrækker terminal-native agentkørsler og scriptet automatisering via OpenCode.",
-      "kiro": "Bruges ved integration af Kiro og styring af modelrouting centralt fra OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Bruges, når Antigravity/Kiro-trafik skal opsnappes gennem MITM og dirigeres til OmniRoute.",
+      "antigravity": "Bruges, når Antigravity-trafik skal opsnappes gennem MITM og dirigeres til OmniRoute.",
       "copilot": "Brug, når du ønsker Copilot-chatstil UX, mens du håndhæver OmniRoute-nøgler og routingregler.",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "Brug, når du har brug for en letvægts terminal-native AI-assistent til hurtige opgaver.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Fortsæt AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode kræver API-nøglekonfiguration.",
           "1": "Indstil basis-URL'en til dit OmniRoute-slutpunkt."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro kræver en Amazon-konto."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Gratis nøglefri g4f.space reverse proxy til Pollinations, begrænset til 5 anmodninger pr. minut.",
       "mixedbread": "Opret embeddings med Mixedbread API.",
       "segmind": "Generer billeder og videoer med Segminds hostede modeller.",
-      "amazon-q": "Bruger det samme AWS Builder ID eller importerede refresh-token-flow som Kiro, men holder Amazon Q-forbindelser adskilt.",
+      "amazon-q": "Bruger AWS Builder ID eller importerede refresh-token-flow, men holder Amazon Q-forbindelser adskilt.",
       "antigravity": "Forbind Antigravity med det eksisterende OAuth-flow.",
       "agy": "Importer dit Antigravity CLI (`agy`)-login (indsæt/upload dets tokenfil), registrer automatisk et lokalt CLI-login, eller log ind med Google. Deler Antigravity-backend (inkl. Claude-modeller).",
       "claude": "Forbind Claude Code med det eksisterende OAuth-flow.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "OAuth-applikation med ai_features + read_user-scopes. Konfigurer GITLAB_DUO_OAUTH_CLIENT_ID og valgfrit GITLAB_DUO_OAUTH_CLIENT_SECRET på denne OmniRoute-instans.",
       "kilocode": "Forbind Kilo Code med det eksisterende OAuth-flow.",
       "kimi-coding": "Forbind Kimi Coding med det eksisterende OAuth-flow.",
-      "kiro": "Gratis niveau: 50 kreditter/måned (~25K–100K tokens). ⚠️ Kiro ToS forbyder brug af tredjeparts proxy/harness.",
       "codex": "Forbind OpenAI Codex med det eksisterende OAuth-flow.",
       "qwen": "Forbind Qwen Code med det eksisterende OAuth-flow.",
       "github-models": "Opret et GitHub PAT med 'models: read'-scope på github.com/settings/tokens"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google-konto",
     "githubAccount": "GitHub-konto",
     "importToken": "Importer token",
-    "pasteToken": "Indsæt opdateringstoken fra Kiro IDE.",
+    "pasteToken": "Indsæt opdateringstoken.",
     "awsRegion": "AWS-regionen",
     "autoDetecting": "Automatisk registrering af tokens...",
     "readingFromCache": "Læser fra AWS SSO-cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "Systemstatus"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "Forbind {providerLabel}",
-    "chooseMethod": "Vælg din godkendelsesmetode:",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "Anbefalet til de fleste brugere. Log ind med den AWS-konto, der er knyttet til {providerLabel}.",
-    "organization": "Din Organisation (AWS IAM Identitetscenter)",
-    "organizationDescription": "Brug din virksomheds SSO start-URL (eksempel: {url}).",
-    "googleAccount": "Google-konto",
-    "googleDescription": "Log ind med din Google-konto.",
-    "githubAccount": "GitHub-konto",
-    "githubDescription": "Log ind med din GitHub-konto.",
-    "importToken": "Importer Token",
-    "importDescription": "Indsæt en opfrisknings-token eksporteret fra {providerLabel}.",
-    "apiKey": "API-nøgle",
-    "apiKeyDescription": "Indsæt en langvarig {providerLabel} / CodeWhisperer API-nøgle. Den gemmes som en bearer-legitimationsoplysning uden opdaterings-token; profilopdagelse er bedste indsats.",
-    "idcStartUrl": "IDC Start URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "Din organisations AWS IAM Identity Center URL",
-    "awsRegion": "AWS Region",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "AWS-region for dit Identity Center (standard: us-east-1)",
-    "continue": "Fortsæt",
-    "back": "Tilbage",
-    "autoDetecting": "Auto-detekterer token...",
-    "readingCredentials": "Læser {providerLabel} legitimationsoplysninger fra AWS SSO-cache",
-    "tokenNotDetected": "{providerLabel} token blev ikke automatisk registreret. Indsæt venligst din opdateringstoken manuelt.",
-    "refreshToken": "Opdateringstoken",
-    "tokenPlaceholder": "Token vil blive udfyldt automatisk...",
-    "importing": "Importerer...",
-    "apiKeyPlaceholder": "Indsæt din {providerLabel} API-nøgle...",
-    "apiKeyStoredDescription": "Lagrer krypteret som en langvarig bærerlegitimation. Der er ingen opdateringsflow.",
-    "apiKeyRegionDescription": "AWS-region for nøglen (standard: us-east-1)",
-    "validating": "Validerer...",
-    "validateAndSaveApiKey": "Valider og Gem API-nøgle",
-    "errorAutoDetect": "Kunne ikke automatisk registrere token",
-    "errorAutoDetectFailed": "Mislykkedes at auto-detektere token",
-    "errorRefreshTokenRequired": "Indtast venligst en opdaterings-token",
-    "errorImportFailed": "Importen mislykkedes",
-    "errorApiKeyRequired": "Indtast venligst en Kiro API-nøgle",
-    "errorApiKeyImportFailed": "Import af API-nøgle mislykkedes",
-    "errorIdcStartUrlRequired": "Indtast venligst din IDC start-URL"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "Forbind {providerLabel} via {providerName}",
-    "errorStartAuthorization": "Mislykkedes at starte godkendelse",
-    "errorAuthorizationExpired": "Autorisationen er udløbet. Start login-flowet igen.",
-    "errorAuthorizationFailed": "Autorisation mislykkedes",
-    "initializing": "Initialiserer...",
-    "settingUp": "Opsætning af {providerName} autentifikation",
-    "openIncognito": "Åbn dette link i et inkognito-vindue",
-    "incognitoDescription": "Brug et Inkognito/Privat vindue for at undgå sessionskonflikter med eksisterende konti.",
-    "copyLink": "Kopier link",
-    "verificationCode": "Bekræftelseskode",
-    "waiting": "Venter på godkendelse...",
-    "cancel": "Annuller",
-    "successTitle": "Forbundet med succes!",
-    "successMessage": "Din {providerLabel} konto via {providerName} er blevet tilsluttet.",
-    "done": "Færdig",
-    "errorTitle": "Forbindelse Mislykkedes",
-    "close": "Luk"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "Autorisation mislykkedes",

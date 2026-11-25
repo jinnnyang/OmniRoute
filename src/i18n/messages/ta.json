@@ -2873,9 +2873,8 @@
       "cursor": "Use when coding in Cursor and you need custom OpenAI-compatible models through OmniRoute.",
       "continue": "Use when running Continue in IDEs and you need portable JSON-based provider configuration.",
       "opencode": "Use when you prefer terminal-native agent runs and scripted automation via OpenCode.",
-      "kiro": "Use when integrating Kiro and controlling model routing centrally from OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Use when Antigravity/Kiro traffic must be intercepted through MITM and routed to OmniRoute.",
+      "antigravity": "Use when Antigravity traffic must be intercepted through MITM and routed to OmniRoute.",
       "copilot": "Use when you want Copilot chat style UX while enforcing OmniRoute keys and routing rules.",
       "amp": "Use when you want Amp shorthand workflows but still need OmniRoute alias and routing rules enforcement.",
       "hermes": "Use when you need a lightweight terminal-native AI assistant for quick tasks.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Continue AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode requires API key configuration.",
           "1": "Set the base URL to your OmniRoute endpoint."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro requires Amazon account."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Intelligent Auto",
     "autoDesc": "Self-healing smart routing pool with multi-factor scoring",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Pollinations-க்கான இலவச key இல்லாத g4f.space reverse proxy, நிமிடத்திற்கு 5 கோரிக்கைகள் என வரம்பிடப்பட்டுள்ளது.",
       "mixedbread": "Mixedbread API மூலம் embeddings-ஐ உருவாக்கவும்.",
       "segmind": "Segmind-இன் hosted மாடல்கள் மூலம் படங்கள் மற்றும் வீடியோக்களை உருவாக்கவும்.",
-      "amazon-q": "Kiro போன்ற அதே AWS Builder ID அல்லது இறக்குமதி செய்யப்பட்ட refresh-token flow-ஐப் பயன்படுத்துகிறது, ஆனால் Amazon Q இணைப்புகளைத் தனியாக வைத்திருக்கிறது.",
+      "amazon-q": "AWS Builder ID அல்லது இறக்குமதி செய்யப்பட்ட refresh-token flow-ஐப் பயன்படுத்துகிறது, ஆனால் Amazon Q இணைப்புகளைத் தனியாக வைத்திருக்கிறது.",
       "antigravity": "ஏற்கனவே உள்ள OAuth flow மூலம் Antigravity-ஐ இணைக்கவும்.",
       "agy": "உங்கள் Antigravity CLI (`agy`) உள்நுழைவை இறக்குமதி செய்யவும் (அதன் token கோப்பை ஒட்டவும்/பதிவேற்றவும்), உள்ளூர் CLI உள்நுழைவை தானாகக் கண்டறியவும் அல்லது Google மூலம் உள்நுழையவும். Antigravity backend-ஐப் பகிர்கிறது (Claude மாடல்கள் உட்பட).",
       "claude": "ஏற்கனவே உள்ள OAuth flow மூலம் Claude Code-ஐ இணைக்கவும்.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "ai_features + read_user scopes கொண்ட OAuth பயன்பாடு. இந்த OmniRoute instance-இல் GITLAB_DUO_OAUTH_CLIENT_ID மற்றும் விருப்பத்தேர்வாக GITLAB_DUO_OAUTH_CLIENT_SECRET-ஐ உள்ளமைக்கவும்.",
       "kilocode": "ஏற்கனவே உள்ள OAuth flow மூலம் Kilo Code-ஐ இணைக்கவும்.",
       "kimi-coding": "ஏற்கனவே உள்ள OAuth flow மூலம் Kimi Coding-ஐ இணைக்கவும்.",
-      "kiro": "இலவச அடுக்கு: 50 கிரெடிட்கள்/மாதம் (~25K–100K டோக்கன்கள்). ⚠️ Kiro ToS மூன்றாம் தரப்பு proxy/harness பயன்பாட்டைத் தடைசெய்கிறது.",
       "codex": "தற்போதுள்ள OAuth செயல்முறையுடன் OpenAI Codex-ஐ இணைக்கவும்.",
       "qwen": "தற்போதுள்ள OAuth செயல்முறையுடன் Qwen Code-ஐ இணைக்கவும்.",
       "github-models": "github.com/settings/tokens இல் 'models: read' வரம்புடன் ஒரு GitHub PAT ஐ உருவாக்கவும்"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Account",
     "githubAccount": "GitHub Account",
     "importToken": "Import Token",
-    "pasteToken": "Paste refresh token from Kiro IDE.",
+    "pasteToken": "Paste refresh token.",
     "awsRegion": "AWS Region",
     "autoDetecting": "Auto-detecting tokens...",
     "readingFromCache": "Reading from AWS SSO cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "அமைப்பு நிலை"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "{providerLabel} ஐ இணைக்கவும்",
-    "chooseMethod": "உங்கள் அங்கீகார முறை தேர்ந்தெடுக்கவும்:",
-    "builderId": "AWS கட்டமைப்பாளர் ஐடி",
-    "builderDescription": "அதிகமான பயனர்களுக்காக பரிந்துரைக்கப்படுகிறது. {providerLabel} உடன் இணைக்கப்பட்ட AWS கணக்கில் உள்நுழைக.",
-    "organization": "உங்கள் அமைப்பு (AWS IAM அடையாள மையம்)",
-    "organizationDescription": "உங்கள் நிறுவன SSO தொடக்கம் URL ஐப் பயன்படுத்தவும் (உதாரணம்: {url}).",
-    "googleAccount": "கூகிள் கணக்கு",
-    "googleDescription": "உங்கள் Google கணக்குடன் உள்நுழைக.",
-    "githubAccount": "GitHub கணக்கு",
-    "githubDescription": "உங்கள் GitHub கணக்குடன் உள்நுழைக.",
-    "importToken": "இறக்குமதி டோக்கன்",
-    "importDescription": "{providerLabel} இல் இருந்து ஏற்றுமதி செய்யப்பட்ட புதுப்பிப்பு டோக்கனை ஒட்டவும்.",
-    "apiKey": "API விசை",
-    "apiKeyDescription": "ஒரு நீண்டகால {providerLabel} / CodeWhisperer API விசையை ஒட்டவும். இது புதுப்பிப்பு டோக்கன் இல்லாமல் ஒரு பேயர் கிரெடென்ஷியலாக சேமிக்கப்படுகிறது; சுயவிவர கண்டுபிடிப்பு சிறந்த முயற்சியாகும்.",
-    "idcStartUrl": "IDC தொடக்க URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "உங்கள் நிறுவனத்தின் AWS IAM அடையாள மைய URL",
-    "awsRegion": "AWS பகுதி",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "உங்கள் அடையாள மையத்திற்கான AWS பகுதி (இயல்புநிலை: us-east-1)",
-    "continue": "தொடருங்கள்",
-    "back": "மீண்டும்",
-    "autoDetecting": "தானியங்கி அடையாளம் காணும் டோக்கன்...",
-    "readingCredentials": "AWS SSO கச்சே இருந்து {providerLabel} அங்கீகாரங்களை வாசிக்கிறது",
-    "tokenNotDetected": "{providerLabel} டோக்கன் தானாக கண்டறியப்படவில்லை. தயவுசெய்து உங்கள் ரீஃபிரெஷ் டோக்கனை கையால் ஒட்டவும்.",
-    "refreshToken": "புதுப்பிப்பு டோக்கன்",
-    "tokenPlaceholder": "டோக்கன் தானாகவே நிரப்பப்படும்...",
-    "importing": "இறக்குமதி செய்கிறேன்...",
-    "apiKeyPlaceholder": "உங்கள் {providerLabel} API விசையை ஒட்டவும்...",
-    "apiKeyStoredDescription": "நீண்டகாலம் வாழும் பேயர் அங்கீகாரமாக காப்பு செய்யப்பட்ட குறியாக்கம். புதுப்பிப்பு ஓட்டம் இல்லை.",
-    "apiKeyRegionDescription": "கீக்கான AWS பகுதி (இயல்புநிலை: us-east-1)",
-    "validating": "சரிபார்க்கப்படுகிறது...",
-    "validateAndSaveApiKey": "சரிபார்க்கவும் மற்றும் API விசையை சேமிக்கவும்",
-    "errorAutoDetect": "கோடியை தானாக கண்டறிய முடியவில்லை",
-    "errorAutoDetectFailed": "டோக்கனை தானாக கண்டறிய முடியவில்லை",
-    "errorRefreshTokenRequired": "தயவுசெய்து ஒரு புதுப்பிப்பு டோக்கனை உள்ளிடவும்",
-    "errorImportFailed": "இறக்குமதி தோல்வியுற்றது",
-    "errorApiKeyRequired": "தயவுசெய்து Kiro API விசையை உள்ளிடவும்",
-    "errorApiKeyImportFailed": "API விசை இறக்குமதி தோல்வி அடைந்தது",
-    "errorIdcStartUrlRequired": "தயவுசெய்து உங்கள் IDC தொடக்கம் URL ஐ உள்ளிடவும்"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "{providerName} மூலம் {providerLabel} ஐ இணைக்கவும்",
-    "errorStartAuthorization": "அங்கீகாரம் தொடங்குவதில் தோல்வி ஏற்பட்டது",
-    "errorAuthorizationExpired": "அங்கீகாரம் காலாவதியாகிவிட்டது. மீண்டும் உள்நுழைவு செயல்முறையை தொடங்குங்கள்.",
-    "errorAuthorizationFailed": "அங்கீகாரம் தோல்வி அடைந்தது",
-    "initializing": "தொடக்கம்...",
-    "settingUp": "{providerName} அங்கீகாரம் அமைத்தல்",
-    "openIncognito": "இந்த இணைப்பை Incognito சாளரத்தில் திறக்கவும்",
-    "incognitoDescription": "உள்ள கணக்குகளுடன் அமர்வு மோதல்களை தவிர்க்க Incognito/Private சாளரத்தைப் பயன்படுத்தவும்.",
-    "copyLink": "இணைப்பை நகலெடுக்கவும்",
-    "verificationCode": "சரிபார்ப்பு குறியீடு",
-    "waiting": "அனுமதிக்காக காத்திருக்கிறேன்...",
-    "cancel": "ரத்து செய்",
-    "successTitle": "வெற்றிகரமாக இணைக்கப்பட்டது!",
-    "successMessage": "உங்கள் {providerLabel} கணக்கு {providerName} மூலம் இணைக்கப்பட்டுள்ளது.",
-    "done": "செய்யப்பட்டது",
-    "errorTitle": "இணைப்பு தோல்வி அடைந்தது",
-    "close": "மூடு"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "அங்கீகாரம் தோல்வி அடைந்தது",

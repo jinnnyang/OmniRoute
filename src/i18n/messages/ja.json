@@ -2873,9 +2873,8 @@
       "cursor": "Cursor でコーディングし、OmniRoute を介してカスタム OpenAI 互換モデルが必要な場合に使用します。",
       "continue": "IDE で続行を実行し、移植可能な JSON ベースのプロバイダー構成が必要な場合に使用します。",
       "opencode": "ターミナルネイティブのエージェントの実行と OpenCode によるスクリプトによる自動化を希望する場合に使用します。",
-      "kiro": "Kiro を統合し、OmniRoute からモデルのルーティングを一元的に制御する場合に使用します。",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Antigravity/Kiro トラフィックを MITM 経由でインターセプトし、OmniRoute にルーティングする必要がある場合に使用します。",
+      "antigravity": "Antigravity トラフィックを MITM 経由でインターセプトし、OmniRoute にルーティングする必要がある場合に使用します。",
       "copilot": "OmniRoute キーとルーティング ルールを適用しながら、Copilot チャット スタイルの UX が必要な場合に使用します。",
       "amp": "Use when you want Amp CLI routed through OmniRoute with stable shorthand aliases and OpenAI-compatible setup.",
       "hermes": "素早いタスクのために軽量のターミナル ネイティブ AI アシスタントが必要な場合に使用します。",
@@ -2895,7 +2894,6 @@
       "cursor": "カーソルAIコードエディター",
       "continue": "AIアシスタントを続ける",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCodeはAPIキー設定が必要です。",
           "1": "ベースURLをOmniRouteエンドポイントに設定してください。"
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "KiroはAmazonアカウントが必要です。"
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Auto Combo",
     "autoDesc": "Self-healing smart routing pool (Performance optimized)",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "キー不要で無料のg4f.spaceによるPollinationsへのリバースプロキシ（1分あたり5リクエストに制限）。",
       "mixedbread": "Mixedbread APIで埋め込みを作成します。",
       "segmind": "Segmindのホスト型モデルで画像や動画を生成します。",
-      "amazon-q": "Kiroと同じAWS Builder IDまたはインポートされたリフレッシュトークンフローを使用しますが、Amazon Qの接続は個別に維持します。",
+      "amazon-q": "AWS Builder IDまたはインポートされたリフレッシュトークンフローを使用しますが、Amazon Qの接続は個別に維持します。",
       "antigravity": "既存のOAuthフローを使用してAntigravityに接続します。",
       "agy": "Antigravity CLI（`agy`）のログイン情報をインポート（トークンファイルを貼り付け/アップロード）、ローカルのCLIログインを自動検出、またはGoogleでサインインします。Antigravityのバックエンド（Claudeモデルを含む）を共有します。",
       "claude": "既存のOAuthフローを使用してClaude Codeに接続します。",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "ai_features + read_user スコープを持つOAuthアプリケーション。このOmniRouteインスタンスで GITLAB_DUO_OAUTH_CLIENT_ID と、必要に応じて GITLAB_DUO_OAUTH_CLIENT_SECRET を設定してください。",
       "kilocode": "既存のOAuthフローを使用してKilo Codeに接続します。",
       "kimi-coding": "既存のOAuthフローを使用してKimi Codingに接続します。",
-      "kiro": "無料枠: 50クレジット/月（約25K〜100Kトークン）。⚠️ Kiroの利用規約（ToS）は、サードパーティのプロキシやハーネスの使用を禁止しています。",
       "codex": "既存のOAuthフローを使用してOpenAI Codexに接続します。",
       "qwen": "既存のOAuthフローを使用してQwen Codeに接続します。",
       "github-models": "github.com/settings/tokens で 'models: read' スコープを持つGitHub PATを作成"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Googleアカウント",
     "githubAccount": "GitHub アカウント",
     "importToken": "トークンのインポート",
-    "pasteToken": "Kiro IDE からリフレッシュ トークンを貼り付けます。",
+    "pasteToken": "リフレッシュ トークンを貼り付けます。",
     "awsRegion": "AWS リージョン",
     "autoDetecting": "トークンを自動検出しています...",
     "readingFromCache": "AWS SSO キャッシュからの読み取り",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "システムステータス"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "{providerLabel}に接続",
-    "chooseMethod": "認証方法を選択してください：",
-    "builderId": "AWSビルダーID",
-    "builderDescription": "ほとんどのユーザーに推奨されます。{providerLabel}にリンクされたAWSアカウントでサインインしてください。",
-    "organization": "あなたの組織 (AWS IAM アイデンティティセンター)",
-    "organizationDescription": "会社のSSO開始URLを使用してください（例：{url}）。",
-    "googleAccount": "Google アカウント",
-    "googleDescription": "Googleアカウントでログインしてください。",
-    "githubAccount": "GitHub アカウント",
-    "githubDescription": "GitHubアカウントでログインしてください。",
-    "importToken": "トークンをインポート",
-    "importDescription": "{providerLabel}からエクスポートされたリフレッシュトークンを貼り付けてください。",
-    "apiKey": "APIキー",
-    "apiKeyDescription": "長期有効な {providerLabel} / CodeWhisperer API キーを貼り付けてください。これはリフレッシュトークンなしでベアラー資格情報として保存されます。プロファイルの発見は最善を尽くします。",
-    "idcStartUrl": "IDC スタート URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "あなたの組織のAWS IAMアイデンティティセンターのURL",
-    "awsRegion": "AWSリージョン",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "アイデンティティセンターのAWSリージョン（デフォルト：us-east-1）",
-    "continue": "続ける",
-    "back": "戻る",
-    "autoDetecting": "トークンを自動検出中...",
-    "readingCredentials": "AWS SSO キャッシュから {providerLabel} 認証情報を読み込んでいます",
-    "tokenNotDetected": "{providerLabel} トークンは自動検出されませんでした。リフレッシュトークンを手動で貼り付けてください。",
-    "refreshToken": "リフレッシュトークン",
-    "tokenPlaceholder": "トークンが自動的に入力されます...",
-    "importing": "インポート中...",
-    "apiKeyPlaceholder": "{providerLabel} APIキーを貼り付けてください...",
-    "apiKeyStoredDescription": "長期的なベアラー資格情報として暗号化されて保存されています。リフレッシュフローはありません。",
-    "apiKeyRegionDescription": "キーのAWSリージョン（デフォルト：us-east-1）",
-    "validating": "検証中...",
-    "validateAndSaveApiKey": "APIキーを検証して保存する",
-    "errorAutoDetect": "トークンを自動検出できませんでした",
-    "errorAutoDetectFailed": "トークンの自動検出に失敗しました",
-    "errorRefreshTokenRequired": "リフレッシュトークンを入力してください",
-    "errorImportFailed": "インポートに失敗しました",
-    "errorApiKeyRequired": "Kiro APIキーを入力してください",
-    "errorApiKeyImportFailed": "APIキーのインポートに失敗しました",
-    "errorIdcStartUrlRequired": "IDCの開始URLを入力してください"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "{providerName}を介して{providerLabel}に接続する",
-    "errorStartAuthorization": "認証の開始に失敗しました",
-    "errorAuthorizationExpired": "認証が期限切れです。再度ログインフローを開始してください。",
-    "errorAuthorizationFailed": "認証に失敗しました",
-    "initializing": "初期化中...",
-    "settingUp": "{providerName} 認証の設定中",
-    "openIncognito": "このリンクをシークレットウィンドウで開く",
-    "incognitoDescription": "既存のアカウントとのセッションの競合を避けるために、シークレット/プライベートウィンドウを使用してください。",
-    "copyLink": "リンクをコピー",
-    "verificationCode": "確認コード",
-    "waiting": "承認を待っています...",
-    "cancel": "キャンセル",
-    "successTitle": "接続に成功しました！",
-    "successMessage": "あなたの{providerName}を介した{providerLabel}アカウントが接続されました。",
-    "done": "完了",
-    "errorTitle": "接続に失敗しました",
-    "close": "閉じる"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "認証に失敗しました",

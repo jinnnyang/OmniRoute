@@ -2873,9 +2873,8 @@
       "cursor": "Use when coding in Cursor and you need custom OpenAI-compatible models through OmniRoute.",
       "continue": "Use when running Continue in IDEs and you need portable JSON-based provider configuration.",
       "opencode": "Use when you prefer terminal-native agent runs and scripted automation via OpenCode.",
-      "kiro": "Use when integrating Kiro and controlling model routing centrally from OmniRoute.",
       "windsurf": "Use when you want an AI-first IDE with Codeium/Windsurf models routed through OmniRoute.",
-      "antigravity": "Use when Antigravity/Kiro traffic must be intercepted through MITM and routed to OmniRoute.",
+      "antigravity": "Use when Antigravity traffic must be intercepted through MITM and routed to OmniRoute.",
       "copilot": "Use when you want Copilot chat style UX while enforcing OmniRoute keys and routing rules.",
       "amp": "Use when you want Amp shorthand workflows but still need OmniRoute alias and routing rules enforcement.",
       "hermes": "Use when you need a lightweight terminal-native AI assistant for quick tasks.",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI Code Editor",
       "continue": "Continue AI Assistant",
       "opencode": "OpenCode AI coding agent (Terminal)",
-      "kiro": "Amazon Kiro — AI-powered IDE",
       "windsurf": "Windsurf AI Code Editor",
       "copilot": "GitHub Copilot AI Assistant",
       "amp": "Sourcegraph Amp coding assistant CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode requires API key configuration.",
           "1": "Set the base URL to your OmniRoute endpoint."
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "Open Kiro Settings",
-            "desc": "Go to Settings → AI Provider"
-          },
-          "2": {
-            "title": "Base URL",
-            "desc": "Paste your OmniRoute endpoint URL"
-          },
-          "3": {
-            "title": "API Key"
-          },
-          "4": {
-            "title": "Select Model"
-          }
-        },
-        "notes": {
-          "0": "Kiro requires Amazon account."
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "Free Stack ($0)",
-    "templateFreeStackDesc": "Round-robin across all free providers: Kiro (Claude), Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
+    "templateFreeStackDesc": "Round-robin across all free providers: Qoder (5 models), Qwen (4 models). Zero cost, never stops coding.",
     "auto": "Intelligent Auto",
     "autoDesc": "Self-healing smart routing pool with multi-factor scoring",
     "lkgp": "LKGP Mode",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "Pollinations માટે મફત નો-કી g4f.space રિવર્સ પ્રોક્સી, પ્રતિ મિનિટ 5 વિનંતીઓ સુધી મર્યાદિત.",
       "mixedbread": "Mixedbread API વડે એમ્બેડિંગ્સ બનાવો.",
       "segmind": "Segmind ના હોસ્ટ કરેલા મોડલ્સ વડે છબીઓ અને વિડિઓઝ જનરેટ કરો.",
-      "amazon-q": "Kiro જેવી જ AWS Builder ID અથવા આયાત કરેલ refresh-token ફ્લોનો ઉપયોગ કરે છે, પરંતુ Amazon Q કનેક્શન્સને અલગ રાખે છે.",
+      "amazon-q": "AWS Builder ID અથવા આયાત કરેલ refresh-token ફ્લોનો ઉપયોગ કરે છે, પરંતુ Amazon Q કનેક્શન્સને અલગ રાખે છે.",
       "antigravity": "હાલના OAuth ફ્લો વડે Antigravity ને કનેક્ટ કરો.",
       "agy": "તમારા Antigravity CLI (`agy`) લોગિનને આયાત કરો (તેની ટોકન ફાઇલ પેસ્ટ/અપલોડ કરો), સ્થાનિક CLI લોગિન આપમેળે શોધો, અથવા Google વડે સાઇન ઇન કરો. Antigravity બેકએન્ડ (Claude મોડલ્સ સહિત) શેર કરે છે.",
       "claude": "હાલના OAuth ફ્લો વડે Claude Code ને કનેક્ટ કરો.",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "ai_features + read_user સ્કોપ્સ સાથેની OAuth એપ્લિકેશન. આ OmniRoute ઇન્સ્ટન્સ પર GITLAB_DUO_OAUTH_CLIENT_ID અને વૈકલ્પિક રીતે GITLAB_DUO_OAUTH_CLIENT_SECRET કન્ફિગર કરો.",
       "kilocode": "હાલના OAuth ફ્લો વડે Kilo Code ને કનેક્ટ કરો.",
       "kimi-coding": "હાલના OAuth ફ્લો વડે Kimi Coding ને કનેક્ટ કરો.",
-      "kiro": "મફત સ્તર: 50 ક્રેડિટ્સ/મહિનો (~25K–100K ટોકન્સ). ⚠️ Kiro ToS તૃતીય-પક્ષ પ્રોક્સી/હાર્નેસના ઉપયોગ પર પ્રતિબંધ મૂકે છે.",
       "codex": "OpenAI Codex ને હાલના OAuth ફ્લો સાથે કનેક્ટ કરો.",
       "qwen": "Qwen Code ને હાલના OAuth ફ્લો સાથે કનેક્ટ કરો.",
       "github-models": "github.com/settings/tokens પર 'models: read' સ્કોપ સાથે GitHub PAT બનાવો"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google Account",
     "githubAccount": "GitHub Account",
     "importToken": "Import Token",
-    "pasteToken": "Paste refresh token from Kiro IDE.",
+    "pasteToken": "Paste refresh token.",
     "awsRegion": "AWS Region",
     "autoDetecting": "Auto-detecting tokens...",
     "readingFromCache": "Reading from AWS SSO cache",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "સિસ્ટમ સ્થિતિ"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "જોડો {providerLabel}",
-    "chooseMethod": "તમારી ઓળખપત્ર પદ્ધતિ પસંદ કરો:",
-    "builderId": "AWS બિલ્ડર ID",
-    "builderDescription": "વધુतर વપરાશકર્તાઓ માટે ભલામણ કરેલ. {providerLabel} સાથે જોડાયેલ AWS ખાતા સાથે સાઇન ઇન કરો.",
-    "organization": "તમારી સંસ્થા (AWS IAM ઓળખ કેન્દ્ર)",
-    "organizationDescription": "તમારી કંપનીના SSO શરૂ કરવા માટેના URL નો ઉપયોગ કરો (ઉદાહરણ: {url}).",
-    "googleAccount": "ગૂગલ ખાતું",
-    "googleDescription": "તમારા Google ખાતા સાથે લોગિન કરો.",
-    "githubAccount": "GitHub ખાતું",
-    "githubDescription": "તમારા GitHub ખાતા સાથે લોગિન કરો.",
-    "importToken": "ટોકન આયાત કરો",
-    "importDescription": "{providerLabel} માંથી નિકાસ કરેલ રિફ્રેશ ટોકન પેસ્ટ કરો.",
-    "apiKey": "એપીઆઈ કી",
-    "apiKeyDescription": "લાંબા સમય સુધી ચાલતી {providerLabel} / CodeWhisperer API કી પેસ્ટ કરો. તે રિફ્રેશ ટોકન વગર બેરર ક્રેડેન્શિયલ તરીકે સંગ્રહિત છે; પ્રોફાઇલ શોધ શ્રેષ્ઠ પ્રયાસ છે.",
-    "idcStartUrl": "IDC શરૂ URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "તમારા સંસ્થાના AWS IAM ઓળખ કેન્દ્રનો URL",
-    "awsRegion": "AWS પ્રદેશ",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "તમારા આઈડેન્ટિટી સેન્ટર માટે AWS પ્રદેશ (ડિફોલ્ટ: us-east-1)",
-    "continue": "ચાલુ રાખો",
-    "back": "પાછા",
-    "autoDetecting": "ટોકન આપોઆપ શોધી રહ્યું છે...",
-    "readingCredentials": "AWS SSO કેશમાંથી {providerLabel} પ્રમાણપત્રો વાંચી રહ્યા છે",
-    "tokenNotDetected": "{providerLabel} ટોકન આપોઆપ શોધવામાં આવ્યું નથી. કૃપા કરીને તમારો રિફ્રેશ ટોકન હસ્તકશેર કરો.",
-    "refreshToken": "ફરીથી ટોકન",
-    "tokenPlaceholder": "ટોકન આપોઆપ ભરી દેવામાં આવશે...",
-    "importing": "આયાત કરી રહ્યા છીએ...",
-    "apiKeyPlaceholder": "તમારો {providerLabel} API કી પેસ્ટ કરો...",
-    "apiKeyStoredDescription": "લાંબા સમય સુધી ચાલનારા બેરર ક્રેડેંશિયલ તરીકે સંગ્રહિત એન્ક્રિપ્ટેડ. રિફ્રેશ ફ્લો નથી.",
-    "apiKeyRegionDescription": "કી માટે AWS પ્રદેશ (ડિફોલ્ટ: us-east-1)",
-    "validating": "માન્યતા કરી રહ્યા છીએ...",
-    "validateAndSaveApiKey": "API કી માન્ય કરો અને સાચવો",
-    "errorAutoDetect": "ટોકન આપોઆપ ઓળખી શક્યું નથી",
-    "errorAutoDetectFailed": "ટોકન આપમેળે ઓળખવામાં નિષ્ફળ થયું",
-    "errorRefreshTokenRequired": "કૃપા કરીને એક રિફ્રેશ ટોકન દાખલ કરો",
-    "errorImportFailed": "આયાત નિષ્ફળ ગઈ",
-    "errorApiKeyRequired": "કૃપા કરીને Kiro API કી દાખલ કરો",
-    "errorApiKeyImportFailed": "API કી આયાત નિષ્ફળ ગઈ",
-    "errorIdcStartUrlRequired": "કૃપા કરીને તમારું IDC શરૂ URL દાખલ કરો"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "{providerLabel} ને {providerName} દ્વારા જોડો",
-    "errorStartAuthorization": "અધિકૃતતા શરૂ કરવામાં નિષ્ફળ રહ્યું",
-    "errorAuthorizationExpired": "અધિકૃતતા સમાપ્ત થઈ ગઈ છે. ફરીથી લોગિન પ્રવાહ શરૂ કરો.",
-    "errorAuthorizationFailed": "અધિકૃતતા નિષ્ફળ ગઈ",
-    "initializing": "પ્રારંભ કરી રહ્યું છે...",
-    "settingUp": "{providerName} ઓથેન્ટિકેશન સેટઅપ કરી રહ્યા છીએ",
-    "openIncognito": "આ લિંકને ઇન્કોગ્નિટો વિન્ડોમાં ખોલો",
-    "incognitoDescription": "અસ્તિત્વમાં આવેલા ખાતાઓ સાથે સત્રના વિવાદોને ટાળવા માટે ઇન્કોગ્નિટો/પ્રાઇવેટ વિન્ડોનો ઉપયોગ કરો.",
-    "copyLink": "લિંક નકલ કરો",
-    "verificationCode": "પરીક્ષણ કોડ",
-    "waiting": "અધિકૃતતા માટે રાહ જોઈ રહ્યા છીએ...",
-    "cancel": "રદ કરો",
-    "successTitle": "સફળતાપૂર્વક જોડાયું!",
-    "successMessage": "તમારો {providerLabel} ખાતો {providerName} દ્વારા જોડાયો છે.",
-    "done": "કામ પૂર્ણ થયું",
-    "errorTitle": "કનેક્શન નિષ્ફળ થયું",
-    "close": "બંધ કરો"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "અધિકૃતતા નિષ્ફળ ગઈ",

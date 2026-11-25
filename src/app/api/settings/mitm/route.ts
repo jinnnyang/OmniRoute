@@ -7,7 +7,6 @@ import { NextResponse } from "next/server";
 import { requireManagementAuth } from "@/lib/api/requireManagementAuth";
 import { resolveApiKey } from "@/shared/services/apiKeyResolver";
 import { resolveMitmDataDir } from "@/mitm/dataDir";
-import { KIRO_MITM_PROFILE } from "@/mitm/targets/kiro";
 import { ANTIGRAVITY_MITM_PROFILE } from "@/mitm/targets/antigravity";
 
 type MitmTargetRoute = {
@@ -84,15 +83,6 @@ function defaultTargets(port = DEFAULT_PORT): MitmTargetRoute[] {
       localPort: port,
       endpoints: ANTIGRAVITY_MITM_PROFILE.apiEndpoints,
       enabled: true,
-    },
-    {
-      id: KIRO_MITM_PROFILE.id,
-      name: KIRO_MITM_PROFILE.name,
-      targetHost: KIRO_MITM_PROFILE.targetHost,
-      targetPort: KIRO_MITM_PROFILE.targetPort,
-      localPort: KIRO_MITM_PROFILE.localPort,
-      endpoints: KIRO_MITM_PROFILE.apiEndpoints,
-      enabled: false,
     },
   ];
 }

@@ -63,8 +63,9 @@ export function normalizeResponsesSseIds(payload: JsonRecord): boolean {
     }
 
     if (Array.isArray(response.output)) {
-      const normalizedOutput = response.output.map(normalizeResponsesOutputItemIds);
-      if (normalizedOutput.some((item, index) => item !== response.output[index])) {
+      const originalOutput = response.output as unknown[];
+      const normalizedOutput = originalOutput.map(normalizeResponsesOutputItemIds);
+      if (normalizedOutput.some((item, index) => item !== originalOutput[index])) {
         normalizedResponse.output = normalizedOutput;
         responseChanged = true;
       }

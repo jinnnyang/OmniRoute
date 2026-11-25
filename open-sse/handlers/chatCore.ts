@@ -136,7 +136,6 @@ import { injectSystemPrompt, injectCustomSystemPrompt } from "../services/system
 import { translateRequest, needsTranslation } from "../translator/index.ts";
 import { FORMATS } from "../translator/formats.ts";
 import { collectCustomToolNamesForSourceFormat } from "../translator/request/openai-responses/additionalTools.ts";
-import { sanitizeKiroTools } from "../utils/kiroSanitizer.ts";
 import { splitMisplacedToolResults } from "../translator/helpers/claudeHelper.ts";
 import { ensureCacheControlOnLastUserMessage } from "../services/claudeCodeConstraints.ts";
 import {
@@ -1974,7 +1973,7 @@ export async function handleChatCore({
     );
 
     // Capture pre-compression body so translators can access original message
-    // content even after compression alters it (e.g. stable Kiro conversationId).
+    // content even after compression alters it.
     preCompressionBody = body;
 
     // Reactive context compaction is independent of optional prompt-compression
@@ -2553,34 +2552,9 @@ export async function handleChatCore({
   trace("post_translation");
 
   // Keep the request translator's namespace identities separate from toolNameMap:
-  // the latter is a Kiro/Claude passthrough alias channel with string values,
-  // while namespace identities carry `{namespace, name}` for the #7936 response
-  // seam. Extract first because Kiro merge may reuse `_toolNameMap` below.
+  // the latter is a passthrough alias channel with string values, while namespace
+  // identities carry `{namespace, name}` for the #7936 response seam.
   const requestToolIdentityMap = extractRequestToolIdentityMap(translatedBody);
-
-  // Kiro: sanitize tool schemas before dispatch. Kiro returns 400 "Improperly
-  // formed request" for unsupported JSON-Schema keywords (anyOf/$ref/if-then,
-  // etc.) and tool names >64 chars. Strip those keys and hash-truncate long
-  // names; merge the truncated→original nameMap into the existing
-  // `_toolNameMap` so kiro-to-openai maps streamed tool-call names back (#1375).
-  if (targetFormat === FORMATS.KIRO) {
-    const kiroTools =
-      translatedBody?.conversationState?.currentMessage?.userInputMessage?.userInputMessageContext
-        ?.tools;
-    if (kiroTools) {
-      const { tools: sanitizedKiroTools, nameMap: kiroNameMap } = sanitizeKiroTools(kiroTools);
-      translatedBody.conversationState.currentMessage.userInputMessage.userInputMessageContext.tools =
-        sanitizedKiroTools;
-      if (kiroNameMap.size > 0) {
-        const existing =
-          translatedBody._toolNameMap instanceof Map
-            ? translatedBody._toolNameMap
-            : new Map<string, string>();
-        kiroNameMap.forEach((original, truncated) => existing.set(truncated, original));
-        translatedBody._toolNameMap = existing;
-      }
-    }
-  }
 
   // Claude: strict Anthropic-compatible gateways (e.g. MiniMax) reject tool
   // definitions that omit the required `type` discriminator with HTTP 400. Default

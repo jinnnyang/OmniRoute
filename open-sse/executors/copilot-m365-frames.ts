@@ -605,7 +605,9 @@ export function buildChatInvocation(opts: ChatInvocationOptions): Record<string,
 }
 
 /** True when the frame is a SignalR invocation/streamItem (`type:1`) update. */
-export function isUpdateFrame(frame: Record<string, unknown> | null): boolean {
+export function isUpdateFrame(
+  frame: Record<string, unknown> | null
+): frame is Record<string, unknown> {
   return !!frame && frame.type === 1 && frame.target === "update";
 }
 

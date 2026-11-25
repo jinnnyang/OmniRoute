@@ -13,7 +13,6 @@ import type { AgentId } from "@/mitm/types";
 
 const VALID_IDS = new Set<AgentId>([
   "antigravity",
-  "kiro",
   "copilot",
   "codex",
   "cursor",

@@ -5,7 +5,6 @@ import {
   type SyncedAvailableModel,
 } from "@/lib/db/models";
 import { CANONICAL_EFFORT_VALUES } from "@/shared/reasoning/effortStandardization";
-import { isObsoleteKiroModelAlias } from "@omniroute/open-sse/services/kiroModels.ts";
 import { filterSelectableModels } from "@omniroute/open-sse/services/modelLifecycle.ts";
 
 type JsonRecord = Record<string, unknown>;
@@ -367,10 +366,7 @@ export async function getCachedDiscoveredModels(
   providerId: string,
   connectionId: string
 ): Promise<SyncedAvailableModel[]> {
-  const models = await getSyncedAvailableModelsForConnection(providerId, connectionId);
-  return providerId === "kiro"
-    ? models.filter((model) => !isObsoleteKiroModelAlias(model.id))
-    : models;
+  return getSyncedAvailableModelsForConnection(providerId, connectionId);
 }
 
 export async function persistDiscoveredModels(

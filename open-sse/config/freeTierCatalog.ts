@@ -30,7 +30,6 @@ export const FREE_TIER_BUDGETS: Record<string, number> = {
   huggingchat: 500_000,
   morph: 400_000,
   huggingface: 200_000,
-  kiro: 25_000,
 };
 
 /**
@@ -42,7 +41,6 @@ export const FREE_TIER_TOS: Record<string, TosVerdict> = {
   "duckduckgo-web": "avoid",
   "felo-web": "avoid",
   agy: "avoid",
-  kiro: "avoid",
   "amazon-q": "avoid",
   "muse-spark-web": "avoid",
   "t3-web": "avoid",

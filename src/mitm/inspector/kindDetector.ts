@@ -55,7 +55,7 @@ function matchesShape(json: Record<string, unknown>, shape: BodyShape): boolean 
   return true;
 }
 
-const LLM_UA_PATTERN = /codex|claude|gemini|antigravity|kiro|copilot|cursor/i;
+const LLM_UA_PATTERN = /codex|claude|gemini|antigravity|copilot|cursor/i;
 
 export function detectKind(req: InterceptedRequest): "llm" | "app" | "unknown" {
   if (LLM_HOST_PATTERNS.some((re) => re.test(req.host))) return "llm";
@@ -84,4 +84,3 @@ export function detectKind(req: InterceptedRequest): "llm" | "app" | "unknown" {
   // Otherwise nothing was detectable — return "unknown".
   return bodySignalFired ? "app" : "unknown";
 }
-

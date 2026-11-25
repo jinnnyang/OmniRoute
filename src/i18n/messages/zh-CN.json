@@ -2873,9 +2873,8 @@
       "cursor": "在 Cursor 中编码并且需要通过 OmniRoute 自定义 OpenAI 兼容模型时使用。",
       "continue": "在 IDE 中运行“Continue”并且需要可移植的基于 JSON 的提供程序配置时使用。",
       "opencode": "当您更喜欢通过 OpenCode 进行终端本机代理运行和脚本自动化时使用。",
-      "kiro": "在集成 Kiro 并从 OmniRoute 集中控制模型路由时使用。",
       "windsurf": "当您需要 Windsurf AI IDE 并通过 OmniRoute 路由模型时使用。",
-      "antigravity": "当必须通过 MITM 拦截 Antigravity/Kiro 流量并将其路由到 OmniRoute 时使用。",
+      "antigravity": "当必须通过 MITM 拦截 Antigravity 流量并将其路由到 OmniRoute 时使用。",
       "copilot": "当您想要 Copilot 聊天风格的 UX 同时强制执行 OmniRoute 键和路由规则时使用。",
       "amp": "当您想要 Amp 简写工作流，但仍需要 OmniRoute 别名和路由规则支持时使用。",
       "hermes": "当您需要轻量级终端原生 AI 助手来处理快速任务时使用。",
@@ -2895,7 +2894,6 @@
       "cursor": "Cursor AI 代码编辑器",
       "continue": "继续AI助手",
       "opencode": "OpenCode AI 编码智能体（终端）",
-      "kiro": "Amazon Kiro - AI 驱动 IDE",
       "windsurf": "Windsurf AI 代码编辑器",
       "copilot": "GitHub Copilot AI 助手",
       "amp": "Sourcegraph Amp 编程助手 CLI",
@@ -2995,27 +2993,6 @@
         "notes": {
           "0": "OpenCode 需要配置 API 密钥。",
           "1": "将基础 URL 设置为您的 OmniRoute 端点。"
-        }
-      },
-      "kiro": {
-        "steps": {
-          "1": {
-            "title": "打开 Kiro 设置",
-            "desc": "前往 Settings → AI Provider"
-          },
-          "2": {
-            "title": "基础 URL",
-            "desc": "粘贴你的 OmniRoute 端点 URL"
-          },
-          "3": {
-            "title": "API 密钥"
-          },
-          "4": {
-            "title": "选择模型"
-          }
-        },
-        "notes": {
-          "0": "Kiro 需要 Amazon 账户。"
         }
       },
       "windsurf": {
@@ -3610,7 +3587,7 @@
       }
     },
     "templateFreeStack": "免费栈（$0）",
-    "templateFreeStackDesc": "在所有免费提供者之间进行轮询：Kiro（Claude）、Qoder（5 个模型）、Qwen（4 个模型）。零成本，编码不中断。",
+    "templateFreeStackDesc": "在所有免费提供者之间进行轮询：Qoder（5 个模型）、Qwen（4 个模型）。零成本，编码不中断。",
     "auto": "自动组合",
     "autoDesc": "自愈型智能路由池（性能优化）",
     "lkgp": "LKGP 模式",
@@ -6257,7 +6234,7 @@
       "g4f-pollinations": "免费免密钥的 g4f.space Pollinations 反向代理，限制为每分钟 5 次请求。",
       "mixedbread": "使用 Mixedbread API 创建嵌入。",
       "segmind": "使用 Segmind 的托管模型生成图像和视频。",
-      "amazon-q": "使用与 Kiro 相同的 AWS Builder ID 或导入的 refresh-token 流程，但保持 Amazon Q 连接独立。",
+      "amazon-q": "使用AWS Builder ID 或导入的 refresh-token 流程，但保持 Amazon Q 连接独立。",
       "antigravity": "使用现有的 OAuth 流程连接 Antigravity。",
       "agy": "导入您的 Antigravity CLI (`agy`) 登录信息（粘贴/上传其令牌文件）、自动检测本地 CLI 登录，或使用 Google 登录。共享 Antigravity 后端（包括 Claude 模型）。",
       "claude": "使用现有的 OAuth 流程连接 Claude Code。",
@@ -6268,7 +6245,6 @@
       "gitlab-duo": "具有 ai_features + read_user 作用域的 OAuth 应用程序。在此 OmniRoute 实例上配置 GITLAB_DUO_OAUTH_CLIENT_ID 以及可选的 GITLAB_DUO_OAUTH_CLIENT_SECRET。",
       "kilocode": "使用现有的 OAuth 流程连接 Kilo Code。",
       "kimi-coding": "使用现有的 OAuth 流程连接 Kimi Coding。",
-      "kiro": "免费层：50 积分/月（约 25K–100K 令牌）。⚠️ Kiro 服务条款禁止使用第三方代理/测试框架。",
       "codex": "使用现有的 OAuth 流程连接 OpenAI Codex。",
       "qwen": "使用现有的 OAuth 流程连接 Qwen Code。",
       "github-models": "在 github.com/settings/tokens 创建具有 'models: read' 作用域的 GitHub PAT"
@@ -9586,7 +9562,7 @@
     "googleAccount": "Google 帐户",
     "githubAccount": "GitHub 帐户",
     "importToken": "导入令牌",
-    "pasteToken": "从 Kiro IDE 粘贴刷新令牌。",
+    "pasteToken": "粘贴刷新令牌。",
     "awsRegion": "AWS 区域",
     "autoDetecting": "自动检测令牌...",
     "readingFromCache": "从 AWS SSO 缓存中读取",
@@ -13553,67 +13529,6 @@
         "secondaryAction": "系统状态"
       }
     }
-  },
-  "kiroAuthModal": {
-    "title": "连接 {providerLabel}",
-    "chooseMethod": "选择您的身份验证方法：",
-    "builderId": "AWS Builder ID",
-    "builderDescription": "推荐给大多数用户。使用与 {providerLabel} 关联的 AWS 账户登录。",
-    "organization": "您的组织 (AWS IAM 身份中心)",
-    "organizationDescription": "使用您的公司 SSO 启动 URL（示例：{url}）。",
-    "googleAccount": "谷歌账户",
-    "googleDescription": "使用您的 Google 账户登录。",
-    "githubAccount": "GitHub 账户",
-    "githubDescription": "使用您的 GitHub 账户登录。",
-    "importToken": "导入令牌",
-    "importDescription": "粘贴从 {providerLabel} 导出的刷新令牌。",
-    "apiKey": "API 密钥",
-    "apiKeyDescription": "粘贴一个长期有效的 {providerLabel} / CodeWhisperer API 密钥。它作为一个无刷新令牌的承载凭证存储；配置文件发现是尽力而为的。",
-    "idcStartUrl": "IDC 启动 URL",
-    "idcStartUrlPlaceholder": "https://your-org.awsapps.com/start",
-    "idcStartUrlDescription": "您组织的 AWS IAM 身份中心 URL",
-    "awsRegion": "AWS 区域",
-    "regionPlaceholder": "us-east-1",
-    "idcRegionDescription": "您的身份中心的 AWS 区域（默认：us-east-1）",
-    "continue": "继续",
-    "back": "返回",
-    "autoDetecting": "自动检测令牌...",
-    "readingCredentials": "从 AWS SSO 缓存中读取 {providerLabel} 凭证",
-    "tokenNotDetected": "{providerLabel} 令牌未被自动检测到。请手动粘贴您的刷新令牌。",
-    "refreshToken": "刷新令牌",
-    "tokenPlaceholder": "令牌将自动填充...",
-    "importing": "导入中...",
-    "apiKeyPlaceholder": "粘贴您的 {providerLabel} API 密钥...",
-    "apiKeyStoredDescription": "以长期持有的凭证形式存储加密信息。没有刷新流程。",
-    "apiKeyRegionDescription": "密钥的 AWS 区域（默认：us-east-1）",
-    "validating": "验证中...",
-    "validateAndSaveApiKey": "验证并保存 API 密钥",
-    "errorAutoDetect": "无法自动检测令牌",
-    "errorAutoDetectFailed": "无法自动检测令牌",
-    "errorRefreshTokenRequired": "请输入刷新令牌",
-    "errorImportFailed": "导入失败",
-    "errorApiKeyRequired": "请输入 Kiro API 密钥",
-    "errorApiKeyImportFailed": "API 密钥导入失败",
-    "errorIdcStartUrlRequired": "请输入您的 IDC 启动 URL"
-  },
-  "kiroSocialOAuthModal": {
-    "title": "通过 {providerName} 连接 {providerLabel}",
-    "errorStartAuthorization": "授权启动失败",
-    "errorAuthorizationExpired": "授权已过期。请重新开始登录流程。",
-    "errorAuthorizationFailed": "授权失败",
-    "initializing": "初始化中...",
-    "settingUp": "设置 {providerName} 身份验证",
-    "openIncognito": "在隐身窗口中打开此链接",
-    "incognitoDescription": "使用隐身/私人窗口以避免与现有帐户的会话冲突。",
-    "copyLink": "复制链接",
-    "verificationCode": "验证码",
-    "waiting": "等待授权...",
-    "cancel": "取消",
-    "successTitle": "连接成功！",
-    "successMessage": "您的 {providerLabel} 账户已通过 {providerName} 连接。",
-    "done": "完成",
-    "errorTitle": "连接失败",
-    "close": "关闭"
   },
   "traeAuthModal": {
     "errorAuthorizationFailed": "授权失败",

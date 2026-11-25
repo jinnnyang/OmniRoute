@@ -26,7 +26,6 @@ test("CLI_TOOLS registry contains all expected tools including rebuilt Qwen Code
     "opencode",
     "hermes",
     "hermes-agent",
-    "kiro",
     "custom",
     "aider",
     "forge",

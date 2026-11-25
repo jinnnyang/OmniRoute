@@ -23,7 +23,7 @@ export const CLI_COMPAT_DISPLAY_PROVIDER_IDS = [
  * optional CLI User-Agent overrides). Do not expose providers here just because they have a
  * CLI Tools card or a provider integration:
  *
- * - Kiro and Cursor already apply their native parity inside custom executors, so a toggle would
+ * - Cursor already applies its native parity inside a custom executor, so a toggle would
  *   be misleading unless it controls additional behavior.
  * - Droid, OpenClaw, Windsurf and Hermes are CLI tool setup guides/settings, not upstream provider
  *   fingerprints handled by OmniRoute.
@@ -34,7 +34,6 @@ export const CLI_COMPAT_DISPLAY_PROVIDER_IDS = [
  * the visible toggle list, also add a real `CLI_FINGERPRINTS` entry or wire its custom executor.
  */
 export const CLI_COMPAT_OMITTED_PROVIDER_IDS = [
-  "kiro",
   "cursor",
   "droid",
   "openclaw",

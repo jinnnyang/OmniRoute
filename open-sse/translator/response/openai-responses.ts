@@ -36,6 +36,101 @@ export { normalizeUpstreamFailure } from "./openai-responses/pureHelpers.ts";
  * string, and whether the fragment ended mid-escape-sequence) across calls
  * for the SAME tool call — see escapeJsonStringValues's own doc comment for
  * why this must persist across chunks rather than reset per call. */
+// OpenAI Chat Completions chunk consumed by the Responses-direction translator.
+type ResponsesDirectionOpenAIUsage = {
+  input_tokens?: number;
+  output_tokens?: number;
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+  input_tokens_details?: { cached_tokens?: number };
+  prompt_tokens_details?: { cached_tokens?: number };
+  output_tokens_details?: { reasoning_tokens?: number };
+  completion_tokens_details?: { reasoning_tokens?: number };
+};
+
+type ResponsesDirectionOpenAIDelta = {
+  content?: string | null;
+  reasoning_content?: string;
+  reasoning?: string;
+  tool_calls?: Array<{
+    index?: number;
+    id?: string;
+    function?: { name?: string; arguments?: string };
+  }>;
+};
+
+type ResponsesDirectionOpenAIChunk = {
+  id?: string;
+  model?: string;
+  choices?: Array<{
+    index?: number;
+    delta?: ResponsesDirectionOpenAIDelta;
+    finish_reason?: string | null;
+  }>;
+  usage?: ResponsesDirectionOpenAIUsage | null;
+  error?: { code?: unknown; metadata?: { error_type?: unknown }; message?: unknown };
+};
+
+// Responses SSE event payload. `chunk.data` is preferred, but some upstreams flatten
+// the event-data fields onto the chunk itself, so `chunk.data || chunk` must yield one
+// shape either way — both variants share this alias.
+type ResponsesDirectionEventItem = {
+  type?: unknown;
+  id?: unknown;
+  call_id?: unknown;
+  name?: unknown;
+  arguments?: unknown;
+  input?: unknown;
+};
+
+type ResponsesDirectionResponsesUsage = {
+  input_tokens?: number;
+  output_tokens?: number;
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  cache_read_input_tokens?: number;
+  cache_creation_input_tokens?: number;
+  reasoning_tokens?: number;
+  input_tokens_details?: { cached_tokens?: number };
+  prompt_tokens_details?: { cached_tokens?: number };
+  output_tokens_details?: { reasoning_tokens?: number };
+  completion_tokens_details?: { reasoning_tokens?: number };
+};
+
+type ResponsesDirectionResponseInfo = {
+  model?: unknown;
+  usage?: ResponsesDirectionResponsesUsage | null;
+  output?: unknown;
+};
+
+type ResponsesDirectionEventData = {
+  delta?: unknown;
+  item_id?: unknown;
+  output_index?: unknown;
+  summary_index?: unknown;
+  item?: ResponsesDirectionEventItem | null;
+  response?: ResponsesDirectionResponseInfo | null;
+  model?: unknown;
+  modelVersion?: unknown;
+  model_version?: unknown;
+};
+
+type ResponsesDirectionEventChunk = {
+  type?: unknown;
+  event?: unknown;
+  data?: ResponsesDirectionEventData;
+  delta?: unknown;
+  item_id?: unknown;
+  output_index?: unknown;
+  summary_index?: unknown;
+  item?: ResponsesDirectionEventItem | null;
+  response?: ResponsesDirectionResponseInfo | null;
+  model?: unknown;
+  modelVersion?: unknown;
+  model_version?: unknown;
+};
+
 interface JsonStringEscapeState {
   inString: boolean;
   pendingEscape: boolean;
@@ -116,7 +211,10 @@ function escapeJsonStringValues(json: string, escapeState: JsonStringEscapeState
  * Translate OpenAI chunk to Responses API events
  * @returns {Array} Array of events with { event, data } structure
  */
-export function openaiToOpenAIResponsesResponse(chunk, state) {
+export function openaiToOpenAIResponsesResponse(
+  chunk: ResponsesDirectionOpenAIChunk | null,
+  state
+) {
   if (!chunk) {
     return flushEvents(state);
   }
@@ -864,7 +962,7 @@ export function openaiResponsesToOpenAIResponse(chunk, state) {
   return withAssistantRoleOnFirstDelta(state, openaiResponsesToOpenAIResponseStream(chunk, state));
 }
 
-function openaiResponsesToOpenAIResponseStream(chunk, state) {
+function openaiResponsesToOpenAIResponseStream(chunk: ResponsesDirectionEventChunk | null, state) {
   if (!chunk) {
     // Iterate every still-open call with a buffered argument payload — argument
     // deltas are buffered for every tool, so an incomplete stream must flush every
@@ -1013,7 +1111,7 @@ function openaiResponsesToOpenAIResponseStream(chunk, state) {
     let index: number | null = null;
     if (toolName) {
       index = state.toolCallIndex ?? 0;
-      state.toolCallIndex = index + 1;
+      state.toolCallIndex = (index ?? 0) + 1;
     }
 
     if (!(state.toolCallByCallId instanceof Map)) state.toolCallByCallId = new Map();

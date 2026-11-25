@@ -164,7 +164,7 @@ export class LMArenaExecutor extends BaseExecutor {
       model: string;
       arenaModelId: string;
       stream: boolean;
-      signal?: AbortSignal;
+      signal?: AbortSignal | null;
       log?: ExecuteInput["log"];
     }
   ) {
@@ -206,7 +206,7 @@ export class LMArenaExecutor extends BaseExecutor {
   private async handleStreamingResponse(
     response: Response,
     model: string,
-    signal?: AbortSignal,
+    signal?: AbortSignal | null,
     log?: ExecuteInput["log"]
   ): Promise<Response> {
     const reader = response.body?.getReader();

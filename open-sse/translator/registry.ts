@@ -6,7 +6,9 @@ type RequestTranslator = (
 ) => unknown;
 
 type ResponseTranslator = (
-  chunk: Record<string, unknown>,
+  // `null` is the stream-flush signal: translateResponse() invokes the source-format
+  // translator with a null chunk when the upstream closed without a terminal chunk.
+  chunk: Record<string, unknown> | null,
   state: Record<string, unknown>
 ) => unknown;
 
@@ -20,8 +22,8 @@ function makeKey(from: string, to: string) {
 export function register(
   from: string,
   to: string,
-  requestFn?: RequestTranslator,
-  responseFn?: ResponseTranslator
+  requestFn?: RequestTranslator | null,
+  responseFn?: ResponseTranslator | null
 ) {
   const key = makeKey(from, to);
   if (requestFn) {
