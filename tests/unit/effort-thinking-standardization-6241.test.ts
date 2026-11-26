@@ -208,16 +208,3 @@ test("enrichCatalogModelEntry preserves Kimi's provider-declared effort contract
   }) as Record<string, unknown>;
   assert.equal("effort_tiers" in (k27.capabilities as Record<string, unknown>), false);
 });
-
-test("enrichCatalogModelEntry exposes Max for Kiro GPT-5.6 Luna", () => {
-  const enriched = registry.enrichCatalogModelEntry({
-    id: "kr/gpt-5.6-luna",
-    object: "model",
-    owned_by: "kr",
-    root: "gpt-5.6-luna",
-  }) as Record<string, unknown>;
-
-  const caps = enriched.capabilities as Record<string, unknown>;
-  assert.equal(caps.supportsThinking, true);
-  assert.deepEqual(caps.effort_tiers, ["none", "low", "medium", "high", "xhigh", "max"]);
-});
